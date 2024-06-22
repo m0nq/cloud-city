@@ -6,7 +6,9 @@ const Home = () => {
             {/*<Section classes="banner-container" data-testid="banner-container">*/}
             <Banner></Banner>
             {/*</Section>*/}
+            {/*<Section classes="banner-container" data-testid="banner-container">*/}
             {/*<Form />*/}
+            {/*</Section>*/}
         </>
     );
 };
