@@ -1,0 +1,12 @@
+.banner-container {
+  /* Banner */
+  position: absolute;
+  width: 98%;
+  height: 781px;
+  left: calc(1%);
+  top: 17px;
+  filter: drop-shadow(4px 4px 4px rgba(0, 0, 0, 0.25));
+  backdrop-filter: blur(2px);
+  /* Note: backdrop-filter has minimal browser support */
+}
+

@@ -9,19 +9,17 @@ const config: Config = {
     ],
     theme: {
         fontFamily: {
-            sans: ['var(--quicksand-font-family)', ...defaultTheme.fontFamily.sans]
+            sans: ['var(--font-family-montserrat-alt1)', 'var(--font-family-source-sans)', ...defaultTheme.fontFamily.sans]
         },
         extend: {
-            backgroundImage: {
-                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                'gradient-conic':
-                    'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
-            },
-            colors: {
-                'dark': '#181a1b',
-                'primary': 'hotpink',
-                'secondary': 'dodgerblue'
-            }
+            // backgroundImage: {
+            //     'cloud-image': ''
+            // }
+            // colors: {
+            //     'dark': '#181a1b',
+            //     'primary': 'hotpink',
+            //     'secondary': 'dodgerblue'
+            // }
         }
     },
     plugins: []

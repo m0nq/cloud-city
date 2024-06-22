@@ -1,0 +1,14 @@
+.banner-section {
+  /*background: rgba(217, 217, 217, 0.13);*/
+  border: 7px solid rgba(255, 255, 255, 0.45);
+  border-radius: 12px;
+  @apply w-full bg-cloud-image;
+}
+
+.background-clouds {
+  /*height: 100%;*/
+  /*left: 0;*/
+  /*top: 0;*/
+  /*background: linear-gradient(144.81deg, #d8a4dc 0%, #7b84c1 39.5%, #1d64a5 100%);*/
+  @apply w-full object-cover;
+}
