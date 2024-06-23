@@ -1,31 +1,45 @@
 .banner-section {
   background-clip: content-box;
-  @apply w-full min-h-[auto] max-h-full rounded-[3.5vw] grid grid-cols-2 grid-rows-2
-  bg-gradient-to-b from-transparent to-gray-800 md:to-gray-950/40;
+  @apply w-full min-h-[auto] max-h-full rounded-[3.5vw] grid grid-cols-2 grid-rows-2 place-items-center bg-gradient-to-b from-transparent to-gray-800
+  md:to-gray-950/40;
 }
 
 .background-clouds {
-  @apply relative w-full object-cover z-[-1] rounded-[3.5vw] col-span-full row-span-full lg:max-h-[44vw];
+  @apply relative w-full object-cover z-[-1] rounded-[3.5vw] col-span-full row-span-full
+  lg:max-h-[44vw];
+}
+
+.banner-content-container {
+  @apply text-white tracking-widest col-span-full row-span-full
+  md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-auto md:max-w-[19.7rem]
+  lg:items-center lg:px-44;
 }
 
 .banner-content {
-  @apply flex flex-col text-white tracking-widest col-span-full row-span-full justify-center items-center
-  md:justify-start md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-auto md:items-end lg:items-center lg:px-44;
+  @apply flex flex-col justify-center items-center;
 }
 
 .banner-content > h3 {
-  @apply font-normal text-sm lg:font-light lg:text-xl lg:pr-0.5;
+  @apply font-normal text-sm
+  md:text-xs md:self-end
+  lg:font-light lg:text-xl lg:pr-0.5;
 }
 
 .banner-content > h1 {
-  @apply font-light text-4xl my-1.5 uppercase lg:text-7xl;
+  @apply font-light text-4xl my-1.5 uppercase
+  sm:my-2
+  md:text-5xl md:my-3
+  lg:text-7xl;
 }
 
 .banner-content > h2 {
-  @apply font-light text-sm md:self-start md:pl-5 lg:font-light lg:pl-2.5 lg:text-2xl;
+  @apply font-light text-sm
+  sm:text-base
+  md:self-start
+  lg:font-light lg:pl-2.5 lg:text-2xl;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   h3 {
     text-shadow: 0 0 20px rgba(0, 0, 0, 1.5);
   }

@@ -11,13 +11,13 @@ export const Banner = () => {
                 sizes="100vw"
                 className="background-clouds"
                 priority />
-            {/*<div className="banner-content-container">*/}
-            <div className="banner-content">
-                <h3>July 27th</h3>
-                <h1 className="banner-title">Cloud City</h1>
-                <h2>Hi-Fi Vibes. Zero-Proof Party.</h2>
+            <div className="banner-content-container">
+                <div className="banner-content">
+                    <h3>July 27th</h3>
+                    <h1 className="banner-title">Cloud City</h1>
+                    <h2>Hi-Fi Vibes. Zero-Proof Party.</h2>
+                </div>
             </div>
-            {/*</div>*/}
         </div>
     );
 };
