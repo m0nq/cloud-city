@@ -12,7 +12,7 @@
 .banner-content-container {
   @apply text-white tracking-widest col-span-full row-span-full
   md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-auto md:max-w-[19.7rem]
-  lg:items-center lg:px-44;
+  lg:max-h-full lg:max-w-full lg:items-center;
 }
 
 .banner-content {
@@ -22,7 +22,7 @@
 .banner-content > h3 {
   @apply font-normal text-sm
   md:text-xs md:self-end
-  lg:font-light lg:text-xl lg:pr-0.5;
+  lg:text-lg lg:font-light;
 }
 
 .banner-content > h1 {
@@ -35,8 +35,8 @@
 .banner-content > h2 {
   @apply font-light text-sm
   sm:text-base
-  md:self-start
-  lg:font-light lg:pl-2.5 lg:text-2xl;
+  md:self-start md:pl-1
+  lg:font-light lg:text-2xl;
 }
 
 @media (max-width: 640px) {
