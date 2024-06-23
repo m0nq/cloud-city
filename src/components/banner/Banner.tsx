@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import cloudBackground from '@public/Image 3.png';
+import cloudBackground from '@public/fluffy-clouds.png';
 import './Banner.styles.css';
 
 export const Banner = () => {

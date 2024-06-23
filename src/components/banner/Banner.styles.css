@@ -1,5 +1,6 @@
 .banner-section {
-  @apply w-full border-[0.5vw] border-solid border-white/85 rounded-[3.5vw] lg:max-h-[45vw];
+  background-clip: content-box;
+  @apply w-full min-h-[auto] rounded-[3.6vw];
 }
 
 .background-clouds {

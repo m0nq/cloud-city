@@ -9,17 +9,8 @@ const config: Config = {
     ],
     theme: {
         fontFamily: {
-            sans: ['var(--font-family-montserrat-alt1)', 'var(--font-family-source-sans)', ...defaultTheme.fontFamily.sans]
-        },
-        extend: {
-            // backgroundImage: {
-            //     'cloud-image': ''
-            // }
-            // colors: {
-            //     'dark': '#181a1b',
-            //     'primary': 'hotpink',
-            //     'secondary': 'dodgerblue'
-            // }
+            sans: ['var(--font-family-montserrat-alt1)', ...defaultTheme.fontFamily.sans],
+            body: ['var(--font-family-source-sans)', ...defaultTheme.fontFamily.sans]
         }
     },
     plugins: []
