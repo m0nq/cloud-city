@@ -34,18 +34,17 @@ const RAW_RUNTIME_STATE =
           ["@testing-library/user-event", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:14.5.2"],\
           ["@types/mailchimp__mailchimp_marketing", "npm:3.0.20"],\
           ["@types/node", "npm:20.14.7"],\
-          ["@types/nodemailer", "npm:6.4.15"],\
           ["@types/react", "npm:18.3.3"],\
           ["@types/react-dom", "npm:18.3.0"],\
           ["cypress", "npm:13.12.0"],\
           ["eslint", "npm:8.57.0"],\
           ["eslint-config-next", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:14.2.3"],\
+          ["formik", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:2.4.6"],\
           ["isomorphic-dompurify", "npm:2.12.0"],\
           ["jest", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:29.7.0"],\
           ["jest-environment-jsdom", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:29.7.0"],\
           ["moment", "npm:2.30.1"],\
           ["next", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:14.2.4"],\
-          ["nodemailer", "npm:6.9.14"],\
           ["postcss", "npm:8.4.38"],\
           ["react", "npm:18.3.1"],\
           ["react-dom", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:18.3.1"],\
@@ -2034,6 +2033,17 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@types/hoist-non-react-statics", [\
+      ["npm:3.3.5", {\
+        "packageLocation": "../../../.yarn/berry/cache/@types-hoist-non-react-statics-npm-3.3.5-98b8d8e47b-10c0.zip/node_modules/@types/hoist-non-react-statics/",\
+        "packageDependencies": [\
+          ["@types/hoist-non-react-statics", "npm:3.3.5"],\
+          ["@types/react", "npm:18.3.3"],\
+          ["hoist-non-react-statics", "npm:3.3.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@types/istanbul-lib-coverage", [\
       ["npm:2.0.6", {\
         "packageLocation": "../../../.yarn/berry/cache/@types-istanbul-lib-coverage-npm-2.0.6-2ea31fda9c-10c0.zip/node_modules/@types/istanbul-lib-coverage/",\
@@ -2099,16 +2109,6 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@types/node", "npm:20.14.7"],\
           ["undici-types", "npm:5.26.5"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["@types/nodemailer", [\
-      ["npm:6.4.15", {\
-        "packageLocation": "../../../.yarn/berry/cache/@types-nodemailer-npm-6.4.15-1f837036d5-10c0.zip/node_modules/@types/nodemailer/",\
-        "packageDependencies": [\
-          ["@types/nodemailer", "npm:6.4.15"],\
-          ["@types/node", "npm:20.14.7"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -3368,18 +3368,17 @@ const RAW_RUNTIME_STATE =
           ["@testing-library/user-event", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:14.5.2"],\
           ["@types/mailchimp__mailchimp_marketing", "npm:3.0.20"],\
           ["@types/node", "npm:20.14.7"],\
-          ["@types/nodemailer", "npm:6.4.15"],\
           ["@types/react", "npm:18.3.3"],\
           ["@types/react-dom", "npm:18.3.0"],\
           ["cypress", "npm:13.12.0"],\
           ["eslint", "npm:8.57.0"],\
           ["eslint-config-next", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:14.2.3"],\
+          ["formik", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:2.4.6"],\
           ["isomorphic-dompurify", "npm:2.12.0"],\
           ["jest", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:29.7.0"],\
           ["jest-environment-jsdom", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:29.7.0"],\
           ["moment", "npm:2.30.1"],\
           ["next", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:14.2.4"],\
-          ["nodemailer", "npm:6.9.14"],\
           ["postcss", "npm:8.4.38"],\
           ["react", "npm:18.3.1"],\
           ["react-dom", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:18.3.1"],\
@@ -3922,6 +3921,13 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["deepmerge", [\
+      ["npm:2.2.1", {\
+        "packageLocation": "../../../.yarn/berry/cache/deepmerge-npm-2.2.1-44c00cbffa-10c0.zip/node_modules/deepmerge/",\
+        "packageDependencies": [\
+          ["deepmerge", "npm:2.2.1"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
       ["npm:4.3.1", {\
         "packageLocation": "../../../.yarn/berry/cache/deepmerge-npm-4.3.1-4f751a0844-10c0.zip/node_modules/deepmerge/",\
         "packageDependencies": [\
@@ -5189,6 +5195,36 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["formik", [\
+      ["npm:2.4.6", {\
+        "packageLocation": "../../../.yarn/berry/cache/formik-npm-2.4.6-6674fd4617-10c0.zip/node_modules/formik/",\
+        "packageDependencies": [\
+          ["formik", "npm:2.4.6"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
+      ["virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:2.4.6", {\
+        "packageLocation": "./.yarn/__virtual__/formik-virtual-dc947f2f63/4/.yarn/berry/cache/formik-npm-2.4.6-6674fd4617-10c0.zip/node_modules/formik/",\
+        "packageDependencies": [\
+          ["formik", "virtual:bf7d8b1a857adb47f81dd7802a604e5921714ac0e60dfe7989d4f85b9f2b692dcc30aa32cddcb7bee48a40c840f377ea0156d69f074766e0db15003aa25bcd47#npm:2.4.6"],\
+          ["@types/hoist-non-react-statics", "npm:3.3.5"],\
+          ["@types/react", "npm:18.3.3"],\
+          ["deepmerge", "npm:2.2.1"],\
+          ["hoist-non-react-statics", "npm:3.3.2"],\
+          ["lodash", "npm:4.17.21"],\
+          ["lodash-es", "npm:4.17.21"],\
+          ["react", "npm:18.3.1"],\
+          ["react-fast-compare", "npm:2.0.4"],\
+          ["tiny-warning", "npm:1.0.3"],\
+          ["tslib", "npm:2.6.3"]\
+        ],\
+        "packagePeers": [\
+          "@types/react",\
+          "react"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["fs-extra", [\
       ["npm:9.1.0", {\
         "packageLocation": "../../../.yarn/berry/cache/fs-extra-npm-9.1.0-983c2ddb4c-10c0.zip/node_modules/fs-extra/",\
@@ -5578,6 +5614,16 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["hasown", "npm:2.0.2"],\
           ["function-bind", "npm:1.1.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["hoist-non-react-statics", [\
+      ["npm:3.3.2", {\
+        "packageLocation": "../../../.yarn/berry/cache/hoist-non-react-statics-npm-3.3.2-e7b709e6c1-10c0.zip/node_modules/hoist-non-react-statics/",\
+        "packageDependencies": [\
+          ["hoist-non-react-statics", "npm:3.3.2"],\
+          ["react-is", "npm:16.13.1"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -7308,6 +7354,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["lodash-es", [\
+      ["npm:4.17.21", {\
+        "packageLocation": "../../../.yarn/berry/cache/lodash-es-npm-4.17.21-b45832dfce-10c0.zip/node_modules/lodash-es/",\
+        "packageDependencies": [\
+          ["lodash-es", "npm:4.17.21"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["lodash.merge", [\
       ["npm:4.6.2", {\
         "packageLocation": "../../../.yarn/berry/cache/lodash.merge-npm-4.6.2-77cb4416bf-10c0.zip/node_modules/lodash.merge/",\
@@ -7803,15 +7858,6 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../../.yarn/berry/cache/node-releases-npm-2.0.14-d39047cad8-10c0.zip/node_modules/node-releases/",\
         "packageDependencies": [\
           ["node-releases", "npm:2.0.14"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["nodemailer", [\
-      ["npm:6.9.14", {\
-        "packageLocation": "../../../.yarn/berry/cache/nodemailer-npm-6.9.14-907ddc0136-10c0.zip/node_modules/nodemailer/",\
-        "packageDependencies": [\
-          ["nodemailer", "npm:6.9.14"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -8607,6 +8653,15 @@ const RAW_RUNTIME_STATE =
         "packagePeers": [\
           "@types/react",\
           "react"\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["react-fast-compare", [\
+      ["npm:2.0.4", {\
+        "packageLocation": "../../../.yarn/berry/cache/react-fast-compare-npm-2.0.4-ab3f6356e2-10c0.zip/node_modules/react-fast-compare/",\
+        "packageDependencies": [\
+          ["react-fast-compare", "npm:2.0.4"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -9690,6 +9745,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../../.yarn/berry/cache/through-npm-2.3.8-df5f72a16e-10c0.zip/node_modules/through/",\
         "packageDependencies": [\
           ["through", "npm:2.3.8"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["tiny-warning", [\
+      ["npm:1.0.3", {\
+        "packageLocation": "../../../.yarn/berry/cache/tiny-warning-npm-1.0.3-750b7a07c4-10c0.zip/node_modules/tiny-warning/",\
+        "packageDependencies": [\
+          ["tiny-warning", "npm:1.0.3"]\
         ],\
         "linkType": "HARD"\
       }]\
