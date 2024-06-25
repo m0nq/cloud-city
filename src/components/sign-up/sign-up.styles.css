@@ -32,7 +32,7 @@ form input {
 .submit-button {
   @apply relative rounded-lg border-[1.5px] border-white h-12 w-1/2 overflow-hidden self-end mt-6 shadow-2xl
   transition-all duration-300 before:absolute before:bottom-0 before:left-0 before:right-0 before:top-0 before:m-auto
-  before:h-0 before:w-0 before:rounded-lg before:bg-white/15 before:duration-300 before:ease-out hover:text-white
+  before:h-0 before:w-0 before:rounded-lg before:bg-indigo-700/95 before:duration-300 before:ease-out hover:text-white
   hover:shadow-none hover:before:h-full hover:before:w-full hover:before:opacity-80;
 }
 
