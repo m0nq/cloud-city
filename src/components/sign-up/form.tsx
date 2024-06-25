@@ -10,7 +10,7 @@ export const Form = () => {
                 <input type="text" id="lastName" />
                 <label htmlFor="email">Email</label>
                 <input type="text" id="email" />
-                <input type="text" placeholder="Other" className="honey-pot" maxLength={0} />
+                <input type="text" placeholder="Other" className="honey-pot" maxLength={0} name="other" />
                 <button type="submit" className="submit-button"><span>Subscribe</span></button>
             </form>
         </>

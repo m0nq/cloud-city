@@ -12,7 +12,7 @@
 
 .banner-content-container {
   @apply tracking-widest col-span-full row-span-full
-  md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-auto md:max-w-[19.7rem]
+  md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-auto md:max-w-[24.3rem]
   lg:max-h-full lg:max-w-full lg:items-center;
 }
 
@@ -27,9 +27,9 @@
 }
 
 .banner-content > h1 {
-  @apply font-light text-4xl my-1.5 uppercase
-  sm:my-2
-  md:text-5xl md:my-3
+  @apply font-light text-5xl my-1.5 uppercase
+  sm:my-2 sm:text-5xl
+  md:text-[3.55rem] md:my-3
   lg:text-7xl;
 }
 

@@ -4,7 +4,7 @@ export const Content = () => {
     return (
         <>
             <div className="content-container">
-                <h3>Stay in the know!</h3>
+                <h2>Stay in the know</h2>
                 <p>
                     Sign up to receive emails about future events.
                     You can unsubscribe at anytime.

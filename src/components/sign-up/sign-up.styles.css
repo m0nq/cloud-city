@@ -1,12 +1,13 @@
 .content-container {
   @apply text-lg flex flex-col gap-6 w-full items-center font-extralight mb-8 max-w-md
-  sm:max-w-md sm:text-lg
+  sm:max-w-md
   md:max-w-xs
-  lg:max-w-md;
+  lg:max-w-md lg:text-xl;
 }
 
-.content-container > h3 {
-  @apply text-2xl;
+.content-container > h2 {
+  @apply text-4xl font-light
+  lg:text-5xl;
 }
 
 form {
