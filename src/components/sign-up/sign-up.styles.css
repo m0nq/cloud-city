@@ -1,0 +1,35 @@
+.content-container {
+  @apply text-xl flex flex-col gap-6 max-w-md items-center font-light mr-24
+  ;
+}
+
+.content-container > h3 {
+  @apply text-3xl;
+}
+
+form {
+  @apply flex flex-col gap-1 font-light min-w-[28rem] ml-24 border-none;
+}
+
+form label {
+  @apply mt-2;
+}
+
+form input {
+  @apply rounded-lg pl-1 bg-white text-black h-9 shadow-inner shadow-black;
+}
+
+.honey-pot {
+  display: none;
+}
+
+.submit-button {
+  @apply relative rounded-lg border-[1.5px] border-white h-12 w-1/2 overflow-hidden self-end mt-6 shadow-2xl
+  transition-all duration-[400ms] before:absolute before:bottom-0 before:left-0 before:right-0 before:top-0 before:m-auto
+  before:h-0 before:w-0 before:rounded-lg before:bg-[#dba8da] before:duration-[400ms] before:ease-out hover:text-white
+  hover:shadow-none hover:before:h-full hover:before:w-full hover:before:opacity-80;
+}
+
+.submit-button > span {
+  @apply relative z-10
+}

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import { Mulish } from 'next/font/google';
 
 import './globals.css';
-import { Footer } from '@components/footer/Footer';
-import { Source_Sans_3 } from 'next/font/google';
+import { Footer } from '@components/footer/footer';
 
 const montserratAlt1 = localFont({
     src: [
@@ -56,9 +56,9 @@ const montserratAlt1 = localFont({
     variable: '--font-family-montserrat-alt1'
 });
 
-const sourceSans = Source_Sans_3({
+const mulish = Mulish({
     subsets: ['latin'],
-    variable: '--font-family-source-sans'
+    variable: '--font-family-mulish'
 });
 
 export const metadata: Metadata = {
@@ -67,8 +67,9 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode; }>) => (
-    <html lang="en" className={`${montserratAlt1.variable} ${sourceSans.variable}`}>
+    <html lang="en" className={`${montserratAlt1.variable} ${mulish.variable}`}>
         <body>
+            {/* NavBar will be on every page. */}
             {children}
             <Footer />
         </body>

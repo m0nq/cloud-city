@@ -10,7 +10,7 @@
 }
 
 .banner-content-container {
-  @apply text-white tracking-widest col-span-full row-span-full
+  @apply tracking-widest col-span-full row-span-full
   md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-auto md:max-w-[19.7rem]
   lg:max-h-full lg:max-w-full lg:items-center;
 }
@@ -40,7 +40,7 @@
 }
 
 @media (max-width: 640px) {
-  h3 {
+  .banner-content > h3 {
     text-shadow: 0 0 20px rgba(0, 0, 0, 1.5);
   }
 }

@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import './Footer.styles.css';
+import './footer.styles.css';
 
 export const Footer = () => {
     return (
