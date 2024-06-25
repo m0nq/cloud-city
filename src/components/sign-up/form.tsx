@@ -6,7 +6,7 @@ export const Form = () => {
             <form className="form">
                 <label htmlFor="firstName">First Name</label>
                 <input type="text" id="firstName" />
-                <label htmlFor="firstName">Last Name</label>
+                <label htmlFor="firstName">Last Name (Optional)</label>
                 <input type="text" id="lastName" />
                 <label htmlFor="email">Email</label>
                 <input type="text" id="email" />
