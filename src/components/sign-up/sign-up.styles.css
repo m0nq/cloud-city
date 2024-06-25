@@ -1,14 +1,17 @@
 .content-container {
-  @apply text-xl flex flex-col gap-6 max-w-md items-center font-light mr-24
-  ;
+  @apply text-sm flex flex-col gap-6 w-full items-center font-light mb-8
+  sm:max-w-md
+  md:max-w-md
+  lg:max-w-md lg:mr-24;
 }
 
 .content-container > h3 {
-  @apply text-3xl;
+  @apply text-2xl;
 }
 
 form {
-  @apply flex flex-col gap-1 font-light min-w-[28rem] ml-24 border-none;
+  @apply flex flex-col gap-1 font-light w-full border-none
+  lg:min-w-[28rem] lg:ml-24;
 }
 
 form label {
@@ -31,5 +34,5 @@ form input {
 }
 
 .submit-button > span {
-  @apply relative z-10
+  @apply relative z-10;
 }

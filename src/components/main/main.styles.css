@@ -1,3 +1,6 @@
 main {
-  @apply my-20 flex flex-wrap justify-center font-body;
+  @apply my-20 flex flex-col flex-wrap justify-center items-center font-body w-full text-sm
+  sm:flex-row
+  md:flex-row
+  lg:flex-row;
 }
