@@ -30,10 +30,11 @@ form input {
 }
 
 .submit-button {
-  @apply relative rounded-lg border-[1.5px] border-white h-12 w-1/2 overflow-hidden self-end mt-6 shadow-2xl
+  @apply relative rounded-lg border-[1.5px] border-white h-11 w-1/2 overflow-hidden self-end mt-6
   transition-all duration-300 before:absolute before:bottom-0 before:left-0 before:right-0 before:top-0 before:m-auto
   before:h-0 before:w-0 before:rounded-lg before:bg-indigo-800 before:duration-300 before:ease-out hover:text-white
-  hover:shadow-none hover:before:h-full hover:before:w-full hover:before:opacity-80;
+  hover:shadow-2xl hover:before:h-full hover:before:w-full hover:before:opacity-80 active:bg-indigo-200 active:border-none
+  active:shadow-none disabled:bg-gray-600 disabled:border-none disabled:cursor-not-allowed disabled:shadow-none;
 }
 
 .submit-button > span {

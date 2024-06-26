@@ -1,27 +1,23 @@
 'use client';
+import { useState } from 'react';
 import { useFormik } from 'formik';
 
 import './sign-up.styles.css';
 import { SubmitButton } from '@components/utils/submit-button';
-import { useState } from 'react';
-
-export type FormValues = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    other: string;
-}
+import { FormValues } from '@data-types/types';
+import { subscribeMember } from '@utils/actions';
+import { ErrorMessage } from '@components/utils/error-message';
 
 const validate = (values: FormValues): FormValues => {
     const errors = {} as FormValues;
     if (!values.firstName) {
-        errors.firstName = 'This should have a few more characters';
+        errors.firstName = 'This should have a few more letters...';
     }
 
     if (!values.email) {
         errors.email = 'You\'ll need an email to sign up!';
     } else if (!values.email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)) {
-        errors.email = 'Something doesn\'t look right here...';
+        errors.email = 'That email doesn\'t look quite right...';
     }
 
     if (values.other) {
@@ -33,7 +29,7 @@ const validate = (values: FormValues): FormValues => {
 
 export const Form = () => {
     const [state, setState] = useState({ success: false, error: false, message: '' });
-    const formik = useFormik({
+    const { isSubmitting, errors, handleChange, handleSubmit, values } = useFormik({
         initialValues: {
             firstName: '',
             lastName: '',
@@ -42,28 +38,13 @@ export const Form = () => {
         },
         validate,
         onSubmit: async values => {
-            try {
-                const res = await fetch('/api/subscribe', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(values)
-                });
+            const { ok } = await subscribeMember(values);
 
-                setState({
-                    success: res.ok,
-                    error: !res.ok,
-                    message: res.ok ? 'Sign up was a success' : 'There was an error'
-                });
-            } catch (e: any) {
-                setState({
-                    success: false,
-                    error: true,
-                    message: 'There was a network error. Perhaps refresh and try again?'
-                });
-
-            }
+            setState({
+                success: ok,
+                error: !ok,
+                message: ok ? 'Sign up was a success' : 'There was an error'
+            });
         }
     });
 
@@ -74,26 +55,34 @@ export const Form = () => {
                     <p>Awesome! We&apos;ll see you soon 💖</p>
                 </div>
             ) : (
-                <form className="form" onSubmit={formik.handleSubmit}>
+                <form className="form" onSubmit={handleSubmit}>
                     <label htmlFor="firstName">First Name</label>
-                    <input type="text" id="firstName" onChange={formik.handleChange} name="firstName"
-                        value={formik.values.firstName} />
-                    {formik.errors.firstName ?
-                        <div className="text-center">{formik.errors.firstName}</div> : null}
+                    <input type="text"
+                        id="firstName"
+                        onChange={handleChange}
+                        name="firstName"
+                        value={values.firstName} />
+                    {errors.firstName && <ErrorMessage message={errors.firstName} />}
                     <label htmlFor="lastName">Last Name (Optional)</label>
-                    <input type="text" id="lastName" onChange={formik.handleChange} name="lastName"
-                        value={formik.values.lastName} />
+                    <input type="text"
+                        id="lastName"
+                        onChange={handleChange}
+                        name="lastName"
+                        value={values.lastName} />
                     <label htmlFor="email">Email</label>
-                    <input type="text" id="email" onChange={formik.handleChange} name="email"
-                        value={formik.values.email} />
-                    {formik.errors.email ? <div className="text-center">{formik.errors.email}</div> : null}
+                    <input type="text"
+                        id="email"
+                        onChange={handleChange}
+                        name="email"
+                        value={values.email} />
+                    {errors.email && <ErrorMessage message={errors.email} />}
                     <input type="text"
                         placeholder="Other"
                         className="honey-pot"
-                        onChange={formik.handleChange}
+                        onChange={handleChange}
                         name="other" />
-                    {state?.error && (<p className="text-center">Oops... Something weird happened. Try again?</p>)}
-                    <SubmitButton />
+                    {state?.error && <ErrorMessage message={state.message} />}
+                    <SubmitButton isPending={isSubmitting} />
                     <p aria-live="polite" className="sr-only" role="status">{state?.message}</p>
                 </form>
             )}
