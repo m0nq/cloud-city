@@ -40,3 +40,7 @@ form input {
 .submit-button > span {
   @apply relative z-10;
 }
+
+.message {
+  @apply text-lg text-center font-extralight w-full max-w-md;
+}
