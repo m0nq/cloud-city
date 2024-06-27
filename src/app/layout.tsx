@@ -63,7 +63,7 @@ const mulish = Mulish({
 });
 
 export const viewport: Viewport = {
-    themeColor: '#dba8da'
+    themeColor: '#4265a7'
 };
 
 export const metadata: Metadata = {
