@@ -11,7 +11,7 @@ import { ErrorMessage } from '@components/utils/error-message';
 const initialValues: FormValues = {
     email: '',
     firstName: '',
-    lastName: '',
+    lastName: ' ',
     other: ''
 };
 
@@ -19,6 +19,12 @@ const validate = (values: FormValues): FormValues => {
     const errors = {} as FormValues;
     if (!values.firstName) {
         errors.firstName = 'This should have a few more letters...';
+    } else if (!values.firstName.match(/^[a-zA-Z\s-]+$/i)) {
+        errors.firstName = 'Try without special characters...';
+    }
+
+    if (!values.lastName.match(/^[a-zA-Z\s-]+$/i)) {
+        errors.lastName = 'Try without special characters...';
     }
 
     if (!values.email) {
@@ -77,6 +83,7 @@ export const Form = () => {
                         onChange={handleChange}
                         name="lastName"
                         value={values.lastName} />
+                    {errors.lastName && <ErrorMessage message={errors.lastName} />}
                     <label htmlFor="email">Email</label>
                     <input type="text"
                         id="email"

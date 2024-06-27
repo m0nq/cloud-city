@@ -10,10 +10,10 @@ const mailerlite = new MailerLite({
 
 export const subscribeMember = async ({ firstName, lastName, email }: FormValues) => {
     const params = {
-        email: email,
+        email: email.trim(),
         fields: {
-            name: firstName,
-            last_name: lastName
+            name: firstName.trim(),
+            last_name: lastName.trim()
         },
         groups: ['125237533318579422'],
         status: 'unconfirmed' // possible statuses: active, unsubscribed, unconfirmed, bounced or junk.
