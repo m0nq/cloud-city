@@ -9,19 +9,8 @@ const config: Config = {
     ],
     theme: {
         fontFamily: {
-            sans: ['var(--quicksand-font-family)', ...defaultTheme.fontFamily.sans]
-        },
-        extend: {
-            backgroundImage: {
-                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                'gradient-conic':
-                    'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
-            },
-            colors: {
-                'dark': '#181a1b',
-                'primary': 'hotpink',
-                'secondary': 'dodgerblue'
-            }
+            sans: ['var(--font-family-montserrat-alt1)', ...defaultTheme.fontFamily.sans],
+            body: ['var(--font-family-mulish)', ...defaultTheme.fontFamily.sans]
         }
     },
     plugins: []
