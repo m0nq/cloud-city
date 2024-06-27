@@ -150,10 +150,16 @@ This is an example of how to list things you need to use the software and how to
 1. Clone the repo
    ```sh
    git clone https://github.com/m0nq/cloud-city.git
+   cd cloud-city
    ```
-2. Install NPM packages
+2. Enable `yarn`
    ```sh
-   npm install
+   corepack enable
+   yarn set version stable
+   ```
+3. Install packages
+   ```sh
+   yarn install
    ```
 
 [//]: # (3. Enter your API in `config.js`)
