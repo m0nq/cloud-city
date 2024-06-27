@@ -8,6 +8,13 @@ import { FormValues } from '@data-types/types';
 import { subscribeMember } from '@utils/actions';
 import { ErrorMessage } from '@components/utils/error-message';
 
+const initialValues: FormValues = {
+    email: '',
+    firstName: '',
+    lastName: '',
+    other: ''
+};
+
 const validate = (values: FormValues): FormValues => {
     const errors = {} as FormValues;
     if (!values.firstName) {
@@ -29,13 +36,14 @@ const validate = (values: FormValues): FormValues => {
 
 export const Form = () => {
     const [state, setState] = useState({ success: false, error: false, message: '' });
-    const { isSubmitting, errors, handleChange, handleSubmit, values } = useFormik({
-        initialValues: {
-            firstName: '',
-            lastName: '',
-            email: '',
-            other: ''
-        },
+    const {
+        isSubmitting,
+        errors,
+        handleChange,
+        handleSubmit,
+        values
+    } = useFormik({
+        initialValues,
         validate,
         onSubmit: async values => {
             const { ok } = await subscribeMember(values);
@@ -81,11 +89,11 @@ export const Form = () => {
                         className="honey-pot"
                         onChange={handleChange}
                         name="other" />
-                    {state?.error && <ErrorMessage message={state.message} />}
+                    {state.error && <ErrorMessage message={state.message} />}
                     <SubmitButton isPending={isSubmitting} />
-                    <p aria-live="polite" className="sr-only" role="status">{state?.message}</p>
                 </form>
             )}
+            <p aria-live="polite" className="sr-only" role="status">{state?.message}</p>
         </>
     );
 };

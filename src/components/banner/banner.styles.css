@@ -29,7 +29,7 @@
 .banner-content > h1 {
   @apply font-light text-5xl my-1.5 uppercase
   sm:my-2 sm:text-5xl
-  md:text-[3.55rem] md:my-3
+  md:text-[3.45rem] md:my-3
   lg:text-7xl;
 }
 
