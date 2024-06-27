@@ -1,12 +1,18 @@
+import './main.styles.css';
 import { Content } from '@components/sign-up/content';
 import { Form } from '@components/sign-up/form';
-import './main.styles.css';
 
 export const Main = () => {
     return (
-        <main>
-            <Content />
-            <Form />
-        </main>
-    );
+        <>
+            <div className="map-point">
+                {/* google mappoint embed */}
+            </div>
+            <main>
+                <Content />
+                <Form />
+            </main>
+        </>
+    )
+        ;
 };

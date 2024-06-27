@@ -1,3 +1,7 @@
+.map-point {
+  @apply mx-auto mt-16 w-36 hidden;
+}
+
 main {
   @apply my-20 flex flex-col flex-wrap justify-center items-center font-body w-full text-sm
   sm:items-center
