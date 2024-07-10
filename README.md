@@ -114,18 +114,6 @@ influencing the environment.
 * [![Next.js][Next.js]][Next-url]
 * [![TailwindCSS][TailwindCSS]][Tailwind-url]
 
-[//]: # (* [![Vue][Vue.js]][Vue-url])
-
-[//]: # (* [![Angular][Angular.io]][Angular-url])
-
-[//]: # (* [![Svelte][Svelte.dev]][Svelte-url])
-
-[//]: # (* [![Laravel][Laravel.com]][Laravel-url])
-
-[//]: # (* [![Bootstrap][Bootstrap.com]][Bootstrap-url])
-
-[//]: # (* [![JQuery][JQuery.com]][JQuery-url])
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
