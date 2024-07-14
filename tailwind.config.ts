@@ -1,4 +1,4 @@
-import daisyui from 'daisyui';
+// import daisyui from 'daisyui';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import { Config } from 'tailwindcss';
 
@@ -13,8 +13,8 @@ const config: Config = {
             sans: ['var(--font-family-montserrat-alt1)', ...defaultTheme.fontFamily.sans],
             body: ['var(--font-family-mulish)', ...defaultTheme.fontFamily.sans]
         }
-    },
-    plugins: [daisyui]
+    }
+    // plugins: [daisyui]
 };
 
 export default config;
