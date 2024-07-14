@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useFormik } from 'formik';
 
 import './sign-up.styles.css';
-import { SubmitButton } from '@components/utils/submit-button';
+import { Button } from '@components/utils/button';
 import { FormValues } from '@data-types/types';
 import { subscribeMember } from '@utils/actions';
 import { ErrorMessage } from '@components/utils/error-message';
@@ -97,7 +97,7 @@ export const Form = () => {
                         onChange={handleChange}
                         name="other" />
                     {state.error && <ErrorMessage message={state.message} />}
-                    <SubmitButton isPending={isSubmitting} />
+                    <Button isPending={isSubmitting} className="submit-button" type="submit" />
                 </form>
             )}
             <p aria-live="polite" className="sr-only" role="status">{state?.message}</p>
