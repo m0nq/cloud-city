@@ -1,17 +1,22 @@
 .banner-section {
   background-clip: content-box;
-  @apply w-full min-h-[auto] max-h-full rounded-[3.5vw] grid grid-cols-2 grid-rows-2 place-items-center bg-gradient-to-b
-  from-transparent to-gray-800
-  md:to-gray-950/40;
+  @apply min-h-[auto] max-h-full rounded-[3.5vw] grid grid-cols-2 grid-rows-2 place-items-center;
+}
+
+.banner-overlay {
+  @apply z-10 h-full w-full rounded-[3.5vw] grid grid-cols-2 grid-rows-2 col-start-1 col-end-3 row-start-1 row-end-3
+  place-items-center bg-cover bg-gradient-to-b from-transparent to-gray-800;
 }
 
 .background-clouds {
-  @apply relative w-full object-cover z-[-1] rounded-[3.5vw] col-span-full row-span-full
+  @apply relative w-full object-cover rounded-[3.5vw] col-span-full row-span-full
   lg:max-h-[44vw];
 }
 
 .banner-content-container {
-  @apply tracking-widest col-span-full row-span-full
+  /*color: white;*/
+  /*mix-blend-mode: difference;*/
+  @apply tracking-widest col-span-full row-span-full z-20
   md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-auto md:max-w-[24.3rem]
   lg:max-h-full lg:max-w-full lg:items-center;
 }
