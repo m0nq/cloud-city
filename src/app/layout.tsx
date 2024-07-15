@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Viewport } from 'next';
 import localFont from 'next/font/local';
 import { Mulish } from 'next/font/google';
+import DOMPurify from 'isomorphic-dompurify';
 
 import './globals.css';
 import { Footer } from '@components/footer/footer';
@@ -70,6 +71,15 @@ export const metadata: Metadata = {
     title: 'Cloud City Festival',
     description: 'A music festival for the Cloud City community.'
 };
+
+DOMPurify.addHook('afterSanitizeAttributes', node => {
+    // safely set all elements owning target to target=_blank
+    // https://developer.chrome.com/docs/lighthouse/best-practices/external-anchors-use-rel-noopener/
+    if ('target' in node) {
+        node.setAttribute('target', '_blank');
+        node.setAttribute('rel', 'noopener');
+    }
+});
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode; }>) => (
     <html lang="en" className={`${montserratAlt1.variable} ${mulish.variable}`}>
