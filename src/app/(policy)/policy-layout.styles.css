@@ -1,0 +1,5 @@
+.hero-wrapper {
+  /*will-change: var(--framer-will-change-override, transform);*/
+  @apply w-full relative pt-4 px-4 mb-8 overflow-hidden max-w-full flex flex-none flex-col flex-nowrap content-center
+  items-center bg-[#c3d0fab3] rounded-[3.5vw] h-auto justify-start text-[#000D4999];
+}

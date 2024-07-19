@@ -1,34 +1,41 @@
 article.post {
-  @apply font-body max-w-3xl mx-auto;
+  @apply font-body max-w-full mx-auto
+  md:max-w-3xl;
 }
 
 .post-title {
-  @apply text-6xl leading-tight text-center font-semibold;
+  @apply mb-4 text-5xl leading-tight text-center font-semibold
+  md:text-6xl;
 }
 
 .post-content h1 {
-  @apply mb-4 text-5xl font-semibold text-left;
+  @apply mb-4 text-4xl font-semibold text-left
+  md:text-5xl;
 }
 
 .post-content h2 {
-  @apply mb-4 text-4xl font-semibold text-left;
+  @apply mb-4 text-3xl font-semibold text-left
+  md:text-4xl;
 }
 
 .post-content h3 {
-  @apply mb-4 text-2xl font-semibold text-left
-  sm:text-3xl;
+  @apply mb-4 text-xl  font-semibold text-left
+  sm:text-3xl
+  md:text-2xl;
 }
 
 .post-content h4 {
-  @apply mb-4 text-xl font-semibold text-left;
+  @apply mb-4 text-base font-semibold text-left
+  md:text-xl;
 }
 
 .post-content p {
-  @apply w-full text-xl pb-6 py-6;
+  @apply w-full text-base pb-6 py-6
+  md:text-xl;
 }
 
 .post-content a {
-  @apply no-underline relative text-[#afc2cb];
+  @apply relative text-[#000D4999] hover:underline;
 }
 
 blockquote {
@@ -41,15 +48,18 @@ blockquote:before {
 }
 
 .post-content ol {
-  @apply mb-4 list-decimal ml-8 text-left text-xl;
+  @apply mb-4 list-decimal ml-8 text-left text-base
+  md:text-xl;
 }
 
 .post-content ol ol {
-  @apply list-[lower-alpha] ml-8 text-left text-xl;
+  @apply list-[lower-alpha] ml-8 text-left text-base
+  md:text-xl;
 }
 
 .post-content ul {
-  @apply mb-4 list-disc ml-8 text-left text-xl;
+  @apply mb-4 list-disc ml-8 text-left text-base
+  md:text-xl;
 }
 
 .post-content figure {
