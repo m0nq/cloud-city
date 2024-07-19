@@ -2,6 +2,8 @@ import { ReactNode } from 'react';
 import { ReactElement } from 'react';
 import moment from 'moment';
 
+import './article.styles.css';
+
 export const Article = ({ title, children, date }: {
     title: string,
     date?: string,

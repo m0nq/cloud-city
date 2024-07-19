@@ -1,0 +1,49 @@
+.post-content h2 {
+  @apply mb-4 text-4xl font-semibold font-sans text-left;
+}
+
+.post-content h3 {
+  @apply mb-4 text-2xl font-semibold font-sans text-left
+  sm:text-3xl;
+}
+
+.post-content h4 {
+  @apply mb-4 text-xl font-semibold font-sans text-left;
+}
+
+.post-content p {
+  @apply w-full text-xl pb-6 py-6;
+}
+
+.post-content a {
+  @apply no-underline relative text-[#afc2cb];
+}
+
+blockquote {
+  quotes: '\201C' '\201D' '\2018' '\2019';
+  @apply border-l-8 border-primary px-2.5 py-2 my-6 mx-2.5 before:text-8xl before:leading-6 before:mr-16 before:align-[-0.4rem]
+}
+
+blockquote:before {
+  content: open-quote;
+}
+
+.post-content ol {
+  @apply list-decimal ml-8 text-left text-xl;
+}
+
+.post-content ol ol {
+  @apply list-[lower-alpha] ml-8 text-left text-xl;
+}
+
+.post-content ul {
+  @apply list-disc ml-8 text-left text-xl;
+}
+
+.post-content figure {
+  @apply mt-6 mx-auto;
+}
+
+.post-content figcaption {
+  @apply text-center text-[#afc2cb];
+}

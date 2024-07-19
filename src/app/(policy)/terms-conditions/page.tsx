@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 import DOMPurify from 'isomorphic-dompurify';
 
 import { getPost } from '@utils/api/wp-actions';
-import { Article } from '@components/policy/post';
+import { Article } from '@components/post/article';
 import { Post } from '@data-types/types';
 
 const TermsAndConditions = async (): Promise<ReactElement> => {
@@ -10,7 +10,7 @@ const TermsAndConditions = async (): Promise<ReactElement> => {
     const termsAndConditions: Post = await getPost('/terms-and-conditions');
 
     return (
-        <Article title={termsAndConditions.title} date={termsAndConditions.date}>
+        <Article title={termsAndConditions.title}>
             <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(termsAndConditions.content || '') }}></div>
         </Article>
     );

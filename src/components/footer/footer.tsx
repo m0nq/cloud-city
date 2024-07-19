@@ -41,13 +41,11 @@ export const Footer = () => {
                     <p><Link href="/privacy-policy">Privacy Policy</Link></p>
                 </div>
             </div>
-            <aside>
-                <div className="copyright">
-                    <p>
-                        Copyright &copy; {moment().year()} Cloud City Festival. All rights reserved.
-                    </p>
-                </div>
-            </aside>
+            <div className="copyright">
+                <p>
+                    Copyright &copy; {moment().year()} Cloud City Festival. All rights reserved.
+                </p>
+            </div>
         </footer>
     );
 };
