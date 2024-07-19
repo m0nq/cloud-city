@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import moment from 'moment';
 
 import './footer.styles.css';
@@ -30,7 +31,15 @@ export const Footer = () => {
                 </div>
             </nav>
             <aside>
-                <p>Copyright &copy; {moment().year()} Cloud City Festival. All rights reserved.</p>
+                <div className="copyright"><p>Copyright &copy; {moment().year()} Cloud City Festival. All rights reserved.</p></div>
+                <div className="policy-section">
+                    <div>
+                        <p><Link href="/terms-conditions">Terms & Conditions</Link></p>
+                    </div>
+                    <div>
+                        <p><Link href="/privacy-policy">Privacy Policy</Link></p>
+                    </div>
+                </div>
             </aside>
         </footer>
     );

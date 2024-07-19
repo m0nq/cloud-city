@@ -3,3 +3,19 @@ footer {
   @apply footer footer-center font-light font-body p-4 text-center border-t-[0.2vw] border-x-[0.2vw] border-solid
   rounded-t-[3.5vw] text-sm gap-4;
 }
+
+footer > aside {
+  place-content: center space-between;
+  flex-flow: row;
+  @apply opacity-100 content-center flex flex-grow-0 shrink-0 basis-auto h-7 max-w-7xl overflow-visible p-0 relative w-full;
+}
+
+.copyright {
+  @apply opacity-100 transform-none flex content-start flex-col w-auto relative h-auto flex-grow-0 shrink-0 basis-auto
+  whitespace-pre;
+}
+
+.policy-section {
+  flex-flow: row;
+  @apply place-content-center items-center flex flex-grow-0 shrink-0 basis-auto gap-5 h-min overflow-hidden p-0 relative;
+}
