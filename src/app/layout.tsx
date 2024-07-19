@@ -1,67 +1,13 @@
+import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Viewport } from 'next';
-import localFont from 'next/font/local';
-import { Mulish } from 'next/font/google';
 import DOMPurify from 'isomorphic-dompurify';
 
 import './globals.css';
 import { Footer } from '@components/footer/footer';
-
-const montserratAlt1 = localFont({
-    src: [
-        {
-            path: '../fonts/otf/MontserratAlt1-Thin.otf',
-            weight: '100',
-            style: 'thin'
-        },
-        {
-            path: '../fonts/otf/MontserratAlt1-ExtraLight.otf',
-            weight: '200',
-            style: 'extralight'
-        },
-        {
-            path: '../fonts/otf/MontserratAlt1-Light.otf',
-            weight: '300',
-            style: 'light'
-        },
-        {
-            path: '../fonts/otf/MontserratAlt1-Regular.otf',
-            weight: '400',
-            style: 'normal'
-        },
-        {
-            path: '../fonts/otf/MontserratAlt1-Black.otf',
-            weight: '400',
-            style: 'italic'
-        },
-        {
-            path: '../fonts/otf/MontserratAlt1-Medium.otf',
-            weight: '500',
-            style: 'medium'
-        },
-        {
-            path: '../fonts/otf/MontserratAlt1-SemiBold.otf',
-            weight: '600',
-            style: 'semibold'
-        },
-        {
-            path: '../fonts/otf/MontserratAlt1-Bold.otf',
-            weight: '700',
-            style: 'bold'
-        },
-        {
-            path: '../fonts/otf/MontserratAlt1-ExtraBold.otf',
-            weight: '800',
-            style: 'extrabold'
-        }
-    ],
-    variable: '--font-family-montserrat-alt1'
-});
-
-const mulish = Mulish({
-    subsets: ['latin'],
-    variable: '--font-family-mulish'
-});
+import { montserratAlt1 } from '@components/utils/fonts';
+import { mulish } from '@components/utils/fonts';
 
 export const viewport: Viewport = {
     themeColor: '#4265a7'
@@ -81,7 +27,7 @@ DOMPurify.addHook('afterSanitizeAttributes', node => {
     }
 });
 
-const RootLayout = ({ children }: Readonly<{ children: React.ReactNode; }>) => (
+const RootLayout = async ({ children }: Readonly<{ children: ReactNode; }>): Promise<ReactElement> => (
     <html lang="en" className={`${montserratAlt1.variable} ${mulish.variable}`}>
         <body>
             {/* NavBar will be on every page. */}

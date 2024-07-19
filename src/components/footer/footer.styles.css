@@ -3,3 +3,15 @@ footer {
   @apply footer footer-center font-light font-body p-4 text-center border-t-[0.2vw] border-x-[0.2vw] border-solid
   rounded-t-[3.5vw] text-sm gap-4;
 }
+
+.policy-section {
+  flex-flow: row;
+  @apply place-content-center items-center flex flex-col md:flex-row flex-grow-0 shrink-0 basis-auto gap-5 h-min
+  overflow-hidden p-0 my-4 relative;
+}
+
+.copyright {
+  @apply opacity-100 transform-none flex content-start flex-col w-auto relative h-auto flex-grow-0 shrink-0 basis-auto
+  whitespace-normal;
+}
+
