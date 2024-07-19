@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import './sign-up.styles.css';
 import { Button } from '@components/utils/button';
 import { FormValues } from '@data-types/types';
-import { subscribeMember } from '@utils/mailer-actions';
+import { subscribeMember } from '@utils/api/mailer-actions';
 import { ErrorMessage } from '@components/utils/error-message';
 
 const initialValues: FormValues = {

@@ -1,3 +1,5 @@
+import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Viewport } from 'next';
 import DOMPurify from 'isomorphic-dompurify';
@@ -25,7 +27,7 @@ DOMPurify.addHook('afterSanitizeAttributes', node => {
     }
 });
 
-const RootLayout = ({ children }: Readonly<{ children: React.ReactNode; }>) => (
+const RootLayout = async ({ children }: Readonly<{ children: ReactNode; }>): Promise<ReactElement> => (
     <html lang="en" className={`${montserratAlt1.variable} ${mulish.variable}`}>
         <body>
             {/* NavBar will be on every page. */}
