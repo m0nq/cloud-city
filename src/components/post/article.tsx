@@ -11,15 +11,13 @@ export const Article = ({ title, children, date }: {
 }): ReactElement => {
 
     return (
-        <>
-            <article className="post">
-                <h1 className="post-title">{title}<span>.</span></h1>
-                {date && <div className="posted-on">Posted on {moment(date).format('MMMM Do, YYYY')}</div>}
-                <article className="post-content">
-                    {children}
-                    <br />
-                </article>
+        <article className="post">
+            <h1 className="post-title">{title}</h1>
+            {date && <div className="posted-on">Posted on {moment(date).format('MMMM Do, YYYY')}</div>}
+            <article className="post-content">
+                {children}
+                <br />
             </article>
-        </>
+        </article>
     );
 };
