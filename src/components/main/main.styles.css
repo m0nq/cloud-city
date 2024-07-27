@@ -1,5 +1,6 @@
 .map-point {
-  @apply mx-auto mt-16 w-11/12 md:w-3/5
+  @apply mx-auto mt-16 w-11/12
+  lg:w-3/5
   /*hidden;*/
 }
 
