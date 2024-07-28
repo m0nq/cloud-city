@@ -1,7 +1,6 @@
 .map-point {
-  @apply mx-auto mt-16 w-11/12
-  lg:w-3/5
-  /*hidden;*/
+  @apply mx-auto mt-16 w-11/12 hidden
+  lg:w-3/5;
 }
 
 .map-point > iframe {
