@@ -73,9 +73,11 @@ jobs:
       - name: Set Environment Variables
         env:
           CC_API_KEY: ${{ secrets.CC_API_KEY }}
+          WORDPRESS_API_URL: ${{ secrets.WORDPRESS_API_URL }}
         run: |
           echo "" > .env.production
           echo CC_API_KEY="$CC_API_KEY" >> .env.production
+          echo WORDPRESS_API_URL="$WORDPRESS_API_URL" >> .env.production
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
 
@@ -108,9 +110,11 @@ jobs:
       - name: Set Environment Variables
         env:
           CC_API_KEY: ${{ secrets.CC_API_KEY }}
+          WORDPRESS_API_URL: ${{ secrets.WORDPRESS_API_URL }}
         run: |
           echo "" > .env.production
           echo CC_API_KEY="$CC_API_KEY" >> .env.production
+          echo WORDPRESS_API_URL="$WORDPRESS_API_URL" >> .env.production
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.CC_VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
