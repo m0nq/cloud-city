@@ -1,48 +1,48 @@
 .banner-section {
   background-clip: content-box;
   @apply min-h-[auto] max-h-full rounded-[3.5vw] grid grid-cols-2 grid-rows-2 place-items-center;
-}
 
-.banner-overlay {
-  @apply z-10 h-full w-full rounded-[3.5vw] grid grid-cols-2 grid-rows-2 col-start-1 col-end-3 row-start-1 row-end-3
-  place-items-center bg-cover bg-gradient-to-b from-transparent to-gray-800;
-}
+  .banner-overlay {
+    @apply z-10 h-full w-full rounded-[3.5vw] grid grid-cols-2 grid-rows-2 col-start-1 col-end-3 row-start-1 row-end-3
+    place-items-center bg-cover bg-gradient-to-b from-transparent to-gray-800;
+  }
 
-.background-clouds {
-  @apply relative w-full object-cover rounded-[3.5vw] col-span-full row-span-full
-  lg:max-h-[44vw];
-}
+  .background-clouds {
+    @apply relative w-full object-cover rounded-[3.5vw] col-span-full row-span-full
+    lg:max-h-[44vw];
+  }
 
-.banner-content-container {
-  /*color: white;*/
-  /*mix-blend-mode: difference;*/
-  @apply tracking-widest col-span-full row-span-full z-20
-  md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-auto md:max-w-[24.3rem]
-  lg:max-h-full lg:max-w-full lg:items-center;
-}
+  .banner-content-container {
+    /*color: white;*/
+    /*mix-blend-mode: difference;*/
+    @apply tracking-widest col-span-full row-span-full z-20
+    md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-auto md:max-w-[24.3rem]
+    lg:max-h-full lg:max-w-full lg:items-center;
 
-.banner-content {
-  @apply flex flex-col justify-center items-center;
-}
+    .banner-content {
+      @apply flex flex-col justify-center items-center;
 
-.banner-content > h3 {
-  @apply font-normal text-sm
-  md:text-xs md:self-end
-  lg:text-lg lg:font-light;
-}
+      > h3 {
+        @apply font-normal text-sm
+        md:text-xs md:self-end
+        lg:text-lg lg:font-light;
+      }
 
-.banner-content > h1 {
-  @apply font-light text-5xl my-1.5 uppercase
-  sm:my-2 sm:text-5xl
-  md:text-[3.45rem] md:my-3
-  lg:text-7xl;
-}
+      > h1.banner-title {
+        @apply font-light text-5xl my-1.5 uppercase
+        sm:my-2 sm:text-5xl
+        md:text-[3.45rem] md:my-3
+        lg:text-7xl;
+      }
 
-.banner-content > h2 {
-  @apply font-light text-sm
-  sm:text-base
-  md:self-start md:pl-1
-  lg:font-light lg:text-2xl;
+      > h2 {
+        @apply font-light text-sm
+        sm:text-base
+        md:self-start md:pl-1
+        lg:font-light lg:text-2xl;
+      }
+    }
+  }
 }
 
 @media (max-width: 640px) {

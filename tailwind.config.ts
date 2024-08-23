@@ -12,7 +12,7 @@ const config: Config = {
     theme: {
         fontFamily: {
             sans: ['var(--font-family-montserrat-alt1)', ...defaultTheme.fontFamily.sans],
-            body: ['var(--font-family-mulish)', ...defaultTheme.fontFamily.sans]
+            body: ['var(--font-family-nunito-sans)', ...defaultTheme.fontFamily.sans]
         }
     },
     plugins: [daisyui],
