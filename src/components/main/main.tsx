@@ -1,6 +1,6 @@
 import './main.styles.css';
-import { Content } from '@components/sign-up/content';
-import { Form } from '@components/sign-up/form';
+import { Content } from '@components/mailer/content';
+import { Form } from '@components/mailer/form';
 
 export const Main = () => {
 
