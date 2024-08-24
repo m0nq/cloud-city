@@ -9,6 +9,5 @@
 }
 
 body {
-  background: linear-gradient(223.45deg, #dba8da -29.19%, #4265a7 59.55%, #dba8da 146.99%);
-  @apply antialiased min-h-screen pt-4 px-4 relative flex flex-col justify-between text-white;
+  @apply antialiased;
 }
