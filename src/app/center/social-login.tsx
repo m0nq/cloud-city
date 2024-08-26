@@ -1,4 +1,4 @@
-const SocialLogin = () => {
+export const SocialLogin = () => {
     return (
         <div className="flex flex-col items-center">
             <p className="mt-10 text-base text-zinc-400">or continue with</p>
@@ -9,4 +9,3 @@ const SocialLogin = () => {
     );
 };
 
-export default SocialLogin;

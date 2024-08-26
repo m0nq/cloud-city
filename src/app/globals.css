@@ -11,3 +11,7 @@
 body {
   @apply antialiased;
 }
+
+input {
+  @apply rounded-none;
+}
