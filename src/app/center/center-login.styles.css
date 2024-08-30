@@ -7,16 +7,15 @@
     .hero-image-container {
       @apply flex grow justify-start items-start p-11 w-full h-full;
 
-      img.hero-image {
-        @apply object-center absolute inset-0 size-full
-        rounded-r-badge;
+      .hero-image {
+        @apply object-center absolute inset-0 size-full rounded-r-badge;
       }
 
       .logo-container {
-        @apply z-10;
+        @apply z-10 w-32;
 
-        img.cloud-city-logo {
-          @apply object-contain max-w-full aspect-square w-min;
+        .cloud-city-logo {
+          @apply object-contain w-full h-full aspect-square;
         }
       }
     }

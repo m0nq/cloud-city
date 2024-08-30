@@ -21,7 +21,7 @@
       @apply flex flex-col justify-center items-center;
 
       > h3 {
-        @apply font-normal text-sm
+        @apply font-normal font-subheading text-sm
         md:text-xs md:self-end
         lg:text-lg lg:font-light;
       }
@@ -34,7 +34,7 @@
       }
 
       > h2 {
-        @apply font-light text-sm
+        @apply font-light font-subheading text-sm
         sm:text-base
         md:self-start md:pl-1
         lg:font-light lg:text-2xl;

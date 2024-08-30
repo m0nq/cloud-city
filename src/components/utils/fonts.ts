@@ -1,5 +1,6 @@
 import localFont from 'next/font/local';
 import { Nunito_Sans } from 'next/font/google';
+import { Montserrat } from 'next/font/google';
 
 export const montserratAlt1 = localFont({
     src: [
@@ -50,6 +51,11 @@ export const montserratAlt1 = localFont({
         }
     ],
     variable: '--font-family-montserrat-alt1'
+});
+
+export const montserrat = Montserrat({
+    subsets: ['latin'],
+    variable: '--font-family-montserrat'
 });
 
 export const nunitoSans = Nunito_Sans({
