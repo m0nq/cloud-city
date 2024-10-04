@@ -14,8 +14,10 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-    title: 'City Center',
-    description: 'The space which Cloud City conducts bizness!'
+    // title: 'City Center',
+    // description: 'The space which Cloud City conducts bizness!'
+    title: 'Cloud City',
+    description: 'The Bay Area no-alcohol music festival'
 };
 
 DOMPurify.addHook('afterSanitizeAttributes', node => {

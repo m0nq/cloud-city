@@ -60,5 +60,6 @@ export const montserrat = Montserrat({
 
 export const nunitoSans = Nunito_Sans({
     subsets: ['latin'],
+    display: 'swap',
     variable: '--font-family-nunito-sans'
 });

@@ -9,7 +9,7 @@ export const Footer = () => {
     return (
         <footer>
             <nav>
-                <div className="grid grid-flow-col gap-4">
+                <div className="social-badges">
                     <a href="https://www.facebook.com/cloudcityfestival/"
                         target="_blank"
                         rel="noopener"

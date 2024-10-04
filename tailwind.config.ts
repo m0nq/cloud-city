@@ -1,4 +1,3 @@
-import daisyui from 'daisyui';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import { Config } from 'tailwindcss';
 
@@ -14,18 +13,16 @@ const config: Config = {
             heading: ['var(--font-family-montserrat-alt1)', ...defaultTheme.fontFamily.sans],
             subheading: ['var(--font-family-montserrat)', ...defaultTheme.fontFamily.sans],
             body: ['var(--font-family-nunito-sans)', ...defaultTheme.fontFamily.sans]
+        },
+        colors: {
+            primary: '#8888dd',
+            'zinc-800': '#27272a',
+            'zinc-600': '#52525b',
+            black: '#000000',
+            white: '#ffffff',
+            'indigo-800': '#3730a3',
+            'indigo-200': '#c7d2fe'
         }
-    },
-    plugins: [daisyui],
-    daisyui: {
-        //     themes: false // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]
-        //     darkTheme: '#1E2329', // name of one of the included themes for dark mode
-        //     base: true, // applies background color and foreground color for root element by default
-        //     styled: true, // include daisyUI colors and design decisions for all components
-        //     utils: true, // adds responsive and modifier utility classes
-        //     prefix: '', // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
-        //     logs: true, // Shows info about daisyUI version and used config in the console when building your CSS
-        //     themeRoot: ':root' // The element that receives theme color CSS variables
     }
 };
 
