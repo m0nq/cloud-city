@@ -1,5 +1,6 @@
 import localFont from 'next/font/local';
-import { Mulish } from 'next/font/google';
+import { Nunito_Sans } from 'next/font/google';
+import { Montserrat } from 'next/font/google';
 
 export const montserratAlt1 = localFont({
     src: [
@@ -52,7 +53,12 @@ export const montserratAlt1 = localFont({
     variable: '--font-family-montserrat-alt1'
 });
 
-export const mulish = Mulish({
+export const montserrat = Montserrat({
     subsets: ['latin'],
-    variable: '--font-family-mulish'
+    variable: '--font-family-montserrat'
+});
+
+export const nunitoSans = Nunito_Sans({
+    subsets: ['latin'],
+    variable: '--font-family-nunito-sans'
 });

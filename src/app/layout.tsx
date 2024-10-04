@@ -5,17 +5,17 @@ import { Viewport } from 'next';
 import DOMPurify from 'isomorphic-dompurify';
 
 import './globals.css';
-import { Footer } from '@components/footer/footer';
 import { montserratAlt1 } from '@components/utils/fonts';
-import { mulish } from '@components/utils/fonts';
+import { nunitoSans } from '@components/utils/fonts';
+import { montserrat } from '@components/utils/fonts';
 
 export const viewport: Viewport = {
     themeColor: '#4265a7'
 };
 
 export const metadata: Metadata = {
-    title: 'Cloud City Festival',
-    description: 'A music festival for the Cloud City community.'
+    title: 'City Center',
+    description: 'The space which Cloud City conducts bizness!'
 };
 
 DOMPurify.addHook('afterSanitizeAttributes', node => {
@@ -28,11 +28,9 @@ DOMPurify.addHook('afterSanitizeAttributes', node => {
 });
 
 const RootLayout = async ({ children }: Readonly<{ children: ReactNode; }>): Promise<ReactElement> => (
-    <html lang="en" className={`${montserratAlt1.variable} ${mulish.variable}`}>
-        <body>
-            {/* NavBar will be on every page. */}
+    <html lang="en">
+        <body className={`${montserratAlt1.variable} ${montserrat.variable} ${nunitoSans.variable}`}>
             {children}
-            <Footer />
         </body>
     </html>
 );
