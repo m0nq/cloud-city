@@ -34,6 +34,9 @@ export const Footer = () => {
                 <div>
                     <p><Link href="/privacy-policy">Privacy Policy</Link></p>
                 </div>
+                <div>
+                    <p><a href="https://forms.gle/HgWBMxdGKayUsSMD9" target="_blank">Volunteer</a></p>
+                </div>
             </div>
             <div className="copyright">
                 <p>
