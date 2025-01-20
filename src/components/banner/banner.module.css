@@ -10,7 +10,7 @@
       @apply w-fit h-fit flex flex-col justify-center items-center;
 
       .h1 {
-        @apply w-full h-fit uppercase font-heading font-thin
+        @apply w-full h-fit uppercase font-heading font-thin leading-snug
         text-[64px]
         sm:text-[82px]
         md:text-[109px]
@@ -26,7 +26,7 @@
       }
 
       .h3 {
-        @apply font-light text-xl font-subheading self-start pl-1
+        @apply font-light text-xl font-subheading self-start pl-1 -mt-2
         md:text-[34px] md:pl-2.5;
       }
     }
