@@ -1,5 +1,5 @@
 import localFont from 'next/font/local';
-import { Nunito_Sans } from 'next/font/google';
+import { Work_Sans } from 'next/font/google';
 import { Montserrat } from 'next/font/google';
 
 export const montserratAlt1 = localFont({
@@ -58,8 +58,8 @@ export const montserrat = Montserrat({
     variable: '--font-family-montserrat'
 });
 
-export const nunitoSans = Nunito_Sans({
+export const workSans = Work_Sans({
     subsets: ['latin'],
     display: 'swap',
-    variable: '--font-family-nunito-sans'
+    variable: '--font-family-work-sans'
 });
