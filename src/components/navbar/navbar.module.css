@@ -1,15 +1,16 @@
 .navbarContainer {
-  @apply h-20 w-full fixed top-0 left-0 right-0 z-10 bg-black/60 font-subheading box-border flex flex-col justify-end
+  @apply h-20 w-full fixed top-0 left-0 right-0 z-50 bg-transparent font-subheading flex flex-col justify-end
+  backdrop-blur-[10px]
   px-4
   md:px-12
   lg:px-24;
 
   .navbarArea {
-    @apply h-fit w-full flex justify-start items-end border-b-2 border-b-white
+    @apply h-fit w-full flex justify-start items-end gap-2 border-b-2 border-b-white
     md:max-w-[44%];
 
     .linkContainer {
-      @apply w-fit h-fit;
+      @apply w-fit h-fit relative;
 
       .link {
         @apply w-fit flex p-2 font-light text-white font-subheading text-xl rounded-lg hover:bg-lavender
@@ -19,4 +20,3 @@
     }
   }
 }
-

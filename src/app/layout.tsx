@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Viewport } from 'next';
@@ -30,9 +29,11 @@ DOMPurify.addHook('afterSanitizeAttributes', node => {
     }
 });
 
-const RootLayout = async ({ children }: Readonly<{ children: ReactNode; }>): Promise<ReactElement> => (
+const RootLayout = ({ children }: Readonly<{ children: ReactNode; }>): ReactNode => (
     <html lang="en">
-        <body className={`${montserrat.variable} ${montserratAlt1.variable} ${workSans.variable} `}>
+        <body className={`${montserrat.variable} ${montserratAlt1.variable} ${workSans.variable}`}
+            style={{ backgroundColor: '#1f1b21' }}
+            suppressHydrationWarning>
             <Navbar />
             {children}
         </body>

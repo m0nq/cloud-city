@@ -16,7 +16,12 @@ const config: Config = {
         },
         extend: {
             colors: {
-                lavender: '#8888dd'
+                'pale-pink': '#de78ed',
+                sunset: '#ffbbb6',
+                anakiwa: '#98ddfc',
+                lavender: '#8888dd',
+                'electric-violet': '#5b17ef',
+                'moon-shadow-gray': '#c5c0c3'
             }
         }
     }
