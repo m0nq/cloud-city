@@ -1,14 +1,13 @@
 import { ReactElement } from 'react';
 
-import './main.styles.css';
 import { Banner } from '@components/banner/banner';
-import { Main } from '@components/main/main';
+import { SignupSection } from '@components/signup/signup-section';
 
 const Home = (): ReactElement => {
     return (
         <>
             <Banner />
-            <Main />
+            <SignupSection />
         </>
     );
 };

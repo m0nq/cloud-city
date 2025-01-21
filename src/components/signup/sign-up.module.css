@@ -1,0 +1,60 @@
+.mapPoint {
+  @apply mx-auto mt-16 w-11/12 hidden
+  lg:w-3/5;
+
+  .iframe {
+    @apply border-0 mx-auto w-full;
+  }
+}
+
+.signupSection {
+  @apply flex-1 flex flex-col flex-wrap justify-center items-center w-full h-fit gap-10 px-5 font-body;
+
+  .h2 {
+    @apply uppercase text-7xl font-subheading text-pale-pink font-light;
+  }
+
+  .signupContainer {
+    @apply flex flex-col flex-1 justify-center items-center max-w-[1144px] w-full h-fit gap-2 py-5 px-3 rounded-[30px]
+    backdrop-blur-sm drop-shadow-xl bg-gradient-to-br from-[#858187]/40 to-[#302F31]/80
+    z-10;
+  }
+}
+
+.contentContainer {
+  @apply max-w-[90%] flex flex-col items-center justify-center gap-3;
+}
+
+.form {
+  @apply max-w-[90%] flex flex-col gap-1 font-light w-full h-fit border-none
+  sm:max-w-md
+  md:max-w-xs
+  lg:min-w-[28rem];
+
+  .label {
+    @apply mt-2 font-normal leading-tight;
+  }
+
+  .input {
+    @apply rounded-lg pl-1 bg-white text-black h-9 shadow-inner shadow-black;
+
+    &::placeholder {
+      @apply text-[#757575] px-1;
+    }
+  }
+
+  .honeyPot {
+    display: none;
+    @apply hidden;
+  }
+
+  .submitButton {
+    @apply relative rounded-lg border-[1.5px] border-white h-11 w-full py-4 flex items-center justify-center mt-6
+    transition-all duration-300 bg-transparent hover:bg-electric-violet/80 hover:text-white
+    hover:shadow-2xl active:bg-indigo-200 active:border-none;
+  }
+}
+
+.message {
+  @apply text-lg font-extralight w-full max-w-md flex items-center justify-center;
+}

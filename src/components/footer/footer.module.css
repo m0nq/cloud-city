@@ -1,6 +1,6 @@
 .footer {
-  @apply flex flex-col items-center justify-center p-16 gap-6 bg-black/30 font-body
-  ;
+  @apply flex flex-col items-center justify-center p-6 gap-6 bg-black/30 font-body
+  md:p-16;
 
   .logoSection {
     @apply w-full h-fit max-w-[1000px];

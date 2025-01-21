@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 
-import './policy-layout.styles.css';
+import styles from './policy-layout.module.css';
 
 const PolicyLayout = ({ children }: { children: ReactNode }) => {
     return (
-        <div className="hero-wrapper">
+        <div className={styles.heroWrapper}>
             {children}
         </div>
     );
