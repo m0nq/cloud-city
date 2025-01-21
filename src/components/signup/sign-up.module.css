@@ -8,53 +8,59 @@
 }
 
 .signupSection {
-  @apply flex-1 flex flex-col flex-wrap justify-center items-center w-full h-fit gap-10 px-5 font-body;
+  @apply flex-1 flex flex-col flex-wrap justify-center items-center w-full h-fit min-h-[516px] gap-10 px-5 font-body
+  md:min-h-[646px];
 
   .h2 {
     @apply uppercase text-7xl font-subheading text-pale-pink font-light;
   }
 
   .signupContainer {
-    @apply flex flex-col flex-1 justify-center items-center max-w-[1144px] w-full h-fit gap-2 py-5 px-3 rounded-[30px]
-    backdrop-blur-sm drop-shadow-xl bg-gradient-to-br from-[#858187]/40 to-[#302F31]/80
-    z-10;
+    @apply flex flex-col justify-evenly items-center max-w-[1144px] w-full h-fit gap-8 p-5 rounded-[30px]
+    backdrop-blur-sm drop-shadow-xl shadow-xl bg-gradient-to-br from-[#858187]/40 to-[#302F31]/80 z-10
+    sm:flex-row sm:items-center sm:justify-evenly;
   }
 }
 
 .contentContainer {
-  @apply max-w-[90%] flex flex-col items-center justify-center gap-3;
+  @apply flex flex-col items-center justify-center gap-3 w-[90%] max-w-[26rem] h-fit;
+
+  .paragraph {
+    @apply w-full font-normal text-xl;
+  }
 }
 
-.form {
-  @apply max-w-[90%] flex flex-col gap-1 font-light w-full h-fit border-none
-  sm:max-w-md
-  md:max-w-xs
-  lg:min-w-[28rem];
+.formContainer {
+  @apply flex w-[90%] max-w-[26rem] h-full items-center justify-center;
 
-  .label {
-    @apply mt-2 font-normal leading-tight;
-  }
+  .form {
+    @apply flex flex-col gap-1 font-light w-full h-fit border-none;
 
-  .input {
-    @apply rounded-lg pl-1 bg-white text-black h-9 shadow-inner shadow-black;
-
-    &::placeholder {
-      @apply text-[#757575] px-1;
+    .label {
+      @apply mt-2 font-normal leading-tight;
     }
-  }
 
-  .honeyPot {
-    display: none;
-    @apply hidden;
-  }
+    .input {
+      @apply rounded-lg pl-1 bg-white text-black h-9 shadow-inner shadow-black;
 
-  .submitButton {
-    @apply relative rounded-lg border-[1.5px] border-white h-11 w-full py-4 flex items-center justify-center mt-6
-    transition-all duration-300 bg-transparent hover:bg-electric-violet/80 hover:text-white
-    hover:shadow-2xl active:bg-indigo-200 active:border-none;
+      &::placeholder {
+        @apply text-[#757575] px-1;
+      }
+    }
+
+    .honeyPot {
+      display: none;
+      @apply hidden;
+    }
+
+    .submitButton {
+      @apply relative rounded-lg border-[1.5px] border-electric-violet h-11 w-full py-4 flex items-center
+      justify-center mt-6 transition-all duration-300 bg-transparent hover:bg-electric-violet/80 hover:text-white
+      hover:shadow-2xl hover:font-medium active:bg-indigo-200 active:border-none;
+    }
   }
 }
 
 .message {
-  @apply text-lg font-extralight w-full max-w-md flex items-center justify-center;
+  @apply text-lg font-light w-full max-w-md flex items-center justify-center;
 }

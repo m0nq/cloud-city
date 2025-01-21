@@ -62,7 +62,7 @@ export const CallToActionForm = () => {
         });
 
     return (
-        <>
+        <div className={styles.formContainer}>
             {state?.success ? (
                 <div className={styles.message}>
                     <p>
@@ -129,6 +129,6 @@ export const CallToActionForm = () => {
             <p aria-live="polite" className="sr-only" role="status">
                 {state?.message}
             </p>
-        </>
+        </div>
     );
 };
