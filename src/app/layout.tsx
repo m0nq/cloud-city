@@ -31,7 +31,7 @@ DOMPurify.addHook('afterSanitizeAttributes', node => {
 });
 
 const RootLayout = ({ children }: Readonly<{ children: ReactNode; }>): ReactNode => (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
         <body className={`${montserrat.variable} ${montserratAlt1.variable} ${workSans.variable} ${styles.body}`}
             style={{ backgroundColor: '#1f1b21' }}
             suppressHydrationWarning>
