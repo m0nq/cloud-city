@@ -16,7 +16,7 @@ export const subscribeMember = async ({ firstName, lastName, email }: FormValues
             last_name: lastName.trim()
         },
         groups: ['125237533318579422'],
-        status: 'unconfirmed' // possible statuses: active, unsubscribed, unconfirmed, bounced or junk.
+        status: 'unconfirmed' // possible statuses: active, unsubscribed, unconfirmed, bounced, or junk.
     } as CreateOrUpdateSubscriberParams;
 
     try {

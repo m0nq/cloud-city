@@ -11,7 +11,7 @@ import { montserrat } from '@components/utils/fonts';
 import Navbar from '@components/navbar/navbar';
 
 export const viewport: Viewport = {
-    themeColor: '#4265a7'
+    themeColor: '#1f1b21'
 };
 
 export const metadata: Metadata = {

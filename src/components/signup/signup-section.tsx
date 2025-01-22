@@ -10,17 +10,16 @@ import dynamic from 'next/dynamic';
 import styles from './sign-up.module.css';
 import { Content } from '@components/signup/content';
 
-const DynamicCallToActionForm = dynamic(
-    () => import('./call-to-action-form'),
+const DynamicCallToActionForm = dynamic(() => import('./call-to-action-form'),
     {
         loading: () => <div className={styles.formContainer}>
-            <div className="animate-pulse bg-gray-200 rounded-lg h-[400px] w-full" />
+            <div className="animate-pulse bg-gray-200 rounded-lg h-full w-full" />
         </div>,
-        ssr: false
+        ssr: true
     }
 );
 
-export const SignupSection = (): ReactNode => {
+const SignupSection = (): ReactNode => {
     const [isVisible, setIsVisible] = useState(false);
     const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -57,9 +56,11 @@ export const SignupSection = (): ReactNode => {
             <div className={styles.signupContainer}>
                 <Content />
                 {isVisible && (
-                    <Suspense fallback={<div className={styles.formContainer}>
-                        <div className="animate-pulse bg-gray-200 rounded-lg h-[400px] w-full" />
-                    </div>}>
+                    <Suspense fallback={
+                        <div className={styles.formContainer}>
+                            <div className="animate-pulse bg-gray-200 rounded-lg h-[400px] w-full" />
+                        </div>
+                    }>
                         <DynamicCallToActionForm />
                     </Suspense>
                 )}
@@ -67,3 +68,5 @@ export const SignupSection = (): ReactNode => {
         </div>
     );
 };
+
+export default SignupSection;
