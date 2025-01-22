@@ -40,7 +40,7 @@ article.post {
 
 blockquote {
   quotes: '\201C' '\201D' '\2018' '\2019';
-  @apply border-l-8 border-primary px-2.5 py-2 my-6 mx-2.5 before:text-8xl before:leading-6 before:mr-16 before:align-[-0.4rem]
+  @apply border-l-8 border-pale-pink px-2.5 py-2 my-6 mx-2.5 before:text-8xl before:leading-6 before:mr-16 before:align-[-0.4rem]
 }
 
 blockquote:before {

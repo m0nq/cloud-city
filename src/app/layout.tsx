@@ -1,13 +1,14 @@
-import { ReactElement } from 'react';
 import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Viewport } from 'next';
 import DOMPurify from 'isomorphic-dompurify';
 
 import './globals.css';
+import styles from './body.module.css';
 import { montserratAlt1 } from '@components/utils/fonts';
-import { nunitoSans } from '@components/utils/fonts';
+import { workSans } from '@components/utils/fonts';
 import { montserrat } from '@components/utils/fonts';
+import Navbar from '@components/navbar/navbar';
 
 export const viewport: Viewport = {
     themeColor: '#4265a7'
@@ -29,9 +30,12 @@ DOMPurify.addHook('afterSanitizeAttributes', node => {
     }
 });
 
-const RootLayout = async ({ children }: Readonly<{ children: ReactNode; }>): Promise<ReactElement> => (
-    <html lang="en">
-        <body className={`${montserratAlt1.variable} ${montserrat.variable} ${nunitoSans.variable}`}>
+const RootLayout = ({ children }: Readonly<{ children: ReactNode; }>): ReactNode => (
+    <html lang="en" suppressHydrationWarning>
+        <body className={`${montserrat.variable} ${montserratAlt1.variable} ${workSans.variable} ${styles.body}`}
+            style={{ backgroundColor: '#1f1b21' }}
+            suppressHydrationWarning>
+            <Navbar />
             {children}
         </body>
     </html>

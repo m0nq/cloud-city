@@ -1,22 +1,13 @@
-import Image from 'next/image';
-
-import cloudBackground from '@public/fluffy-clouds.png';
-import './banner.styles.css';
+import styles from './banner.module.css';
 
 export const Banner = () => {
     return (
-        <div className="banner-section">
-            <div className="banner-overlay" />
-            <Image src={cloudBackground}
-                alt="Pink and purple clouds at sunset"
-                sizes="100vw"
-                className="background-clouds"
-                priority />
-            <div className="banner-content-container">
-                <div className="banner-content">
-                    <h3>Hi-Fi Vibes</h3>
-                    <h1 className="banner-title">Cloud City</h1>
-                    <h2>Zero-Proof Party</h2>
+        <div className={styles.bannerSection}>
+            <div className={styles.lockupContainer}>
+                <div className={styles.lockup}>
+                    <h2 className={styles.h2}>Hi-Fi Vibes</h2>
+                    <h1 className={styles.h1}>Cloud City</h1>
+                    <h3 className={styles.h3}>Zero-Proof Parties</h3>
                 </div>
             </div>
         </div>

@@ -1,0 +1,52 @@
+.footer {
+  @apply flex flex-col items-center justify-center p-6 gap-6 bg-black/30 font-body
+  md:p-16;
+
+  .logoSection {
+    @apply w-full h-fit max-w-[1000px];
+  }
+
+  .dividerSection {
+    @apply w-full h-fit max-w-[1000px] font-light flex items-center justify-start;
+  }
+
+  .linksSection {
+    @apply w-full h-fit max-w-[1000px] flex items-center justify-start gap-7;
+
+    .footerLink {
+      @apply w-fit h-fit font-light text-xl hover:text-white/60 active:text-white
+      md:text-2xl
+      lg:text-4xl;
+    }
+  }
+
+  .legalSection {
+    @apply w-full h-fit max-w-[1000px] gap-2 flex items-center justify-between text-base font-light
+    border-b border-b-white/40 py-1;
+
+    .locationContainer {
+      @apply w-full h-fit;
+    }
+
+    .infoContainer {
+      @apply w-full h-fit flex items-center justify-end gap-4;
+
+      .link {
+        @apply hover:text-white/60 active:text-white;
+      }
+    }
+  }
+
+  .finalSection {
+    @apply w-full h-fit max-w-[1000px] flex items-center justify-between;
+
+    .copyright {
+      @apply flex-1 flex items-center justify-start text-xs text-white/60
+      md:text-base;
+    }
+
+    .socials {
+      @apply flex-1 flex justify-end gap-2;
+    }
+  }
+}

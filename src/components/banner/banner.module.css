@@ -1,0 +1,34 @@
+.bannerSection {
+  @apply w-full h-screen flex items-center justify-center
+  lg:items-end lg:pb-24;
+
+  .lockupContainer {
+    @apply w-full h-fit flex items-center justify-center
+    lg:justify-start lg:px-24;
+
+    .lockup {
+      @apply w-fit h-fit flex flex-col justify-center items-center;
+
+      .h1 {
+        @apply w-full h-fit uppercase font-heading font-thin leading-snug
+        text-[64px]
+        sm:text-[82px]
+        md:text-[109px]
+        min-[1024px]:text-[122px]
+        min-[1280px]:text-[136px]
+        min-[1440px]:text-[150px]
+        min-[1630px]:text-[164px];
+      }
+
+      .h2 {
+        @apply font-light text-xl font-subheading self-end
+        md:text-[34px];
+      }
+
+      .h3 {
+        @apply font-light text-xl font-subheading self-start pl-1 -mt-2
+        md:text-[34px] md:pl-2.5;
+      }
+    }
+  }
+}

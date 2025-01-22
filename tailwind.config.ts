@@ -12,16 +12,17 @@ const config: Config = {
         fontFamily: {
             heading: ['var(--font-family-montserrat-alt1)', ...defaultTheme.fontFamily.sans],
             subheading: ['var(--font-family-montserrat)', ...defaultTheme.fontFamily.sans],
-            body: ['var(--font-family-nunito-sans)', ...defaultTheme.fontFamily.sans]
+            body: ['var(--font-family-work-sans)', ...defaultTheme.fontFamily.sans]
         },
-        colors: {
-            primary: '#8888dd',
-            'zinc-800': '#27272a',
-            'zinc-600': '#52525b',
-            black: '#000000',
-            white: '#ffffff',
-            'indigo-800': '#3730a3',
-            'indigo-200': '#c7d2fe'
+        extend: {
+            colors: {
+                'pale-pink': '#de78ed',
+                sunset: '#ffbbb6',
+                anakiwa: '#98ddfc',
+                lavender: '#8888dd',
+                'electric-violet': '#5b17ef',
+                'moon-shadow-gray': '#c5c0c3'
+            }
         }
     }
 };
