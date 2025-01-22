@@ -1,0 +1,22 @@
+.sustainabilitySection {
+  @apply w-full min-h-[361px] flex items-center justify-center p-5
+  md:min-h-96 md:p-12
+  lg:min-h-[435px];
+
+  .sustainabilityWrapper {
+    @apply max-w-[1000px] w-full h-fit flex justify-center items-center;
+
+    .sustainabilityContainer {
+      @apply max-w-[1000px] h-fit flex flex-col justify-center items-start gap-6 text-pale-pink font-body;
+
+      .content {
+        @apply flex items-center justify-start w-full h-fit text-lg
+        lg:text-base;
+      }
+
+      .title {
+        @apply font-medium text-xl;
+      }
+    }
+  }
+}
