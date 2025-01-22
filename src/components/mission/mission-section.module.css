@@ -1,0 +1,29 @@
+.outerContainer {
+  @apply w-full;
+}
+
+.missionSection {
+  @apply relative w-full flex items-center justify-center min-h-[443px] py-16 px-5 overflow-x-clip
+  md:py-20 md:px-10
+  lg:py-52 lg:px-24;
+
+  .missionContainer {
+    @apply relative max-w-[1000px] w-full h-fit flex items-center justify-start;
+  }
+
+  .statementContainer {
+    @apply relative max-w-[600px] h-fit text-left;
+
+    .h2 {
+      @apply text-pale-pink text-xl font-medium font-body relative
+      md:text-2xl
+      lg:text-3xl;
+    }
+  }
+
+  .decorativeRings {
+    @apply absolute opacity-80 top-1/2 z-20 pointer-events-none w-[780px] h-[409px]
+    right-[-70%] translate-y-[-50%] scale-100
+    md:right-[-25%];
+  }
+}

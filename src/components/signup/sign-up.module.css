@@ -17,7 +17,7 @@
 
   .signupContainer {
     @apply flex flex-col justify-evenly items-center max-w-[1144px] w-full h-fit gap-8 p-5 rounded-[30px]
-    backdrop-blur-sm drop-shadow-xl shadow-xl bg-gradient-to-br from-[#858187]/40 to-[#302F31]/80 z-10
+    backdrop-blur-sm drop-shadow-xl shadow-xl bg-gradient-to-br from-[#858187]/40 to-[#302F31]/80 z-40
     sm:flex-row sm:items-center sm:justify-evenly;
   }
 }
