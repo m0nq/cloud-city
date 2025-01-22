@@ -10,12 +10,11 @@
       @apply max-w-[1000px] h-fit flex flex-col justify-center items-start gap-6 text-pale-pink font-body;
 
       .content {
-        @apply flex items-center justify-start w-full h-fit text-lg
-        lg:text-base;
+        @apply flex items-center justify-start w-full h-fit text-lg font-medium
       }
 
       .title {
-        @apply font-medium text-xl;
+        @apply font-semibold text-2xl;
       }
     }
   }
