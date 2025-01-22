@@ -4,22 +4,22 @@ article.post {
 }
 
 .post-title {
-  @apply mb-4 text-5xl leading-tight text-center font-semibold
+  @apply mb-4 text-5xl leading-tight text-center font-light font-subheading
   md:text-6xl;
 }
 
 .post-content h1 {
-  @apply mb-4 text-4xl font-semibold text-left
+  @apply mb-4 text-4xl font-light text-left font-subheading
   md:text-5xl;
 }
 
 .post-content h2 {
-  @apply mb-4 text-3xl font-semibold text-left
+  @apply mb-4 text-3xl font-normal text-left font-subheading
   md:text-4xl;
 }
 
 .post-content h3 {
-  @apply mb-4 text-xl  font-semibold text-left
+  @apply mb-4 text-xl  font-medium text-left
   sm:text-3xl
   md:text-2xl;
 }
@@ -30,7 +30,7 @@ article.post {
 }
 
 .post-content p {
-  @apply w-full text-base pb-6 py-6
+  @apply w-full text-base font-normal pb-6 py-6
   md:text-xl;
 }
 

@@ -11,16 +11,17 @@ const Navbar = () => {
                         <p>Home</p>
                     </Link>
                 </div>
-                <div className={styles.linkContainer}>
-                    <Link href="/events" className={styles.link}>
-                        <p>Events</p>
-                    </Link>
-                </div>
-                <div className={styles.linkContainer}>
-                    <Link href="/blog" className={styles.link}>
-                        <p>Articles</p>
-                    </Link>
-                </div>
+                {/* TODO: enable when respective pages are created */}
+                {/*<div className={styles.linkContainer}>*/}
+                {/*    <Link href="/events" className={styles.link}>*/}
+                {/*        <p>Events</p>*/}
+                {/*    </Link>*/}
+                {/*</div>*/}
+                {/*<div className={styles.linkContainer}>*/}
+                {/*    <Link href="/blog" className={styles.link}>*/}
+                {/*        <p>Articles</p>*/}
+                {/*    </Link>*/}
+                {/*</div>*/}
             </div>
         </nav>
     );
