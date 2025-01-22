@@ -15,7 +15,7 @@ const DynamicCallToActionForm = dynamic(() => import('./call-to-action-form'),
         loading: () => <div className={styles.formContainer}>
             <div className="animate-pulse bg-gray-200 rounded-lg h-full w-full" />
         </div>,
-        ssr: true
+        ssr: false
     }
 );
 

@@ -1,48 +1,30 @@
-import { ReactElement } from 'react';
+'use client';
 
-import { Banner } from '@components/banner/banner';
+import { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
-const SignupSection = dynamic(() => import('@components/signup/signup-section'),
-    {
-        loading: () => (
-            <div>
-                <div className="animate-pulse bg-gray-200 rounded-lg h-full w-full" />
-            </div>
-        ),
-        ssr: true
-    }
-);
-const MissionSection = dynamic(() => import('@components/mission/mission-section'),
-    {
-        loading: () => (
-            <div>
-                <div className="animate-pulse bg-gray-200 rounded-lg h-full w-full" />
-            </div>
-        ),
-        ssr: true
-    }
-);
-const SustainabilitySection = dynamic(() => import('@components/sustainability/sustainability-section'),
-    {
-        loading: () => (
-            <div>
-                <div className="animate-pulse bg-gray-200 rounded-lg h-full w-full" />
-            </div>
-        ),
-        ssr: true
-    }
-);
+import { Banner } from '@components/banner/banner';
+import MissionSection from '@components/mission/mission-section';
+import SustainabilitySection from '@components/sustainability/sustainability-section';
 
-const Home = (): ReactElement => {
-    return (
-        <>
-            <Banner />
-            <SignupSection />
-            <MissionSection />
-            <SustainabilitySection />
-        </>
-    );
-};
+// Client components that need dynamic importing
+const SignupSection = dynamic(() => import('@components/signup/signup-section'), {
+    ssr: false,
+    loading: () => (
+        <div>
+            <div className="animate-pulse bg-gray-200 rounded-lg h-full w-full" />
+        </div>
+    )
+});
+
+const Home = (): ReactNode => (
+    <div className="relative z-0">
+        <Banner />
+        <SignupSection />
+        {/* Server Components */}
+        <MissionSection />
+        <SustainabilitySection />
+    </div>
+);
 
 export default Home;
