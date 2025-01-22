@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -13,7 +13,7 @@ import { loadSlim } from '@tsparticles/slim';
 
 import styles from './particles-background.module.css';
 
-const ParticlesBackground = (): ReactElement => {
+const ParticlesBackground = (): ReactNode => {
     const [init, setInit] = useState<boolean>(false);
 
     useEffect(() => {

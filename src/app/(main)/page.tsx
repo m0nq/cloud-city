@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactElement } from 'react';
+import { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
 import { Banner } from '@components/banner/banner';
@@ -17,14 +17,14 @@ const SignupSection = dynamic(() => import('@components/signup/signup-section'),
     )
 });
 
-export default function Home(): ReactElement {
-    return (
-        <div className="relative z-0">
-            <Banner />
-            <SignupSection />
-            {/* Server Components */}
-            <MissionSection />
-            <SustainabilitySection />
-        </div>
-    );
-}
+const Home = (): ReactNode => (
+    <div className="relative z-0">
+        <Banner />
+        <SignupSection />
+        {/* Server Components */}
+        <MissionSection />
+        <SustainabilitySection />
+    </div>
+);
+
+export default Home;
