@@ -1,6 +1,9 @@
-'use client';
+import { ChangeEvent } from 'react';
 import { useState } from 'react';
+import { useMemo } from 'react';
+import { memo } from 'react';
 import { useFormik } from 'formik';
+import debounce from 'lodash/debounce';
 
 import styles from './sign-up.module.css';
 import { Button } from '@components/utils/button';
@@ -40,23 +43,69 @@ const validate = (values: FormValues): FormValues => {
     return errors;
 };
 
-export const CallToActionForm = () => {
+const MemoizedInput = memo(({
+    id,
+    name,
+    type = 'text',
+    placeholder,
+    value,
+    onChange,
+    className,
+    label,
+    error
+}: {
+    id: string;
+    name: string;
+    type?: string;
+    placeholder: string;
+    value: string;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    className: string;
+    label: string;
+    error?: string;
+}) => (
+    <>
+        <label className={styles.label} htmlFor={id}>
+            {label}
+        </label>
+        <input type={type}
+            id={id}
+            onChange={onChange}
+            name={name}
+            className={className}
+            placeholder={placeholder}
+            value={value} />
+        {error && <ErrorMessage message={error} />}
+    </>
+));
+
+MemoizedInput.displayName = 'MemoizedInput';
+
+const CallToActionForm = memo(() => {
     const [state, setState] = useState({
         success: false,
         error: false,
         message: ''
     });
+
+    const debouncedValidate = useMemo(
+        () => debounce((values: FormValues) => validate(values), 300),
+        []
+    );
+
     const { isSubmitting, errors, handleChange, handleSubmit, values } =
         useFormik({
             initialValues,
-            validate,
+            validate: debouncedValidate,
+            validateOnBlur: true,
+            validateOnChange: false,
             onSubmit: async (values) => {
                 const { ok } = await subscribeMember(values);
 
                 setState({
                     success: ok,
                     error: !ok,
-                    message: ok ? 'Sign up was a success' : 'There was an error'
+                    message: ok ? 'Sign up was a success' : 'That didn\'t work for some reason. Try again.'
                 });
             }
         });
@@ -72,58 +121,42 @@ export const CallToActionForm = () => {
                 </div>
             ) : (
                 <form className={styles.form} onSubmit={handleSubmit}>
-                    <label className={styles.label} htmlFor="firstName">
-                        First Name
-                    </label>
-                    <input
-                        type="text"
+                    <MemoizedInput
                         id="firstName"
-                        onChange={handleChange}
                         name="firstName"
-                        className={styles.input}
                         placeholder="First name"
                         value={values.firstName}
-                    />
-                    {errors.firstName && <ErrorMessage message={errors.firstName} />}
-                    <label className={styles.label} htmlFor="lastName">
-                        Last Name (Optional)
-                    </label>
-                    <input
-                        type="text"
-                        id="lastName"
                         onChange={handleChange}
-                        name="lastName"
                         className={styles.input}
+                        label="First Name"
+                        error={errors.firstName} />
+                    <MemoizedInput
+                        id="lastName"
+                        name="lastName"
                         placeholder="Last name"
                         value={values.lastName}
-                    />
-                    {errors.lastName && <ErrorMessage message={errors.lastName} />}
-                    <label className={styles.label} htmlFor="email">
-                        Email
-                    </label>
-                    <input
-                        type="text"
-                        id="email"
                         onChange={handleChange}
-                        name="email"
                         className={styles.input}
+                        label="Last Name (Optional)"
+                        error={errors.lastName} />
+                    <MemoizedInput
+                        id="email"
+                        name="email"
                         placeholder="email@address.com"
                         value={values.email}
-                    />
-                    {errors.email && <ErrorMessage message={errors.email} />}
-                    <input
-                        type="text"
+                        onChange={handleChange}
+                        className={styles.input}
+                        label="Email"
+                        error={errors.email} />
+                    <input type="text"
                         placeholder="Other"
                         className={styles.honeyPot}
                         onChange={handleChange}
-                        name="other"
-                    />
+                        name="other" />
                     {state.error && <ErrorMessage message={state.message} />}
-                    <Button
-                        isPending={isSubmitting}
+                    <Button isPending={isSubmitting}
                         className={styles.submitButton}
-                        type="submit"
-                    />
+                        type="submit" />
                 </form>
             )}
             <p aria-live="polite" className="sr-only" role="status">
@@ -131,4 +164,8 @@ export const CallToActionForm = () => {
             </p>
         </div>
     );
-};
+});
+
+CallToActionForm.displayName = 'CallToActionForm';
+
+export default CallToActionForm;

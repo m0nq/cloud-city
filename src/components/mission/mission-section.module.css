@@ -16,8 +16,7 @@
 
     .h2 {
       @apply text-pale-pink text-xl font-medium font-body relative
-      md:text-2xl
-      lg:text-3xl;
+      md:text-2xl;
     }
   }
 
