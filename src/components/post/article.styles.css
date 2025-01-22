@@ -35,7 +35,7 @@ article.post {
 }
 
 .post-content a {
-  @apply relative text-[#000D4999] hover:underline;
+  @apply relative text-lavender hover:underline;
 }
 
 blockquote {

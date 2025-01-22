@@ -1,9 +1,9 @@
 .outerContainer {
-  @apply w-full;
+  @apply w-full overflow-x-clip;
 }
 
 .missionSection {
-  @apply relative w-full flex items-center justify-center min-h-[443px] py-16 px-5 overflow-x-clip
+  @apply relative w-full flex items-center justify-center min-h-[443px] py-16 px-5
   md:py-20 md:px-10
   lg:py-52 lg:px-24;
 
@@ -21,7 +21,7 @@
   }
 
   .decorativeRings {
-    @apply absolute opacity-80 top-1/2 z-20 pointer-events-none w-[780px] h-[409px]
+    @apply absolute opacity-80 top-1/2 z-[-1] pointer-events-none w-[780px] h-[409px]
     right-[-70%] translate-y-[-50%] scale-100
     md:right-[-25%];
   }

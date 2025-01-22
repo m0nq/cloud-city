@@ -8,7 +8,8 @@
 }
 
 .signupSection {
-  @apply flex-1 flex flex-col flex-wrap justify-center items-center w-full h-fit min-h-[516px] gap-10 px-5 font-body will-change-transform
+  @apply flex-1 flex flex-col flex-wrap justify-center items-center w-full h-fit min-h-[516px] gap-10 px-5 font-body
+  will-change-transform
   md:min-h-[646px];
 
   .h2 {
@@ -17,7 +18,8 @@
 
   .signupContainer {
     @apply flex flex-col justify-evenly items-center max-w-[1144px] w-full h-fit gap-8 p-5 rounded-[30px]
-    bg-gradient-to-br from-[#858187]/40 to-[#302F31]/80 z-40 transform-gpu drop-shadow-2xl shadow-2xl
+    bg-gradient-to-br from-[#858187]/40 to-[#302F31]/80 transform-gpu drop-shadow-2xl shadow-2xl
+    backdrop-blur-[10px] z-50
     sm:flex-row sm:items-center sm:justify-evenly;
   }
 }
