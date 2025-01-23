@@ -7,14 +7,14 @@
     @apply max-w-[1000px] w-full h-fit flex justify-center items-center;
 
     .sustainabilityContainer {
-      @apply max-w-[1000px] h-fit flex flex-col justify-center items-start gap-6 text-pale-pink font-body;
+      @apply max-w-[1000px] h-fit flex flex-col justify-center items-start gap-6 font-body;
 
       .content {
-        @apply flex items-center justify-start w-full h-fit text-lg font-medium
+        @apply flex items-center justify-start w-full h-fit text-lg font-medium text-white/80;
       }
 
       .title {
-        @apply font-semibold text-2xl;
+        @apply font-semibold text-2xl text-pale-pink;
       }
     }
   }

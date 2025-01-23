@@ -28,8 +28,7 @@ const ParticlesBackground = (): ReactNode => {
         await container;
     }, []);
 
-    const options = useMemo(
-        () => ({
+    const options = useMemo(() => ({
             fullScreen: {
                 enable: false
             },
@@ -100,13 +99,13 @@ const ParticlesBackground = (): ReactNode => {
                     outModes: {
                         default: OutMode.out
                     },
-                    random: true,
-                    speed: 1.5,
+                    random: false,
+                    speed: 1,
                     straight: true,
                     vibrate: false,
                     attract: {
                         enable: true,
-                        distance: 200,
+                        distance: 100,
                         rotate: {
                             x: 2000,
                             y: 2000
@@ -123,7 +122,11 @@ const ParticlesBackground = (): ReactNode => {
                     }
                 },
                 number: {
-                    value: 4
+                    value: 4,
+                    density: {
+                        enable: true,
+                        area: 600
+                    }
                 },
                 opacity: {
                     value: 0.7,
