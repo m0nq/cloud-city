@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     description: 'A music festival for the Cloud City community.'
 };
 
-const GlobalError = ({ error, reset }: { error: Error, reset: () => void }) => {
+const GlobalError = ({ error, reset }: { error: Error; reset: () => void }) => {
     useEffect(() => {
         // Log the error to an error reporting service
         console.error(error);

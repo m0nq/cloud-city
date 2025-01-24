@@ -9,6 +9,7 @@ import { montserratAlt1 } from '@components/utils/fonts';
 import { workSans } from '@components/utils/fonts';
 import { montserrat } from '@components/utils/fonts';
 import Navbar from '@components/navbar/navbar';
+import { Footer } from '@components/footer/footer';
 
 export const viewport: Viewport = {
     themeColor: '#1f1b21'
@@ -30,13 +31,14 @@ DOMPurify.addHook('afterSanitizeAttributes', node => {
     }
 });
 
-const RootLayout = ({ children }: Readonly<{ children: ReactNode; }>): ReactNode => (
+const RootLayout = ({ children }: Readonly<{ children: ReactNode }>): ReactNode => (
     <html lang="en" suppressHydrationWarning>
         <body className={`${montserrat.variable} ${montserratAlt1.variable} ${workSans.variable} ${styles.body}`}
             style={{ backgroundColor: '#1f1b21' }}
             suppressHydrationWarning>
             <Navbar />
             {children}
+            <Footer />
         </body>
     </html>
 );

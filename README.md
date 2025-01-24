@@ -11,38 +11,38 @@
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
 
-[//]: # "[![Contributors][contributors-shield]][contributors-url]"
-[//]: # "[![Forks][forks-shield]][forks-url]"
-[//]: # "[![Stargazers][stars-shield]][stars-url]"
+[//]: # '[![Contributors][contributors-shield]][contributors-url]'
+[//]: # '[![Forks][forks-shield]][forks-url]'
+[//]: # '[![Stargazers][stars-shield]][stars-url]'
 
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-[//]: # "[![LinkedIn][linkedin-shield]][linkedin-url]"
+[//]: # '[![LinkedIn][linkedin-shield]][linkedin-url]'
 
 <!-- PROJECT LOGO -->
 
-[//]: # "<br />"
+[//]: # '<br />'
 [//]: # '<div align="center">'
 [//]: # '  <a href="https://github.com/othneildrew/Best-README-Template">'
 [//]: # '    <img src="images/logo.png" alt="Logo" width="80" height="80">'
-[//]: # "  </a>"
+[//]: # '  </a>'
 [//]: #
 [//]: # '<h3 align="center">Best-README-Template</h3>'
 [//]: #
 [//]: # '  <p align="center">'
-[//]: # "    An awesome README template to jumpstart your projects!"
-[//]: # "    <br />"
+[//]: # '    An awesome README template to jumpstart your projects!'
+[//]: # '    <br />'
 [//]: # '    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>'
-[//]: # "    <br />"
-[//]: # "    <br />"
+[//]: # '    <br />'
+[//]: # '    <br />'
 [//]: # '    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>'
-[//]: # "    ·"
+[//]: # '    ·'
 [//]: # '    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>'
-[//]: # "    ·"
+[//]: # '    ·'
 [//]: # '    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>'
-[//]: # "  </p>"
-[//]: # "</div>"
+[//]: # '  </p>'
+[//]: # '</div>'
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -74,7 +74,7 @@
 
 ## About The Project
 
-[//]: # "[![Product Name Screen Shot][product-screenshot]](https://example.com)"
+[//]: # '[![Product Name Screen Shot][product-screenshot]](https://example.com)'
 
 Cloud City Festival is a dance music events production company to offer spaces for people to gather without alcohol
 influencing the environment.
@@ -127,9 +127,9 @@ This is an example of how to list things you need to use the software and how to
 
 ## Usage
 
-[//]: # "Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos"
-[//]: # "work well in this space. You may also link to more resources."
-[//]: # "_For more examples, please refer to the [Documentation](https://example.com)_"
+[//]: # 'Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos'
+[//]: # 'work well in this space. You may also link to more resources.'
+[//]: # '_For more examples, please refer to the [Documentation](https://example.com)_'
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -142,8 +142,8 @@ This is an example of how to list things you need to use the software and how to
 - [ ] Multi-language Support
   - [ ] Spanish
 
-[//]: # "See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features ("
-[//]: # "and known issues)."
+[//]: # 'See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features ('
+[//]: # 'and known issues).'
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -151,18 +151,18 @@ This is an example of how to list things you need to use the software and how to
 
 ## Contributing
 
-[//]: # "Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any"
-[//]: # "contributions you make are **greatly appreciated**."
+[//]: # 'Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any'
+[//]: # 'contributions you make are **greatly appreciated**.'
 [//]: #
-[//]: # "If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also"
+[//]: # 'If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also'
 [//]: # 'simply open an issue with the tag "enhancement".'
 [//]: # "Don't forget to give the project a star! Thanks again!"
 [//]: #
-[//]: # "1. Fork the Project"
-[//]: # "2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)"
+[//]: # '1. Fork the Project'
+[//]: # '2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)'
 [//]: # "3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)"
-[//]: # "4. Push to the Branch (`git push origin feature/AmazingFeature`)"
-[//]: # "5. Open a Pull Request"
+[//]: # '4. Push to the Branch (`git push origin feature/AmazingFeature`)'
+[//]: # '5. Open a Pull Request'
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -191,7 +191,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-[//]: # "Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com"
+[//]: # 'Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com'
 
 LinkedIn: [![Linkedin Badge](https://img.shields.io/badge/-Monk%20Wellington-blue?style=flat&logo=Linkedin&logoColor=white)](https://linked.com/in/monkwellington)  
 Project Link: [https://github.com/m0nq/cloud-city](https://github.com/m0nq/cloud-city)
@@ -203,9 +203,9 @@ Project Link: [https://github.com/m0nq/cloud-city](https://github.com/m0nq/cloud
 ## Acknowledgments
 
 [//]: # "Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites"
-[//]: # "to kick things off!"
-[//]: # "* [Choose an Open Source License](https://choosealicense.com)"
-[//]: # "* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)"
+[//]: # 'to kick things off!'
+[//]: # '* [Choose an Open Source License](https://choosealicense.com)'
+[//]: # '* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)'
 [//]: # "* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)"
 [//]: # "* [Malven's Grid Cheatsheet](https://grid.malven.co/)"
 
@@ -238,22 +238,22 @@ Project Link: [https://github.com/m0nq/cloud-city](https://github.com/m0nq/cloud
 [React-url]: https://reactjs.org/
 [TailwindCSS]: https://img.shields.io/badge/Tailwind-20232A?style=for-the-badge&logo=tailwindcss&logoColor=61DAFB
 [Tailwind-url]: https://tailwindcss.com/
-[//]: # "[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D"
+[//]: # '[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D'
 [//]: #
-[//]: # "[Vue-url]: https://vuejs.org/"
+[//]: # '[Vue-url]: https://vuejs.org/'
 [//]: #
-[//]: # "[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white"
+[//]: # '[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white'
 [//]: #
-[//]: # "[Angular-url]: https://angular.io/"
+[//]: # '[Angular-url]: https://angular.io/'
 [//]: #
-[//]: # "[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00"
+[//]: # '[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00'
 [//]: #
-[//]: # "[Svelte-url]: https://svelte.dev/"
+[//]: # '[Svelte-url]: https://svelte.dev/'
 [//]: #
-[//]: # "[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white"
+[//]: # '[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white'
 [//]: #
-[//]: # "[Laravel-url]: https://laravel.com"
+[//]: # '[Laravel-url]: https://laravel.com'
 [//]: #
-[//]: # "[Gatsby.js]: https://img.shields.io/badge/Gatsby-%23663399.svg?style=for-the-badge&logo=gatsby&logoColor=white"
+[//]: # '[Gatsby.js]: https://img.shields.io/badge/Gatsby-%23663399.svg?style=for-the-badge&logo=gatsby&logoColor=white'
 [//]: #
-[//]: # "[Gatsby-url]: https://www.gatsbyjs.com/"
+[//]: # '[Gatsby-url]: https://www.gatsbyjs.com/'

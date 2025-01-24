@@ -44,40 +44,41 @@ const validate = (values: FormValues): FormValues => {
 };
 
 const MemoizedInput = memo(({
-    id,
-    name,
-    type = 'text',
-    placeholder,
-    value,
-    onChange,
-    className,
-    label,
-    error
-}: {
-    id: string;
-    name: string;
-    type?: string;
-    placeholder: string;
-    value: string;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    className: string;
-    label: string;
-    error?: string;
-}) => (
-    <>
-        <label className={styles.label} htmlFor={id}>
-            {label}
-        </label>
-        <input type={type}
-            id={id}
-            onChange={onChange}
-            name={name}
-            className={className}
-            placeholder={placeholder}
-            value={value} />
-        {error && <ErrorMessage message={error} />}
-    </>
-));
+        id,
+        name,
+        type = 'text',
+        placeholder,
+        value,
+        onChange,
+        className,
+        label,
+        error
+    }: {
+        id: string;
+        name: string;
+        type?: string;
+        placeholder: string;
+        value: string;
+        onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+        className: string;
+        label: string;
+        error?: string;
+    }) => (
+        <>
+            <label className={styles.label} htmlFor={id}>
+                {label}
+            </label>
+            <input type={type}
+                id={id}
+                onChange={onChange}
+                name={name}
+                className={className}
+                placeholder={placeholder}
+                value={value} />
+            {error && <ErrorMessage message={error} />}
+        </>
+    )
+);
 
 MemoizedInput.displayName = 'MemoizedInput';
 
@@ -88,27 +89,23 @@ const CallToActionForm = memo(() => {
         message: ''
     });
 
-    const debouncedValidate = useMemo(
-        () => debounce((values: FormValues) => validate(values), 300),
-        []
-    );
+    const debouncedValidate = useMemo(() => debounce((values: FormValues) => validate(values), 300), []);
 
-    const { isSubmitting, errors, handleChange, handleSubmit, values } =
-        useFormik({
-            initialValues,
-            validate: debouncedValidate,
-            validateOnBlur: true,
-            validateOnChange: false,
-            onSubmit: async (values) => {
-                const { ok } = await subscribeMember(values);
+    const { isSubmitting, errors, handleChange, handleSubmit, values } = useFormik({
+        initialValues,
+        validate: debouncedValidate,
+        validateOnBlur: true,
+        validateOnChange: false,
+        onSubmit: async values => {
+            const { ok } = await subscribeMember(values);
 
-                setState({
-                    success: ok,
-                    error: !ok,
-                    message: ok ? 'Sign up was a success' : 'That didn\'t work for some reason. Try again.'
-                });
-            }
-        });
+            setState({
+                success: ok,
+                error: !ok,
+                message: ok ? 'Sign up was a success' : 'That didn\'t work for some reason. Try again.'
+            });
+        }
+    });
 
     return (
         <div className={styles.formContainer}>
@@ -154,9 +151,7 @@ const CallToActionForm = memo(() => {
                         onChange={handleChange}
                         name="other" />
                     {state.error && <ErrorMessage message={state.message} />}
-                    <Button isPending={isSubmitting}
-                        className={styles.submitButton}
-                        type="submit" />
+                    <Button isPending={isSubmitting} className={styles.submitButton} type="submit" />
                 </form>
             )}
             <p aria-live="polite" className="sr-only" role="status">

@@ -10,14 +10,14 @@ import dynamic from 'next/dynamic';
 import styles from './sign-up.module.css';
 import { Content } from '@components/signup/content';
 
-const DynamicCallToActionForm = dynamic(() => import('./call-to-action-form'),
-    {
-        loading: () => <div className={styles.formContainer}>
-            <div className="animate-pulse bg-gray-200 rounded-lg h-full w-full" />
-        </div>,
-        ssr: false
-    }
-);
+const DynamicCallToActionForm = dynamic(() => import('./call-to-action-form'), {
+    loading: () => (
+        <div className={styles.formContainer}>
+            <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
+        </div>
+    ),
+    ssr: false
+});
 
 const SignupSection = (): ReactNode => {
     const [isVisible, setIsVisible] = useState(false);
@@ -58,7 +58,7 @@ const SignupSection = (): ReactNode => {
                 {isVisible && (
                     <Suspense fallback={
                         <div className={styles.formContainer}>
-                            <div className="animate-pulse bg-gray-200 rounded-lg h-[400px] w-full" />
+                            <div className="h-[400px] w-full animate-pulse rounded-lg bg-gray-200" />
                         </div>
                     }>
                         <DynamicCallToActionForm />

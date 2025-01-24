@@ -1,4 +1,7 @@
-export type MenuLink = { link: string; name: string; }
+export type MenuLink = {
+    link: string;
+    name: string;
+};
 
 export const menuLinks: MenuLink[] = [
     {
@@ -18,4 +21,3 @@ export const menuLinks: MenuLink[] = [
         link: '/blog'
     }
 ];
-

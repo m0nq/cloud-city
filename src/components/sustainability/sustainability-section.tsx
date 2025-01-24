@@ -5,9 +5,7 @@ const SustainabilitySection = () => {
         <section className={styles.sustainabilitySection}>
             <div className={styles.sustainabilityWrapper}>
                 <div className={styles.sustainabilityContainer}>
-                    <h3 className={`${styles.title} ${styles.content}`}>
-                        Sustainability
-                    </h3>
+                    <h2 className={`${styles.title} ${styles.content}`}>Sustainability</h2>
                     <p className={styles.content}>
                         Our dedication to sustainability extends beyond our events—it&apos;s at the core of how we
                         operate, including our online presence. Our website is thoughtfully designed to minimize its
