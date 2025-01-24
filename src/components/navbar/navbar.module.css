@@ -13,8 +13,8 @@
       @apply w-fit h-fit relative;
 
       .link {
-        @apply w-fit flex p-2 font-light text-white font-subheading text-xl rounded-lg hover:bg-lavender
-        active:bg-lavender/60 transition-all duration-300
+        @apply w-fit flex p-2 font-medium text-white/80 font-subheading text-xl rounded-lg hover:text-white
+        active:text-white transition-all duration-300
         min-[0px]:text-[20px];
       }
     }

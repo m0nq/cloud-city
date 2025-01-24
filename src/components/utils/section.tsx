@@ -4,17 +4,17 @@ import { ReactNode } from 'react';
 
 export const Section = ({
     styles = {},
-    classes = '',
+    className = '',
     children,
     ...props
 }: {
     styles?: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
-    classes?: string;
+    className?: string;
     children: ReactNode;
 }) => {
     return (
         <>
-            <section style={styles} className={classes} {...props}>
+            <section style={styles} className={className} {...props}>
                 {children}
             </section>
         </>

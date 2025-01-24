@@ -16,7 +16,7 @@ const Blog = async () => {
             </header>
             <section className={styles.blogList}>
                 {posts.length && posts?.map(({ post }: { post: Post }) => (
-                    <Link key={post.databaseId} href={`/blog${post.uri}`}>
+                    <Link key={post.databaseId} href={`/blog${post.uri.startsWith('/') ? post.uri : `/${post.uri}`}`}>
                         <div className={styles.blogCardContainer}>
                             {post.featuredImage && (
                                 <div className={styles.imageContainer}>

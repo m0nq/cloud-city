@@ -1,0 +1,8 @@
+.heroWrapper {
+  @apply w-full relative pt-[100px] px-4 mb-8 overflow-hidden max-w-full flex flex-none flex-col flex-nowrap content-center
+  items-center rounded-[3.5vw] h-auto justify-start text-white font-body;
+}
+
+.imageContainer {
+  @apply relative h-[264px] w-full mb-16 blur-lg;
+}

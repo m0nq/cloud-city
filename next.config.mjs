@@ -13,7 +13,11 @@ const nextConfig = {
     },
     images: {
         // domains: ['cirquitree.com'],
-        remotePatterns: ['cirquitree.com']
+        remotePatterns: [{
+            protocol: 'https',
+            hostname: 'cirquitree.com',
+            pathname: '**'
+        }]
     }
 };
 

@@ -1,0 +1,4 @@
+button.back-btn {
+  @apply px-0 pt-0 capitalize font-bold relative self-start ml-3 my-8 inline-flex items-center text-white/60 hover:text-white;
+}
+
