@@ -3,14 +3,14 @@ export type FormValues = {
     lastName: string;
     email: string;
     other: string;
-}
+};
 
 export type QueryString = string;
 
 export type CursorInfo = {
     before?: CursorType;
     after?: CursorType;
-}
+};
 
 export type CursorType = string | null;
 
@@ -19,12 +19,12 @@ export type PageInfo = {
     endCursor: CursorType;
     hasPreviousPage: boolean;
     startCursor: CursorType;
-}
+};
 
 export type WhereClause = {
     tag?: string;
     category?: string;
-}
+};
 
 export type PostResult = {
     edges: PostEdges[];
@@ -53,6 +53,7 @@ export type Post = {
             slug: string;
             srcSet: string;
             sourceUrl: string;
+            sizes: string;
         };
     };
     uri: string;

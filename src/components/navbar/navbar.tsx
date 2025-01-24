@@ -17,11 +17,11 @@ const Navbar = () => {
                 {/*        <p>Events</p>*/}
                 {/*    </Link>*/}
                 {/*</div>*/}
-                {/*<div className={styles.linkContainer}>*/}
-                {/*    <Link href="/blog" className={styles.link}>*/}
-                {/*        <p>Articles</p>*/}
-                {/*    </Link>*/}
-                {/*</div>*/}
+                <div className={styles.linkContainer}>
+                    <Link href="/blog" className={styles.link}>
+                        <p>Articles</p>
+                    </Link>
+                </div>
             </div>
         </nav>
     );

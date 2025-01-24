@@ -10,6 +10,10 @@ const nextConfig = {
     reactStrictMode: true,
     compiler: {
         removeConsole: process.env.NODE_ENV === 'production'
+    },
+    images: {
+        // domains: ['cirquitree.com'],
+        remotePatterns: ['cirquitree.com']
     }
 };
 

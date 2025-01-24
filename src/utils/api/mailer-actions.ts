@@ -27,4 +27,3 @@ export const subscribeMember = async ({ firstName, lastName, email }: FormValues
         return { ok: false };
     }
 };
-

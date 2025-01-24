@@ -15,17 +15,14 @@ const getQuery = async (postQuery: string, uri: string = ''): Promise<Response> 
         uri
     };
 
-    const res = await fetch(
-        `${WORDPRESS_API_URL}`,
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            next: {
-                revalidate: 60
-            },
-            body: JSON.stringify({ query: postQuery, variables })
-        }
-    );
+    const res = await fetch(`${WORDPRESS_API_URL}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        next: {
+            revalidate: 60
+        },
+        body: JSON.stringify({ query: postQuery, variables })
+    });
 
     if (!res.ok) {
         // This will activate the closest `error.js` Error Boundary
@@ -37,11 +34,10 @@ const getQuery = async (postQuery: string, uri: string = ''): Promise<Response> 
 
 // Take a filter param to filter projects?
 export const getPosts = async (
-    first: number = 10,
     filter: WhereClause = {},
+    first: number = 10,
     cursorInfo?: CursorInfo
-): Promise<{ posts: PostEdges[], pageInfo: PageInfo }> => {
-
+): Promise<{ posts: PostEdges[]; pageInfo: PageInfo; }> => {
     // Filter the list by projects
     const postsQuery: QueryString = `query WPAllPostQuery {
         posts(
@@ -71,6 +67,7 @@ export const getPosts = async (
                   node {
                     altText
                     sourceUrl
+                    sizes
                   }
                 }
                 databaseId

@@ -40,9 +40,15 @@ export const Footer = () => {
                     <p>Oakland, CA</p>
                 </div>
                 <div className={styles.infoContainer}>
-                    <Link className={styles.link} href="/conduct">Code</Link>
-                    <Link className={styles.link} href="/terms-conditions">Terms</Link>
-                    <Link className={styles.link} href="/privacy-policy">Privacy</Link>
+                    <Link className={styles.link} href="/conduct">
+                        Code
+                    </Link>
+                    <Link className={styles.link} href="/terms-conditions">
+                        Terms
+                    </Link>
+                    <Link className={styles.link} href="/privacy-policy">
+                        Privacy
+                    </Link>
                 </div>
             </div>
             <div className={styles.finalSection}>
@@ -60,13 +66,13 @@ export const Footer = () => {
                     <a href="https://www.instagram.com/cloudcityfestival"
                         target="_blank"
                         rel="noopener"
-                        className="flex justify-center items-center">
+                        className="flex items-center justify-center">
                         <FaInstagram size={23} color="#8888DD" />
                     </a>
                     <a href="https://www.facebook.com/cloudcityfestival/"
                         target="_blank"
                         rel="noopener"
-                        className="flex justify-center items-center">
+                        className="flex items-center justify-center">
                         <FaFacebookF size={20} color="#8888DD" />
                     </a>
                 </div>
@@ -74,4 +80,3 @@ export const Footer = () => {
         </footer>
     );
 };
-

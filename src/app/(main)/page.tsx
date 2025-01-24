@@ -12,7 +12,7 @@ const SignupSection = dynamic(() => import('@components/signup/signup-section'),
     ssr: false,
     loading: () => (
         <div>
-            <div className="animate-pulse bg-gray-200 rounded-lg h-full w-full" />
+            <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
         </div>
     )
 });

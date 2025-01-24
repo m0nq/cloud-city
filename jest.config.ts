@@ -79,9 +79,7 @@ const config: Config = {
     // maxWorkers: "50%",
 
     // An array of directory names to be searched recursively up from the requiring module's location
-    moduleDirectories: [
-        'node_modules'
-    ],
+    moduleDirectories: ['node_modules'],
 
     // An array of file extensions your modules use
     // moduleFileExtensions: [
@@ -105,7 +103,8 @@ const config: Config = {
         '^@utils/(.*)$': '<rootDir>/src/utils/$1',
         // Handle image imports
         '^next/image$': '<rootDir>/__mocks__/next-image.js',
-        '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': '<rootDir>/__mocks__/file-mock.js',
+        '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+            '<rootDir>/__mocks__/file-mock.js',
         '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js'
     },
 
@@ -143,9 +142,7 @@ const config: Config = {
     // rootDir: undefined,
 
     // A list of paths to directories that Jest should use to search for files in
-    roots: [
-        '<rootDir>'
-    ],
+    roots: ['<rootDir>'],
 
     // Allows you to use a custom runner instead of Jest's default test runner
     // runner: "jest-runner",
@@ -172,14 +169,10 @@ const config: Config = {
     // testLocationInResults: false,
 
     // The glob patterns Jest uses to detect test files
-    testMatch: [
-        '**/?(*.)+(test).[tj]s?(x)'
-    ],
+    testMatch: ['**/?(*.)+(test).[tj]s?(x)'],
 
     // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-    testPathIgnorePatterns: [
-        '/node_modules/'
-    ]
+    testPathIgnorePatterns: ['/node_modules/']
 
     // The regexp pattern or array of patterns that Jest uses to detect test files
     // testRegex: [],

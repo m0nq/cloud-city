@@ -8,7 +8,7 @@ interface DecorativeRingsProps {
 }
 
 export const DecorativeRings = ({
-    color = '#FF69B4',
+    color = '#ff69b4',
     className = '',
     rotations = [15, -15, 45],
     opacity = [0.6, 0.2]
@@ -17,7 +17,7 @@ export const DecorativeRings = ({
     const width = 780;
     const height = 409;
     const padding = 200; // Add padding to accommodate rotation
-    
+
     // Center points for the actual ellipses
     const cx = width / 2 + padding;
     const cy = height / 2 + padding;
@@ -26,12 +26,10 @@ export const DecorativeRings = ({
 
     return (
         <div className={className}>
-            <svg 
-                viewBox={`0 0 ${width + padding * 2} ${height + padding * 2}`}
+            <svg viewBox={`0 0 ${width + padding * 2} ${height + padding * 2}`}
                 width={width + padding * 2}
                 height={height + padding * 2}
-                style={{ margin: -padding }} // Offset the padding
-            >
+                style={{ margin: -padding }}> {/* Offset the padding */}
                 <defs>
                     <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stopColor={color} stopOpacity={opacity[0]} />
