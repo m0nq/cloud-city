@@ -1,0 +1,27 @@
+.eventsContainer {
+  @apply w-full h-fit min-h-[200px] flex flex-col justify-center items-center gap-6 p-5
+  md:min-h-[700px];
+
+  .titleContainer {
+    @apply w-full h-fit flex max-w-[1430px] justify-start items-center gap-5 text-pale-pink font-semibold;
+  }
+
+  .descriptionContainer {
+    @apply w-full max-w-[1430px] h-fit flex flex-col justify-center items-center gap-5
+    lg:flex-row lg:gap-12;
+
+    .h3 {
+      @apply h-fit max-w-[1430px] justify-start items-center gap-5 text-pale-pink font-subheading font-light uppercase
+      text-[max(13vw,2.75rem)]
+      sm:text-[max(13vw,4.5rem)]
+      md:text-[max(13vw,5rem)]
+      lg:text-[clamp(2.75rem,7vw,5rem)];
+    }
+
+    .descriptionParagraph {
+      @apply font-body text-lg font-normal
+      sm:text-xl
+      lg:flex-1;
+    }
+  }
+}

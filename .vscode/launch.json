@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Next.js: Dev",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm dev"
+    },
+    {
+      "name": "Next.js: Debug",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm dev -- --inspect"
+    },
+    {
+      "name": "Next.js: Build",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm build"
+    },
+    {
+      "type": "node-terminal",
+      "name": "Run Script: Start",
+      "request": "launch",
+      "command": "pnpm run start",
+      "preLaunchTask": "pnpm build",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
