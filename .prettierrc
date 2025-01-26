@@ -10,7 +10,7 @@
     "quoteProps": "as-needed",
     "jsxSingleQuote": false,
     "htmlWhitespaceSensitivity": "css",
-    "proseWrap": "preserve",
+    "proseWrap": "always",
     "overrides": [
         {
             "files": ["*.css"],
