@@ -1,9 +1,9 @@
 .loadingOverlay {
-  @apply fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black/50 backdrop-blur-sm z-[100];
+  @apply fixed top-0 left-0 w-full h-full bg-black/70 flex justify-center items-center z-[9999];
 }
 
 .spinner {
-  @apply text-4xl text-white animate-spin;
+  @apply w-10 h-10 text-lavender/80 animate-spin transition-all duration-100;
 }
 
 @keyframes spin {
