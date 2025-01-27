@@ -34,12 +34,22 @@
     .li {
       @apply w-full h-fit list-none mt-6;
 
-      .anchor:hover .h4 {
-        @apply text-pale-pink;
-      }
+      .anchor {
+        &:hover {
+          .contentContainer {
+            .h4 {
+              @apply text-pale-pink/80;
+            }
+          }
+        }
 
-      .anchor:active .h4 {
-        @apply text-pale-pink/60;
+        &:active {
+          .contentContainer {
+            .h4 {
+              @apply text-pale-pink;
+            }
+          }
+        }
       }
 
       .dateTimeContainer {
@@ -65,7 +75,7 @@
           md:gap-4;
 
           .h4 {
-            @apply max-w-[1000px] font-subheading text-2xl mt-3
+            @apply max-w-[1000px] font-subheading text-2xl mt-3 hover:text-pale-pink active:text-pale-pink/60
             md:text-4xl;
           }
 
