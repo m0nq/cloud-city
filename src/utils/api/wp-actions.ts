@@ -40,50 +40,54 @@ export const getPosts = async (
 ): Promise<{ posts: PostEdges[]; pageInfo: PageInfo; }> => {
     // Filter the list by projects
     const postsQuery: QueryString = `query WPAllPostQuery {
-        posts(
-            first: ${first},
-            before: "${cursorInfo?.before || null}",
-            after: "${cursorInfo?.after || null}",
-            where: {
-                orderby: {field: DATE, order: DESC},
-                tag: "${filter.tag || ''}",
-                categoryName: "${filter.category || ''}"
-            }
-        ) {
-            pageInfo {
-              hasNextPage
-              endCursor
-              hasPreviousPage
-              startCursor
-            }
-            edges {
-              post: node {
-                categories {
-                  nodes {
-                    name
-                  }
-                }
-                featuredImage {
-                  node {
-                    altText
-                    sourceUrl
-                    sizes
-                  }
-                }
-                databaseId
-                date
-                excerpt(format: RENDERED)
-                tags {
-                  nodes {
-                    name
-                  }
-                }
-                title(format: RENDERED)
-                uri
+      posts(
+        first: ${first},
+        before: "${cursorInfo?.before || null}",
+        after: "${cursorInfo?.after || null}",
+        where: {
+          orderby: {field: DATE, order: DESC},
+          tag: "${filter.tag || ''}",
+          categoryName: "${filter.category || ''}"
+        }
+      ) {
+        pageInfo {
+          hasNextPage
+          endCursor
+          hasPreviousPage
+          startCursor
+        }
+        edges {
+          post: node {
+            categories {
+              nodes {
+                name
               }
             }
+            featuredImage {
+              node {
+                altText
+                sourceUrl
+                sizes
+              }
+            }
+            databaseId
+            date
+            excerpt(format: RENDERED)
+            tags {
+              nodes {
+                name
+              }
+            }
+            title(format: RENDERED)
+            uri
+            events {
+              eventDateTime
+              address
+            }
           }
-        }`;
+        }
+      }
+    }`;
 
     const res = await getQuery(postsQuery);
 
@@ -117,6 +121,10 @@ export const getPost = async (uri: string): Promise<Post> => {
                   }
                 }
                 title
+                events {
+                  eventDate
+                  address
+                }
               }
             }`;
 

@@ -1,6 +1,6 @@
 'use client';
-
 import { ReactNode } from 'react';
+import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
 import { Banner } from '@components/banner/banner';
@@ -24,7 +24,9 @@ const Home = (): ReactNode => (
         <SignupSection />
         {/* Server Components */}
         <MissionSection />
-        <EventsSection />
+        <Suspense>
+            <EventsSection />
+        </Suspense>
         <SustainabilitySection />
     </div>
 );

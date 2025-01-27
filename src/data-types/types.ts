@@ -63,6 +63,10 @@ export type Post = {
             name: string;
         }[];
     };
+    events?: {
+        eventDateTime: string;
+        address: string;
+    };
 };
 
 // export interface Props {

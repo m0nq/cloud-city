@@ -1,5 +1,5 @@
 .eventsContainer {
-  @apply w-full h-fit min-h-[200px] flex flex-col justify-center items-center gap-6 p-5
+  @apply w-full h-fit min-h-[200px] flex flex-col justify-center items-center px-5 py-12
   md:min-h-[700px] md:px-12
   lg:px-24;
 
@@ -8,8 +8,8 @@
   }
 
   .descriptionContainer {
-    @apply w-full h-fit flex flex-col justify-center items-center gap-5
-    xl:flex-row xl:gap-12;
+    @apply w-full h-fit flex flex-col justify-center items-center gap-5 border-b border-b-pale-pink pb-4
+    xl:flex-row xl:gap-12 xl:pb-1.5;
 
     .h3 {
       @apply h-fit flex-1 justify-start items-center gap-5 text-pale-pink font-subheading font-light uppercase
@@ -25,3 +25,49 @@
     }
   }
 }
+
+.eventsListContainer {
+  @apply w-full h-fit flex flex-col items-center justify-center gap-4 font-body font-light;
+
+  .ul {
+    @apply w-full h-fit;
+
+    .li {
+      @apply w-full h-fit list-none mt-6;
+
+      /* .anchor { */
+      /* @apply w-full h-fit; */
+
+      .dateTimeContainer {
+        @apply w-full h-fit flex flex-1 justify-start items-center gap-3 text-pale-pink md:text-xl;
+      }
+
+      .detailsContainer {
+        @apply w-full h-fit border-t border-t-white flex flex-col gap-2;
+
+        .featuredImage {
+          @apply w-full h-full rounded-3xl object-cover hidden
+          sm:block;
+        }
+
+        .contentContainer {
+          @apply w-full h-fit flex flex-col justify-center items-start
+          sm:flex-row;
+
+          .h4 {
+            @apply max-w-[1000px] font-subheading text-2xl mt-3
+            md:text-4xl;
+          }
+
+          .paragraph {
+          }
+
+          .locationDetailsContainer {
+            @apply w-full h-fit flex items-center justify-start gap-2;
+          }
+        }
+      }
+    }
+  }
+}
+/* } */
