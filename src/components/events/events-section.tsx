@@ -5,7 +5,7 @@ import { EventsList } from './events-list';
 import styles from './events-section.module.css';
 import { FlattenedEvent } from '@data-types/types';
 
-export const EventsSection = () => {
+const EventsSection = () => {
     const [events, setEvents] = useState<FlattenedEvent[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -16,7 +16,7 @@ export const EventsSection = () => {
 
         (async () => {
             try {
-                const { events } = (await (await fetch('/api/events')).json());
+                const { events } = await (await fetch('/api/events')).json();
 
                 if (mounted) {
                     setEvents(events);
@@ -39,6 +39,10 @@ export const EventsSection = () => {
         };
     }, []);
 
+    if (error) {
+        console.error('Error fetching events:', error);
+    }
+
     return (
         <section className={styles.eventsContainer}>
             <div className={styles.titleContainer}>
@@ -53,52 +57,42 @@ export const EventsSection = () => {
                 </p>
             </div>
             {isLoading ? (
-                <div className="w-full">
-                    <div className={styles.titleContainer}>
-                        <div className="h-8 w-32 animate-pulse rounded-lg bg-gray-200" />
-                    </div>
-                    <div className={styles.descriptionContainer}>
-                        <div className="h-24 w-full animate-pulse rounded-lg bg-gray-200 xl:w-1/2" />
-                        <div className="h-32 w-full space-y-2 xl:w-1/2">
-                            <div className="h-4 w-full animate-pulse rounded-lg bg-gray-200" />
-                            <div className="h-4 w-full animate-pulse rounded-lg bg-gray-200" />
-                            <div className="h-4 w-3/4 animate-pulse rounded-lg bg-gray-200" />
-                        </div>
-                    </div>
-                    <div className={styles.eventsListContainer}>
-                        <ul className={styles.ul}>
-                            {[1, 2].map(i => (
-                                <li key={i} className={styles.li}>
-                                    <div className="flex w-full flex-col gap-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="h-6 w-6 animate-pulse rounded-lg bg-gray-200" />
-                                            <div className="h-6 w-32 animate-pulse rounded-lg bg-gray-200" />
+                <div className={styles.eventsListContainer}>
+                    <ul className={styles.ul}>
+                        <li className={styles.li}>
+                            <div className={styles.anchor}>
+                                <div className={styles.dateTimeContainer}>
+                                    <div className="h-6 w-6 md:h-8 md:w-8 animate-pulse rounded-lg bg-gray-200" />
+                                    <div className="h-6 w-32 md:h-8 md:w-40 animate-pulse rounded-lg bg-gray-200" />
+                                    <div className="h-6 w-24 md:h-8 md:w-32 animate-pulse rounded-lg bg-gray-200" />
+                                </div>
+                                <div className={styles.detailsContainer}>
+                                    <div className="hidden sm:block w-full max-w-[500px] aspect-[16/9] animate-pulse rounded-3xl bg-gray-200" />
+                                    <div className={styles.contentContainer}>
+                                        <div className="h-8 w-3/4 md:h-12 animate-pulse rounded-lg bg-gray-200 mt-3" />
+                                        <div className="space-y-3 mt-4 w-full">
+                                            <div className="h-5 w-full animate-pulse rounded-lg bg-gray-200" />
+                                            <div className="h-5 w-full animate-pulse rounded-lg bg-gray-200" />
                                         </div>
-                                        <div className="flex w-full flex-col gap-4 lg:flex-row">
-                                            <div className="h-[146px] w-[260px] animate-pulse rounded-lg bg-gray-200" />
-                                            <div className="flex-1 space-y-4">
-                                                <div className="h-8 w-3/4 animate-pulse rounded-lg bg-gray-200" />
-                                                <div className="space-y-2">
-                                                    <div className="h-4 w-full animate-pulse rounded-lg bg-gray-200" />
-                                                    <div className="h-4 w-full animate-pulse rounded-lg bg-gray-200" />
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <div className="h-6 w-6 animate-pulse rounded-lg bg-gray-200" />
-                                                    <div className="h-6 w-48 animate-pulse rounded-lg bg-gray-200" />
-                                                </div>
-                                            </div>
+                                        <div className="flex items-center gap-2 mt-4">
+                                            <div className="h-6 w-6 animate-pulse rounded-lg bg-gray-200" />
+                                            <div className="h-6 w-48 animate-pulse rounded-lg bg-gray-200" />
                                         </div>
                                     </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             ) : error ? (
                 <div>
-                    <p>{error}</p>
+                    <p>There was a problem loading the events. Reload the page to try again.</p>
                 </div>
-            ) : <EventsList events={events} />}
+            ) : (
+                <EventsList events={events} />
+            )}
         </section>
     );
 };
+
+export default EventsSection;
