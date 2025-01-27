@@ -20,13 +20,11 @@ export const Article = ({
         <article className="post">
             <h1 className="post-title">{title}</h1>
             {featuredImage && (
-                <Image
-                    src={featuredImage}
+                <Image src={featuredImage}
                     alt={featuredImage}
                     width={1920}
                     height={280}
-                    className="featuredImage"
-                />
+                    className="featuredImage" />
             )}
             {date && <div className="posted-on">Posted on {moment(date).format('MMMM Do, YYYY')}</div>}
             <article className="post-content">

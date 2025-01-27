@@ -52,15 +52,53 @@ export const EventsSection = () => {
                     connection, creativity, and celebration. Come through!
                 </p>
             </div>
-            {isLoading && (
-                <div>
-                    <p>Loading events. Hold my mocktail... 🍸</p>
+            {isLoading ? (
+                <div className="w-full">
+                    <div className={styles.titleContainer}>
+                        <div className="h-8 w-32 animate-pulse rounded-lg bg-gray-200" />
+                    </div>
+                    <div className={styles.descriptionContainer}>
+                        <div className="h-24 w-full animate-pulse rounded-lg bg-gray-200 xl:w-1/2" />
+                        <div className="h-32 w-full space-y-2 xl:w-1/2">
+                            <div className="h-4 w-full animate-pulse rounded-lg bg-gray-200" />
+                            <div className="h-4 w-full animate-pulse rounded-lg bg-gray-200" />
+                            <div className="h-4 w-3/4 animate-pulse rounded-lg bg-gray-200" />
+                        </div>
+                    </div>
+                    <div className={styles.eventsListContainer}>
+                        <ul className={styles.ul}>
+                            {[1, 2].map(i => (
+                                <li key={i} className={styles.li}>
+                                    <div className="flex w-full flex-col gap-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-6 w-6 animate-pulse rounded-lg bg-gray-200" />
+                                            <div className="h-6 w-32 animate-pulse rounded-lg bg-gray-200" />
+                                        </div>
+                                        <div className="flex w-full flex-col gap-4 lg:flex-row">
+                                            <div className="h-[146px] w-[260px] animate-pulse rounded-lg bg-gray-200" />
+                                            <div className="flex-1 space-y-4">
+                                                <div className="h-8 w-3/4 animate-pulse rounded-lg bg-gray-200" />
+                                                <div className="space-y-2">
+                                                    <div className="h-4 w-full animate-pulse rounded-lg bg-gray-200" />
+                                                    <div className="h-4 w-full animate-pulse rounded-lg bg-gray-200" />
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="h-6 w-6 animate-pulse rounded-lg bg-gray-200" />
+                                                    <div className="h-6 w-48 animate-pulse rounded-lg bg-gray-200" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
-            ) || (error &&
+            ) : error ? (
                 <div>
                     <p>{error}</p>
                 </div>
-            ) || <EventsList events={events} />}
+            ) : <EventsList events={events} />}
         </section>
     );
 };
