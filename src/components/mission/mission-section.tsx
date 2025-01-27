@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styles from './mission-section.module.css' assert { type: 'css' };
 import { DecorativeRings } from '@components/decorations/decorative-rings';
 
-export const MissionSection = (): ReactNode => {
+const MissionSection = (): ReactNode => {
     return (
         <div className={styles.outerContainer}>
             <section className={styles.missionSection}>
@@ -22,3 +22,5 @@ export const MissionSection = (): ReactNode => {
         </div>
     );
 };
+
+export default MissionSection;

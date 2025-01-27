@@ -4,30 +4,31 @@ import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
 import { Banner } from '@components/banner/banner';
-import { MissionSection } from '@components/mission/mission-section';
-import { SustainabilitySection } from '@components/sustainability/sustainability-section';
 import { EventsSection } from '@components/events/events-section';
 
-// Client components that need dynamic importing
+const MissionSection = dynamic(() => import('@components/mission/mission-section'));
+const SustainabilitySection = dynamic(() => import('@components/sustainability/sustainability-section'));
 const SignupSection = dynamic(() => import('@components/signup/signup-section'), {
-    ssr: false,
-    loading: () => (
-        <div>
-            <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
-        </div>
-    )
+    ssr: false
 });
 
 const Home = (): ReactNode => (
     <div className="relative z-0">
-        <Banner />
-        <SignupSection />
-        {/* Server Components */}
-        <MissionSection />
-        <Suspense>
+        <Suspense fallback={<div className="w-full h-[400px] animate-pulse bg-gray-800/20 rounded-lg" />}>
+            <Banner />
+        </Suspense>
+        <Suspense fallback={<div className="w-full h-[500px] animate-pulse bg-gray-800/20 rounded-lg" />}>
+            <SignupSection />
+        </Suspense>
+        <Suspense fallback={<div className="w-full h-[300px] animate-pulse bg-gray-800/20 rounded-lg" />}>
+            <MissionSection />
+        </Suspense>
+        <Suspense fallback={<div className="w-full h-[300px] animate-pulse bg-gray-800/20 rounded-lg" />}>
             <EventsSection />
         </Suspense>
-        <SustainabilitySection />
+        <Suspense fallback={<div className="w-full h-[400px] animate-pulse bg-gray-800/20 rounded-lg" />}>
+            <SustainabilitySection />
+        </Suspense>
     </div>
 );
 

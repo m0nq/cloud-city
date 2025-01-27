@@ -1,6 +1,6 @@
 import styles from './sustainability.module.css' assert { type: 'css' };
 
-export const SustainabilitySection = () => {
+const SustainabilitySection = () => {
     return (
         <section className={styles.sustainabilitySection}>
             <div className={styles.sustainabilityWrapper}>
@@ -26,3 +26,4 @@ export const SustainabilitySection = () => {
     );
 };
 
+export default SustainabilitySection;

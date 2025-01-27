@@ -1,16 +1,21 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { ReactNode } from 'react';
+import { ComponentType } from 'react';
 import { Suspense } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
-import dynamic from 'next/dynamic';
 
 import styles from './sign-up.module.css';
 import { Content } from '@components/signup/content';
 
-const DynamicCallToActionForm = dynamic(() => import('./call-to-action-form'), {
+type DynamicComponentWithPreload = ComponentType<unknown> & {
+    preload?: () => Promise<void>;
+};
+
+const DynamicCallToActionForm: DynamicComponentWithPreload = dynamic(() => import('./call-to-action-form'), {
     loading: () => (
         <div className={styles.formContainer}>
             <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
@@ -27,7 +32,7 @@ const SignupSection = (): ReactNode => {
         // Preload the component when user scrolls near it
         const preloadObserver = new IntersectionObserver(
             () => {
-                (DynamicCallToActionForm as any).preload();
+                DynamicCallToActionForm.preload && DynamicCallToActionForm.preload();
                 preloadObserver.disconnect();
             },
             {

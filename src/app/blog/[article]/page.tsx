@@ -33,7 +33,10 @@ const BlogArticle = async ({ params }: { params: Promise<{ article: string }> })
                     <Image src={articleData.featuredImage.node.sourceUrl}
                         alt={articleData.featuredImage.node.altText}
                         width={1920}
-                        height={176}
+                        height={280}
+                        quality={85}
+                        sizes="100vw"
+                        priority
                         className="w-full max-h-[280px] object-cover blur-md" />
                 </Section>
             )}

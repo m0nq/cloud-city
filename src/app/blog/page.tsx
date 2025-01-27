@@ -26,7 +26,8 @@ const Blog = async () => {
                                             className={styles.featuredImage}
                                             width={280}
                                             height={170}
-                                        priority />
+                                            loading="lazy"
+                                            quality={75} />
                                     </div>
                                 )}
                                 <div className={styles.blogCardContent}>
