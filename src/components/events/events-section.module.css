@@ -29,12 +29,14 @@
   @apply w-full h-fit flex flex-col items-center justify-center gap-4 font-body font-light;
 
   .ul {
-    @apply w-full h-fit;
+    @apply w-full h-fit flex items-center justify-center;
 
     .li {
       @apply w-full h-fit list-none mt-6;
 
       .anchor {
+        @apply flex flex-col items-center justify-center;
+
         &:hover {
           .contentContainer {
             .h4 {
@@ -53,25 +55,26 @@
       }
 
       .dateTimeContainer {
-        @apply w-full h-fit flex flex-1 justify-start items-center gap-3 text-pale-pink md:text-xl;
+        @apply w-full h-fit flex flex-1 justify-start items-center gap-3 text-pale-pink border-b border-b-white pb-1
+        md:text-xl;
       }
 
       .detailsContainer {
-        @apply w-full h-fit border-t border-t-white flex flex-col gap-6
+        @apply w-full h-fit flex flex-col gap-6
         sm:flex-row
         md:gap-12;
 
         .featuredImageContainer {
-          @apply w-64 h-36 rounded-3xl hidden mt-4
+          @apply w-full max-w-[500px] flex-1 rounded-3xl hidden mt-4
           sm:flex sm:justify-center sm:items-center;
 
           .featuredImage {
-            @apply w-[260px] h-[146px] object-cover rounded-3xl;
+            @apply w-full aspect-[16/9] object-cover rounded-3xl;
           }
         }
 
         .contentContainer {
-          @apply w-full h-fit flex flex-col justify-center items-start gap-2
+          @apply flex-1 h-fit flex flex-col justify-center items-start gap-2
           md:gap-4;
 
           .h4 {

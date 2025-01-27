@@ -39,32 +39,6 @@ export const EventsSection = () => {
         };
     }, []);
 
-    if (isLoading) {
-        return (
-            <section className={styles.eventsContainer}>
-                <div className={styles.titleContainer}>
-                    <h2 className={styles.h2}>Events</h2>
-                </div>
-                <div className={styles.descriptionContainer}>
-                    <p className={styles.descriptionParagraph}>Loading events. Hold my NA beer... 🍻</p>
-                </div>
-            </section>
-        );
-    }
-
-    if (error) {
-        return (
-            <section className={styles.eventsContainer}>
-                <div className={styles.titleContainer}>
-                    <h2 className={styles.h2}>Events</h2>
-                </div>
-                <div className={styles.descriptionContainer}>
-                    <p className={styles.descriptionParagraph}>{error}</p>
-                </div>
-            </section>
-        );
-    }
-
     return (
         <section className={styles.eventsContainer}>
             <div className={styles.titleContainer}>
@@ -78,7 +52,15 @@ export const EventsSection = () => {
                     connection, creativity, and celebration. Come through!
                 </p>
             </div>
-            <EventsList events={events} />
+            {isLoading && (
+                <div>
+                    <p>Loading events. Hold my mocktail... 🍸</p>
+                </div>
+            ) || (error &&
+                <div>
+                    <p>{error}</p>
+                </div>
+            ) || <EventsList events={events} />}
         </section>
     );
 };
