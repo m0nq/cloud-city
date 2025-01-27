@@ -4,7 +4,6 @@ import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
 import { Banner } from '@components/banner/banner';
-// import { EventsSection } from '@components/events/events-section';
 
 const SignupSection = dynamic(() => import('@components/signup/signup-section'), {
     ssr: false

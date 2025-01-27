@@ -80,10 +80,6 @@ export const getPosts = async (
             }
             title(format: RENDERED)
             uri
-            events {
-              eventDateTime
-              address
-            }
           }
         }
       }
@@ -121,10 +117,6 @@ export const getPost = async (uri: string): Promise<Post> => {
                   }
                 }
                 title
-                events {
-                  eventDate
-                  address
-                }
               }
             }`;
 

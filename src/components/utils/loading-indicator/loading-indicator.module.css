@@ -1,0 +1,16 @@
+.loadingOverlay {
+  @apply fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black/50 backdrop-blur-sm z-[100];
+}
+
+.spinner {
+  @apply text-4xl text-white animate-spin;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
