@@ -24,11 +24,23 @@ const SignupSection = (): ReactNode => {
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
+        // Preload the component when user scrolls near it
+        const preloadObserver = new IntersectionObserver(
+            () => {
+                (DynamicCallToActionForm as any).preload();
+                preloadObserver.disconnect();
+            },
+            {
+                rootMargin: '500px'
+            }
+        );
+
+        // Show the component when it's closer to the viewport
+        const visibilityObserver = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
                     setIsVisible(true);
-                    observer.disconnect();
+                    visibilityObserver.disconnect();
                 }
             },
             {
@@ -37,10 +49,14 @@ const SignupSection = (): ReactNode => {
         );
 
         if (sectionRef.current) {
-            observer.observe(sectionRef.current);
+            preloadObserver.observe(sectionRef.current);
+            visibilityObserver.observe(sectionRef.current);
         }
 
-        return () => observer.disconnect();
+        return () => {
+            preloadObserver.disconnect();
+            visibilityObserver.disconnect();
+        };
     }, []);
 
     return (
@@ -49,11 +65,12 @@ const SignupSection = (): ReactNode => {
             <div className={styles.signupContainer}>
                 <Content />
                 {isVisible && (
-                    <Suspense fallback={
-                        <div className={styles.formContainer}>
-                            <div className="h-[400px] w-full animate-pulse rounded-lg bg-gray-200" />
-                        </div>
-                    }>
+                    <Suspense
+                        fallback={
+                            <div className={styles.formContainer}>
+                                <div className="h-[400px] w-full animate-pulse rounded-lg bg-gray-200" />
+                            </div>
+                        }>
                         <DynamicCallToActionForm />
                     </Suspense>
                 )}
