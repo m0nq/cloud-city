@@ -14,7 +14,6 @@
     .h3 {
       @apply h-fit flex-1 justify-start items-center gap-5 text-pale-pink font-subheading font-light uppercase
       text-[max(9vw,2.75rem)]
-      /* sm:text-[max(13vw,4.5rem)] */
       xl:text-[clamp(2.75rem,6vw,6.5rem)];
     }
 
@@ -35,24 +34,35 @@
     .li {
       @apply w-full h-fit list-none mt-6;
 
-      /* .anchor { */
-      /* @apply w-full h-fit; */
+      .anchor:hover .h4 {
+        @apply text-pale-pink;
+      }
+
+      .anchor:active .h4 {
+        @apply text-pale-pink/60;
+      }
 
       .dateTimeContainer {
         @apply w-full h-fit flex flex-1 justify-start items-center gap-3 text-pale-pink md:text-xl;
       }
 
       .detailsContainer {
-        @apply w-full h-fit border-t border-t-white flex flex-col gap-2;
+        @apply w-full h-fit border-t border-t-white flex flex-col gap-6
+        sm:flex-row
+        md:gap-12;
 
-        .featuredImage {
-          @apply w-full h-full rounded-3xl object-cover hidden
-          sm:block;
+        .featuredImageContainer {
+          @apply w-64 h-36 rounded-3xl hidden mt-4
+          sm:flex sm:justify-center sm:items-center;
+
+          .featuredImage {
+            @apply w-[260px] h-[146px] object-cover rounded-3xl;
+          }
         }
 
         .contentContainer {
-          @apply w-full h-fit flex flex-col justify-center items-start
-          sm:flex-row;
+          @apply w-full h-fit flex flex-col justify-center items-start gap-2
+          md:gap-4;
 
           .h4 {
             @apply max-w-[1000px] font-subheading text-2xl mt-3
@@ -60,6 +70,7 @@
           }
 
           .paragraph {
+            @apply pl-0.5;
           }
 
           .locationDetailsContainer {
@@ -70,4 +81,3 @@
     }
   }
 }
-/* } */

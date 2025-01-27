@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { Suspense } from 'react';
 
 import { EventsList } from './events-list';
 import styles from './events-section.module.css';
-import { getPosts } from '@utils/api/wp-actions';
-import { PostEdges } from '@data-types/types';
+import { FlattenedEvent } from '@data-types/types';
 
 export const EventsSection = () => {
-    const [posts, setPosts] = useState<PostEdges[]>([]);
+    const [events, setEvents] = useState<FlattenedEvent[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -16,15 +14,16 @@ export const EventsSection = () => {
         let mounted = true;
         const abortController = new AbortController();
 
-        const fetchPosts = async () => {
+        (async () => {
             try {
-                const { posts: fetchedPosts } = await getPosts({ tag: 'Cloud City', category: 'Events' }, 10);
+                const { events } = (await (await fetch('/api/events')).json());
+
                 if (mounted) {
-                    setPosts(fetchedPosts);
+                    setEvents(events);
                 }
             } catch (err) {
                 if (mounted) {
-                    setError("I couldn't get the events from some reason. Try refreshing the page.");
+                    setError('I couldn\'t load the events for some reason. Try refreshing the page.');
                     console.error('Error fetching events:', err);
                 }
             } finally {
@@ -32,9 +31,7 @@ export const EventsSection = () => {
                     setIsLoading(false);
                 }
             }
-        };
-
-        fetchPosts();
+        })();
 
         return () => {
             mounted = false;
@@ -81,7 +78,7 @@ export const EventsSection = () => {
                     connection, creativity, and celebration. Come through!
                 </p>
             </div>
-            <EventsList posts={posts} />
+            <EventsList events={events} />
         </section>
     );
 };
