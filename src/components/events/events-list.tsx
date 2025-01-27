@@ -32,7 +32,7 @@ export const EventsList = ({ events }: { events?: FlattenedEvent[] }) => {
                                 )}
                                 <div className={styles.contentContainer}>
                                     <h4 className={styles.h4}>{event.title}</h4>
-                                    <p className={styles.paragraph}>{event.excerpt} [...]</p>
+                                    <p className={styles.paragraph}>{event.excerpt}[...]</p>
                                     <div className={styles.locationDetailsContainer}>
                                         <PiMapPinLight color="#de78ed" size={24} />
                                         <p className={styles.address}>{event.address || 'Location TBA'}</p>
