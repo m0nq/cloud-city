@@ -10,6 +10,7 @@ import { getPosts } from '@utils/api/wp-actions';
 import { PostEdges } from '@data-types/types';
 import { Post } from '@data-types/types';
 import { BackButton } from '@components/utils/back-button/back-button';
+import { IoTicketOutline } from 'react-icons/io5';
 
 export const generateStaticParams = async (): Promise<{ event: string }[]> => {
     const { posts: events }: { posts: PostEdges[] } = await getPosts({ tag: 'Cloud City', category: 'Events' }, 100);
@@ -59,10 +60,15 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                 <div className={styles.ticketingDetailsContainer}>
                     <h3 className={styles.h3}>Details</h3>
                     {eventData.eventsFields?.ticketLink && (
-                        <div className={styles.ticketingLink}>
+                        <a className={styles.ticketingLink}
+                            href={eventData.eventsFields?.ticketLink}
+                            target="_blank"
+                            rel="noopener">
                             {/*    Ticketing icon goes here */}
-                            <a href={eventData.eventsFields.ticketLink} target="_blank" rel="noopener">Tickets</a>
-                        </div>
+                            {/*<PiTicketLight color="#5b17ef" className={styles.ticketIcon} />*/}
+                            <IoTicketOutline color="#8888dd" className={styles.ticketIcon} />
+                            <p>Tickets</p>
+                        </a>
                     )}
                 </div>
                 <div className="posted-on">

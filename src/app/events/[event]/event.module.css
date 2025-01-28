@@ -56,5 +56,13 @@
     .h3 {
       @apply text-pale-pink text-2xl font-normal;
     }
+
+    .ticketingLink {
+      @apply flex items-center justify-center w-fit h-fit gap-1.5 cursor-pointer hover:font-medium;
+
+      .ticketIcon {
+        @apply w-[1.5rem] h-[1.5rem] flex-shrink-0;
+      }
+    }
   }
 }
