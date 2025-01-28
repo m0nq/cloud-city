@@ -36,7 +36,7 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                     Date: {moment(eventData.eventsFields?.eventDateTime).format('MMMM Do, YYYY')} at {moment(eventData.eventsFields?.eventDateTime).format('HH:mm')}
                 </div>
                 <div className="post-content">
-                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(eventData.content || '') }}></div>
+                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(eventData.content || '') }} />
                     <div className="event-location">
                         <h3>Location</h3>
                         <p>{eventData.eventsFields?.address}</p>
