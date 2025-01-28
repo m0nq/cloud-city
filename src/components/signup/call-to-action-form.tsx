@@ -20,7 +20,7 @@ const initialValues: FormValues = {
 
 const validate = (values: FormValues): FormValues => {
     const errors = {} as FormValues;
-    if (!values.firstName) {
+    if (!values.firstName.trim()) {
         errors.firstName = 'Gotta name...?';
     } else if (!values.firstName.match(/^[a-zA-Z\s-]+$/i)) {
         errors.firstName = 'Only letters, spaces, or hyphens please';
