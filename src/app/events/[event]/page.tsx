@@ -9,7 +9,6 @@ import { getPost } from '@utils/api/wp-actions';
 import { getPosts } from '@utils/api/wp-actions';
 import { PostEdges } from '@data-types/types';
 import { Post } from '@data-types/types';
-import { Article } from '@components/post/article';
 import { BackButton } from '@components/utils/back-button/back-button';
 
 export const generateStaticParams = async (): Promise<{ event: string }[]> => {
@@ -55,24 +54,30 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                     </div>
                 )}
             </div>
-            <Article title={eventData.title}
-                date={eventData.eventsFields?.eventDateTime}
-                featuredImage={eventData.featuredImage?.node.sourceUrl}>
-                <div className="event-details">
-                    <div className="posted-on">
-                        Event
-                        Date: {moment(eventData.eventsFields?.eventDateTime).format('MMMM Do, YYYY')} at {moment(eventData.eventsFields?.eventDateTime).format('HH:mm')}
-                    </div>
-                    <div className="post-content">
-                        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(eventData.content || '') }} />
-                        <div className="event-location">
-                            <h3>Location</h3>
-                            <p>{eventData.eventsFields?.address}</p>
+            <article className={styles.eventDetailsSection}>
+                {/*<div className="event-details">*/}
+                <div className={styles.ticketingDetailsContainer}>
+                    <h3 className={styles.h3}>Details</h3>
+                    {eventData.eventsFields?.ticketLink && (
+                        <div className={styles.ticketingLink}>
+                            {/*    Ticketing icon goes here */}
+                            <a href={eventData.eventsFields.ticketLink} target="_blank" rel="noopener">Tickets</a>
                         </div>
+                    )}
+                </div>
+                <div className="posted-on">
+                    Event
+                    Date: {moment(eventData.eventsFields?.eventDateTime).format('MMMM Do, YYYY')} at {moment(eventData.eventsFields?.eventDateTime).format('HH:mm')}
+                </div>
+                <div className="post-content">
+                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(eventData.content || '') }} />
+                    <div className="event-location">
+                        <h3>Location</h3>
+                        <p>{eventData.eventsFields?.address}</p>
                     </div>
                 </div>
                 <BackButton>← Back</BackButton>
-            </Article>
+            </article>
         </>
     );
 };

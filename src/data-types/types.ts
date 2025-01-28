@@ -66,6 +66,7 @@ export type Post = {
     eventsFields?: {
         address: string;
         eventDateTime: string;
+        ticketLink: string;
     }
 };
 

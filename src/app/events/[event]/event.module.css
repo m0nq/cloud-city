@@ -43,3 +43,18 @@
     }
   }
 }
+
+.eventDetailsSection {
+  @apply w-full h-fit flex flex-col items-center justify-center gap-5 font-body p-3
+  sm:px-4 sm:py-3
+  md:px-24 md:py-6
+  lg:px-[25%];
+
+  .ticketingDetailsContainer {
+    @apply w-full h-fit flex items-center justify-between;
+
+    .h3 {
+      @apply text-pale-pink text-2xl font-normal;
+    }
+  }
+}

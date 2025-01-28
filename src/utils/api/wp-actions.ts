@@ -76,6 +76,7 @@ export const getPosts = async (
             eventsFields {
               address
               eventDateTime
+              ticketLink
             }
             tags {
               nodes {
@@ -124,6 +125,7 @@ export const getPost = async (uri: string): Promise<Post> => {
                 eventsFields {
                   address
                   eventDateTime
+                  ticketLink
                 }
               }
             }`;
