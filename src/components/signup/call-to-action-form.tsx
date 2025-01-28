@@ -21,19 +21,23 @@ const initialValues: FormValues = {
 const validate = (values: FormValues): FormValues => {
     const errors = {} as FormValues;
     if (!values.firstName) {
-        errors.firstName = 'This should have a few more letters...';
+        errors.firstName = 'Gotta name...?';
     } else if (!values.firstName.match(/^[a-zA-Z\s-]+$/i)) {
-        errors.firstName = 'Try without special characters...';
+        errors.firstName = 'Only letters, spaces, or hyphens please';
     }
 
     if (values.lastName.trim() && !values.lastName.match(/^[a-zA-Z\s-]+$/i)) {
-        errors.lastName = 'Try without special characters...';
+        errors.lastName = 'Only letters, spaces, or hyphens please';
     }
 
     if (!values.email) {
-        errors.email = 'You\'ll need an email to sign up!';
-    } else if (!values.email.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i)) {
-        errors.email = 'That email doesn\'t look quite right...';
+        errors.email = 'Gonna need an valid email for this';
+    } else if (
+        !values.email.match(
+            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+        )
+    ) {
+        errors.email = "That email doesn't look quite right...";
     }
 
     if (values.other) {
@@ -95,14 +99,14 @@ const CallToActionForm = memo(() => {
         initialValues,
         validate: debouncedValidate,
         validateOnBlur: true,
-        validateOnChange: false,
+        validateOnChange: true,
         onSubmit: async values => {
             const { ok } = await subscribeMember(values);
 
             setState({
                 success: ok,
                 error: !ok,
-                message: ok ? 'Sign up was a success' : 'That didn\'t work for some reason. Try again.'
+                message: ok ? 'Sign up was a success' : "That didn't work for some reason. Try again."
             });
         }
     });
@@ -112,7 +116,7 @@ const CallToActionForm = memo(() => {
             {state?.success ? (
                 <div className={styles.message}>
                     <p>
-                        Check your email to confirm your subscription (double check your
+                        Check your email to confirm your subscription (double check your 
                         spam and filters if you don&apos;t see it right away). 💖
                     </p>
                 </div>
@@ -126,7 +130,10 @@ const CallToActionForm = memo(() => {
                         onChange={handleChange}
                         className={styles.input}
                         label="First Name"
-                        error={errors.firstName} />
+                        error={errors.firstName}
+                        aria-required="true"
+                        aria-invalid={!!errors.firstName}
+                        aria-describedby={errors.firstName ? 'firstName-error' : undefined} />
                     <MemoizedInput
                         id="lastName"
                         name="lastName"

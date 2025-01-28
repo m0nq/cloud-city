@@ -46,7 +46,7 @@
     }
 
     .input {
-      @apply rounded-lg pl-1 bg-white text-black h-9;
+      @apply rounded-lg px-2 bg-white text-black h-9 overflow-auto;
 
       &::placeholder {
         @apply text-[#757575] px-1;
