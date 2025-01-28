@@ -3,7 +3,7 @@ import { ReactElement } from 'react';
 import Image from 'next/image';
 import moment from 'moment';
 
-import './article.styles.css';
+import '@components/shared/styles/content.styles.css';
 
 export const Article = ({
     title,

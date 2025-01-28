@@ -4,6 +4,7 @@ import DOMPurify from 'isomorphic-dompurify';
 import moment from 'moment';
 import { PiMapPinLight } from 'react-icons/pi';
 
+import '@components/shared/styles/content.styles.css';
 import styles from './event.module.css';
 import { getPost } from '@utils/api/wp-actions';
 import { getPosts } from '@utils/api/wp-actions';
@@ -21,7 +22,6 @@ export const generateStaticParams = async (): Promise<{ event: string }[]> => {
 };
 
 const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Promise<ReactNode> => {
-
     const { event } = await params;
     const eventData: Post = await getPost(event);
 
@@ -38,25 +38,24 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                         <PiMapPinLight color="#de78ed" className={styles.mapPin} />
                         <p className={styles.address}>{eventData.eventsFields?.address || 'Location TBA'}</p>
                     </div>
-                    <p className={styles.paragraph}>{moment(eventData.eventsFields?.eventDateTime).format('MMMM Do, YYYY')}</p>
+                    <p className={styles.paragraph}>
+                        {moment(eventData.eventsFields?.eventDateTime).format('MMMM Do, YYYY')}
+                    </p>
                     <p className={styles.paragraph}>{moment(eventData.eventsFields?.eventDateTime).format('h:mm A')}</p>
                 </div>
                 {eventData.featuredImage && (
                     <div className={styles.featuredImageContainer}>
-                        <Image
-                            src={eventData.featuredImage.node.sourceUrl}
-                            alt={`${eventData.title} featured image`}
+                        <Image src={eventData.featuredImage.node.sourceUrl}
+                            alt={eventData.featuredImage.node.altText ?? `Featured Banner for ${eventData.title}`}
                             className={styles.featuredImage}
                             width={1920}
                             height={1080}
                             quality={85}
-                            priority
-                        />
+                            priority />
                     </div>
                 )}
             </div>
             <article className={styles.eventDetailsSection}>
-                {/*<div className="event-details">*/}
                 <div className={styles.ticketingDetailsContainer}>
                     <h3 className={styles.h3}>Details</h3>
                     {eventData.eventsFields?.ticketLink && (
@@ -64,23 +63,28 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                             href={eventData.eventsFields?.ticketLink}
                             target="_blank"
                             rel="noopener">
-                            {/*    Ticketing icon goes here */}
-                            {/*<PiTicketLight color="#5b17ef" className={styles.ticketIcon} />*/}
                             <IoTicketOutline color="#8888dd" className={styles.ticketIcon} />
                             <p>Tickets</p>
                         </a>
                     )}
                 </div>
-                <div className="posted-on">
-                    Event
-                    Date: {moment(eventData.eventsFields?.eventDateTime).format('MMMM Do, YYYY')} at {moment(eventData.eventsFields?.eventDateTime).format('HH:mm')}
-                </div>
-                <div className="post-content">
-                    <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(eventData.content || '') }} />
-                    <div className="event-location">
-                        <h3>Location</h3>
-                        <p>{eventData.eventsFields?.address}</p>
-                    </div>
+                <div className={`${styles.eventContentSection}`}>
+                    {eventData.featuredImage && (
+                        <div className={styles.contentImageContainer}>
+                            <Image src={eventData.featuredImage.node.sourceUrl}
+                                alt={`${eventData.title} featured image`}
+                                className={styles.contentImage}
+                                width={1920}
+                                height={1080}
+                                quality={85}
+                                priority
+                            />
+                        </div>
+                    )}
+                    <div
+                        className={`${styles.eventContent} post-content`}
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(eventData.content || '') }}
+                    />
                 </div>
                 <BackButton>← Back</BackButton>
             </article>
