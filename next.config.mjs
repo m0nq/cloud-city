@@ -12,7 +12,6 @@ const nextConfig = {
         removeConsole: process.env.NODE_ENV === 'production'
     },
     images: {
-        // domains: ['cirquitree.com'],
         remotePatterns: [
             {
                 protocol: 'https',
@@ -31,6 +30,9 @@ const nextConfig = {
             }
         ]
     }
+    // experimental: {
+    //     reactCompiler: true
+    // }
 };
 
 export default withBundleAnalyzer(nextConfig);

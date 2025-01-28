@@ -3,10 +3,11 @@ import { useEffect } from 'react';
 
 import { EventsList } from './events-list';
 import styles from './events-section.module.css';
-import { FlattenedEvent } from '@data-types/types';
+import { PostEdges } from '@data-types/types';
+import { getPosts } from '@utils/api/wp-actions';
 
 const EventsSection = () => {
-    const [events, setEvents] = useState<FlattenedEvent[]>([]);
+    const [events, setEvents] = useState<PostEdges[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -16,7 +17,7 @@ const EventsSection = () => {
 
         (async () => {
             try {
-                const { events } = await (await fetch('/api/events')).json();
+                const { posts: events } = await getPosts({ tag: 'Cloud City', category: 'Events' }, 10);
 
                 if (mounted) {
                     setEvents(events);
@@ -67,7 +68,8 @@ const EventsSection = () => {
                                     <div className="h-6 w-24 md:h-8 md:w-32 animate-pulse rounded-lg bg-gray-200" />
                                 </div>
                                 <div className={styles.detailsContainer}>
-                                    <div className="hidden sm:block w-full max-w-[500px] aspect-[16/9] animate-pulse rounded-3xl bg-gray-200" />
+                                    <div
+                                        className="hidden sm:block w-full max-w-[500px] aspect-[16/9] animate-pulse rounded-3xl bg-gray-200" />
                                     <div className={styles.contentContainer}>
                                         <div className="h-8 w-3/4 md:h-12 animate-pulse rounded-lg bg-gray-200 mt-3" />
                                         <div className="space-y-3 mt-4 w-full">

@@ -4,38 +4,41 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import styles from './events-section.module.css';
-import { FlattenedEvent } from '@data-types/types';
+import { PostEdges } from '@data-types/types';
 
-export const EventsList = ({ events }: { events?: FlattenedEvent[] }) => {
+export const EventsList = ({ events }: { events?: PostEdges[] }) => {
+
     return (
         <div className={styles.eventsListContainer}>
             <ul className={styles.ul}>
-                {events?.length && events.map(event => (
-                    <li key={event.id} className={styles.li}>
-                        <Link href={`/events${event.slug.startsWith('/') ? event.slug : `/${event.slug}`}`}
+                {events?.length && events.map(({ post: event }: PostEdges) => (
+                    <li key={event.databaseId} className={styles.li}>
+                        <Link href={`/events/${event.uri}`}
                             className={styles.anchor}>
                             <div className={styles.dateTimeContainer}>
                                 <p>&gt;</p>
-                                <p>{moment(event.date).format('MMM Do, YYYY')}</p>
-                                <p>{event.time}</p>
+                                <p>{moment(event.eventsFields?.eventDateTime).format('MMM Do, YYYY')}</p>
+                                <p>{moment(event.eventsFields?.eventDateTime).format('HH:mm')}</p>
                             </div>
                             <div className={styles.detailsContainer}>
-                                {event.featuredImageSrc && (
+                                {event.featuredImage && (
                                     <div className={styles.featuredImageContainer}>
-                                        <Image src={event.featuredImageSrc}
+                                        <Image src={event.featuredImage.node.sourceUrl}
                                             alt={`${event.title} featured image`}
                                             className={styles.featuredImage}
                                             width={260}
                                             height={146}
+                                            quality={85}
                                             priority />
                                     </div>
                                 )}
                                 <div className={styles.contentContainer}>
                                     <h4 className={styles.h4}>{event.title}</h4>
-                                    <p className={styles.paragraph}>{event.excerpt}[...]</p>
+                                    <div className={styles.paragraph}
+                                        dangerouslySetInnerHTML={{ __html: event.excerpt || '' }} />
                                     <div className={styles.locationDetailsContainer}>
                                         <PiMapPinLight color="#de78ed" size={24} />
-                                        <p className={styles.address}>{event.address || 'Location TBA'}</p>
+                                        <p className={styles.address}>{event.eventsFields?.address || 'Location TBA'}</p>
                                     </div>
                                     {/*<div className="map-point">*/}
                                     {/* google mappoint embed */}

@@ -35,7 +35,7 @@
       @apply w-full h-fit list-none mt-6;
 
       .anchor {
-        @apply flex flex-col items-center justify-center;
+        @apply flex flex-col items-center justify-center cursor-pointer;
 
         &:hover {
           .contentContainer {

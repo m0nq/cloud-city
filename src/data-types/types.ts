@@ -63,19 +63,10 @@ export type Post = {
             name: string;
         }[];
     };
-};
-
-export type FlattenedEvent = {
-    id: string;
-    address: string;
-    date: string;
-    eventType: string;
-    featuredImageSrc: string;
-    slug: string;
-    excerpt: string;
-    time: string;
-    title: string;
-    url: string;
+    eventsFields?: {
+        address: string;
+        eventDateTime: string;
+    }
 };
 
 // export interface Props {

@@ -25,6 +25,7 @@
         "@tsparticles/react": "^3.0.0",
         "@tsparticles/slim": "^3.7.1",
         "@types/lodash": "^4.17.14",
+        "babel-plugin-react-compiler": "19.0.0-beta-27714ef-20250124",
         "formik": "^2.4.6",
         "isomorphic-dompurify": "^2.12.0",
         "lodash": "^4.17.21",

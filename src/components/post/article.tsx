@@ -27,9 +27,9 @@ export const Article = ({
                     className="featuredImage" />
             )}
             {date && <div className="posted-on">Posted on {moment(date).format('MMMM Do, YYYY')}</div>}
-            <article className="post-content">
+            <div className="post-content">
                 {children}
-            </article>
+            </div>
         </article>
     );
 };

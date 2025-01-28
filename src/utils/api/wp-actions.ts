@@ -46,7 +46,7 @@ export const getPosts = async (
         after: "${cursorInfo?.after || null}",
         where: {
           orderby: {field: DATE, order: DESC},
-          tag: "${filter.tag || ''}",
+          tagId: "${filter.tag || ''}",
           categoryName: "${filter.category || ''}"
         }
       ) {
@@ -73,6 +73,10 @@ export const getPosts = async (
             databaseId
             date
             excerpt(format: RENDERED)
+            eventsFields {
+              address
+              eventDateTime
+            }
             tags {
               nodes {
                 name
@@ -107,7 +111,7 @@ export const getPosts = async (
 
 export const getPost = async (uri: string): Promise<Post> => {
     const postQuery: QueryString = `query WPPostQuery {
-            post(id: "${uri}", idType: URI) {
+            post(id: "${uri}", idType: SLUG) {
                 content(format: RENDERED)
                 date
                 featuredImage {
@@ -117,6 +121,10 @@ export const getPost = async (uri: string): Promise<Post> => {
                   }
                 }
                 title
+                eventsFields {
+                  address
+                  eventDateTime
+                }
               }
             }`;
 
