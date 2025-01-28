@@ -1,5 +1,5 @@
 .bannerSection {
-  @apply w-full h-screen flex items-center justify-center
+  @apply w-full h-screen flex items-center justify-center px-4
   lg:items-end lg:pb-24;
 
   .lockupContainer {
@@ -11,23 +11,27 @@
 
       .h1 {
         @apply w-full h-fit uppercase font-heading font-thin leading-snug
-        text-[64px]
-        sm:text-[82px]
-        md:text-[109px]
-        min-[1024px]:text-[122px]
-        min-[1280px]:text-[136px]
-        min-[1440px]:text-[150px]
-        min-[1630px]:text-[164px];
+        text-[clamp(50px,calc(50px+((100vw_-_372px)_*_0.15)),82px)]
+        sm:text-[clamp(82px,8vw,109px)]
+        md:text-[clamp(109px,9vw,122px)]
+        min-[1024px]:text-[clamp(122px,10vw,136px)]
+        min-[1280px]:text-[clamp(136px,11vw,150px)]
+        min-[1440px]:text-[clamp(150px,12vw,164px)]
+        min-[1630px]:text-[clamp(164px,13vw,180px)];
       }
 
       .h2 {
-        @apply font-light text-xl font-subheading self-end
-        md:text-[34px];
+        @apply font-light font-subheading self-end
+        text-[clamp(18px,2vw,20px)]
+        sm:text-[clamp(20px,2vw,24px)]
+        md:text-[clamp(24px,2.5vw,34px)];
       }
 
       .h3 {
-        @apply font-light text-xl font-subheading self-start pl-1 -mt-2
-        md:text-[34px] md:pl-2.5;
+        @apply font-light font-subheading self-start pl-1 -mt-2
+        text-[clamp(18px,2vw,20px)]
+        sm:text-[clamp(20px,2vw,24px)]
+        md:text-[clamp(24px,2.5vw,34px)] md:pl-2.5;
       }
     }
   }

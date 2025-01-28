@@ -3,7 +3,7 @@ import { ReactElement } from 'react';
 import Image from 'next/image';
 import moment from 'moment';
 
-import './article.styles.css';
+import '@components/shared/styles/content.styles.css';
 
 export const Article = ({
     title,
@@ -20,18 +20,16 @@ export const Article = ({
         <article className="post">
             <h1 className="post-title">{title}</h1>
             {featuredImage && (
-                <Image
-                    src={featuredImage}
+                <Image src={featuredImage}
                     alt={featuredImage}
                     width={1920}
                     height={280}
-                    className="featuredImage"
-                />
+                    className="featuredImage" />
             )}
             {date && <div className="posted-on">Posted on {moment(date).format('MMMM Do, YYYY')}</div>}
-            <article className="post-content">
+            <div className="post-content">
                 {children}
-            </article>
+            </div>
         </article>
     );
 };

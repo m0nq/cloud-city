@@ -37,7 +37,7 @@ const ParticlesBackground = (): ReactNode => {
                     value: 'transparent'
                 }
             },
-            fpsLimit: 120,
+            fpsLimit: 60,
             interactivity: {
                 events: {
                     onClick: {
@@ -100,7 +100,7 @@ const ParticlesBackground = (): ReactNode => {
                         default: OutMode.out
                     },
                     random: false,
-                    speed: 1,
+                    speed: 0.8,
                     straight: true,
                     vibrate: false,
                     attract: {
@@ -122,7 +122,7 @@ const ParticlesBackground = (): ReactNode => {
                     }
                 },
                 number: {
-                    value: 4,
+                    value: 3,
                     density: {
                         enable: true,
                         area: 600
@@ -138,14 +138,6 @@ const ParticlesBackground = (): ReactNode => {
                         sync: false
                     }
                 },
-                rotate: {
-                    direction: 'random',
-                    animation: {
-                        enable: true,
-                        speed: 5,
-                        sync: false
-                    }
-                },
                 shape: {
                     type: 'circle'
                 },
@@ -155,7 +147,7 @@ const ParticlesBackground = (): ReactNode => {
                     anim: {
                         enable: true,
                         speed: 2,
-                        size_min: 30,
+                        size_min: 20,
                         sync: false
                     }
                 }

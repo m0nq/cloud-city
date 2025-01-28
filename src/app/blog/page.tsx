@@ -7,7 +7,7 @@ import { getPosts } from '@utils/api/wp-actions';
 import { Post } from '@data-types/types';
 
 const Blog = async () => {
-    const { posts, pageInfo } = await getPosts({ tag: 'Cloud City, Blog' }, 100);
+    const { posts, pageInfo } = await getPosts({ tag: 'Cloud City', category: 'Blog' }, 100);
 
     return (
         <div className={styles.blogContainer}>
@@ -26,7 +26,8 @@ const Blog = async () => {
                                         className={styles.featuredImage}
                                         width={280}
                                         height={170}
-                                        priority />
+                                        loading="lazy"
+                                        quality={75} />
                                 </div>
                             )}
                             <div className={styles.blogCardContent}>
@@ -49,7 +50,10 @@ const Blog = async () => {
                 <div>
                     {pageInfo?.hasPreviousPage && (
                         <button className="font-body" onClick={async () => {
-                            return await getPosts({}, 10, { before: pageInfo?.startCursor });
+                            return await getPosts({
+                                tag: 'Cloud City',
+                                category: 'Blog'
+                            }, 10, { before: pageInfo?.startCursor });
                         }}>
                             ← Newer Posts
                         </button>
@@ -58,7 +62,10 @@ const Blog = async () => {
                 <div>
                     {pageInfo?.hasNextPage && (
                         <button className="font-body" onClick={async () => {
-                            return await getPosts({}, 10, { after: pageInfo?.startCursor });
+                            return await getPosts({
+                                tag: 'Cloud City',
+                                category: 'Blog'
+                            }, 10, { after: pageInfo?.startCursor });
                         }}>
                             Older Posts →
                         </button>

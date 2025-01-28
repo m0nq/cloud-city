@@ -1,16 +1,21 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { ReactNode } from 'react';
+import { ComponentType } from 'react';
 import { Suspense } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
-import dynamic from 'next/dynamic';
 
 import styles from './sign-up.module.css';
 import { Content } from '@components/signup/content';
 
-const DynamicCallToActionForm = dynamic(() => import('./call-to-action-form'), {
+type DynamicComponentWithPreload = ComponentType<unknown> & {
+    preload?: () => Promise<void>;
+};
+
+const DynamicCallToActionForm: DynamicComponentWithPreload = dynamic(() => import('./call-to-action-form'), {
     loading: () => (
         <div className={styles.formContainer}>
             <div className="h-full w-full animate-pulse rounded-lg bg-gray-200" />
@@ -24,11 +29,23 @@ const SignupSection = (): ReactNode => {
     const sectionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
+        // Preload the component when user scrolls near it
+        const preloadObserver = new IntersectionObserver(
+            () => {
+                DynamicCallToActionForm.preload && DynamicCallToActionForm.preload();
+                preloadObserver.disconnect();
+            },
+            {
+                rootMargin: '500px'
+            }
+        );
+
+        // Show the component when it's closer to the viewport
+        const visibilityObserver = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
                     setIsVisible(true);
-                    observer.disconnect();
+                    visibilityObserver.disconnect();
                 }
             },
             {
@@ -37,30 +54,28 @@ const SignupSection = (): ReactNode => {
         );
 
         if (sectionRef.current) {
-            observer.observe(sectionRef.current);
+            preloadObserver.observe(sectionRef.current);
+            visibilityObserver.observe(sectionRef.current);
         }
 
-        return () => observer.disconnect();
+        return () => {
+            preloadObserver.disconnect();
+            visibilityObserver.disconnect();
+        };
     }, []);
 
     return (
-        <div ref={sectionRef} className={styles.signupSection}>
-            {/*<div className="map-point">*/}
-            {/* google mappoint embed */}
-            {/*<iframe*/}
-            {/*    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3152.1194975626195!2d-122.1912779!3d37.8106699!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808f8771321144b7%3A0x859ee7b9ab6aeea3!2sCalifornia%20Writers%20Circle!5e0!3m2!1sen!2sus!4v1722102459999!5m2!1sen!2sus"*/}
-            {/*    width="600" height="450" allowFullScreen loading="lazy"*/}
-            {/*    referrerPolicy="no-referrer-when-downgrade" className={styles.iframe}></iframe>*/}
-            {/*</div>*/}
+        <div ref={sectionRef} className={styles.signupSection} id="sign-up">
             <h2 className={styles.h2}>Join Us!</h2>
             <div className={styles.signupContainer}>
                 <Content />
                 {isVisible && (
-                    <Suspense fallback={
-                        <div className={styles.formContainer}>
-                            <div className="h-[400px] w-full animate-pulse rounded-lg bg-gray-200" />
-                        </div>
-                    }>
+                    <Suspense
+                        fallback={
+                            <div className={styles.formContainer}>
+                                <div className="h-[400px] w-full animate-pulse rounded-lg bg-gray-200" />
+                            </div>
+                        }>
                         <DynamicCallToActionForm />
                     </Suspense>
                 )}

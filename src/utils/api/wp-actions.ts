@@ -40,50 +40,55 @@ export const getPosts = async (
 ): Promise<{ posts: PostEdges[]; pageInfo: PageInfo; }> => {
     // Filter the list by projects
     const postsQuery: QueryString = `query WPAllPostQuery {
-        posts(
-            first: ${first},
-            before: "${cursorInfo?.before || null}",
-            after: "${cursorInfo?.after || null}",
-            where: {
-                orderby: {field: DATE, order: DESC},
-                tag: "${filter.tag || ''}",
-                categoryName: "${filter.category || ''}"
-            }
-        ) {
-            pageInfo {
-              hasNextPage
-              endCursor
-              hasPreviousPage
-              startCursor
-            }
-            edges {
-              post: node {
-                categories {
-                  nodes {
-                    name
-                  }
-                }
-                featuredImage {
-                  node {
-                    altText
-                    sourceUrl
-                    sizes
-                  }
-                }
-                databaseId
-                date
-                excerpt(format: RENDERED)
-                tags {
-                  nodes {
-                    name
-                  }
-                }
-                title(format: RENDERED)
-                uri
+      posts(
+        first: ${first},
+        before: "${cursorInfo?.before || null}",
+        after: "${cursorInfo?.after || null}",
+        where: {
+          orderby: {field: DATE, order: DESC},
+          tagId: "${filter.tag || ''}",
+          categoryName: "${filter.category || ''}"
+        }
+      ) {
+        pageInfo {
+          hasNextPage
+          endCursor
+          hasPreviousPage
+          startCursor
+        }
+        edges {
+          post: node {
+            categories {
+              nodes {
+                name
               }
             }
+            featuredImage {
+              node {
+                altText
+                sourceUrl
+                sizes
+              }
+            }
+            databaseId
+            date
+            excerpt(format: RENDERED)
+            eventsFields {
+              address
+              eventDateTime
+              ticketLink
+            }
+            tags {
+              nodes {
+                name
+              }
+            }
+            title(format: RENDERED)
+            uri
           }
-        }`;
+        }
+      }
+    }`;
 
     const res = await getQuery(postsQuery);
 
@@ -107,7 +112,7 @@ export const getPosts = async (
 
 export const getPost = async (uri: string): Promise<Post> => {
     const postQuery: QueryString = `query WPPostQuery {
-            post(id: "${uri}", idType: URI) {
+            post(id: "${uri}", idType: SLUG) {
                 content(format: RENDERED)
                 date
                 featuredImage {
@@ -117,6 +122,11 @@ export const getPost = async (uri: string): Promise<Post> => {
                   }
                 }
                 title
+                eventsFields {
+                  address
+                  eventDateTime
+                  ticketLink
+                }
               }
             }`;
 

@@ -4,6 +4,7 @@
     "version": "0.1.0",
     "author": "Monk Wellington <monk.wellington@gmail.com>",
     "license": "MIT",
+    "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
     "scripts": {
         "dev": "next dev",
         "build": "next build",
@@ -20,9 +21,11 @@
     "dependencies": {
         "@mailerlite/mailerlite-nodejs": "^1.2.2",
         "@next/bundle-analyzer": "^15.1.6",
+        "@notionhq/client": "^2.2.15",
         "@tsparticles/react": "^3.0.0",
         "@tsparticles/slim": "^3.7.1",
         "@types/lodash": "^4.17.14",
+        "babel-plugin-react-compiler": "19.0.0-beta-27714ef-20250124",
         "formik": "^2.4.6",
         "isomorphic-dompurify": "^2.12.0",
         "lodash": "^4.17.21",
@@ -57,7 +60,6 @@
         "ts-node": "^10.9.2",
         "typescript": "^5"
     },
-    "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0",
     "peerDependencies": {
         "styled-jsx": "^5.1.2"
     }

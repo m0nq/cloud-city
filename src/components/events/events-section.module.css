@@ -1,0 +1,96 @@
+.eventsContainer {
+  @apply w-full h-fit min-h-[200px] flex flex-col justify-center items-center px-5 py-12
+  md:min-h-[700px] md:px-12
+  lg:px-24;
+
+  .titleContainer {
+    @apply w-full h-fit flex justify-start items-center gap-5 text-pale-pink font-medium text-2xl;
+  }
+
+  .descriptionContainer {
+    @apply w-full h-fit flex flex-col justify-center items-center gap-5 border-b border-b-pale-pink pb-4
+    xl:flex-row xl:gap-12 xl:pb-1.5;
+
+    .h3 {
+      @apply h-fit flex-1 justify-start items-center gap-5 text-pale-pink font-subheading font-light uppercase
+      text-[max(9vw,2.75rem)]
+      xl:text-[clamp(2.75rem,6vw,6.5rem)];
+    }
+
+    .descriptionParagraph {
+      @apply font-body text-lg font-normal w-full
+      sm:text-xl
+      lg:flex-1;
+    }
+  }
+}
+
+.eventsListContainer {
+  @apply w-full h-fit flex flex-col items-center justify-center gap-4 font-body font-light;
+
+  .ul {
+    @apply w-full h-fit flex items-center justify-center;
+
+    .li {
+      @apply w-full h-fit list-none mt-6;
+
+      .anchor {
+        @apply flex flex-col items-center justify-center cursor-pointer;
+
+        &:hover {
+          .contentContainer {
+            .h4 {
+              @apply text-pale-pink/80;
+            }
+          }
+        }
+
+        &:active {
+          .contentContainer {
+            .h4 {
+              @apply text-pale-pink;
+            }
+          }
+        }
+      }
+
+      .dateTimeContainer {
+        @apply w-full h-fit flex flex-1 justify-start items-center gap-3 text-pale-pink border-b border-b-white pb-1
+        md:text-xl;
+      }
+
+      .detailsContainer {
+        @apply w-full h-fit flex flex-col gap-6
+        sm:flex-row
+        md:gap-12;
+
+        .featuredImageContainer {
+          @apply w-full max-w-[500px] flex-1 rounded-3xl hidden mt-4
+          sm:flex sm:justify-center sm:items-center;
+
+          .featuredImage {
+            @apply w-full aspect-[16/9] object-cover rounded-3xl;
+          }
+        }
+
+        .contentContainer {
+          @apply flex-1 h-fit flex flex-col justify-center items-start gap-2
+          md:gap-4;
+
+          .h4 {
+            @apply max-w-[1000px] font-subheading text-2xl mt-3 hover:text-pale-pink active:text-pale-pink/60
+            md:text-4xl;
+          }
+
+          .paragraph {
+            @apply pl-0.5;
+          }
+
+          .locationDetailsContainer {
+            @apply w-full h-fit flex items-center justify-start gap-2;
+          }
+        }
+      }
+    }
+  }
+}

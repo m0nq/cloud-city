@@ -1,0 +1,74 @@
+.bannerSection {
+  @apply relative w-full h-[421px] flex flex-col items-center justify-center gap-5 pb-6 pt-24 px-2.5 text-white overflow-hidden
+  md:h-[480px] md:px-24
+  lg:px-52;
+
+  .h1 {
+    @apply mt-auto font-subheading font-extralight text-8xl w-full h-fit flex items-center justify-center text-center z-10
+    md:text-[152px]
+    lg:text-[164px];
+  }
+
+  .eventDetailsContainer {
+    @apply mt-auto flex items-center justify-between w-full h-fit text-pale-pink z-10 text-center font-extralight
+    text-base;
+
+    .paragraph {
+      @apply flex-1 text-center;
+    }
+  }
+
+  .featuredImageContainer {
+    @apply absolute inset-0 w-full h-full;
+
+    &::after {
+      @apply content-[""] absolute inset-0 bg-black/50;
+    }
+
+    .featuredImage {
+      @apply w-full h-full object-cover blur-[10px];
+    }
+  }
+}
+
+.eventDetailsSection {
+  @apply w-full h-fit flex flex-col items-center justify-center gap-5 font-body p-3
+  sm:px-4 sm:py-3
+  md:px-24 md:py-6;
+
+  .ticketingDetailsContainer {
+    @apply w-full h-fit flex items-center justify-between;
+
+    .h3 {
+      @apply text-pale-pink text-2xl font-normal;
+    }
+
+    .ticketingLink {
+      @apply flex items-center justify-center w-fit h-fit gap-1.5 cursor-pointer hover:font-medium;
+
+      .ticketIcon {
+        @apply w-[1.5rem] h-[1.5rem] flex-shrink-0;
+      }
+    }
+  }
+
+  .eventContentSection {
+    @apply w-full h-fit flex flex-col items-center justify-center gap-5 font-body pb-24
+    lg:flex-row-reverse lg:gap-12;
+
+    .contentImageContainer {
+      @apply hidden w-full h-fit self-start
+      sm:block
+      lg:flex-1;
+
+      .contentImage {
+        @apply w-full h-auto object-cover rounded-[30px];
+      }
+    }
+
+    .eventContent {
+      @apply w-full h-fit
+      lg:flex-1;
+    }
+  }
+}
