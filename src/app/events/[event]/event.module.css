@@ -13,19 +13,6 @@
     @apply mt-auto flex items-center justify-between w-full h-fit text-pale-pink z-10 text-center font-extralight
     text-base;
 
-    .locationDetailsContainer {
-      @apply flex items-center justify-center gap-0.5 flex-1;
-
-      .mapPin {
-        @apply hidden w-[1.5rem] h-[1.5rem] flex-shrink-0
-        sm:block;
-      }
-
-      .address {
-        @apply h-fit max-w-40;
-      }
-    }
-
     .paragraph {
       @apply flex-1 text-center;
     }

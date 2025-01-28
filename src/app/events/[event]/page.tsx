@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import Image from 'next/image';
 import DOMPurify from 'isomorphic-dompurify';
 import moment from 'moment';
-import { PiMapPinLight } from 'react-icons/pi';
 
 import '@components/shared/styles/content.styles.css';
 import styles from './event.module.css';
@@ -12,6 +11,7 @@ import { PostEdges } from '@data-types/types';
 import { Post } from '@data-types/types';
 import { BackButton } from '@components/utils/back-button/back-button';
 import { IoTicketOutline } from 'react-icons/io5';
+import { EventLocation } from '@components/location/event-location';
 
 export const generateStaticParams = async (): Promise<{ event: string }[]> => {
     const { posts: events }: { posts: PostEdges[] } = await getPosts({ tag: 'Cloud City', category: 'Events' }, 100);
@@ -34,10 +34,7 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
             <div className={styles.bannerSection}>
                 <h1 className={styles.h1}>{eventData.title}</h1>
                 <div className={styles.eventDetailsContainer}>
-                    <div className={styles.locationDetailsContainer}>
-                        <PiMapPinLight color="#de78ed" className={styles.mapPin} />
-                        <p className={styles.address}>{eventData.eventsFields?.address || 'Location TBA'}</p>
-                    </div>
+                    <EventLocation address={eventData.eventsFields?.address || 'TBA'} />
                     <p className={styles.paragraph}>
                         {moment(eventData.eventsFields?.eventDateTime).format('MMMM Do, YYYY')}
                     </p>

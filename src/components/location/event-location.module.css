@@ -1,0 +1,18 @@
+.locationDetailsContainer {
+  @apply flex items-center justify-center gap-0.5 flex-1;
+
+  .mapPin {
+    @apply hidden w-[1.5rem] h-[1.5rem] flex-shrink-0 cursor-pointer
+    sm:block;
+  }
+
+  .address {
+    @apply h-fit max-w-40 no-underline transition-all duration-300 ease-in-out;
+  }
+
+  &:hover {
+    .address {
+      @apply underline;
+    }
+  }
+}
