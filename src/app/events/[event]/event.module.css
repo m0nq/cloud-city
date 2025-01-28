@@ -1,8 +1,45 @@
-.heroWrapper {
-  @apply w-full relative pt-[100px] px-4 mb-8 overflow-hidden max-w-full flex flex-none flex-col flex-nowrap content-center
-  items-center rounded-[3.5vw] h-auto justify-start text-white font-body;
-}
+.bannerSection {
+  @apply relative w-full h-[421px] flex flex-col items-center justify-center gap-5 pb-6 pt-24 px-2.5 text-white overflow-hidden
+  md:h-[480px] md:px-24
+  lg:px-52;
 
-.imageContainer {
-  @apply relative h-[264px] w-full mb-16 blur-lg;
+  .h1 {
+    @apply mt-auto font-subheading font-extralight text-8xl w-full h-fit flex items-center justify-center text-center z-10
+    md:text-[152px]
+    lg:text-[164px];
+  }
+
+  .eventDetailsContainer {
+    @apply mt-auto flex items-center justify-between w-full h-fit text-pale-pink z-10 text-center font-extralight
+    text-base;
+
+    .locationDetailsContainer {
+      @apply flex items-center justify-center gap-0.5 flex-1;
+
+      .mapPin {
+        @apply hidden w-[1.5rem] h-[1.5rem] flex-shrink-0
+        sm:block;
+      }
+
+      .address {
+        @apply h-fit max-w-40;
+      }
+    }
+
+    .paragraph {
+      @apply flex-1 text-center;
+    }
+  }
+
+  .featuredImageContainer {
+    @apply absolute inset-0 w-full h-full;
+
+    &::after {
+      @apply content-[""] absolute inset-0 bg-black/50;
+    }
+
+    .featuredImage {
+      @apply w-full h-full object-cover blur-[10px];
+    }
+  }
 }

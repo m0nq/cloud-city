@@ -92,7 +92,7 @@ export const EventsList = () => {
                                     <div className={styles.dateTimeContainer}>
                                         <p>&gt;</p>
                                         <p>{moment(event.eventsFields?.eventDateTime).format('MMM Do, YYYY')}</p>
-                                        <p>{moment(event.eventsFields?.eventDateTime).format('HH:mm')}</p>
+                                        <p>{moment(event.eventsFields?.eventDateTime).format('h:mm A')}</p>
                                     </div>
                                     <div className={styles.detailsContainer}>
                                         {event.featuredImage && (
