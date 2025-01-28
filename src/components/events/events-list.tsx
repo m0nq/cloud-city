@@ -133,7 +133,7 @@ export const EventsList = () => {
                                 <div className={styles.contentContainer}>
                                     <h4 className={styles.h4}>No upcoming events</h4>
                                     <p className={styles.paragraph}>
-                                        Sign up for our newsletter to get the latest updates.{' '}
+                                        Sign up for our newsletter to get the latest.{' '}
                                         <Link href="/#sign-up">☝🏽</Link>
                                     </p>
                                 </div>
