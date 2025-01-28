@@ -37,7 +37,7 @@ const validate = (values: FormValues): FormValues => {
             /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
         )
     ) {
-        errors.email = "That email doesn't look quite right...";
+        errors.email = 'That email doesn\'t look quite right...';
     }
 
     if (values.other) {
@@ -106,7 +106,7 @@ const CallToActionForm = memo(() => {
             setState({
                 success: ok,
                 error: !ok,
-                message: ok ? 'Sign up was a success' : "That didn't work for some reason. Try again."
+                message: ok ? 'Sign up was a success' : 'That didn\'t work for some reason. Try again.'
             });
         }
     });
