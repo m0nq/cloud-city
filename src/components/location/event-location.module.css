@@ -7,7 +7,7 @@
   }
 
   .address {
-    @apply h-fit max-w-40 no-underline transition-all duration-300 ease-in-out;
+    @apply h-fit max-w-40 no-underline transition-all duration-1000 ease-in-out;
   }
 
   &:hover {
