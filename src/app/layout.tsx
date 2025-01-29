@@ -40,7 +40,7 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>): ReactNode 
             <Navbar />
             {children}
             <Footer />
-            <GoogleAnalytics gaId={process.env.GA4_MEASUREMENT_ID} />
+            <GoogleAnalytics gaId={process.env.GA4_MEASUREMENT_ID!} />
         </body>
     </html>
 );
