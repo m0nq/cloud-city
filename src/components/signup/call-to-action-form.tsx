@@ -10,6 +10,7 @@ import { Button } from '@components/utils/button';
 import { FormValues } from '@data-types/types';
 import { subscribeMember } from '@utils/api/mailer-actions';
 import { ErrorMessage } from '@components/utils/error-message';
+import { isProduction } from '@utils/analytics-config';
 
 const initialValues: FormValues = {
     email: '',
@@ -31,7 +32,7 @@ const validate = (values: FormValues): FormValues => {
     }
 
     if (!values.email) {
-        errors.email = 'Gonna need an valid email for this';
+        errors.email = 'We\'ll need an valid email';
     } else if (
         !values.email.match(
             /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
@@ -103,6 +104,14 @@ const CallToActionForm = memo(() => {
         onSubmit: async values => {
             const { ok } = await subscribeMember(values);
 
+            // Track form submission
+            if (isProduction && window.gtag) {
+                window.gtag('event', 'form_submission', {
+                    event_category: 'engagement',
+                    event_label: ok ? 'success' : 'error'
+                });
+            }
+
             setState({
                 success: ok,
                 error: !ok,
@@ -116,7 +125,7 @@ const CallToActionForm = memo(() => {
             {state?.success ? (
                 <div className={styles.message}>
                     <p>
-                        Check your email to confirm your subscription (double check your 
+                        Check your email to confirm your subscription (double check your
                         spam and filters if you don&apos;t see it right away). 💖
                     </p>
                 </div>

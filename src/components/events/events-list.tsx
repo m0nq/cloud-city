@@ -112,7 +112,7 @@ export const EventsList = () => {
                                                 dangerouslySetInnerHTML={{ __html: event.excerpt || '' }} />
                                             <div className={styles.locationDetailsContainer}>
                                                 <PiMapPinLight color="#de78ed" size={24} />
-                                                <p className={styles.address}>{event.eventsFields?.address || 'Location TBA'}</p>
+                                                <p className={styles.address}>{event.eventsFields?.address || 'TBA'}</p>
                                             </div>
                                             {/*<div className="map-point">*/}
                                             {/* google mappoint embed */}

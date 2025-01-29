@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Viewport } from 'next';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import DOMPurify from 'isomorphic-dompurify';
 
 import './globals.css';
@@ -39,6 +40,7 @@ const RootLayout = ({ children }: Readonly<{ children: ReactNode }>): ReactNode 
             <Navbar />
             {children}
             <Footer />
+            <GoogleAnalytics gaId={process.env.GA4_MEASUREMENT_ID} />
         </body>
     </html>
 );
