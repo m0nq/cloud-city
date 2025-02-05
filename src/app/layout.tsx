@@ -7,8 +7,8 @@ import DOMPurify from 'isomorphic-dompurify';
 import './globals.css';
 import styles from './body.module.css';
 import { montserratAlt1 } from '@components/utils/fonts';
-import { workSans } from '@components/utils/fonts';
 import { montserrat } from '@components/utils/fonts';
+import { openSans } from '@components/utils/fonts';
 import Navbar from '@components/navbar/navbar';
 import { Footer } from '@components/footer/footer';
 
@@ -34,8 +34,8 @@ DOMPurify.addHook('afterSanitizeAttributes', node => {
 
 const RootLayout = ({ children }: Readonly<{ children: ReactNode }>): ReactNode => (
     <html lang="en" suppressHydrationWarning>
-        <body className={`${montserrat.variable} ${montserratAlt1.variable} ${workSans.variable} ${styles.body}`}
-            style={{ backgroundColor: '#1f1b21' }}
+        <body style={{ backgroundColor: '#1f1b21' }}
+            className={`${montserrat.variable} ${montserratAlt1.variable} ${openSans.variable} ${styles.body}`}
             suppressHydrationWarning>
             <Navbar />
             {children}

@@ -12,7 +12,7 @@ const config: Config = {
         fontFamily: {
             heading: ['var(--font-family-montserrat-alt1)', ...defaultTheme.fontFamily.sans],
             subheading: ['var(--font-family-montserrat)', ...defaultTheme.fontFamily.sans],
-            body: ['var(--font-family-work-sans)', ...defaultTheme.fontFamily.sans]
+            body: ['var(--font-family-open-sans)', ...defaultTheme.fontFamily.sans]
         },
         extend: {
             colors: {

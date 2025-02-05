@@ -1,5 +1,5 @@
 import localFont from 'next/font/local';
-import { Work_Sans } from 'next/font/google';
+import { Open_Sans } from 'next/font/google';
 import { Montserrat } from 'next/font/google';
 
 export const montserratAlt1 = localFont({
@@ -58,8 +58,8 @@ export const montserrat = Montserrat({
     variable: '--font-family-montserrat'
 });
 
-export const workSans = Work_Sans({
+export const openSans = Open_Sans({
     subsets: ['latin'],
     display: 'swap',
-    variable: '--font-family-work-sans'
+    variable: '--font-family-open-sans'
 });
