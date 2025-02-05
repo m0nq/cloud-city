@@ -71,15 +71,11 @@ jobs:
         env:
           CC_API_KEY: ${{ secrets.CC_API_KEY }}
           WORDPRESS_API_URL: ${{ secrets.WORDPRESS_API_URL }}
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           GA4_MEASUREMENT_ID: ${{ secrets.GA4_MEASUREMENT_ID }}
         run: |
           echo "" > .env.production
           echo CC_API_KEY="$CC_API_KEY" >> .env.production
           echo WORDPRESS_API_URL="$WORDPRESS_API_URL" >> .env.production
-          echo NOTION_TOKEN="$NOTION_TOKEN" >> .env.production
-          echo NOTION_DATABASE_ID="$NOTION_DATABASE_ID" >> .env.production
           echo GA4_MEASUREMENT_ID="$GA4_MEASUREMENT_ID" >> .env.production
 
       - name: Build with Next.js
@@ -127,15 +123,11 @@ jobs:
         env:
           CC_API_KEY: ${{ secrets.CC_API_KEY }}
           WORDPRESS_API_URL: ${{ secrets.WORDPRESS_API_URL }}
-          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           GA4_MEASUREMENT_ID: ${{ secrets.GA4_MEASUREMENT_ID }}
         run: |
           echo "" > .env.production
           echo CC_API_KEY="$CC_API_KEY" >> .env.production
           echo WORDPRESS_API_URL="$WORDPRESS_API_URL" >> .env.production
-          echo NOTION_TOKEN="$NOTION_TOKEN" >> .env.production
-          echo NOTION_DATABASE_ID="$NOTION_DATABASE_ID" >> .env.production
           echo GA4_MEASUREMENT_ID="$GA4_MEASUREMENT_ID" >> .env.production
 
       - name: Build Project Artifacts
