@@ -1,88 +1,88 @@
 .post {
-  @apply font-body max-w-full mx-auto
-  md:max-w-4xl;
+    @apply font-body max-w-full mx-auto
+    md:max-w-4xl;
 }
 
 .post-title {
-  @apply mb-8 text-6xl leading-tight text-center font-light font-subheading py-8
-  sm:text-7xl
-  md:text-8xl;
+    @apply mb-8 text-6xl leading-tight text-center font-light font-subheading py-8
+    sm:text-7xl
+    md:text-8xl;
 }
 
 .featuredImage {
-  @apply w-full h-auto max-h-[280px] object-cover;
+    @apply w-full h-auto max-h-[280px] object-cover;
 }
 
 .posted-on {
-  @apply py-10;
+    @apply py-10;
 }
 
 .post-content {
-  @apply mb-4 text-4xl font-light text-left font-subheading
-  md:text-5xl;
+    @apply mb-4 text-4xl font-light text-left font-body
+    md:text-5xl;
 }
 
 .post-content h2 {
-  @apply mb-4 text-3xl font-normal text-left font-subheading
-  md:text-4xl;
+    @apply mb-4 text-3xl font-normal text-left font-subheading
+    md:text-4xl;
 }
 
 .post-content h3 {
-  @apply mb-4 text-xl  font-medium text-left
-  sm:text-3xl
-  md:text-2xl;
+    @apply mb-4 text-xl font-medium text-left
+    sm:text-3xl
+    md:text-2xl;
 }
 
 .post-content h4 {
-  @apply mb-4 text-base font-semibold text-left
-  md:text-xl;
+    @apply mb-4 text-base font-semibold text-left
+    md:text-xl;
 }
 
 .post-content p {
-  @apply w-full text-base font-normal pb-6 py-6
-  md:text-xl;
+    @apply w-full text-base font-normal pb-6 py-6
+    md:text-xl;
 }
 
 .post-content a {
-  @apply relative text-lavender hover:underline;
+    @apply relative text-lavender hover:underline;
 }
 
 .post-content img {
-  @apply w-full h-auto object-contain my-4;
+    @apply w-full h-auto object-contain my-4;
 }
 
 blockquote {
-  quotes: '\201C' '\201D' '\2018' '\2019';
-  @apply border-l-8 border-pale-pink px-2.5 py-2 my-6 mx-2.5 before:text-8xl before:leading-6 before:mr-16 before:align-[-0.4rem];
+    quotes: '\201C' '\201D' '\2018' '\2019';
+    @apply border-l-8 border-pale-pink px-2.5 py-2 my-6 mx-2.5 before:text-8xl before:leading-6 before:mr-16 before:align-[-0.4rem];
 }
 
 blockquote:before {
-  content: open-quote;
+    content: open-quote;
 }
 
 .post-content ol {
-  @apply mb-4 list-decimal ml-8 text-left text-base
-  md:text-xl;
+    @apply mb-4 list-decimal ml-8 text-left text-base
+    md:text-xl;
 }
 
 .post-content ol ol {
-  @apply list-[lower-alpha] ml-8 text-left text-base
-  md:text-xl;
+    @apply list-[lower-alpha] ml-8 text-left text-base
+    md:text-xl;
 }
 
 .post-content ul {
-  @apply mb-4 list-disc ml-8 text-left text-base
-  md:text-xl;
+    @apply mb-4 list-disc ml-8 text-left text-base
+    md:text-xl;
 }
 
 .post-content figure {
-  @apply mt-6 mx-auto w-full;
+    @apply mt-6 mx-auto w-full;
 
-  img {
-    @apply object-cover object-center;
-  }
+    img {
+        @apply object-cover object-center;
+    }
 }
 
 .post-content figcaption {
-  @apply text-center text-[#afc2cb];
+    @apply text-center text-[#afc2cb];
 }

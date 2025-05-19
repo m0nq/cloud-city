@@ -9,7 +9,7 @@ import { Article } from '@components/post/article';
 import { Section } from '@components/utils/section';
 
 export const generateStaticParams = async (): Promise<{ article: string }[]> => {
-    const { posts } = await getPosts({ category: 'Blog' }, 100);
+    const { posts } = await getPosts({ category: 'Blog', tag: 'Cloud City' }, 100);
 
     return posts.map(({ post }) => ({
         // Remove leading and trailing slashes and get the last segment
