@@ -4,75 +4,81 @@
 }
 
 .post-title {
-    @apply mb-8 text-6xl leading-tight text-center font-light font-subheading py-8
-    sm:text-7xl
-    md:text-8xl;
+    @apply mb-8 text-4xl leading-tight text-center font-light font-subheading py-8 tracking-wide
+    md:text-6xl
+    sm:text-5xl;
 }
 
 .featuredImage {
-    @apply w-full h-auto max-h-[280px] object-cover;
+    @apply w-full h-auto max-h-[280px] object-cover rounded-xl;
 }
 
 .posted-on {
-    @apply py-10;
+    @apply py-10 italic;
 }
 
 .post-content {
-    @apply mb-4 text-4xl font-light text-left font-body
-    md:text-5xl;
+    @apply mb-4 text-lg leading-relaxed font-light text-left font-body max-w-2xl mx-auto
+    md:text-xl ;
 }
 
 .post-content h2 {
-    @apply mb-4 text-3xl font-normal text-left font-subheading
-    md:text-4xl;
+    @apply my-4 text-2xl font-normal text-left font-subheading tracking-wide
+    md:text-3xl;
 }
 
 .post-content h3 {
-    @apply mb-4 text-xl font-medium text-left
-    sm:text-3xl
-    md:text-2xl;
+    @apply my-4 text-xl font-normal text-left font-subheading tracking-wide
+    md:text-2xl
+    sm:text-2xl;
 }
 
 .post-content h4 {
-    @apply mb-4 text-base font-semibold text-left
+    @apply mb-4 text-lg font-normal text-left font-subheading
     md:text-xl;
 }
 
 .post-content p {
-    @apply w-full text-base font-normal pb-6 py-6
-    md:text-xl;
+    @apply w-full text-base font-normal pb-6 py-6 leading-relaxed
+    md:text-lg;
 }
 
 .post-content a {
-    @apply relative text-lavender hover:underline;
+    @apply relative text-lavender hover:underline focus:underline transition-colors duration-150;
 }
 
 .post-content img {
-    @apply w-full h-auto object-contain my-4;
+    @apply w-full h-auto object-contain my-8 rounded-lg shadow-sm border border-gray-200;
 }
 
 blockquote {
     quotes: '\201C' '\201D' '\2018' '\2019';
-    @apply border-l-8 border-pale-pink px-2.5 py-2 my-6 mx-2.5 before:text-8xl before:leading-6 before:mr-16 before:align-[-0.4rem];
+    @apply border-l-4 border-pale-pink p-4 my-8 mx-4 bg-pale-pink/10 rounded-xl before:text-8xl
+    before:leading-6 before:mr-16 before:align-[-0.4rem];
 }
 
 blockquote:before {
     content: open-quote;
+    @apply text-pale-pink opacity-80;
 }
 
 .post-content ol {
-    @apply mb-4 list-decimal ml-8 text-left text-base
-    md:text-xl;
+    @apply py-4 list-decimal ml-8 text-left text-base
+    md:text-lg;
 }
 
 .post-content ol ol {
     @apply list-[lower-alpha] ml-8 text-left text-base
-    md:text-xl;
+    md:text-lg;
 }
 
 .post-content ul {
-    @apply mb-4 list-disc ml-8 text-left text-base
-    md:text-xl;
+    @apply py-4 list-disc ml-8 text-left text-base
+    md:text-lg;
+}
+
+.post-content ul ul {
+    @apply list-[circle] ml-8;
 }
 
 .post-content figure {
