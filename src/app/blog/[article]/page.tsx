@@ -28,18 +28,18 @@ const BlogArticle = async ({ params }: { params: Promise<{ article: string }> })
 
     return (
         <>
-            {articleData.featuredImage && (
-                <Section className="relative p-0 h-auto w-full">
-                    <Image src={articleData.featuredImage.node.sourceUrl}
-                        alt={articleData.featuredImage.node.altText}
-                        width={1920}
-                        height={280}
-                        quality={85}
-                        sizes="100vw"
-                        priority
-                        className="w-full max-h-[280px] object-cover blur-md" />
-                </Section>
-            )}
+            {/*{articleData.featuredImage && (*/}
+            {/*    <Section className="relative p-0 h-[421px] w-full">*/}
+            {/*        <Image src={articleData.featuredImage.node.sourceUrl}*/}
+            {/*            alt={articleData.featuredImage.node.altText}*/}
+            {/*            width={1920}*/}
+            {/*            height={280}*/}
+            {/*            quality={85}*/}
+            {/*            sizes="100vw"*/}
+            {/*            priority*/}
+            {/*            className="w-full h-full object-cover blur-[10px]" />*/}
+            {/*    </Section>*/}
+            {/*)}*/}
             <Article title={articleData.title}
                 date={articleData.date}
                 featuredImage={articleData.featuredImage?.node.sourceUrl}>
