@@ -1,5 +1,5 @@
 import { PiMapPinLight } from 'react-icons/pi';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -91,8 +91,8 @@ export const EventsList = () => {
                                     className={styles.anchor}>
                                     <div className={styles.dateTimeContainer}>
                                         <p>&gt;</p>
-                                        <p>{moment(event.eventsFields?.eventDateTime).format('MMM Do, YYYY')}</p>
-                                        <p>{moment(event.eventsFields?.eventDateTime).format('h:mm A')}</p>
+                                        <p>{moment.tz(event.eventsFields?.eventDateTime, 'America/Los_Angeles').format('MMM Do, YYYY')}</p>
+                                        <p>{moment.tz(event.eventsFields?.eventDateTime, 'America/Los_Angeles').format('h:mm A')}</p>
                                     </div>
                                     <div className={styles.detailsContainer}>
                                         {event.featuredImage && (

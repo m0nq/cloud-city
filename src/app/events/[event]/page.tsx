@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import Image from 'next/image';
 import DOMPurify from 'isomorphic-dompurify';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 import '@components/shared/styles/content.styles.css';
 import styles from './event.module.css';
@@ -36,9 +36,9 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                 <div className={styles.eventDetailsContainer}>
                     <EventLocation address={eventData.eventsFields?.address || 'TBA'} />
                     <p className={styles.paragraph}>
-                        {moment(eventData.eventsFields?.eventDateTime).format('MMMM Do, YYYY')}
+                        {moment.tz(eventData.eventsFields?.eventDateTime, 'America/Los_Angeles').format('MMMM Do, YYYY')}
                     </p>
-                    <p className={styles.paragraph}>{moment(eventData.eventsFields?.eventDateTime).format('h:mm A')}</p>
+                    <p className={styles.paragraph}>{moment.tz(eventData.eventsFields?.eventDateTime, 'America/Los_Angeles').format('h:mm A')}</p>
                 </div>
                 {eventData.featuredImage && (
                     <div className={styles.featuredImageContainer}>
