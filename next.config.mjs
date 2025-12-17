@@ -8,6 +8,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 const nextConfig = {
     reactStrictMode: true,
+    serverExternalPackages: ['isomorphic-dompurify', 'jsdom'],
     compiler: {
         removeConsole: process.env.NODE_ENV === 'production'
     },
