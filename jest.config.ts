@@ -1,3 +1,4 @@
+// jest.config.ts
 /**
  * For a detailed explanation regarding each configuration property, visit:
  * https://jestjs.io/docs/configuration
@@ -28,7 +29,15 @@ const config: Config = {
     collectCoverage: true,
 
     // An array of glob patterns indicating a set of files for which coverage information should be collected
-    // collectCoverageFrom: undefined,
+    collectCoverageFrom: [
+        'src/**/*.{ts,tsx}',
+        '!src/**/*.d.ts',
+        '!src/**/__tests__/**',
+        '!src/**/__mocks__/**',
+        '!src/**/*.test.{ts,tsx}',
+        '!src/**/*.spec.{ts,tsx}',
+        '!src/**/*.stories.{ts,tsx}'
+    ],
 
     // The directory where Jest should output its coverage files
     coverageDirectory: 'coverage',
@@ -50,7 +59,32 @@ const config: Config = {
     // ],
 
     // An object that configures minimum threshold enforcement for coverage results
-    // coverageThreshold: undefined,
+    coverageThreshold: {
+        global: {
+            statements: 50,
+            branches: 80,
+            functions: 46,
+            lines: 50
+        },
+        "src/app/api/webhooks/luma/route.ts": {
+            statements: 90,
+            branches: 80,
+            functions: 100,
+            lines: 90
+        },
+        "src/utils/api/mailer-actions.ts": {
+            statements: 90,
+            branches: 80,
+            functions: 100,
+            lines: 90
+        },
+        "src/utils/api/wp-actions.ts": {
+            statements: 90,
+            branches: 75,
+            functions: 100,
+            lines: 90
+        }
+    },
 
     // A path to a custom dependency extractor
     // dependencyExtractor: undefined,
@@ -95,6 +129,7 @@ const config: Config = {
 
     // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
     moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/src/$1',
         '^@components/(.*)$': '<rootDir>/src/components/$1',
         '^@app/(.*)$': '<rootDir>/src/app/$1',
         '^@hooks/(.*)$': '<rootDir>/src/hooks/$1',

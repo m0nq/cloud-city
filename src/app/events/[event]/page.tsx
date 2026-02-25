@@ -25,7 +25,7 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
     const { event } = await params;
     const eventData: Post = await getPost(event);
 
-    if (!eventData) {
+    if (!eventData?.title) {
         return <div>Event not found</div>;
     }
 

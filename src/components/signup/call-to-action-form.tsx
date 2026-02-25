@@ -1,9 +1,7 @@
 import { ChangeEvent } from 'react';
 import { useState } from 'react';
-import { useMemo } from 'react';
 import { memo } from 'react';
 import { useFormik } from 'formik';
-import debounce from 'lodash/debounce';
 
 import styles from './sign-up.module.css';
 import { Button } from '@components/utils/button';
@@ -94,11 +92,9 @@ const CallToActionForm = memo(() => {
         message: ''
     });
 
-    const debouncedValidate = useMemo(() => debounce((values: FormValues) => validate(values), 300), []);
-
     const { isSubmitting, errors, handleChange, handleSubmit, values } = useFormik({
         initialValues,
-        validate: debouncedValidate,
+        validate,
         validateOnBlur: true,
         validateOnChange: true,
         onSubmit: async values => {

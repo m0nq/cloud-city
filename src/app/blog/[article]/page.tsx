@@ -22,7 +22,7 @@ const BlogArticle = async ({ params }: { params: Promise<{ article: string }> })
     // Reconstruct the URI with leading slash
     const articleData: Post = await getPost(`/${article}`);
 
-    if (!articleData) {
+    if (!articleData?.title) {
         return <div>Article not found</div>;
     }
 

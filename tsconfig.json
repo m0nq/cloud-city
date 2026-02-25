@@ -1,30 +1,52 @@
 {
-  "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["node", "jest", "@testing-library/jest-dom"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "baseUrl": "./",
-    "paths": {
-      "@*": ["./src/*"],
-      "@public/*": ["./public/*"]
+    "compilerOptions": {
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "types": [
+            "node",
+            "jest",
+            "@testing-library/jest-dom"
+        ],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "react-jsx",
+        "incremental": true,
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "baseUrl": "./",
+        "paths": {
+            "@*": [
+                "./src/*"
+            ],
+            "@public/*": [
+                "./public/*"
+            ]
+        },
+        "target": "ES2017"
     },
-    "target": "ES2017"
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "./jest.setup.ts", "**/*.test.{ts,tsx}"],
-  "exclude": ["node_modules"]
+    "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        ".next/types/**/*.ts",
+        "./jest.setup.ts",
+        "**/*.test.{ts,tsx}",
+        ".next/dev/types/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }
