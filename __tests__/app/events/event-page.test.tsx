@@ -48,6 +48,22 @@ describe("events/[event]/page", () => {
         ]);
     });
 
+    it("generateStaticParams returns empty array when post lookup fails", async () => {
+        const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => undefined);
+        mockGetPosts.mockRejectedValueOnce(new Error("wp-timeout"));
+
+        try {
+            const params = await generateStaticParams();
+            expect(params).toEqual([]);
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                "[events/[event]] Failed to generate static params:",
+                expect.any(Error),
+            );
+        } finally {
+            consoleErrorSpy.mockRestore();
+        }
+    });
+
     it("renders not-found UI when getPost returns an empty object", async () => {
         mockGetPost.mockResolvedValueOnce({});
 

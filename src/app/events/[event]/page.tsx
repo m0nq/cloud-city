@@ -14,11 +14,16 @@ import { IoTicketOutline } from 'react-icons/io5';
 import { EventLocation } from '@components/location/event-location';
 
 export const generateStaticParams = async (): Promise<{ event: string }[]> => {
-    const { posts: events }: { posts: PostEdges[] } = await getPosts({ tag: 'Cloud City', category: 'Events' }, 100);
+    try {
+        const { posts: events }: { posts: PostEdges[] } = await getPosts({ tag: 'Cloud City', category: 'Events' }, 100);
 
-    return events.map(({ post }: PostEdges) => ({
-        event: post.uri.split('/').filter(Boolean).pop() || ''
-    }));
+        return events.map(({ post }: PostEdges) => ({
+            event: post.uri.split('/').filter(Boolean).pop() || ''
+        }));
+    } catch (error) {
+        console.error('[events/[event]] Failed to generate static params:', error);
+        return [];
+    }
 };
 
 const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Promise<ReactNode> => {

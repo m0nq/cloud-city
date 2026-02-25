@@ -9,12 +9,17 @@ import { Article } from '@components/post/article';
 import { Section } from '@components/utils/section';
 
 export const generateStaticParams = async (): Promise<{ article: string }[]> => {
-    const { posts } = await getPosts({ category: 'Blog', tag: 'Cloud City' }, 100);
+    try {
+        const { posts } = await getPosts({ category: 'Blog', tag: 'Cloud City' }, 100);
 
-    return posts.map(({ post }) => ({
-        // Remove leading and trailing slashes and get the last segment
-        article: post.uri.split('/').filter(Boolean).pop() || ''
-    }));
+        return posts.map(({ post }) => ({
+            // Remove leading and trailing slashes and get the last segment
+            article: post.uri.split('/').filter(Boolean).pop() || ''
+        }));
+    } catch (error) {
+        console.error('[blog/[article]] Failed to generate static params:', error);
+        return [];
+    }
 };
 
 const BlogArticle = async ({ params }: { params: Promise<{ article: string }> }): Promise<ReactNode> => {
