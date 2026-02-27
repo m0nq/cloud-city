@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
-import DOMPurify from 'isomorphic-dompurify';
 
 import { Post } from '@data-types/types';
 import { getPost } from '@utils/api/wp-actions';
 import { Article } from '@components/post/article';
+import { sanitizeContent } from '@utils/html-sanitizer';
 
 const CodeOfConduct = async (): Promise<ReactNode> => {
     // get code of conduct post from wp-actions
@@ -11,7 +11,7 @@ const CodeOfConduct = async (): Promise<ReactNode> => {
 
     return (
         <Article title={codeOfConduct.title}>
-            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(codeOfConduct.content || '') }}></div>
+            <div dangerouslySetInnerHTML={{ __html: sanitizeContent(codeOfConduct.content || '') }}></div>
         </Article>
     );
 };

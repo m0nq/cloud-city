@@ -13,11 +13,6 @@ jest.mock("@/components/location/event-location", () => ({
     EventLocation: ({ address }: { address: string }) => <p>{address}</p>,
 }));
 
-jest.mock("isomorphic-dompurify", () => ({
-    __esModule: true,
-    default: { sanitize: (value: string) => value },
-}));
-
 import EventPage, { generateStaticParams } from "@/app/events/[event]/page";
 import { getPost, getPosts } from "@/utils/api/wp-actions";
 

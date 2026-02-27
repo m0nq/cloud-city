@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
 import Image from 'next/image';
-import DOMPurify from 'isomorphic-dompurify';
 
 import { Post } from '@data-types/types';
 import { getPost } from '@utils/api/wp-actions';
 import { getPosts } from '@utils/api/wp-actions';
 import { Article } from '@components/post/article';
 import { Section } from '@components/utils/section';
+import { sanitizeContent } from '@utils/html-sanitizer';
 
 export const generateStaticParams = async (): Promise<{ article: string }[]> => {
     try {
@@ -48,7 +48,7 @@ const BlogArticle = async ({ params }: { params: Promise<{ article: string }> })
             <Article title={articleData.title}
                 date={articleData.date}
                 featuredImage={articleData.featuredImage?.node.sourceUrl}>
-                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(articleData.content || '') }}></div>
+                <div dangerouslySetInnerHTML={{ __html: sanitizeContent(articleData.content || '') }}></div>
             </Article>
         </>
     );

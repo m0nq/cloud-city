@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import Image from 'next/image';
-import DOMPurify from 'isomorphic-dompurify';
 import moment from 'moment-timezone';
 
 import '@components/shared/styles/content.styles.css';
@@ -12,6 +11,7 @@ import { Post } from '@data-types/types';
 import { BackButton } from '@components/utils/back-button/back-button';
 import { IoTicketOutline } from 'react-icons/io5';
 import { EventLocation } from '@components/location/event-location';
+import { sanitizeContent } from '@utils/html-sanitizer';
 
 export const generateStaticParams = async (): Promise<{ event: string }[]> => {
     try {
@@ -85,7 +85,7 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                     )}
                     <div
                         className={`${styles.eventContent} post-content`}
-                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(eventData.content || '') }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeContent(eventData.content || '') }}
                     />
                 </div>
                 <BackButton>← Back</BackButton>

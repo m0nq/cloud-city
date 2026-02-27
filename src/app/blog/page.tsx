@@ -5,6 +5,7 @@ import moment from 'moment';
 import styles from './blog.module.css';
 import { getPosts } from '@utils/api/wp-actions';
 import { Post } from '@data-types/types';
+import { sanitizeContent } from '@utils/html-sanitizer';
 
 const Blog = async () => {
     const { posts, pageInfo } = await getPosts({ tag: 'Cloud City', category: 'Blog' }, 100);
@@ -38,7 +39,7 @@ const Blog = async () => {
                                     </p>
                                 </div>
                                 <h2 className={styles.h2}>{post.title}</h2>
-                                <div dangerouslySetInnerHTML={{ __html: post.excerpt || '' }}></div>
+                                <div dangerouslySetInnerHTML={{ __html: sanitizeContent(post.excerpt || '') }}></div>
                             </div>
                         </div>
                     </Link>

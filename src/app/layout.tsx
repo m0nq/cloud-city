@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Viewport } from 'next';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import DOMPurify from 'isomorphic-dompurify';
 
 import './globals.css';
 import styles from './body.module.css';
@@ -22,15 +21,6 @@ export const metadata: Metadata = {
     title: 'Cloud City',
     description: 'The Bay Area no-alcohol music festival'
 };
-
-DOMPurify.addHook('afterSanitizeAttributes', node => {
-    // safely set all elements owning target to target=_blank
-    // https://developer.chrome.com/docs/lighthouse/best-practices/external-anchors-use-rel-noopener/
-    if ('target' in node) {
-        node.setAttribute('target', '_blank');
-        node.setAttribute('rel', 'noopener');
-    }
-});
 
 const RootLayout = ({ children }: Readonly<{ children: ReactNode }>): ReactNode => (
     <html lang="en" suppressHydrationWarning>

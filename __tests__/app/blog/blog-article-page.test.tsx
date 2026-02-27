@@ -5,11 +5,6 @@ jest.mock("@/utils/api/wp-actions", () => ({
     getPost: jest.fn(),
 }));
 
-jest.mock("isomorphic-dompurify", () => ({
-    __esModule: true,
-    default: { sanitize: (value: string) => value },
-}));
-
 import BlogArticlePage, { generateStaticParams } from "@/app/blog/[article]/page";
 import { getPost, getPosts } from "@/utils/api/wp-actions";
 

@@ -8,6 +8,7 @@ import Image from 'next/image';
 import styles from './events-section.module.css';
 import { PostEdges } from '@data-types/types';
 import { getPosts } from '@utils/api/wp-actions';
+import { sanitizeContent } from '@utils/html-sanitizer';
 
 export const EventsList = () => {
     const [events, setEvents] = useState<PostEdges[]>([]);
@@ -115,7 +116,7 @@ export const EventsList = () => {
                                         <div className={styles.contentContainer}>
                                             <h4 className={styles.h4}>{event.title}</h4>
                                             <div className={styles.paragraph}
-                                                dangerouslySetInnerHTML={{ __html: event.excerpt || '' }} />
+                                                dangerouslySetInnerHTML={{ __html: sanitizeContent(event.excerpt || '') }} />
                                             <div className={styles.locationDetailsContainer}>
                                                 <PiMapPinLight color="#de78ed" size={24} />
                                                 <p className={styles.address}>{event.eventsFields?.address || 'TBA'}</p>

@@ -6,14 +6,6 @@ jest.mock("@/components/utils/fonts", () => ({
     openSans: { variable: "font-open-sans" },
 }));
 
-jest.mock("isomorphic-dompurify", () => ({
-    __esModule: true,
-    default: {
-        addHook: jest.fn(),
-    },
-}));
-
-import DOMPurify from "isomorphic-dompurify";
 import RootLayout, { metadata, viewport } from "@/app/layout";
 
 describe("app/layout", () => {
@@ -46,9 +38,5 @@ describe("app/layout", () => {
         expect(bodyChildren).toHaveLength(4);
         expect(bodyChildren[1].props.children).toBe("Main Content");
         expect(bodyChildren[3].props.gaId).toBe("G-TEST-ID");
-
-        // Validate mocked sanitization API is still present for the module contract.
-        const mocked = DOMPurify as unknown as { addHook: unknown };
-        expect(typeof mocked.addHook).toBe("function");
     });
 });
