@@ -1,7 +1,7 @@
 // __tests__/scripts/import-luma.test.ts
 /** @jest-environment node */
 
-import { parseLumaCsvDryRun } from "../../scripts/import-luma";
+import { executeImportLuma, parseLumaCsvDryRun } from "../../scripts/import-luma";
 
 describe("import-luma dry-run parser", () => {
     it("detects headers and filters opt-ins with yes/true values", async () => {
@@ -97,5 +97,75 @@ describe("import-luma dry-run parser", () => {
 
         const uniqueEmails = new Set(result.optInSubscribers.map((item) => item.email));
         expect(uniqueEmails.size).toBe(200);
+    });
+
+    it("syncs opted-in subscribers through the configured provider", async () => {
+        const createProvider = jest.fn().mockReturnValue({
+            name: "mailerlite",
+            upsertSubscriber: jest.fn().mockResolvedValue(undefined),
+            createDraftCampaign: jest.fn(),
+        });
+        const wait = jest.fn().mockResolvedValue(undefined);
+        const progressWriter = jest.fn();
+
+        const result = await executeImportLuma({
+            argv: ["node", "scripts/import-luma.ts", "sample.csv"],
+            env: {
+                CC_EMAIL_API_KEY: "test-api-key",
+            },
+            parseFile: async () => ({
+                detectedHeaders: ["Name", "Email", "Join our newsletter"],
+                totalRecords: 2,
+                optInSubscribers: [
+                    { name: "Ada", email: "ada@example.com" },
+                    { name: "Bob", email: "bob@example.com" },
+                ],
+                headerMap: {
+                    email: "Email",
+                    optIn: "Join our newsletter",
+                    name: "Name",
+                },
+            }),
+            createProvider,
+            wait,
+            progressWriter,
+        });
+
+        expect(createProvider).toHaveBeenCalledWith({
+            providerName: "mailerlite",
+            apiKey: "test-api-key",
+        });
+        expect(wait).toHaveBeenCalledTimes(2);
+        expect(progressWriter).toHaveBeenCalledTimes(2);
+        expect(result.syncResult).toEqual({
+            successCount: 2,
+            failCount: 0,
+            failures: [],
+        });
+    });
+
+    it("skips provider sync when no opted-in subscribers are found", async () => {
+        const createProvider = jest.fn();
+
+        const result = await executeImportLuma({
+            argv: ["node", "scripts/import-luma.ts", "sample.csv"],
+            env: {
+                CC_EMAIL_API_KEY: "test-api-key",
+            },
+            parseFile: async () => ({
+                detectedHeaders: ["Name", "Email", "Join our newsletter"],
+                totalRecords: 1,
+                optInSubscribers: [],
+                headerMap: {
+                    email: "Email",
+                    optIn: "Join our newsletter",
+                    name: "Name",
+                },
+            }),
+            createProvider,
+        });
+
+        expect(createProvider).not.toHaveBeenCalled();
+        expect(result.syncResult).toBeNull();
     });
 });

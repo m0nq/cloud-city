@@ -1,9 +1,14 @@
 import path from "path";
-import MailerLite from "@mailerlite/mailerlite-nodejs";
-import type { CreateUpdateCampaignParams } from "@mailerlite/mailerlite-nodejs";
-import * as dotenv from "dotenv";
 
-export const MAILERLITE_MASTER_GROUP_ID = "125237533318579422";
+import type { DraftCampaignInput, DraftCampaignResult, EmailMarketingProvider } from "./email-platform";
+import {
+    DEFAULT_EMAIL_AUDIENCE_ID,
+    DEFAULT_EMAIL_FROM_NAME,
+    loadEmailPlatformEnvFiles,
+    resolveEmailPlatformEnv,
+} from "./email-platform";
+import { createMailerLiteProvider } from "./providers/mailerlite";
+
 export const DRAFT_CAMPAIGN_PLACEHOLDER_HTML = "<h1>Paste ChatGPT HTML Here</h1>";
 export const DRAFT_CAMPAIGN_USAGE =
     "❌ Usage: pnpm run campaign:draft -- \"<subject-line>\"";
@@ -16,16 +21,10 @@ const formatUnknown = (value: unknown) => {
     }
 };
 
-type MailerLiteCampaignClient = {
-    campaigns: {
-        create: (payload: CreateUpdateCampaignParams) => Promise<{ data?: { data?: { id?: string; status?: string; type?: string } } }>;
-    };
-};
-
 type ExecuteDraftCampaignOptions = {
     argv?: string[];
     env?: NodeJS.ProcessEnv;
-    createClient?: (apiKey: string) => MailerLiteCampaignClient;
+    createProvider?: (args: { providerName: string; apiKey: string }) => EmailMarketingProvider;
 };
 
 type RunDraftCampaignCliOptions = ExecuteDraftCampaignOptions & {
@@ -34,13 +33,22 @@ type RunDraftCampaignCliOptions = ExecuteDraftCampaignOptions & {
     exit?: (code: number) => never;
 };
 
-const defaultCreateClient = (apiKey: string): MailerLiteCampaignClient => {
-    return new MailerLite({ api_key: apiKey }) as unknown as MailerLiteCampaignClient;
+const createEmailMarketingProvider = ({
+    providerName,
+    apiKey,
+}: {
+    providerName: string;
+    apiKey: string;
+}) => {
+    if (providerName === "mailerlite") {
+        return createMailerLiteProvider({ apiKey });
+    }
+
+    throw new Error(`Unsupported email provider: ${providerName}`);
 };
 
 export const loadDraftCampaignEnvFiles = () => {
-    dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
-    dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+    loadEmailPlatformEnvFiles();
 };
 
 export const resolveDraftCampaignCliArgs = (argv: string[] = process.argv) => {
@@ -55,71 +63,66 @@ export const resolveDraftCampaignCliArgs = (argv: string[] = process.argv) => {
 };
 
 export const resolveDraftCampaignEnv = (env: NodeJS.ProcessEnv = process.env) => {
-    const apiKey = env.CC_API_KEY;
-    const fromEmail = env.MAILERLITE_FROM_EMAIL;
-    const fromName = env.MAILERLITE_FROM_NAME || "Cloud City";
+    const { providerName, apiKey, audienceId, fromEmail, fromName } = resolveEmailPlatformEnv(
+        env,
+        { requireFromEmail: true },
+    );
 
-    if (!apiKey) {
-        throw new Error("❌ System Error: CC_API_KEY is missing from .env.local/.env");
-    }
-
-    if (!fromEmail) {
-        throw new Error("❌ System Error: MAILERLITE_FROM_EMAIL is missing from .env.local/.env");
-    }
-
-    return { apiKey, fromEmail, fromName };
+    return {
+        providerName,
+        apiKey,
+        audienceId,
+        fromEmail: fromEmail!,
+        fromName: fromName || DEFAULT_EMAIL_FROM_NAME,
+    };
 };
 
-export const buildDraftCampaignPayload = ({
+export const buildDraftCampaignInput = ({
     subject,
     fromEmail,
     fromName,
     content = DRAFT_CAMPAIGN_PLACEHOLDER_HTML,
-    groupId = MAILERLITE_MASTER_GROUP_ID,
+    audienceId = DEFAULT_EMAIL_AUDIENCE_ID,
 }: {
     subject: string;
     fromEmail: string;
     fromName: string;
     content?: string;
-    groupId?: string;
-}): CreateUpdateCampaignParams => {
+    audienceId?: string;
+}): DraftCampaignInput => {
     return {
-        name: `Cloud City Draft - ${subject}`,
-        type: "regular",
-        emails: [
-            {
-                subject,
-                from_name: fromName,
-                from: fromEmail,
-                content,
-            },
-        ],
-        groups: [groupId],
+        subject,
+        fromEmail,
+        fromName,
+        content,
+        audienceId,
     };
 };
 
 export const executeDraftCampaign = async ({
     argv = process.argv,
     env = process.env,
-    createClient = defaultCreateClient,
+    createProvider = createEmailMarketingProvider,
 }: ExecuteDraftCampaignOptions = {}) => {
     const { subject } = resolveDraftCampaignCliArgs(argv);
-    const { apiKey, fromEmail, fromName } = resolveDraftCampaignEnv(env);
+    const { providerName, apiKey, audienceId, fromEmail, fromName } = resolveDraftCampaignEnv(env);
 
-    const payload = buildDraftCampaignPayload({
+    const input = buildDraftCampaignInput({
         subject,
         fromEmail,
         fromName,
+        audienceId,
     });
 
-    const client = createClient(apiKey);
-    const response = await client.campaigns.create(payload);
-    const campaign = response.data?.data;
+    const provider = createProvider({ providerName, apiKey });
+    const campaign = await provider.createDraftCampaign(input);
 
     return {
         subject,
-        payload,
+        input,
         campaign,
+        providerName: provider.name,
+        audienceId,
     };
 };
 
@@ -129,7 +132,7 @@ export const runDraftCampaignCli = async ({
     loadEnv = loadDraftCampaignEnvFiles,
     logger = console,
     exit = process.exit,
-    createClient = defaultCreateClient,
+    createProvider = createEmailMarketingProvider,
 }: RunDraftCampaignCliOptions = {}) => {
     loadEnv();
 
@@ -137,12 +140,13 @@ export const runDraftCampaignCli = async ({
         const result = await executeDraftCampaign({
             argv,
             env,
-            createClient,
+            createProvider,
         });
 
         logger.log("\n📝 Creating draft campaign shell...");
         logger.log(`📬 Subject: ${result.subject}`);
-        logger.log(`👥 Group: ${MAILERLITE_MASTER_GROUP_ID}`);
+        logger.log(`🧰 Provider: ${result.providerName}`);
+        logger.log(`👥 Group: ${result.audienceId}`);
         logger.log(`🧩 Content shell: ${DRAFT_CAMPAIGN_PLACEHOLDER_HTML}`);
         logger.log("\n✅ Draft campaign created.");
         logger.log(`🆔 Campaign ID: ${result.campaign?.id || "unknown"}`);
@@ -159,15 +163,15 @@ export const runDraftCampaignCli = async ({
         };
 
         if (errorWithResponse?.response?.status) {
-            logger.error("❌ MailerLite API status:", String(errorWithResponse.response.status));
+            logger.error("❌ Email provider API status:", String(errorWithResponse.response.status));
         }
 
         if (errorWithResponse?.response?.data) {
-            logger.error("❌ MailerLite API response:", formatUnknown(errorWithResponse.response.data));
+            logger.error("❌ Email provider API response:", formatUnknown(errorWithResponse.response.data));
         } else if (errorWithResponse?.body) {
-            logger.error("❌ MailerLite API body:", formatUnknown(errorWithResponse.body));
+            logger.error("❌ Email provider API body:", formatUnknown(errorWithResponse.body));
         } else if (errorWithResponse?.data) {
-            logger.error("❌ MailerLite API data:", formatUnknown(errorWithResponse.data));
+            logger.error("❌ Email provider API data:", formatUnknown(errorWithResponse.data));
         }
 
         exit(1);

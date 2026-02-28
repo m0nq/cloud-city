@@ -2,11 +2,18 @@
 import fs from "fs";
 import path from "path";
 import { parse } from "csv-parse";
-import MailerLite from "@mailerlite/mailerlite-nodejs";
-import * as dotenv from "dotenv";
 import { Readable } from "stream";
 
-export type SubscriberRecord = { name: string; email: string };
+import type { EmailMarketingProvider } from "./email-platform";
+import {
+    loadEmailPlatformEnvFiles,
+    resolveEmailPlatformEnv,
+    syncSubscribersSequentially,
+    type SubscriberRecord,
+} from "./email-platform";
+import { createMailerLiteProvider } from "./providers/mailerlite";
+
+export type { SubscriberRecord } from "./email-platform";
 
 export type DryRunSummary = {
     detectedHeaders: string[];
@@ -19,11 +26,18 @@ export type DryRunSummary = {
     };
 };
 
-const TRUTHY_VALUES = new Set(["true", "yes", "y", "1"]);
-const MAILERLITE_MASTER_GROUP_ID = "125237533318579422";
-const MAILERLITE_REQUEST_DELAY_MS = 300;
+export type ExecuteImportLumaOptions = {
+    argv?: string[];
+    env?: NodeJS.ProcessEnv;
+    parseFile?: (csvFilePath: string) => Promise<DryRunSummary>;
+    createProvider?: (args: { providerName: string; apiKey: string }) => EmailMarketingProvider;
+    wait?: (ms: number) => Promise<void>;
+    progressWriter?: (chunk: string) => void | boolean;
+};
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const TRUTHY_VALUES = new Set(["true", "yes", "y", "1"]);
+export const IMPORT_LUMA_USAGE =
+    "❌ Usage: pnpm ts-node scripts/import-luma.ts <path-to-luma-export.csv>";
 
 const normalizeHeader = (value: string) => value.trim().toLowerCase().replace(/\s+/g, " ");
 
@@ -60,6 +74,31 @@ const resolveHeaderMap = (headers: string[]) => {
         optIn,
         name,
     };
+};
+
+const createEmailMarketingProvider = ({
+    providerName,
+    apiKey,
+}: {
+    providerName: string;
+    apiKey: string;
+}): EmailMarketingProvider => {
+    if (providerName === "mailerlite") {
+        return createMailerLiteProvider({ apiKey });
+    }
+
+    throw new Error(`Unsupported email provider: ${providerName}`);
+};
+
+export const resolveImportLumaCliArgs = (argv: string[] = process.argv) => {
+    const csvFilePath = argv[2]?.trim();
+    const hasExtraArgs = argv.length > 3;
+
+    if (!csvFilePath || hasExtraArgs) {
+        throw new Error(IMPORT_LUMA_USAGE);
+    }
+
+    return { csvFilePath };
 };
 
 export const parseLumaCsvDryRun = async (csvContents: string): Promise<DryRunSummary> => {
@@ -149,79 +188,149 @@ export const parseLumaCsvDryRunFromFile = async (csvFilePath: string) => {
     return parseLumaCsvDryRunFromReadable(fs.createReadStream(resolvedPath));
 };
 
+export type PrepareImportLumaResult = {
+    csvFilePath: string;
+    providerName: string;
+    apiKey: string;
+    audienceId: string;
+    summary: DryRunSummary;
+};
+
+export const prepareImportLuma = async ({
+    argv = process.argv,
+    env = process.env,
+    parseFile = parseLumaCsvDryRunFromFile,
+}: Pick<ExecuteImportLumaOptions, "argv" | "env" | "parseFile"> = {}): Promise<PrepareImportLumaResult> => {
+    const { csvFilePath } = resolveImportLumaCliArgs(argv);
+    const { providerName, apiKey, audienceId } = resolveEmailPlatformEnv(env);
+    const summary = await parseFile(csvFilePath);
+
+    return {
+        csvFilePath,
+        providerName,
+        apiKey,
+        audienceId,
+        summary,
+    };
+};
+
+export const syncPreparedImportLuma = async ({
+    prepared,
+    createProvider = createEmailMarketingProvider,
+    wait,
+    progressWriter = (chunk) => process.stdout.write(chunk),
+}: Pick<ExecuteImportLumaOptions, "createProvider" | "wait" | "progressWriter"> & {
+    prepared: PrepareImportLumaResult;
+}) => {
+    if (prepared.summary.optInSubscribers.length === 0) {
+        return {
+            ...prepared,
+            syncResult: null,
+        };
+    }
+
+    const provider = createProvider({
+        providerName: prepared.providerName,
+        apiKey: prepared.apiKey,
+    });
+
+    const syncResult = await syncSubscribersSequentially({
+        provider,
+        subscribers: prepared.summary.optInSubscribers,
+        audienceId: prepared.audienceId,
+        wait,
+        onProgress: () => {
+            progressWriter(".");
+        },
+    });
+
+    return {
+        ...prepared,
+        providerName: provider.name,
+        syncResult,
+    };
+};
+
+export const executeImportLuma = async ({
+    argv = process.argv,
+    env = process.env,
+    parseFile = parseLumaCsvDryRunFromFile,
+    createProvider = createEmailMarketingProvider,
+    wait,
+    progressWriter = (chunk) => process.stdout.write(chunk),
+}: ExecuteImportLumaOptions = {}) => {
+    const prepared = await prepareImportLuma({
+        argv,
+        env,
+        parseFile,
+    });
+
+    return syncPreparedImportLuma({
+        prepared,
+        createProvider,
+        wait,
+        progressWriter,
+    });
+};
+
 const runCli = async () => {
-    dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+    loadEmailPlatformEnvFiles();
 
-    const apiKey = process.env.CC_API_KEY;
-    if (!apiKey) {
-        console.error("❌ System Error: CC_API_KEY is missing from .env.local");
-        process.exit(1);
-    }
-
-    const mailerlite = new MailerLite({ api_key: apiKey });
-
-    const csvFilePath = process.argv[2];
-    if (!csvFilePath) {
-        console.error("❌ Usage: pnpm ts-node scripts/import-luma.ts <path-to-luma-export.csv>");
-        process.exit(1);
-    }
-
-    const resolvedPath = path.resolve(process.cwd(), csvFilePath);
-    if (!fs.existsSync(resolvedPath)) {
-        console.error(`❌ Error: File not found at ${resolvedPath}`);
-        process.exit(1);
-    }
-
-    console.log(`\n🔍 Analyst Check: Initiating import for ${path.basename(resolvedPath)}...\n`);
+    let csvFilePath = "";
 
     try {
-        const summary = await parseLumaCsvDryRunFromFile(resolvedPath);
+        const result = await prepareImportLuma({
+            argv: process.argv,
+            env: process.env,
+        });
+        csvFilePath = result.csvFilePath;
+        const resolvedPath = path.resolve(process.cwd(), csvFilePath);
 
-        console.log("📊 CSV Headers Detected:", summary.detectedHeaders);
+        console.log(`\n🔍 Analyst Check: Initiating import for ${path.basename(resolvedPath)}...\n`);
+        console.log("📊 CSV Headers Detected:", result.summary.detectedHeaders);
         console.log(`\n✅ Parsing Complete.`);
-        console.log(`📈 Total Records Processed: ${summary.totalRecords}`);
-        console.log(`📨 Valid Opt-Ins Found: ${summary.optInSubscribers.length}`);
+        console.log(`📈 Total Records Processed: ${result.summary.totalRecords}`);
+        console.log(`📨 Valid Opt-Ins Found: ${result.summary.optInSubscribers.length}`);
 
-        if (summary.optInSubscribers.length === 0) {
+        if (result.summary.optInSubscribers.length === 0) {
             console.log("\n🛑 No valid opt-ins found. Exiting.");
             return;
         }
 
-        console.log(`\n🚀 Beginning sequential MailerLite sync for ${summary.optInSubscribers.length} subscribers...`);
+        console.log(`\n🚀 Beginning sequential ${result.providerName} sync for ${result.summary.optInSubscribers.length} subscribers...`);
 
-        let successCount = 0;
-        let failCount = 0;
+        const executionResult = await syncPreparedImportLuma({
+            prepared: result,
+        });
 
-        for (const sub of summary.optInSubscribers) {
-            try {
-                await mailerlite.subscribers.createOrUpdate({
-                    email: sub.email,
-                    fields: {
-                        name: sub.name,
-                    },
-                    groups: [MAILERLITE_MASTER_GROUP_ID],
-                    status: "unconfirmed",
-                });
-
-                successCount += 1;
-                process.stdout.write(".");
-                await delay(MAILERLITE_REQUEST_DELAY_MS);
-            } catch (error: unknown) {
-                failCount += 1;
-                const message = error instanceof Error ? error.message : String(error);
-                console.error(`\n❌ Failed to sync ${sub.email}:`, message);
+        if (executionResult.syncResult?.failures.length) {
+            for (const failure of executionResult.syncResult.failures) {
+                console.error(`\n❌ Failed to sync ${failure.email}:`, failure.message);
             }
         }
 
         console.log("\n\n✅ Sync Complete.");
-        console.log(`📊 Success: ${successCount}`);
-        console.log(`⚠️ Failed: ${failCount}`);
+        console.log(`📊 Success: ${executionResult.syncResult?.successCount || 0}`);
+        console.log(`⚠️ Failed: ${executionResult.syncResult?.failCount || 0}`);
 
-        if (failCount > 0) {
+        if ((executionResult.syncResult?.failCount || 0) > 0) {
             process.exitCode = 1;
         }
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
+        if (message === IMPORT_LUMA_USAGE) {
+            console.error(message);
+            process.exit(1);
+        }
+
+        if (csvFilePath) {
+            const resolvedPath = path.resolve(process.cwd(), csvFilePath);
+            if (!fs.existsSync(resolvedPath)) {
+                console.error(`❌ Error: File not found at ${resolvedPath}`);
+                process.exit(1);
+            }
+        }
+
         console.error("❌ Import Error:", message);
         process.exit(1);
     }
