@@ -1,0 +1,6 @@
+Name,Email,Join our newsletter,Ticket Type
+"Lopez, Ana",ana.lopez@example.com,yes,General Admission
+Marcus Reed,marcus.reed@example.com,no,General Admission
+Priya Shah,priya.shah@example.com,true,VIP
+Ken Ito,ken.ito@example.com,false,General Admission
+Ari Kim,ari.kim@example.com,YES,VIP

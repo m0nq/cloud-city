@@ -1,0 +1,2 @@
+﻿api_id,name,first_name,last_name,email,phone_number,created_at,approval_status,checked_in_at,custom_source,qr_code_url,amount,amount_tax,amount_discount,currency,coupon_code,eth_address,solana_address,survey_response_rating,survey_response_feedback,ticket_type_id,ticket_name,Join our newsletter for updates on future events.
+test-api-id-1,Test User,Test,User,monk.wellington+oakstoptest@gmail.com,,2026-02-26T18:30:00Z,approved,,script-test,,0,0,0,USD,,,,,,test-ticket-type,Test Ticket,true

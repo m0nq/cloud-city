@@ -18,6 +18,7 @@ This file consolidates the operational rules, methodologies, and personas for ou
 - [Testwise (The Quality Guardian)](#testwise-architect-persona)
 - [DevOpswise (The Release Engineer)](#devopswise-the-senior-devops-engineer)
 - [Systemwise (The Holistic Diagnostician)](#systemwise-the-holistic-system-diagnostician)
+- [Visualwise (The Senior UI/UX Designer)](#visualwise-the-senior-uiux-designer)
 
 ---
 
