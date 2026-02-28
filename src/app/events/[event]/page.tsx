@@ -1,27 +1,30 @@
-import { ReactNode } from 'react';
-import Image from 'next/image';
-import moment from 'moment-timezone';
+import { ReactNode } from "react";
+import Image from "next/image";
+import moment from "moment-timezone";
 
-import '@components/shared/styles/content.styles.css';
-import styles from './event.module.css';
-import { getPost } from '@utils/api/wp-actions';
-import { getPosts } from '@utils/api/wp-actions';
-import { PostEdges } from '@data-types/types';
-import { Post } from '@data-types/types';
-import { BackButton } from '@components/utils/back-button/back-button';
-import { IoTicketOutline } from 'react-icons/io5';
-import { EventLocation } from '@components/location/event-location';
-import { sanitizeContent } from '@utils/html-sanitizer';
+import "@components/shared/styles/content.styles.css";
+import styles from "./event.module.css";
+import { getPost } from "@utils/api/wp-actions";
+import { getPosts } from "@utils/api/wp-actions";
+import { PostEdges } from "@data-types/types";
+import { Post } from "@data-types/types";
+import { BackButton } from "@components/utils/back-button/back-button";
+import { EventLocation } from "@components/location/event-location";
+import { sanitizeContent } from "@utils/html-sanitizer";
+import { TicketLink } from "@components/events/ticket-link";
 
 export const generateStaticParams = async (): Promise<{ event: string }[]> => {
     try {
-        const { posts: events }: { posts: PostEdges[] } = await getPosts({ tag: 'Cloud City', category: 'Events' }, 100);
+        const { posts: events }: { posts: PostEdges[] } = await getPosts({
+            tag: "Cloud City",
+            category: "Events",
+        }, 100);
 
         return events.map(({ post }: PostEdges) => ({
-            event: post.uri.split('/').filter(Boolean).pop() || ''
+            event: post.uri.split("/").filter(Boolean).pop() || "",
         }));
     } catch (error) {
-        console.error('[events/[event]] Failed to generate static params:', error);
+        console.error("[events/[event]] Failed to generate static params:", error);
         return [];
     }
 };
@@ -39,11 +42,11 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
             <div className={styles.bannerSection}>
                 <h1 className={styles.h1}>{eventData.title}</h1>
                 <div className={styles.eventDetailsContainer}>
-                    <EventLocation address={eventData.eventsFields?.address || 'TBA'} />
+                    <EventLocation address={eventData.eventsFields?.address || "TBA"} />
                     <p className={styles.paragraph}>
-                        {moment.tz(eventData.eventsFields?.eventDateTime, 'America/Los_Angeles').format('MMMM Do, YYYY')}
+                        {moment.tz(eventData.eventsFields?.eventDateTime, "America/Los_Angeles").format("MMMM Do, YYYY")}
                     </p>
-                    <p className={styles.paragraph}>{moment.tz(eventData.eventsFields?.eventDateTime, 'America/Los_Angeles').format('h:mm A')}</p>
+                    <p className={styles.paragraph}>{moment.tz(eventData.eventsFields?.eventDateTime, "America/Los_Angeles").format("h:mm A")}</p>
                 </div>
                 {eventData.featuredImage && (
                     <div className={styles.featuredImageContainer}>
@@ -60,15 +63,7 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
             <article className={styles.eventDetailsSection}>
                 <div className={styles.ticketingDetailsContainer}>
                     <h3 className={styles.h3}>Details</h3>
-                    {eventData.eventsFields?.ticketLink && (
-                        <a className={styles.ticketingLink}
-                            href={eventData.eventsFields?.ticketLink}
-                            target="_blank"
-                            rel="noopener">
-                            <IoTicketOutline color="#8888dd" className={styles.ticketIcon} />
-                            <p>Tickets</p>
-                        </a>
-                    )}
+                    <TicketLink href={eventData.eventsFields?.ticketLink} />
                 </div>
                 <div className={`${styles.eventContentSection}`}>
                     {eventData.featuredImage && (
@@ -85,7 +80,7 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                     )}
                     <div
                         className={`${styles.eventContent} post-content`}
-                        dangerouslySetInnerHTML={{ __html: sanitizeContent(eventData.content || '') }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeContent(eventData.content || "") }}
                     />
                 </div>
                 <BackButton>← Back</BackButton>

@@ -84,6 +84,14 @@ describe("EventsList", () => {
 
         expect(await screen.findByText("Future Event")).toBeInTheDocument();
         expect(screen.queryByText("Past Event")).not.toBeInTheDocument();
+        expect(screen.getByRole("link", { name: "Tickets" })).toHaveAttribute(
+            "href",
+            "https://tickets.example.com/future",
+        );
+        expect(screen.getByRole("link", { name: /Future Event/i })).toHaveAttribute(
+            "href",
+            "/events/future-event",
+        );
     });
 
     it("shows fallback message when no upcoming events are available", async () => {
@@ -128,6 +136,11 @@ describe("EventsList", () => {
 
         expect(await screen.findByText("Minimal Upcoming Event")).toBeInTheDocument();
         expect(screen.getByText("TBA")).toBeInTheDocument();
+        expect(screen.queryByRole("link", { name: "Tickets" })).not.toBeInTheDocument();
+        expect(screen.getByRole("link", { name: /Minimal Upcoming Event/i })).toHaveAttribute(
+            "href",
+            "/events/minimal-upcoming-event",
+        );
     });
 
     it("shows an error message when fetching events fails", async () => {

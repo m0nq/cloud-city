@@ -1,14 +1,15 @@
-import { PiMapPinLight } from 'react-icons/pi';
-import moment from 'moment-timezone';
-import Link from 'next/link';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import Image from 'next/image';
+import { PiMapPinLight } from "react-icons/pi";
+import moment from "moment-timezone";
+import Link from "next/link";
+import { useState } from "react";
+import { useEffect } from "react";
+import Image from "next/image";
 
-import styles from './events-section.module.css';
-import { PostEdges } from '@data-types/types';
-import { getPosts } from '@utils/api/wp-actions';
-import { sanitizeContent } from '@utils/html-sanitizer';
+import styles from "./events-section.module.css";
+import { PostEdges } from "@data-types/types";
+import { getPosts } from "@utils/api/wp-actions";
+import { sanitizeContent } from "@utils/html-sanitizer";
+import { TicketLink } from "@components/events/ticket-link";
 
 export const EventsList = () => {
     const [events, setEvents] = useState<PostEdges[]>([]);
@@ -21,21 +22,21 @@ export const EventsList = () => {
 
         (async () => {
             try {
-                const { posts: events } = await getPosts({ tag: 'Cloud City', category: 'Events' }, 10);
+                const { posts: events } = await getPosts({ tag: "Cloud City", category: "Events" }, 10);
 
                 if (mounted) {
-                    const now = moment().tz('America/Los_Angeles');
+                    const now = moment().tz("America/Los_Angeles");
                     const upcomingEvents = events.filter(({ post: event }) => {
-                        const eventDateTime = moment.tz(event.eventsFields?.eventDateTime, 'America/Los_Angeles');
-                        return eventDateTime.isSameOrAfter(now, 'day');
+                        const eventDateTime = moment.tz(event.eventsFields?.eventDateTime, "America/Los_Angeles");
+                        return eventDateTime.isSameOrAfter(now, "day");
                     });
 
                     setEvents(upcomingEvents);
                 }
             } catch (err) {
                 if (mounted) {
-                    setError('I couldn\'t load the events for some reason. Try refreshing the page.');
-                    console.error('Error fetching events:', err);
+                    setError("I couldn't load the events for some reason. Try refreshing the page.");
+                    console.error("Error fetching events:", err);
                 }
             } finally {
                 if (mounted) {
@@ -51,7 +52,7 @@ export const EventsList = () => {
     }, []);
 
     if (error) {
-        console.error('Error fetching events:', error);
+        console.error("Error fetching events:", error);
     }
 
     return (
@@ -94,36 +95,42 @@ export const EventsList = () => {
                     <ul className={styles.ul}>
                         {events?.length && events.map(({ post: event }: PostEdges) => (
                             <li key={event.databaseId} className={styles.li}>
-                                <Link href={`/events/${event.uri}`}
-                                    className={styles.anchor}>
-                                    <div className={styles.dateTimeContainer}>
-                                        <p>&gt;</p>
-                                        <p>{moment.tz(event.eventsFields?.eventDateTime, 'America/Los_Angeles').format('MMM Do, YYYY')}</p>
-                                        <p>{moment.tz(event.eventsFields?.eventDateTime, 'America/Los_Angeles').format('h:mm A')}</p>
-                                    </div>
-                                    <div className={styles.detailsContainer}>
-                                        {event.featuredImage && (
-                                            <div className={styles.featuredImageContainer}>
-                                                <Image src={event.featuredImage.node.sourceUrl}
-                                                    alt={`${event.title} featured image`}
-                                                    className={styles.featuredImage}
-                                                    width={260}
-                                                    height={146}
-                                                    quality={85}
-                                                    priority />
+                                <div>
+                                    <div className={styles.dateTimeWrapper}>
+                                        <div className={styles.dateTimeContainer}>
+                                            <div className={styles.eventDetails}>
+                                                <p>&gt;</p>
+                                                <p>{moment.tz(event.eventsFields?.eventDateTime, "America/Los_Angeles").format("MMM Do, YYYY")}</p>
+                                                <p>{moment.tz(event.eventsFields?.eventDateTime, "America/Los_Angeles").format("h:mm A")}</p>
                                             </div>
-                                        )}
-                                        <div className={styles.contentContainer}>
-                                            <h4 className={styles.h4}>{event.title}</h4>
-                                            <div className={styles.paragraph}
-                                                dangerouslySetInnerHTML={{ __html: sanitizeContent(event.excerpt || '') }} />
-                                            <div className={styles.locationDetailsContainer}>
-                                                <PiMapPinLight color="#de78ed" size={24} />
-                                                <p className={styles.address}>{event.eventsFields?.address || 'TBA'}</p>
-                                            </div>
+                                            <TicketLink href={event.eventsFields?.ticketLink} />
                                         </div>
                                     </div>
-                                </Link>
+                                    <Link href={`/events/${event.uri}`} className={styles.anchor}>
+                                        <div className={styles.detailsContainer}>
+                                            {event.featuredImage && (
+                                                <div className={styles.featuredImageContainer}>
+                                                    <Image src={event.featuredImage.node.sourceUrl}
+                                                        alt={`${event.title} featured image`}
+                                                        className={styles.featuredImage}
+                                                        width={260}
+                                                        height={146}
+                                                        quality={85}
+                                                        priority />
+                                                </div>
+                                            )}
+                                            <div className={styles.contentContainer}>
+                                                <h4 className={styles.h4}>{event.title}</h4>
+                                                <div className={styles.paragraph}
+                                                    dangerouslySetInnerHTML={{ __html: sanitizeContent(event.excerpt || "") }} />
+                                                <div className={styles.locationDetailsContainer}>
+                                                    <PiMapPinLight color="#de78ed" size={24} />
+                                                    <p className={styles.address}>{event.eventsFields?.address || "TBA"}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                </div>
                             </li>
                         )) || <li className={styles.li}>
                             <div className={styles.dateTimeContainer}>
@@ -133,7 +140,7 @@ export const EventsList = () => {
                                 <div className={styles.contentContainer}>
                                     <h4 className={styles.h4}>No upcoming events</h4>
                                     <p className={styles.paragraph}>
-                                        Sign up for our newsletter to get the latest.{' '}
+                                        Sign up for our newsletter to get the latest.{" "}
                                         <Link href="/#sign-up">☝🏽</Link>
                                     </p>
                                 </div>

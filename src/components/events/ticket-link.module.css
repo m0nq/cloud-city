@@ -1,0 +1,9 @@
+.ticketLink {
+    @apply flex items-center justify-center w-fit h-fit gap-1.5 cursor-pointer hover:opacity-50;
+    @apply font-semibold;
+}
+
+.ticketIcon {
+    @apply w-[1.5rem] h-[1.5rem] flex-shrink-0;
+    color: #8888dd;
+}
