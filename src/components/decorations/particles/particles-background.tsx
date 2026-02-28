@@ -13,6 +13,47 @@ import { loadSlim } from '@tsparticles/slim';
 
 import styles from './particles-background.module.css';
 
+const CLOUD_CLUSTER_OFFSETS = [
+    { x: -8, y: 1 },
+    { x: 0, y: -2 },
+    { x: 9, y: 2 }
+];
+
+const createRandomClusterCenters = (count: number) => {
+    const randomInRange = (min: number, max: number) => min + Math.random() * (max - min);
+    const minCenterDistance = 28;
+    const maxAttempts = 24;
+    const centers: Array<{ x: number; y: number }> = [];
+
+    while (centers.length < count) {
+        let nextCenter: { x: number; y: number } | null = null;
+
+        for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+            const candidate = {
+                x: randomInRange(12, 88),
+                y: randomInRange(20, 52)
+            };
+            const isFarEnough = centers.every((center) => {
+                const distance = Math.hypot(candidate.x - center.x, candidate.y - center.y);
+
+                return distance >= minCenterDistance;
+            });
+
+            if (isFarEnough) {
+                nextCenter = candidate;
+                break;
+            }
+        }
+
+        centers.push(nextCenter ?? {
+            x: randomInRange(12, 88),
+            y: randomInRange(20, 52)
+        });
+    }
+
+    return centers;
+};
+
 const ParticlesBackground = (): ReactNode => {
     const [init, setInit] = useState<boolean>(false);
 
@@ -28,10 +69,24 @@ const ParticlesBackground = (): ReactNode => {
         await container;
     }, []);
 
+    const manualParticles = useMemo(() => {
+        const centers = createRandomClusterCenters(2);
+
+        return centers.flatMap((center) => (
+            CLOUD_CLUSTER_OFFSETS.map(({ x, y }) => ({
+                position: {
+                    x: center.x + x,
+                    y: center.y + y
+                }
+            }))
+        ));
+    }, []);
+
     const options = useMemo(() => ({
             fullScreen: {
                 enable: false
             },
+            manualParticles,
             background: {
                 color: {
                     value: 'transparent'
@@ -89,7 +144,7 @@ const ParticlesBackground = (): ReactNode => {
                 links: {
                     color: '#ffffff',
                     distance: 80,
-                    enable: true,
+                    enable: false,
                     opacity: 0.4,
                     width: 2
                 },
@@ -100,11 +155,11 @@ const ParticlesBackground = (): ReactNode => {
                         default: OutMode.out
                     },
                     random: false,
-                    speed: 0.8,
+                    speed: 0.65,
                     straight: true,
                     vibrate: false,
                     attract: {
-                        enable: true,
+                        enable: false,
                         distance: 100,
                         rotate: {
                             x: 2000,
@@ -122,9 +177,9 @@ const ParticlesBackground = (): ReactNode => {
                     }
                 },
                 number: {
-                    value: 3,
+                    value: 0,
                     density: {
-                        enable: true,
+                        enable: false,
                         area: 600
                     }
                 },
@@ -143,18 +198,18 @@ const ParticlesBackground = (): ReactNode => {
                 },
                 size: {
                     value: 250,
-                    random: true,
+                    random: false,
                     anim: {
-                        enable: true,
+                        enable: false,
                         speed: 2,
-                        size_min: 20,
+                        size_min: 250,
                         sync: false
                     }
                 }
             },
             detectRetina: true
         }),
-        []
+        [manualParticles]
     );
 
     if (init) {
