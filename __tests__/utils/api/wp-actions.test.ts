@@ -1,3 +1,4 @@
+// __tests__/utils/api/wp-actions.test.ts
 import { createJsonResponse } from "../../helpers/http-response";
 
 const ORIGINAL_ENV = process.env;
@@ -131,5 +132,91 @@ describe("wp-actions", () => {
         const { getPost } = await import("@/utils/api/wp-actions");
 
         await expect(getPost("/missing-post")).resolves.toEqual({});
+    });
+
+    // --- New Tests: Event Timezone Sanitization ---
+
+    it("getPosts sanitizes eventDateTime by stripping the '+00:00' suffix to enforce local time", async () => {
+        const rawEventDate = "2026-04-18T16:00:00+00:00";
+        const expectedCleanDate = "2026-04-18T16:00:00";
+
+        (global.fetch as jest.Mock).mockResolvedValueOnce(
+            createJsonResponse({
+                data: {
+                    posts: {
+                        edges: [
+                            {
+                                post: {
+                                    databaseId: 1,
+                                    title: "Cloud City: Spring Session",
+                                    eventsFields: {
+                                        eventDateTime: rawEventDate,
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            }),
+        );
+
+        const { getPosts } = await import("@/utils/api/wp-actions");
+        const result = await getPosts();
+
+        // Verify the suffix was removed
+        expect(result.posts[0].post.eventsFields.eventDateTime).toBe(expectedCleanDate);
+    });
+
+    it("getPosts gracefully handles null eventDateTime values without crashing", async () => {
+        (global.fetch as jest.Mock).mockResolvedValueOnce(
+            createJsonResponse({
+                data: {
+                    posts: {
+                        edges: [
+                            {
+                                post: {
+                                    databaseId: 2,
+                                    title: "Past Event",
+                                    eventsFields: {
+                                        eventDateTime: null,
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+            }),
+        );
+
+        const { getPosts } = await import("@/utils/api/wp-actions");
+        const result = await getPosts();
+
+        // Verify it passes through the null safely
+        expect(result.posts[0].post.eventsFields.eventDateTime).toBeNull();
+    });
+
+    it("getPost sanitizes eventDateTime by stripping the '+00:00' suffix to enforce local time", async () => {
+        const rawEventDate = "2026-04-18T16:00:00+00:00";
+        const expectedCleanDate = "2026-04-18T16:00:00";
+
+        (global.fetch as jest.Mock).mockResolvedValueOnce(
+            createJsonResponse({
+                data: {
+                    post: {
+                        databaseId: 1,
+                        title: "Cloud City: Spring Session",
+                        eventsFields: {
+                            eventDateTime: rawEventDate,
+                        },
+                    },
+                },
+            }),
+        );
+
+        const { getPost } = await import("@/utils/api/wp-actions");
+        const result = await getPost("/cloud-city");
+
+        // Verify the suffix was removed
+        expect(result.eventsFields.eventDateTime).toBe(expectedCleanDate);
     });
 });

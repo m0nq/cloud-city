@@ -1,32 +1,33 @@
-'use server';
+// src/utils/api/wp-actions.ts
+"use server";
 
-import { WhereClause } from '@data-types/types';
-import { CursorInfo } from '@data-types/types';
-import { PostEdges } from '@data-types/types';
-import { PageInfo } from '@data-types/types';
-import { QueryString } from '@data-types/types';
-import { DataResponse } from '@data-types/types';
-import { Post } from '@data-types/types';
+import { WhereClause } from "@data-types/types";
+import { CursorInfo } from "@data-types/types";
+import { PostEdges } from "@data-types/types";
+import { PageInfo } from "@data-types/types";
+import { QueryString } from "@data-types/types";
+import { DataResponse } from "@data-types/types";
+import { Post } from "@data-types/types";
 
 const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL;
 
-const getQuery = async (postQuery: string, uri: string = ''): Promise<Response> => {
+const getQuery = async (postQuery: string, uri: string = ""): Promise<Response> => {
     const variables = {
-        uri
+        uri,
     };
 
     const res = await fetch(`${WORDPRESS_API_URL}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         next: {
-            revalidate: 60
+            revalidate: 60,
         },
-        body: JSON.stringify({ query: postQuery, variables })
+        body: JSON.stringify({ query: postQuery, variables }),
     });
 
     if (!res.ok) {
         // This will activate the closest `error.js` Error Boundary
-        throw new Error('Failed to fetch data');
+        throw new Error("Failed to fetch data");
     }
 
     return res;
@@ -36,7 +37,7 @@ const getQuery = async (postQuery: string, uri: string = ''): Promise<Response> 
 export const getPosts = async (
     filter: WhereClause = {},
     first: number = 10,
-    cursorInfo?: CursorInfo
+    cursorInfo?: CursorInfo,
 ): Promise<{ posts: PostEdges[]; pageInfo: PageInfo; }> => {
     // Filter the list by projects
     const postsQuery: QueryString = `query WPAllPostQuery {
@@ -46,8 +47,8 @@ export const getPosts = async (
         after: "${cursorInfo?.after || null}",
         where: {
           orderby: {field: DATE, order: DESC},
-          tagId: "${filter.tag || ''}",
-          categoryName: "${filter.category || ''}"
+          tagId: "${filter.tag || ""}",
+          categoryName: "${filter.category || ""}"
         }
       ) {
         pageInfo {
@@ -99,14 +100,22 @@ export const getPosts = async (
     //     return await getPosts();
     // }
 
+    // INTERCEPT AND SANITIZE: Strip the forced UTC timezone from WPGraphQL
+    const cleanEdges = (data?.posts?.edges || []).map((edge: PostEdges) => {
+        if (edge.post?.eventsFields?.eventDateTime) {
+            edge.post.eventsFields.eventDateTime = edge.post.eventsFields.eventDateTime.replace("+00:00", "");
+        }
+        return edge;
+    });
+
     return {
-        posts: data?.posts?.edges || [],
+        posts: cleanEdges,
         pageInfo: data?.posts?.pageInfo || {
             hasNextPage: false,
             endCursor: null,
             hasPreviousPage: false,
-            startCursor: null
-        }
+            startCursor: null,
+        },
     };
 };
 
@@ -133,6 +142,12 @@ export const getPost = async (uri: string): Promise<Post> => {
     const res = await getQuery(postQuery, uri);
 
     const { data } = await res.json();
+    const post = data?.post || {};
 
-    return data?.post || {};
+    // INTERCEPT AND SANITIZE: Strip the forced UTC timezone from WPGraphQL
+    if (post?.eventsFields?.eventDateTime) {
+        post.eventsFields.eventDateTime = post.eventsFields.eventDateTime.replace("+00:00", "");
+    }
+
+    return post;
 };

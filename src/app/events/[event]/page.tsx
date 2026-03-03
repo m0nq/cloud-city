@@ -1,3 +1,4 @@
+// src/app/events/[event]/page.tsx
 import { ReactNode } from "react";
 import Image from "next/image";
 import moment from "moment-timezone";
@@ -46,7 +47,7 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                     <p className={styles.paragraph}>
                         {moment.tz(eventData.eventsFields?.eventDateTime, "America/Los_Angeles").format("MMMM Do, YYYY")}
                     </p>
-                    <p className={styles.paragraph}>{moment.tz(eventData.eventsFields?.eventDateTime, "America/Los_Angeles").format("h:mm A")}</p>
+                    <p className={styles.paragraph}>{moment.tz(eventData.eventsFields?.eventDateTime, "America/Los_Angeles").format("h:mm A")} (PT)</p>
                 </div>
                 {eventData.featuredImage && (
                     <div className={styles.featuredImageContainer}>

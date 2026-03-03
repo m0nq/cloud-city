@@ -1,3 +1,4 @@
+// src/components/events/events-list.tsx
 import { PiMapPinLight } from "react-icons/pi";
 import moment from "moment-timezone";
 import Link from "next/link";
@@ -101,7 +102,7 @@ export const EventsList = () => {
                                             <div className={styles.eventDetails}>
                                                 <p>&gt;</p>
                                                 <p>{moment.tz(event.eventsFields?.eventDateTime, "America/Los_Angeles").format("MMM Do, YYYY")}</p>
-                                                <p>{moment.tz(event.eventsFields?.eventDateTime, "America/Los_Angeles").format("h:mm A")}</p>
+                                                <p>{moment.tz(event.eventsFields?.eventDateTime, "America/Los_Angeles").format("h:mm A")} (PT)</p>
                                             </div>
                                             <TicketLink href={event.eventsFields?.ticketLink} />
                                         </div>

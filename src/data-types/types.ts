@@ -1,3 +1,4 @@
+// src/data-types/types.ts
 export type FormValues = {
     firstName: string;
     lastName: string;
