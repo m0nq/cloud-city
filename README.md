@@ -115,12 +115,37 @@ This project uses Node.js 24 LTS with `pnpm` via Corepack.
 2. Enable corepack and prepare pnpm
    ```sh
    corepack enable pnpm
-   corepack use pnpm@10.13.1
+   corepack use pnpm@10.33.0
    ```
 3. Install packages
    ```sh
    pnpm install
    ```
+
+### Common Commands
+
+- Start the local development server
+  ```sh
+  pnpm dev
+  ```
+- Run the linter
+  ```sh
+  pnpm lint
+  ```
+- Run the unit test suite
+  ```sh
+  pnpm test:runInBand
+  ```
+- Create a production build
+  ```sh
+  pnpm build
+  ```
+
+### CI/CD
+
+- GitHub Actions runs the `CI/CD Pipeline` workflow on every push to `main`.
+- The workflow uses Node.js 24, the repo-pinned `pnpm` version from `package.json`, and deploys to Vercel after build and test pass.
+- Production deploys are performed through the GitHub Actions workflow rather than automatic Git-based Vercel deploys.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
