@@ -1,5 +1,7 @@
 name: CI/CD Pipeline
 env:
+  NODE_VERSION: '24'
+  PNPM_CACHE_DEPENDENCY_PATH: pnpm-lock.yaml
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -46,9 +48,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24'
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          cache-dependency-path: ${{ env.PNPM_CACHE_DEPENDENCY_PATH }}
 
       - name: Install dependencies
         run: pnpm install
@@ -56,16 +58,17 @@ jobs:
       - name: Run linter
         run: pnpm lint
 
-      - name: Set Environment Variables
+      - name: Write production env file
         env:
           CC_API_KEY: ${{ secrets.CC_API_KEY }}
           WORDPRESS_API_URL: ${{ secrets.WORDPRESS_API_URL }}
           GA4_MEASUREMENT_ID: ${{ secrets.GA4_MEASUREMENT_ID }}
         run: |
-          echo "" > .env.production
-          echo CC_API_KEY="$CC_API_KEY" >> .env.production
-          echo WORDPRESS_API_URL="$WORDPRESS_API_URL" >> .env.production
-          echo GA4_MEASUREMENT_ID="$GA4_MEASUREMENT_ID" >> .env.production
+          cat <<EOF > .env.production
+          CC_API_KEY=${CC_API_KEY}
+          WORDPRESS_API_URL=${WORDPRESS_API_URL}
+          GA4_MEASUREMENT_ID=${GA4_MEASUREMENT_ID}
+          EOF
 
       - name: Build with Next.js
         run: pnpm build
@@ -84,9 +87,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24'
+          node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          cache-dependency-path: ${{ env.PNPM_CACHE_DEPENDENCY_PATH }}
 
       - name: Install dependencies
         run: pnpm install
@@ -110,7 +113,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: '24'
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+          cache-dependency-path: ${{ env.PNPM_CACHE_DEPENDENCY_PATH }}
 
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
@@ -118,16 +123,17 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.CC_VERCEL_TOKEN }}
 
-      - name: Set Environment Variables
+      - name: Write production env file
         env:
           CC_API_KEY: ${{ secrets.CC_API_KEY }}
           WORDPRESS_API_URL: ${{ secrets.WORDPRESS_API_URL }}
           GA4_MEASUREMENT_ID: ${{ secrets.GA4_MEASUREMENT_ID }}
         run: |
-          echo "" > .env.production
-          echo CC_API_KEY="$CC_API_KEY" >> .env.production
-          echo WORDPRESS_API_URL="$WORDPRESS_API_URL" >> .env.production
-          echo GA4_MEASUREMENT_ID="$GA4_MEASUREMENT_ID" >> .env.production
+          cat <<EOF > .env.production
+          CC_API_KEY=${CC_API_KEY}
+          WORDPRESS_API_URL=${WORDPRESS_API_URL}
+          GA4_MEASUREMENT_ID=${GA4_MEASUREMENT_ID}
+          EOF
 
       - name: Build Project Artifacts
         run: vercel build --prod --token=${{ secrets.CC_VERCEL_TOKEN }}
