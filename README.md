@@ -97,11 +97,12 @@ Fork &/or clone this repo get a local copy. To get up and running, follow these 
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+This project uses Node.js 24 LTS with `pnpm` via Corepack.
 
-- npm
+- Node.js 24 LTS
   ```sh
-  npm install npm@latest -g
+  nvm install 24
+  nvm use 24
   ```
 
 ### Installation
@@ -114,7 +115,7 @@ This is an example of how to list things you need to use the software and how to
 2. Enable corepack and prepare pnpm
    ```sh
    corepack enable pnpm
-   corepack use pnpm@latest
+   corepack use pnpm@10.13.1
    ```
 3. Install packages
    ```sh

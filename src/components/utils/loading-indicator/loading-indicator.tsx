@@ -1,11 +1,11 @@
 'use client';
 import styles from './loading-indicator.module.css';
-import { SiSpinrilla } from 'react-icons/si';
+import { ImSpinner2 } from 'react-icons/im';
 
 export const LoadingIndicator = () => {
     return (
         <div className={styles.loadingOverlay}>
-            <SiSpinrilla className={styles.spinner} />
+            <ImSpinner2 data-testid="loading-spinner" className={styles.spinner} />
         </div>
     );
 };
