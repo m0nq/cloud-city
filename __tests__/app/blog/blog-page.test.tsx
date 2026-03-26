@@ -42,6 +42,21 @@ describe("blog/page", () => {
         expect(screen.getByText("Soon...")).toBeInTheDocument();
     });
 
+    it("renders empty fallback when the CMS request fails", async () => {
+        const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+        mockGetPosts.mockRejectedValueOnce(new Error("ETIMEDOUT"));
+
+        const node = await BlogPage();
+        render(<>{node}</>);
+
+        expect(mockGetPosts).toHaveBeenCalledWith({ tag: "Cloud City", category: "Blog" }, 100);
+        expect(screen.getByText("Soon...")).toBeInTheDocument();
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+            "[blog] Failed to fetch posts during prerender:",
+            expect.any(Error),
+        );
+    });
+
     it("normalizes article links for URIs with and without leading slash", async () => {
         mockGetPosts.mockResolvedValueOnce({
             posts: [

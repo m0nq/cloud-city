@@ -8,7 +8,21 @@ import { Post } from '@data-types/types';
 import { sanitizeContent } from '@utils/html-sanitizer';
 
 const Blog = async () => {
-    const { posts, pageInfo } = await getPosts({ tag: 'Cloud City', category: 'Blog' }, 100);
+    let posts: { post: Post }[] = [];
+    let pageInfo = {
+        hasPreviousPage: false,
+        hasNextPage: false,
+        startCursor: null,
+        endCursor: null,
+    };
+
+    try {
+        const response = await getPosts({ tag: 'Cloud City', category: 'Blog' }, 100);
+        posts = response.posts;
+        pageInfo = response.pageInfo;
+    } catch (error) {
+        console.error('[blog] Failed to fetch posts during prerender:', error);
+    }
 
     return (
         <div className={styles.blogContainer}>
@@ -16,7 +30,7 @@ const Blog = async () => {
                 <h1 className={styles.blogTitle}>Articles</h1>
             </header>
             <section className={styles.blogList}>
-                {posts.length && posts?.map(({ post }: { post: Post }) => (
+                {posts.length > 0 ? posts.map(({ post }: { post: Post }) => (
                     <Link key={post.databaseId} href={`/blog${post.uri.startsWith('/') ? post.uri : `/${post.uri}`}`}>
                         <div className={styles.blogCardContainer}>
                             {post.featuredImage && (
@@ -43,7 +57,7 @@ const Blog = async () => {
                             </div>
                         </div>
                     </Link>
-                )) || (
+                )) : (
                     <div className={styles.blogList}>Soon...</div>
                 )}
             </section>
