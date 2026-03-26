@@ -5,11 +5,13 @@ import moment from 'moment';
 import styles from './blog.module.css';
 import { getPosts } from '@utils/api/wp-actions';
 import { Post } from '@data-types/types';
+import { PageInfo } from '@data-types/types';
+import { PostEdges } from '@data-types/types';
 import { sanitizeContent } from '@utils/html-sanitizer';
 
 const Blog = async () => {
-    let posts: { post: Post }[] = [];
-    let pageInfo = {
+    let posts: PostEdges[] = [];
+    let pageInfo: PageInfo = {
         hasPreviousPage: false,
         hasNextPage: false,
         startCursor: null,
