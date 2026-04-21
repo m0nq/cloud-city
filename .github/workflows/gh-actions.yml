@@ -42,13 +42,23 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-          cache: pnpm
-          cache-dependency-path: ${{ env.PNPM_CACHE_DEPENDENCY_PATH }}
+          package-manager-cache: false
 
       - name: Enable pnpm via Corepack
         run: |
           corepack enable
+          pnpm config set store-dir ~/.pnpm-store
           pnpm --version
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key:
+            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-${{ hashFiles(env.PNPM_CACHE_DEPENDENCY_PATH) }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
         run: pnpm install
@@ -81,13 +91,23 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-          cache: pnpm
-          cache-dependency-path: ${{ env.PNPM_CACHE_DEPENDENCY_PATH }}
+          package-manager-cache: false
 
       - name: Enable pnpm via Corepack
         run: |
           corepack enable
+          pnpm config set store-dir ~/.pnpm-store
           pnpm --version
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key:
+            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-${{ hashFiles(env.PNPM_CACHE_DEPENDENCY_PATH) }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
         run: pnpm install
@@ -107,13 +127,23 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
-          cache: pnpm
-          cache-dependency-path: ${{ env.PNPM_CACHE_DEPENDENCY_PATH }}
+          package-manager-cache: false
 
       - name: Enable pnpm via Corepack
         run: |
           corepack enable
+          pnpm config set store-dir ~/.pnpm-store
           pnpm --version
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key:
+            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-${{ hashFiles(env.PNPM_CACHE_DEPENDENCY_PATH) }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
