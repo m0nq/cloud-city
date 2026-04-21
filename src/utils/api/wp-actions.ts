@@ -9,14 +9,24 @@ import { QueryString } from "@data-types/types";
 import { DataResponse } from "@data-types/types";
 import { Post } from "@data-types/types";
 
-const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL;
+const getWordPressApiUrl = (): string => {
+    const wordpressApiUrl = process.env.WORDPRESS_API_URL?.trim();
+
+    if (!wordpressApiUrl) {
+        throw new Error(
+            "WORDPRESS_API_URL is not configured. Add it to .env.local or the runtime environment.",
+        );
+    }
+
+    return wordpressApiUrl;
+};
 
 const getQuery = async (postQuery: string, uri: string = ""): Promise<Response> => {
     const variables = {
         uri,
     };
 
-    const res = await fetch(`${WORDPRESS_API_URL}`, {
+    const res = await fetch(getWordPressApiUrl(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         next: {

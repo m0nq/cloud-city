@@ -121,6 +121,17 @@ This project uses Node.js 24 LTS with `pnpm` via Corepack.
    ```sh
    pnpm install
    ```
+4. Create a local environment file
+   ```sh
+   cp .env.example .env.local
+   ```
+5. Set the required environment variables in `.env.local`
+   - `WORDPRESS_API_URL`: required for blog and event content via WPGraphQL
+   - `CC_API_KEY`: required for MailerLite newsletter signup
+   - `GA4_MEASUREMENT_ID`: optional locally, used for Google Analytics when configured
+   - `MAILERLITE_FROM_EMAIL`: optional for the email-platform scripts, required when drafting campaigns
+   - `MAILERLITE_FROM_NAME`: optional display name for draft campaigns and provider fallbacks
+   - local scripts also support `.env`, but `.env.local` is the preferred single source for local setup
 
 ### Common Commands
 

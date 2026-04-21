@@ -98,6 +98,19 @@ describe("wp-actions", () => {
         await expect(getPosts()).rejects.toThrow("Failed to fetch data");
     });
 
+    it("throws a clear configuration error when WORDPRESS_API_URL is missing", async () => {
+        process.env = {
+            ...ORIGINAL_ENV,
+        };
+
+        const { getPosts } = await import("@/utils/api/wp-actions");
+
+        await expect(getPosts()).rejects.toThrow(
+            "WORDPRESS_API_URL is not configured. Add it to .env.local or the runtime environment.",
+        );
+        expect(global.fetch).not.toHaveBeenCalled();
+    });
+
     it("getPost returns a single post and passes URI through GraphQL variables", async () => {
         const post = {
             databaseId: 8,
