@@ -1,15 +1,13 @@
 name: CI/CD Pipeline
 env:
-  NODE_VERSION: '24'
   PNPM_CACHE_DEPENDENCY_PATH: pnpm-lock.yaml
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: [ 'main' ]
+    branches: ['main']
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -40,17 +38,17 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v5
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: .nvmrc
           cache: pnpm
           cache-dependency-path: ${{ env.PNPM_CACHE_DEPENDENCY_PATH }}
+
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          pnpm --version
 
       - name: Install dependencies
         run: pnpm install
@@ -79,17 +77,17 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: .nvmrc
           cache: pnpm
           cache-dependency-path: ${{ env.PNPM_CACHE_DEPENDENCY_PATH }}
+
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          pnpm --version
 
       - name: Install dependencies
         run: pnpm install
@@ -100,22 +98,22 @@ jobs:
   # Deployment job
   deploy:
     name: Deploy 🚀
-    needs: [ build, test ]
+    needs: [build, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: .nvmrc
           cache: pnpm
           cache-dependency-path: ${{ env.PNPM_CACHE_DEPENDENCY_PATH }}
+
+      - name: Enable pnpm via Corepack
+        run: |
+          corepack enable
+          pnpm --version
 
       - name: Install Vercel CLI
         run: pnpm add --global vercel@latest
