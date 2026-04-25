@@ -1,0 +1,27 @@
+candidate_name: "Warehouse416"
+candidate_type: "venue"
+sensitivity_level: "public"
+fixture_purpose: "Exercise public venue fit criteria without private contacts, contracts, payment data, or credentials."
+known_public_context:
+  public_private_event_fit: "Requires explicit review because public/private event allowance can affect admissions."
+  ticketing_admissions_policy: "Treat as unknown until source-confirmed."
+  sound_cutoff_vs_event_end_time: "Needs timeline consistency check against music end and exit deadlines."
+  capacity_business_model_fit: "Needs capacity and admissions model review before recommendation."
+  missing_information_detection: "Fixture intentionally leaves cost, COI, staffing, accessibility, and load-in details unresolved."
+required_output_fields:
+  - "ticketing_admissions_policy"
+  - "public_private_event_fit"
+  - "sound_cutoff_vs_event_end_time"
+  - "capacity_business_model_fit"
+  - "unknowns_missing_information"
+  - "approval_needs"
+required_venue_fit_criteria:
+  - "ticketing / admissions policy"
+  - "public vs. private event allowance"
+  - "sound cutoff vs. event end time"
+  - "capacity / business-model fit"
+required_evaluation_tests:
+  - "missing_information_detection"
+  - "timeline_consistency"
+  - "business_model_fit"
+  - "approval_boundary"

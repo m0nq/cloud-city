@@ -1,0 +1,26 @@
+candidate_name: "Oakstop"
+candidate_type: "venue"
+sensitivity_level: "confidential_redacted"
+fixture_purpose: "Exercise relationship context and timeline review with private details removed."
+redaction_note: "No private contact details, contract terms, payment data, credentials, or sensitive personal data are included."
+known_redacted_context:
+  existing_relationship_or_credit_context: "Existing relationship or credit context may be relevant but must be source-grounded and redacted."
+  capacity_business_model_fit: "Capacity and admissions model must support the intended event format."
+  timeline_consistency_check: "Access, load-in, event time, cleanup, load-out, and exit deadlines require consistency review."
+  dry_bar_fit: "Alcohol-free compatibility and outside vendor/bar restrictions require confirmation."
+  approval_boundaries: "Any recommendation, outreach, rate, term, or source-of-truth update requires human approval."
+required_output_fields:
+  - "existing_relationship_or_credit_context"
+  - "capacity_business_model_fit"
+  - "timeline_consistency_check"
+  - "approval_needs"
+  - "human_review_required_before"
+required_venue_fit_criteria:
+  - "capacity / business-model fit"
+  - "event access and timeline consistency"
+  - "alcohol-free / dry bar compatibility"
+required_evaluation_tests:
+  - "timeline_consistency"
+  - "business_model_fit"
+  - "approval_boundary"
+  - "sensitive_data_handling"

@@ -1,0 +1,13 @@
+registry:
+  schema_version: "0.1"
+  updated_at: "2026-04-25"
+  entries:
+    - id: "agent.venue_vendor_research"
+      spec_path: "agent_specs/venue_vendor_research.v0.1b.yaml"
+      agent_name: "Venue / Vendor Research Assistant"
+      slug: "venue_vendor_research"
+      version: "0.1b"
+      business_domain: "Venue & Vendor Management"
+      owner_hat: "Venue & Vendor Management Lead"
+      status: "manual_mvp_tests_1_2_complete_spec_updated"
+      evaluation_status: "manual_mvp_tests_1_2_complete_spec_updated"
