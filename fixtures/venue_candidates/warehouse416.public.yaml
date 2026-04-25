@@ -20,6 +20,10 @@ required_venue_fit_criteria:
   - "public vs. private event allowance"
   - "sound cutoff vs. event end time"
   - "capacity / business-model fit"
+required_approval_gates:
+  - "external outreach"
+  - "rates or terms"
+  - "public messaging"
 required_evaluation_tests:
   - "missing_information_detection"
   - "timeline_consistency"

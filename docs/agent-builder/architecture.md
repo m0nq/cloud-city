@@ -8,6 +8,7 @@ The Agent Builder foundation is a local, SDK-neutral validation layer for busine
 - `src/agent-builder/` contains schema validation, deterministic policy checks, and fixture-based eval helpers.
 - `scripts/agent-builder/` provides a pnpm-runnable CLI.
 - `fixtures/` stores minimal redacted test inputs.
+- `evals/` stores deterministic eval-suite definitions that bind specs to fixtures and required checks.
 - `registry/agent-registry.yaml` stores local read-only registry metadata for validated specs.
 - `docs/agent-builder/` records governance, implementation, and SDK spike planning.
 
@@ -39,3 +40,15 @@ The command validates the registry schema, confirms each referenced spec file ex
 ## Eval Flow
 
 The first eval command is deterministic. It loads a validated spec and a minimal fixture, then checks whether the spec contains required output fields, venue fit criteria, and evaluation tests relevant to that fixture.
+
+## Eval Harness Flow
+
+Run fixture and suite validation from the app root:
+
+```sh
+pnpm agent-builder fixture validate fixtures/venue_candidates/warehouse416.public.yaml
+pnpm agent-builder eval validate evals/venue_vendor_research.eval-suite.yaml
+pnpm agent-builder eval run evals/venue_vendor_research.eval-suite.yaml
+```
+
+The eval runner remains local-only and deterministic. It validates the suite, validates referenced fixtures, validates the referenced spec, then checks whether the spec contains each case's required output fields, venue criteria, approval gates, and eval tests. It does not call a model or execute tools.

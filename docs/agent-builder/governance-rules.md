@@ -28,6 +28,13 @@ Specs must require approval for external outreach, rates or terms, contracts, pa
 - Registry metadata must match the referenced spec for key identity and lifecycle fields.
 - Write-capable registry mutation requires a later explicit approval and implementation milestone.
 
+## Eval Harness Rules
+
+- Eval suites are local files and do not call models.
+- Fixture validation must pass before eval execution.
+- Eval execution checks spec coverage for required fields, criteria, approval gates, and eval tests.
+- `PARTIAL` means at least one case passed and at least one case failed; it is not an approval to proceed.
+
 ## Source Grounding
 
 - Use approved source material first.

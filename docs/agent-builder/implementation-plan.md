@@ -17,6 +17,8 @@
 
 ## Milestone 3: SDK Spike
 
+- Add deterministic fixture and eval-suite validation before any SDK spike.
+- Run local eval suites that report `PASS`, `PARTIAL`, or `FAIL` without model calls.
 - Compare candidate SDKs using the same spec, fixture, and scoring rubric.
 - Keep all SDK spike work isolated from production paths.
 - Do not introduce production integrations until the schema, governance, and eval layer has proven stable.
@@ -26,4 +28,7 @@
 - `pnpm agent-builder validate agent_specs/venue_vendor_research.v0.1b.yaml` exits 0.
 - `pnpm agent-builder test agent_specs/venue_vendor_research.v0.1b.yaml --fixture fixtures/venue_candidates/warehouse416.public.yaml` exits 0.
 - `pnpm agent-builder registry validate registry/agent-registry.yaml` exits 0.
+- `pnpm agent-builder fixture validate fixtures/venue_candidates/warehouse416.public.yaml` exits 0.
+- `pnpm agent-builder eval validate evals/venue_vendor_research.eval-suite.yaml` exits 0.
+- `pnpm agent-builder eval run evals/venue_vendor_research.eval-suite.yaml` exits 0.
 - Jest tests cover valid spec, required field failure, unsafe execution flags, restricted data, missing approval gates, and missing eval tests.

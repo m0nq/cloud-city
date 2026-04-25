@@ -1,6 +1,13 @@
 import path from 'path';
 
+import {
+    formatEvalRunReport,
+    formatEvalSuiteValidationReport,
+    runEvalSuiteFile,
+    validateEvalSuiteFile
+} from '../../src/agent-builder/eval-suite';
 import { formatDeterministicEvalReport, runDeterministicFixtureEval } from '../../src/agent-builder/evals';
+import { formatFixtureValidationReport, validateVenueCandidateFixtureFile } from '../../src/agent-builder/fixtures';
 import { formatRegistryValidationReport, validateAgentRegistryFile } from '../../src/agent-builder/registry';
 import { formatValidationReport, validateAgentSpecFile } from '../../src/agent-builder/validation';
 
@@ -8,7 +15,10 @@ export const AGENT_BUILDER_USAGE = [
     'Usage:',
     '  pnpm agent-builder validate <spec-path>',
     '  pnpm agent-builder test <spec-path> --fixture <fixture-path>',
-    '  pnpm agent-builder registry validate <registry-path>'
+    '  pnpm agent-builder registry validate <registry-path>',
+    '  pnpm agent-builder fixture validate <fixture-path>',
+    '  pnpm agent-builder eval validate <eval-suite-path>',
+    '  pnpm agent-builder eval run <eval-suite-path>'
 ].join('\n');
 
 type AgentBuilderCommand =
@@ -24,6 +34,18 @@ type AgentBuilderCommand =
     | {
           action: 'registry-validate';
           registryPath: string;
+      }
+    | {
+          action: 'fixture-validate';
+          fixturePath: string;
+      }
+    | {
+          action: 'eval-validate';
+          suitePath: string;
+      }
+    | {
+          action: 'eval-run';
+          suitePath: string;
       };
 
 export const resolveAgentBuilderCliArgs = (argv: string[] = process.argv): AgentBuilderCommand => {
@@ -39,6 +61,18 @@ export const resolveAgentBuilderCliArgs = (argv: string[] = process.argv): Agent
 
     if (action === 'registry' && primaryArg === 'validate' && rest.length === 1 && rest[0]) {
         return { action: 'registry-validate', registryPath: rest[0] };
+    }
+
+    if (action === 'fixture' && primaryArg === 'validate' && rest.length === 1 && rest[0]) {
+        return { action: 'fixture-validate', fixturePath: rest[0] };
+    }
+
+    if (action === 'eval' && primaryArg === 'validate' && rest.length === 1 && rest[0]) {
+        return { action: 'eval-validate', suitePath: rest[0] };
+    }
+
+    if (action === 'eval' && primaryArg === 'run' && rest.length === 1 && rest[0]) {
+        return { action: 'eval-run', suitePath: rest[0] };
     }
 
     throw new Error(AGENT_BUILDER_USAGE);
@@ -72,6 +106,39 @@ export const runAgentBuilderCli = ({
             logger.log(formatRegistryValidationReport(report));
 
             if (!report.schemaPassed || report.checks.some(check => !check.passed)) {
+                exit(1);
+            }
+
+            return;
+        }
+
+        if (command.action === 'fixture-validate') {
+            const report = validateVenueCandidateFixtureFile(command.fixturePath);
+            logger.log(formatFixtureValidationReport(report));
+
+            if (!report.schemaPassed) {
+                exit(1);
+            }
+
+            return;
+        }
+
+        if (command.action === 'eval-validate') {
+            const report = validateEvalSuiteFile(command.suitePath);
+            logger.log(formatEvalSuiteValidationReport(report));
+
+            if (!report.schemaPassed || report.checks.some(check => !check.passed)) {
+                exit(1);
+            }
+
+            return;
+        }
+
+        if (command.action === 'eval-run') {
+            const report = runEvalSuiteFile(command.suitePath);
+            logger.log(formatEvalRunReport(report));
+
+            if (report.outcome !== 'PASS') {
                 exit(1);
             }
 

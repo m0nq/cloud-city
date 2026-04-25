@@ -1,16 +1,5 @@
-import { z } from 'zod';
-
-import { loadYamlFile, validateAgentSpecFile } from './validation';
-
-const fixtureSchema = z
-    .object({
-        candidate_name: z.string().trim().min(1),
-        candidate_type: z.enum(['venue', 'vendor']),
-        required_output_fields: z.array(z.string().trim().min(1)).default([]),
-        required_venue_fit_criteria: z.array(z.string().trim().min(1)).default([]),
-        required_evaluation_tests: z.array(z.string().trim().min(1)).default([])
-    })
-    .passthrough();
+import { validateVenueCandidateFixtureFile } from './fixtures';
+import { validateAgentSpecFile } from './validation';
 
 export type DeterministicEvalReport = {
     specPath: string;
@@ -44,7 +33,12 @@ export const runDeterministicFixtureEval = (specPath: string, fixturePath: strin
         throw new Error(`Spec must pass validation before eval: ${validation.errors.join('; ')}`);
     }
 
-    const fixture = fixtureSchema.parse(loadYamlFile(fixturePath));
+    const fixtureReport = validateVenueCandidateFixtureFile(fixturePath);
+    if (!fixtureReport.fixture || !fixtureReport.schemaPassed) {
+        throw new Error(`Fixture must pass validation before eval: ${fixtureReport.errors.join('; ')}`);
+    }
+
+    const fixture = fixtureReport.fixture;
     const spec = validation.spec;
 
     const checks = [
@@ -62,6 +56,10 @@ export const runDeterministicFixtureEval = (specPath: string, fixturePath: strin
                 spec.evaluation_tests.map(test => test.id),
                 fixture.required_evaluation_tests
             )
+        ),
+        makeChecklistCheck(
+            'Approval gates',
+            missingValues(spec.approval_gates, fixture.required_approval_gates)
         )
     ];
 

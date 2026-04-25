@@ -19,6 +19,10 @@ required_venue_fit_criteria:
   - "capacity / business-model fit"
   - "event access and timeline consistency"
   - "alcohol-free / dry bar compatibility"
+required_approval_gates:
+  - "external outreach"
+  - "recommendations to act"
+  - "source-of-truth updates"
 required_evaluation_tests:
   - "timeline_consistency"
   - "business_model_fit"

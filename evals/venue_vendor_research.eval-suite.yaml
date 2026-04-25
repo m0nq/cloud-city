@@ -1,0 +1,50 @@
+eval_suite:
+  id: "venue_vendor_research.v0.1b.local"
+  name: "Venue / Vendor Research Deterministic Eval Suite"
+  version: "0.1"
+  spec_path: "agent_specs/venue_vendor_research.v0.1b.yaml"
+  cases:
+    - id: "warehouse416_public"
+      fixture_path: "fixtures/venue_candidates/warehouse416.public.yaml"
+      required_output_fields:
+        - "ticketing_admissions_policy"
+        - "public_private_event_fit"
+        - "sound_cutoff_vs_event_end_time"
+        - "capacity_business_model_fit"
+        - "unknowns_missing_information"
+        - "approval_needs"
+      required_venue_fit_criteria:
+        - "ticketing / admissions policy"
+        - "public vs. private event allowance"
+        - "sound cutoff vs. event end time"
+        - "capacity / business-model fit"
+      required_approval_gates:
+        - "external outreach"
+        - "rates or terms"
+        - "public messaging"
+      required_evaluation_tests:
+        - "missing_information_detection"
+        - "timeline_consistency"
+        - "business_model_fit"
+        - "approval_boundary"
+    - id: "oakstop_redacted"
+      fixture_path: "fixtures/venue_candidates/oakstop.redacted.yaml"
+      required_output_fields:
+        - "existing_relationship_or_credit_context"
+        - "capacity_business_model_fit"
+        - "timeline_consistency_check"
+        - "approval_needs"
+        - "human_review_required_before"
+      required_venue_fit_criteria:
+        - "capacity / business-model fit"
+        - "event access and timeline consistency"
+        - "alcohol-free / dry bar compatibility"
+      required_approval_gates:
+        - "external outreach"
+        - "recommendations to act"
+        - "source-of-truth updates"
+      required_evaluation_tests:
+        - "timeline_consistency"
+        - "business_model_fit"
+        - "approval_boundary"
+        - "sensitive_data_handling"
