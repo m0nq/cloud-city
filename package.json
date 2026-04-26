@@ -14,6 +14,7 @@
         "lint": "eslint .",
         "format": "prettier . --write",
         "agent-builder": "tsx scripts/agent-builder/index.ts",
+        "compare:outputs": "tsx spikes/agent-builder-sdk/compare-outputs.ts",
         "campaign:draft": "ts-node ./scripts/draft-campaign.ts",
         "test": "jest --passWithNoTests",
         "test:runInBand": "jest --passWithNoTests --runInBand",

@@ -1,0 +1,21 @@
+{
+    "name": "@cloud-city/agent-builder-spike-vercel-ai",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "spike:dry-run": "tsx src/dry-run.ts",
+        "spike:run": "tsx src/run.ts",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@ai-sdk/openai": "^3.0.53",
+        "ai": "^6.0.168",
+        "yaml": "^2.8.3",
+        "zod": "^4.3.6"
+    },
+    "devDependencies": {
+        "@types/node": "^24.10.4",
+        "tsx": "^4.21.0",
+        "typescript": "^5.9.3"
+    }
+}

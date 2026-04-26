@@ -1,0 +1,20 @@
+{
+    "name": "@cloud-city/agent-builder-spike-openai-agents",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "spike:dry-run": "tsx src/dry-run.ts",
+        "spike:run": "tsx src/run.ts",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@openai/agents": "^0.8.5",
+        "yaml": "^2.8.3",
+        "zod": "^4.3.6"
+    },
+    "devDependencies": {
+        "@types/node": "^24.10.4",
+        "tsx": "^4.21.0",
+        "typescript": "^5.9.3"
+    }
+}
