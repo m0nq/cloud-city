@@ -24,6 +24,12 @@ Select a different fixture with `CC_AGENT_BUILDER_SPIKE_FIXTURE`:
 CC_AGENT_BUILDER_SPIKE_FIXTURE=fixtures/venue_candidates/oakstop.redacted.yaml pnpm --silent spike:run > ../_outputs/vercel-ai.oakstop.redacted.json
 ```
 
+Vendor fixture example:
+
+```sh
+CC_AGENT_BUILDER_SPIKE_FIXTURE=spikes/agent-builder-sdk/_fixtures/dry-bar-vendor.redacted.yaml pnpm --silent spike:run > ../_outputs/vercel-ai.dry-bar-vendor.redacted.json
+```
+
 Do not commit raw model outputs unless they are intentionally reviewed, sanitized, and approved.
 
 ## Compare Outputs
