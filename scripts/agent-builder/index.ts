@@ -9,6 +9,7 @@ import {
 import { formatDeterministicEvalReport, runDeterministicFixtureEval } from '../../src/agent-builder/evals';
 import { formatFixtureValidationReport, validateVenueCandidateFixtureFile } from '../../src/agent-builder/fixtures';
 import { formatRegistryValidationReport, validateAgentRegistryFile } from '../../src/agent-builder/registry';
+import { generateVercelVenueVendorReview } from '../../src/agent-builder/runtime/vercel';
 import { formatValidationReport, validateAgentSpecFile } from '../../src/agent-builder/validation';
 
 export const AGENT_BUILDER_USAGE = [
@@ -18,7 +19,8 @@ export const AGENT_BUILDER_USAGE = [
     '  pnpm agent-builder registry validate <registry-path>',
     '  pnpm agent-builder fixture validate <fixture-path>',
     '  pnpm agent-builder eval validate <eval-suite-path>',
-    '  pnpm agent-builder eval run <eval-suite-path>'
+    '  pnpm agent-builder eval run <eval-suite-path>',
+    '  pnpm agent-builder runtime vercel review --fixture <fixture-path> [--spec <spec-path>]'
 ].join('\n');
 
 type AgentBuilderCommand =
@@ -46,7 +48,17 @@ type AgentBuilderCommand =
     | {
           action: 'eval-run';
           suitePath: string;
+      }
+    | {
+          action: 'runtime-vercel-review';
+          fixturePath: string;
+          specPath?: string;
       };
+
+const valueAfterFlag = (args: string[], flag: string) => {
+    const index = args.indexOf(flag);
+    return index >= 0 ? args[index + 1] : undefined;
+};
 
 export const resolveAgentBuilderCliArgs = (argv: string[] = process.argv): AgentBuilderCommand => {
     const [, , action, primaryArg, ...rest] = argv;
@@ -75,10 +87,27 @@ export const resolveAgentBuilderCliArgs = (argv: string[] = process.argv): Agent
         return { action: 'eval-run', suitePath: rest[0] };
     }
 
+    if (action === 'runtime' && primaryArg === 'vercel' && rest[0] === 'review') {
+        const runtimeArgs = rest.slice(1);
+        const fixturePath = valueAfterFlag(runtimeArgs, '--fixture');
+        const specPath = valueAfterFlag(runtimeArgs, '--spec');
+        const validFlags = runtimeArgs.every((arg, index) => {
+            if (arg === '--fixture' || arg === '--spec') {
+                return Boolean(runtimeArgs[index + 1]);
+            }
+
+            return runtimeArgs[index - 1] === '--fixture' || runtimeArgs[index - 1] === '--spec';
+        });
+
+        if (fixturePath && validFlags) {
+            return { action: 'runtime-vercel-review', fixturePath, specPath };
+        }
+    }
+
     throw new Error(AGENT_BUILDER_USAGE);
 };
 
-export const runAgentBuilderCli = ({
+export const runAgentBuilderCli = async ({
     argv = process.argv,
     logger = console,
     exit = process.exit
@@ -145,6 +174,15 @@ export const runAgentBuilderCli = ({
             return;
         }
 
+        if (command.action === 'runtime-vercel-review') {
+            const review = await generateVercelVenueVendorReview({
+                fixturePath: command.fixturePath,
+                specPath: command.specPath
+            });
+            logger.log(JSON.stringify(review, null, 2));
+            return;
+        }
+
         const report = runDeterministicFixtureEval(command.specPath, command.fixturePath);
         logger.log(formatDeterministicEvalReport(report));
 
@@ -161,5 +199,5 @@ const executedFile = process.argv[1] ? path.resolve(process.argv[1]) : '';
 const expectedScriptFile = path.resolve(process.cwd(), 'scripts/agent-builder/index.ts');
 
 if (executedFile === expectedScriptFile) {
-    runAgentBuilderCli();
+    void runAgentBuilderCli();
 }

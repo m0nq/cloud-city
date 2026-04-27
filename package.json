@@ -23,6 +23,7 @@
         "e2e:cypress": "cypress open"
     },
     "dependencies": {
+        "@ai-sdk/openai": "^3.0.53",
         "@headlessui/react": "^2.2.10",
         "@heroicons/react": "^2.2.0",
         "@mailerlite/mailerlite-nodejs": "^1.5.0",
@@ -32,6 +33,7 @@
         "@tsparticles/react": "^3.0.0",
         "@tsparticles/slim": "^3.9.1",
         "@types/sanitize-html": "^2.16.1",
+        "ai": "^6.0.168",
         "clsx": "^2.1.1",
         "formik": "^2.4.9",
         "graphql": "^16.13.2",
