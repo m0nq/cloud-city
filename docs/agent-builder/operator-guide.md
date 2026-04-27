@@ -232,18 +232,22 @@ Watch for:
 
 ## Before Building Any New Agent
 
+Use the [Agent Creation Lifecycle v0.1](./agent-creation-lifecycle.v0.1.md) and complete the
+[Agent Intake Template v0.1](./templates/agent-intake.template.md) before creating a new agent spec.
+
 Before creating a new agent:
 
-1. Write or update a local spec.
-2. Define owner, accountable human owner, automation class, and implementation stage.
-3. Define in-scope and out-of-scope actions.
-4. Define approval gates with stable IDs where possible.
-5. Define required output fields.
-6. Create minimal redacted fixtures.
-7. Add deterministic eval cases.
-8. Validate the spec, registry, fixtures, and eval suite.
-9. Run manual MVP tests.
-10. Revise the spec before adding runtime behavior.
+1. Complete the intake template and lifecycle review.
+2. Write or update a local spec.
+3. Define owner, accountable human owner, automation class, and implementation stage.
+4. Define in-scope and out-of-scope actions.
+5. Define approval gates with stable IDs where possible.
+6. Define required output fields.
+7. Create minimal redacted fixtures.
+8. Add deterministic eval cases.
+9. Validate the spec, registry, fixtures, and eval suite.
+10. Run manual MVP tests.
+11. Revise the spec before adding runtime behavior.
 
 Do not add UI, integrations, tools, or write access until the schema and eval layer can catch unsafe output.
 
@@ -253,7 +257,7 @@ Near-term:
 
 - SDK decision-record template
 - reusable decision records for provider/runtime changes
-- generalized intake-to-spec flow
+- test the lifecycle and intake template against at least one additional agent candidate
 - additional redacted fixtures
 - more business-domain agents
 
