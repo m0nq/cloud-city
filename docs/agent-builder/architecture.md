@@ -1,6 +1,6 @@
 # Agent Builder Architecture
 
-The Agent Builder foundation is a local, SDK-neutral validation layer for business-process agent specs. It does not run autonomous agents, expose public routes, connect to production tools, or require secrets.
+The Agent Builder foundation is a local, governance-aware validation and runtime layer for business-process agent specs. It does not run autonomous agents, expose public routes, connect to production tools, or execute tools.
 
 ## Current Shape
 
@@ -11,12 +11,41 @@ The Agent Builder foundation is a local, SDK-neutral validation layer for busine
 - `evals/` stores deterministic eval-suite definitions that bind specs to fixtures and required checks.
 - `registry/agent-registry.yaml` stores local read-only registry metadata for validated specs.
 - `docs/agent-builder/` records governance, implementation, and SDK spike planning.
+- `src/agent-builder/runtime/` contains the first local runtime prototype for structured draft packets.
+
+## Runtime Status
+
+The first implementation runtime is Vercel AI SDK, merged in `4d67104 feat(agent-builder): add Vercel runtime prototype`.
+
+Run the current CLI-only runtime from the app root:
+
+```sh
+pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml
+```
+
+The runtime remains:
+
+- CLI-only
+- draft-only
+- no tools
+- no public routes
+- no UI
+- no production integrations
+- stdout-only by default
+- validated with the shared Venue / Vendor review packet Zod schema
+
+The completed SDK spike found:
+
+- Vercel AI SDK passed Warehouse416, Oakstop, and dry-bar vendor comparisons and is the first structured-output runtime.
+- OpenAI Agents SDK JS also passed and remains a future governed-runtime candidate.
+- Local models are deferred to a feasibility spike.
+- Mastra and LangGraph JS are deferred unless orchestration needs grow.
 
 ## Boundaries
 
 - Draft-only outputs.
 - Human approval before external outreach, recommendations to act, rates, terms, contracts, payments, public messaging, or source-of-truth updates.
-- No agent SDKs, MCP, OAuth, Gmail, Trello writes, payment tooling, contract tooling, or production integrations in this milestone.
+- No MCP, OAuth, Gmail, Trello writes, payment tooling, contract tooling, compliance tooling, or production integrations in this milestone.
 - No autonomous tool execution.
 
 ## Validation Flow
@@ -52,3 +81,23 @@ pnpm agent-builder eval run evals/venue_vendor_research.eval-suite.yaml
 ```
 
 The eval runner remains local-only and deterministic. It validates the suite, validates referenced fixtures, validates the referenced spec, then checks whether the spec contains each case's required output fields, venue criteria, approval gates, and eval tests. It does not call a model or execute tools.
+
+## SDK Lifecycle & Re-Evaluation Policy
+
+Re-evaluate SDK, runtime, and model choices:
+
+- before UI depends on runtime outputs
+- before OAuth or Drive sync
+- before MCP
+- before tool execution
+- before long-running approval workflows
+- before any write access to Drive, Gmail, Trello, payment, contract, or compliance systems
+- after eval failures, hallucination patterns, approval-boundary misses, or safety incidents
+- after major SDK or API changes
+- when cost, latency, or reliability becomes unacceptable
+- when local or open-weight models pass Cloud City eval gates
+- quarterly or at major Agent Builder version milestones
+
+## Next Architecture Step
+
+Before adding a UI, create a reusable runtime-output validation command. It should validate generated review packets independently from the model call so local files, stdout captures, and future UI outputs can pass through the same safety checks.

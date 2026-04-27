@@ -2,7 +2,17 @@
 
 ## Purpose
 
-Compare Mastra, OpenAI Agents SDK JS, Vercel AI SDK, and LangGraph JS without installing them in the production app. The goal is to determine whether any SDK should be adopted after the schema, governance, and eval layer is stable.
+Compare Mastra, OpenAI Agents SDK JS, Vercel AI SDK, and LangGraph JS without prematurely adopting a production agent platform. The goal is to decide which runtime layer should be used only after Cloud City's schema, governance, and eval layer can validate draft-only outputs.
+
+## Current Status
+
+The initial SDK spike and first runtime prototype are complete.
+
+- Vercel AI SDK passed Warehouse416, Oakstop, and dry-bar vendor comparisons.
+- OpenAI Agents SDK JS also passed the same comparison flow and remains a future governed-runtime candidate.
+- Vercel AI SDK is selected as the first implementation runtime because it fits the existing TypeScript, pnpm, and Next.js stack with a small structured-output surface.
+- The first Vercel runtime prototype was merged in `4d67104 feat(agent-builder): add Vercel runtime prototype`.
+- Runtime output remains CLI-only, draft-only, no-tools, no-routes, no-integrations, and stdout-only by default.
 
 ## Candidate SDKs
 
@@ -11,14 +21,32 @@ Compare Mastra, OpenAI Agents SDK JS, Vercel AI SDK, and LangGraph JS without in
 - Vercel AI SDK
 - LangGraph JS
 
-## Current Spike Round
+## Spike Round 1
 
-Round 1 only installs and tests:
+Round 1 installed and tested:
 
 1. Vercel AI SDK
 2. OpenAI Agents SDK JS
 
 Mastra and LangGraph JS remain comparison notes and possible second-round candidates.
+
+## Runtime Prototype
+
+The first implementation runtime is Vercel AI SDK behind a local CLI command:
+
+```sh
+pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml
+```
+
+The runtime:
+
+- loads the existing Venue / Vendor spec and a local fixture
+- builds a source-grounded prompt
+- calls Vercel AI SDK structured output
+- validates the result with the shared Zod review packet schema
+- prints the draft packet to stdout
+
+It does not create public routes, expose UI, provide tools, write outputs by default, mutate source-of-truth files, or connect to Drive, Gmail, Trello, payment, contract, compliance, OAuth, or MCP systems.
 
 ## Test Task
 
@@ -26,7 +54,7 @@ Use the Venue / Vendor Research Assistant v0.1b spec to produce a draft-only rev
 
 ## Common Fixture
 
-Use `fixtures/venue_candidates/warehouse416.public.yaml` as the common public fixture. Add an isolated redacted fixture only if a framework needs a second case for sensitive-data handling.
+Use `fixtures/venue_candidates/warehouse416.public.yaml`, `fixtures/venue_candidates/oakstop.redacted.yaml`, and the isolated dry-bar vendor spike fixture for comparison coverage across venue and vendor cases.
 
 ## Shared Expected Output Schema
 
@@ -48,6 +76,7 @@ Each SDK spike must produce output that validates against a local Zod schema wit
 - `sound_cutoff_vs_event_end_time`
 - `fit_notes`
 - `risk_notes`
+- `approval_gate_ids`
 - `approval_needs`
 - `cooperation_notes`
 - `recommended_next_human_action`
@@ -72,8 +101,8 @@ Score each candidate from 1 to 5 on:
 
 ## Install Footprint Comparison
 
-- Vercel AI SDK: install in `spikes/agent-builder-sdk/vercel-ai/` only. Expected packages: `ai`, `@ai-sdk/openai`, plus local TypeScript runner dependencies.
-- OpenAI Agents SDK JS: install in `spikes/agent-builder-sdk/openai-agents/` only. Expected packages: `@openai/agents`, plus local TypeScript runner dependencies.
+- Vercel AI SDK: first implementation runtime. Runtime packages are `ai` and `@ai-sdk/openai`.
+- OpenAI Agents SDK JS: installed only in the isolated spike. Keep as a future governed-runtime candidate.
 - Mastra: do not install in Round 1. Metadata review shows `@mastra/core` brings broader agent/workflow/MCP-oriented surface, useful for a later platform comparison but too broad for the first runtime spike.
 - LangGraph JS: do not install in Round 1. Keep as the explicit state/human-in-the-loop workflow benchmark for a later round.
 
@@ -109,7 +138,8 @@ Score each candidate from 1 to 5 on:
 
 ## Governance Fit Review
 
-- All Round 1 spike code must stay under `spikes/agent-builder-sdk/`.
+- Spike code stays under `spikes/agent-builder-sdk/`.
+- Production runtime code may use the selected Vercel AI SDK only through local CLI paths until a later governance review approves broader surfaces.
 - No SDK code may mutate `agent_specs/`, `registry/`, `evals/`, or `fixtures/`.
 - No public routes, OAuth, MCP clients/servers, Gmail, Trello, payments, contracts, or compliance integrations.
 - No autonomous tool execution.
@@ -133,6 +163,33 @@ Score each candidate from 1 to 5 on:
 ## Decision Criteria
 
 Prefer the option that preserves Cloud City's governance model with the least complexity. Structured output reliability, explicit approval gates, policy hooks, and low lock-in matter more than demo speed.
+
+## SDK Lifecycle & Re-Evaluation Policy
+
+Re-evaluate SDK, runtime, and model choices:
+
+- before any UI depends on runtime outputs
+- before OAuth or Drive sync
+- before MCP
+- before tool execution
+- before long-running approval workflows
+- before any write access to Drive, Gmail, Trello, payment, contract, or compliance systems
+- after eval failures, hallucination patterns, approval-boundary misses, or safety incidents
+- after major SDK or API changes
+- when cost, latency, or reliability becomes unacceptable
+- when local or open-weight models pass Cloud City eval gates
+- quarterly or at major Agent Builder version milestones
+
+## Future Provider Strategy
+
+- Vercel AI SDK: first structured-output runtime.
+- OpenAI Agents SDK JS: future governed-runtime candidate.
+- Local models: deferred feasibility spike only.
+- Mastra and LangGraph JS: deferred unless orchestration needs grow.
+
+## Next Engineering Step
+
+Build a reusable runtime-output validation command before any UI depends on runtime output. It should validate saved or piped runtime packets against the shared Zod schema, canonical approval gate IDs, structured fact sources, unknowns-over-assumptions discipline, and no-implied-commitment checks.
 
 ## Recommendation Format
 
