@@ -147,12 +147,16 @@ export const runAgentBuilderCli = async ({
     argv = process.argv,
     logger = console,
     exit = process.exit,
-    stdin = process.stdin
+    stdin = process.stdin,
+    progress = console.error,
+    generateReview = generateVercelVenueVendorReview
 }: {
     argv?: string[];
     logger?: Pick<Console, 'log' | 'error'>;
     exit?: (code: number) => never;
     stdin?: NodeJS.ReadableStream;
+    progress?: (message: string) => void;
+    generateReview?: typeof generateVercelVenueVendorReview;
 } = {}) => {
     try {
         loadAgentBuilderRuntimeEnv();
@@ -214,10 +218,12 @@ export const runAgentBuilderCli = async ({
         }
 
         if (command.action === 'runtime-vercel-review') {
-            const review = await generateVercelVenueVendorReview({
+            progress(`Generating Venue / Vendor review packet for fixture: ${command.fixturePath}`);
+            const review = await generateReview({
                 fixturePath: command.fixturePath,
                 specPath: command.specPath
             });
+            progress('Validating structured output and writing JSON to stdout.');
             logger.log(JSON.stringify(review, null, 2));
             return;
         }

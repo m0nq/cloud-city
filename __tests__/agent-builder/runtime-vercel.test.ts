@@ -93,6 +93,7 @@ describe('Agent Builder Vercel runtime prototype', () => {
                         log: jest.fn(),
                         error: (message: string) => errors.push(message)
                     },
+                    progress: jest.fn(),
                     exit: (code: number): never => {
                         throw new Error(`exit:${code}`);
                     }
@@ -129,5 +130,38 @@ describe('Agent Builder Vercel runtime prototype', () => {
         expect(prompt).toContain('Supported approval_gate_ids');
         expect(prompt).toContain('Do not claim Cloud City has approved');
         expect(prompt).toContain('fixtures/venue_candidates/warehouse416.public.yaml');
+    });
+
+    it('writes runtime progress to stderr while keeping stdout as JSON', async () => {
+        const logs: string[] = [];
+        const progress: string[] = [];
+
+        await runAgentBuilderCli({
+            argv: [
+                'node',
+                'scripts/agent-builder/index.ts',
+                'runtime',
+                'vercel',
+                'review',
+                '--fixture',
+                'fixtures/venue_candidates/warehouse416.public.yaml'
+            ],
+            logger: {
+                log: (message: string) => logs.push(message),
+                error: jest.fn()
+            },
+            progress: (message: string) => progress.push(message),
+            generateReview: jest.fn().mockResolvedValue(validReviewPacket),
+            exit: (code: number): never => {
+                throw new Error(`exit:${code}`);
+            }
+        });
+
+        expect(progress.join('\n')).toContain('Generating Venue / Vendor review packet');
+        expect(progress.join('\n')).toContain('writing JSON to stdout');
+        expect(JSON.parse(logs.join('\n'))).toMatchObject({
+            candidate_name: 'Warehouse416',
+            candidate_type: 'venue'
+        });
     });
 });
