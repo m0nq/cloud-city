@@ -46,6 +46,13 @@ All generated packets are drafts. Humans approve. Humans execute.
 
 Run these from the app root.
 
+Runtime generation requires local environment variables:
+
+- `OPENAI_API_KEY`
+- `CC_AGENT_BUILDER_MODEL`
+
+The CLI loads `.env.local` and `.env` from the app root if present. Already-exported shell variables take precedence. Keep `.env`, `.env.local`, and `.tmp/` uncommitted.
+
 1. Validate the spec:
 
 ```sh
@@ -87,8 +94,8 @@ pnpm agent-builder runtime validate-output \
 6. Or generate and validate through a pipe:
 
 ```sh
-pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml \
-  | pnpm agent-builder runtime validate-output --fixture fixtures/venue_candidates/warehouse416.public.yaml
+pnpm --silent agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml \
+  | pnpm --silent agent-builder runtime validate-output --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
 7. Complete human review before any action.

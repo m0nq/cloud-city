@@ -38,6 +38,13 @@ The first implementation runtime is Vercel AI SDK behind a local CLI command:
 pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
+When piping runtime JSON into validation, use `pnpm --silent` so pnpm lifecycle banners do not pollute JSON stdin:
+
+```sh
+pnpm --silent agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml \
+  | pnpm --silent agent-builder runtime validate-output --fixture fixtures/venue_candidates/warehouse416.public.yaml
+```
+
 The runtime:
 
 - loads the existing Venue / Vendor spec and a local fixture

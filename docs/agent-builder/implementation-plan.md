@@ -44,6 +44,13 @@ Current command:
 pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
+Use `pnpm --silent` when piping runtime JSON into another command:
+
+```sh
+pnpm --silent agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml \
+  | pnpm --silent agent-builder runtime validate-output --fixture fixtures/venue_candidates/warehouse416.public.yaml
+```
+
 ## Milestone 5: Runtime Output Validation Command
 
 Next engineering step:

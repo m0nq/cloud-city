@@ -1,5 +1,9 @@
 /** @jest-environment node */
 
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
+
 import { runAgentBuilderCli } from '../../scripts/agent-builder';
 import { buildVenueVendorReviewPrompt } from '../../src/agent-builder/runtime/prompt';
 import { resolveVercelRuntimeEnv } from '../../src/agent-builder/runtime/vercel';
@@ -65,12 +69,15 @@ describe('Agent Builder Vercel runtime prototype', () => {
         const originalApiKey = process.env.OPENAI_API_KEY;
         const originalModel = process.env.CC_AGENT_BUILDER_MODEL;
         const originalSpikeModel = process.env.CC_AGENT_BUILDER_SPIKE_MODEL;
+        const originalCwd = process.cwd();
+        const tempCwd = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-builder-missing-env-'));
         delete process.env.OPENAI_API_KEY;
         delete process.env.CC_AGENT_BUILDER_MODEL;
         delete process.env.CC_AGENT_BUILDER_SPIKE_MODEL;
         const errors: string[] = [];
 
         try {
+            process.chdir(tempCwd);
             await expect(
                 runAgentBuilderCli({
                     argv: [
@@ -96,6 +103,7 @@ describe('Agent Builder Vercel runtime prototype', () => {
             expect(errors.join('\n')).toContain('OPENAI_API_KEY');
             expect(errors.join('\n')).toContain('CC_AGENT_BUILDER_MODEL');
         } finally {
+            process.chdir(originalCwd);
             if (originalApiKey) process.env.OPENAI_API_KEY = originalApiKey;
             if (originalModel) process.env.CC_AGENT_BUILDER_MODEL = originalModel;
             if (originalSpikeModel) process.env.CC_AGENT_BUILDER_SPIKE_MODEL = originalSpikeModel;

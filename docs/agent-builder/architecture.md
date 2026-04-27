@@ -23,6 +23,8 @@ Run the current CLI-only runtime from the app root:
 pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
+The CLI loads local runtime env from `.env.local` and `.env` if present, without overriding already-exported shell values. Use `pnpm --silent` when piping runtime JSON into validation.
+
 The runtime remains:
 
 - CLI-only

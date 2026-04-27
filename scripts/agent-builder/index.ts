@@ -9,6 +9,7 @@ import {
 import { formatDeterministicEvalReport, runDeterministicFixtureEval } from '../../src/agent-builder/evals';
 import { formatFixtureValidationReport, validateVenueCandidateFixtureFile } from '../../src/agent-builder/fixtures';
 import { formatRegistryValidationReport, validateAgentRegistryFile } from '../../src/agent-builder/registry';
+import { loadAgentBuilderRuntimeEnv } from '../../src/agent-builder/runtime/env';
 import {
     formatRuntimeOutputValidationReport,
     validateRuntimeOutput,
@@ -154,6 +155,7 @@ export const runAgentBuilderCli = async ({
     stdin?: NodeJS.ReadableStream;
 } = {}) => {
     try {
+        loadAgentBuilderRuntimeEnv();
         const command = resolveAgentBuilderCliArgs(argv);
 
         if (command.action === 'validate') {
