@@ -23,6 +23,10 @@ The output-contract review is
 [event-readiness.output-contract-review.v0.1.md](../output-contracts/event-readiness.output-contract-review.v0.1.md).
 It should be treated as a planning artifact for future fixture/eval/schema decisions, not as a schema or spec.
 
+The fixture/eval plan is
+[event-readiness.fixture-eval-plan.v0.1.md](../eval-plans/event-readiness.fixture-eval-plan.v0.1.md). It should be
+treated as a planning artifact only, not as a fixture, eval suite, schema, or implementation approval.
+
 ## 3. Operating Doctrine
 
 - local-first
@@ -391,6 +395,6 @@ This list is provisional and requires founder/operator review:
 
 ## 12. Next Step After This Plan
 
-After founder/operator review, revise or approve the synthetic source packet, manual-test review packet, and
-output-contract review. Do not create fixtures, evals, specs, registry entries, runtime behavior, or scaffold commands
-until these planning artifacts are approved.
+After founder/operator review, revise or approve the synthetic source packet, manual-test review packet,
+output-contract review, and fixture/eval plan. Do not create fixtures, evals, specs, registry entries, runtime behavior,
+or scaffold commands until these planning artifacts are approved.
