@@ -19,6 +19,10 @@ The first manual-test review packet is
 [event-readiness.synthetic-review-packet.v0.1.md](../manual-tests/event-readiness.synthetic-review-packet.v0.1.md). It
 should be treated as a draft output example for review, not as runtime output or operational guidance.
 
+The output-contract review is
+[event-readiness.output-contract-review.v0.1.md](../output-contracts/event-readiness.output-contract-review.v0.1.md).
+It should be treated as a planning artifact for future fixture/eval/schema decisions, not as a schema or spec.
+
 ## 3. Operating Doctrine
 
 - local-first
@@ -387,6 +391,6 @@ This list is provisional and requires founder/operator review:
 
 ## 12. Next Step After This Plan
 
-After founder/operator review, revise or approve the synthetic source packet and manual-test review packet. Do not
-create fixtures, evals, specs, registry entries, runtime behavior, or scaffold commands until the source packet and
-manual-test packet are approved.
+After founder/operator review, revise or approve the synthetic source packet, manual-test review packet, and
+output-contract review. Do not create fixtures, evals, specs, registry entries, runtime behavior, or scaffold commands
+until these planning artifacts are approved.
