@@ -11,6 +11,14 @@ The intake at [event-readiness.intake.v0.1.md](../intakes/event-readiness.intake
 boundaries, and intended draft output. This plan defines the source materials required to make the first manual test
 scenario concrete before fixture, spec, or eval work begins.
 
+The first synthetic source packet for manual review is
+[event-readiness.synthetic-source-packet.v0.1.md](./event-readiness.synthetic-source-packet.v0.1.md). It should be
+treated as source material for a future manual review, not as a fixture or operational record.
+
+The first manual-test review packet is
+[event-readiness.synthetic-review-packet.v0.1.md](../manual-tests/event-readiness.synthetic-review-packet.v0.1.md). It
+should be treated as a draft output example for review, not as runtime output or operational guidance.
+
 ## 3. Operating Doctrine
 
 - local-first
@@ -379,6 +387,6 @@ This list is provisional and requires founder/operator review:
 
 ## 12. Next Step After This Plan
 
-After founder/operator review, the next step is to create one redacted or synthetic source packet for manual testing. Do
-not create fixtures, evals, specs, registry entries, runtime behavior, or scaffold commands until the source packet is
-approved.
+After founder/operator review, revise or approve the synthetic source packet and manual-test review packet. Do not
+create fixtures, evals, specs, registry entries, runtime behavior, or scaffold commands until the source packet and
+manual-test packet are approved.
