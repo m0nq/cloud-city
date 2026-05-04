@@ -4,7 +4,9 @@ import { ZodError, z } from 'zod';
 
 import type { AgentSpec } from './schema';
 import {
+    validateFixtureFile,
     validateVenueCandidateFixtureFile,
+    type EventReadinessFixture,
     type VenueCandidateFixture
 } from './fixtures';
 import { loadYamlFile, validateAgentSpecFile } from './validation';
@@ -18,10 +20,16 @@ export const evalSuiteCaseSchema = z
     .object({
         id: nonEmptyString,
         fixture_path: nonEmptyString,
+        expected_readiness_label: nonEmptyString.optional(),
+        required_core_fields: stringArray,
+        required_domain_check_sections: stringArray,
+        required_source_labels: stringArray,
+        required_seeded_issues: stringArray,
         required_output_fields: stringArray,
         required_venue_fit_criteria: stringArray,
         required_approval_gates: stringArray,
-        required_evaluation_tests: stringArray
+        required_evaluation_tests: stringArray,
+        required_prohibited_output_behavior: stringArray
     })
     .passthrough();
 
@@ -32,7 +40,8 @@ export const evalSuiteSchema = z
                 id: nonEmptyString,
                 name: nonEmptyString,
                 version: nonEmptyString,
-                spec_path: nonEmptyString,
+                fixture_type: nonEmptyString.optional(),
+                spec_path: nonEmptyString.optional(),
                 cases: z.array(evalSuiteCaseSchema).min(1)
             })
             .passthrough()
@@ -111,6 +120,21 @@ const makeChecklistItem = (label: string, actualValues: string[], requiredValues
     };
 };
 
+const unexpectedValues = (actualValues: string[], allowedValues: string[]) => {
+    const allowed = new Set(allowedValues.map(normalize));
+    return actualValues.filter(value => !allowed.has(normalize(value)));
+};
+
+const makeAllowedValuesCheck = (label: string, actualValues: string[], allowedValues: string[]): EvalChecklistItem => {
+    const unexpected = unexpectedValues(actualValues, allowedValues);
+
+    return {
+        label,
+        passed: unexpected.length === 0,
+        details: unexpected.length === 0 ? 'PASS' : `unexpected: ${unexpected.join(', ')}`
+    };
+};
+
 const caseOutcome = (checks: EvalChecklistItem[]): EvalOutcome => (checks.every(check => check.passed) ? 'PASS' : 'FAIL');
 
 const suiteOutcome = (cases: EvalCaseResult[]): EvalOutcome => {
@@ -128,6 +152,24 @@ const suiteOutcome = (cases: EvalCaseResult[]): EvalOutcome => {
 };
 
 const combineRequirements = (fixtureValues: string[], caseValues: string[]) => unique([...fixtureValues, ...caseValues]);
+
+const getSuiteFixtureType = (suite: EvalSuite['eval_suite']) => suite.fixture_type || 'venue_candidate';
+
+const isEventReadinessSuite = (suite: EvalSuite['eval_suite']) => getSuiteFixtureType(suite) === 'event_readiness';
+
+const seededIssueIds = (fixture: EventReadinessFixture) => fixture.seeded_issues.map(issue => issue.id);
+
+const sourceMaterialLabels = (fixture: EventReadinessFixture) => Object.keys(fixture.source_materials);
+
+const makeExactValueCheck = (label: string, actualValue: string, expectedValue?: string): EvalChecklistItem => {
+    const passed = !expectedValue || normalize(actualValue) === normalize(expectedValue);
+
+    return {
+        label,
+        passed,
+        details: passed ? 'PASS' : `expected: ${expectedValue}; actual: ${actualValue}`
+    };
+};
 
 const loadValidSpec = (specPath: string): AgentSpec => {
     const specReport = validateAgentSpecFile(specPath);
@@ -149,27 +191,85 @@ const loadValidFixture = (fixturePath: string): VenueCandidateFixture => {
     return fixtureReport.fixture;
 };
 
+const loadValidEventReadinessFixture = (fixturePath: string): EventReadinessFixture => {
+    const fixtureReport = validateFixtureFile(fixturePath);
+
+    if (!fixtureReport.fixture || !fixtureReport.schemaPassed) {
+        throw new Error(`Fixture must pass validation before eval: ${fixtureReport.errors.join('; ')}`);
+    }
+
+    if (fixtureReport.fixtureType !== 'event_readiness') {
+        throw new Error(`Fixture must be event_readiness for this eval suite: ${fixturePath}`);
+    }
+
+    return fixtureReport.fixture as EventReadinessFixture;
+};
+
 export const validateEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalSuiteValidationReport => {
     try {
         const suite = evalSuiteSchema.parse(input);
         const checks: EvalSuiteValidationCheck[] = [];
+        const fixtureType = getSuiteFixtureType(suite.eval_suite);
+        const isEventReadiness = isEventReadinessSuite(suite.eval_suite);
         const specPath = suite.eval_suite.spec_path;
-        const specExists = fs.existsSync(path.resolve(process.cwd(), specPath));
 
-        checks.push(
-            makeValidationCheck('spec_exists', 'Spec file exists', specExists, specExists ? specPath : `missing file: ${specPath}`)
-        );
-
-        if (specExists) {
-            const specReport = validateAgentSpecFile(specPath);
-            const specValid = specReport.schemaPassed && Boolean(specReport.policyReport?.passed);
-
+        if (isEventReadiness && specPath) {
             checks.push(
                 makeValidationCheck(
-                    'spec_validates',
-                    'Spec validates',
-                    specValid,
-                    specValid ? 'schema and policy pass' : specReport.errors.join('; ')
+                    'spec_absent_for_event_readiness',
+                    'Event Readiness suite does not require a spec',
+                    false,
+                    `unexpected spec_path: ${specPath}`
+                )
+            );
+        }
+
+        if (!isEventReadiness) {
+            const hasSpecPath = Boolean(specPath);
+            checks.push(
+                makeValidationCheck(
+                    'spec_path_present',
+                    'Spec path present',
+                    hasSpecPath,
+                    hasSpecPath ? specPath || '<unknown>' : 'missing spec_path'
+                )
+            );
+
+            if (specPath) {
+                const specExists = fs.existsSync(path.resolve(process.cwd(), specPath));
+
+                checks.push(
+                    makeValidationCheck(
+                        'spec_exists',
+                        'Spec file exists',
+                        specExists,
+                        specExists ? specPath : `missing file: ${specPath}`
+                    )
+                );
+
+                if (specExists) {
+                    const specReport = validateAgentSpecFile(specPath);
+                    const specValid = specReport.schemaPassed && Boolean(specReport.policyReport?.passed);
+
+                    checks.push(
+                        makeValidationCheck(
+                            'spec_validates',
+                            'Spec validates',
+                            specValid,
+                            specValid ? 'schema and policy pass' : specReport.errors.join('; ')
+                        )
+                    );
+                }
+            }
+        }
+
+        if (fixtureType !== 'venue_candidate' && fixtureType !== 'event_readiness') {
+            checks.push(
+                makeValidationCheck(
+                    'fixture_type_supported',
+                    'Fixture type supported',
+                    false,
+                    `unknown fixture_type: ${fixtureType}`
                 )
             );
         }
@@ -190,15 +290,30 @@ export const validateEvalSuite = (input: unknown, suitePath = 'in-memory'): Eval
                 continue;
             }
 
-            const fixtureReport = validateVenueCandidateFixtureFile(evalCase.fixture_path);
+            const fixtureReport = isEventReadiness
+                ? validateFixtureFile(evalCase.fixture_path)
+                : validateVenueCandidateFixtureFile(evalCase.fixture_path);
+            const fixtureTypeMatches = isEventReadiness ? fixtureReport.fixtureType === 'event_readiness' : true;
+
             checks.push(
                 makeValidationCheck(
                     `${evalCase.id}.fixture_validates`,
                     'Fixture validates',
-                    fixtureReport.schemaPassed,
+                    fixtureReport.schemaPassed && fixtureTypeMatches,
                     fixtureReport.schemaPassed ? 'schema passes' : fixtureReport.errors.join('; ')
                 )
             );
+
+            if (isEventReadiness && fixtureReport.schemaPassed) {
+                checks.push(
+                    makeValidationCheck(
+                        `${evalCase.id}.fixture_type_matches`,
+                        'Fixture type matches suite',
+                        fixtureTypeMatches,
+                        fixtureTypeMatches ? 'event_readiness' : `actual: ${fixtureReport.fixtureType || 'unknown'}`
+                    )
+                );
+            }
         }
 
         return {
@@ -239,6 +354,91 @@ export const runEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalRunRe
     }
 
     const suite = validation.suite.eval_suite;
+    const isEventReadiness = isEventReadinessSuite(suite);
+
+    if (isEventReadiness) {
+        const cases = suite.cases.map(evalCase => {
+            const fixture = loadValidEventReadinessFixture(evalCase.fixture_path);
+            const requiredDomainSections = fixture.dry_bar_out_of_scope
+                ? evalCase.required_domain_check_sections.filter(section => section !== 'dry_bar_readiness_notes')
+                : evalCase.required_domain_check_sections;
+            const checks = [
+                makeExactValueCheck(
+                    'Expected readiness label',
+                    fixture.expected_readiness_label,
+                    evalCase.expected_readiness_label
+                ),
+                makeChecklistItem(
+                    'Required core fields',
+                    fixture.required_core_fields,
+                    evalCase.required_core_fields
+                ),
+                makeChecklistItem(
+                    'Required domain-check sections',
+                    fixture.required_domain_check_sections,
+                    requiredDomainSections
+                ),
+                makeChecklistItem(
+                    'Canonical source labels',
+                    fixture.canonical_source_labels,
+                    evalCase.required_source_labels
+                ),
+                makeAllowedValuesCheck(
+                    'Canonical source labels valid',
+                    fixture.canonical_source_labels,
+                    evalCase.required_source_labels
+                ),
+                makeChecklistItem(
+                    'Source materials',
+                    sourceMaterialLabels(fixture),
+                    evalCase.required_source_labels
+                ),
+                makeAllowedValuesCheck(
+                    'Source material labels valid',
+                    sourceMaterialLabels(fixture),
+                    evalCase.required_source_labels
+                ),
+                makeChecklistItem('Seeded issues', seededIssueIds(fixture), evalCase.required_seeded_issues),
+                makeChecklistItem(
+                    'Approval gates',
+                    fixture.required_approval_gates,
+                    evalCase.required_approval_gates
+                ),
+                makeChecklistItem(
+                    'Evaluation tests',
+                    fixture.required_evaluation_tests,
+                    evalCase.required_evaluation_tests
+                ),
+                makeChecklistItem(
+                    'Prohibited output behavior',
+                    fixture.prohibited_output_behavior,
+                    evalCase.required_prohibited_output_behavior
+                )
+            ];
+
+            return {
+                caseId: evalCase.id,
+                fixturePath: evalCase.fixture_path,
+                candidateName: fixture.event_name,
+                outcome: caseOutcome(checks),
+                checks
+            };
+        });
+
+        return {
+            suitePath,
+            suiteId: suite.id,
+            suiteName: suite.name,
+            specPath: suite.spec_path || '<none>',
+            outcome: suiteOutcome(cases),
+            cases
+        };
+    }
+
+    if (!suite.spec_path) {
+        throw new Error('Spec path is required for venue/vendor eval suites.');
+    }
+
     const spec = loadValidSpec(suite.spec_path);
     const specEvalTests = spec.evaluation_tests.map(test => test.id);
 
