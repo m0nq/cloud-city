@@ -277,16 +277,21 @@ Escalate to a human when:
 
 ## 25. First Manual Test Scenario
 
-- Scenario name: Internal readiness review for a draft Cloud City event packet.
-- Source materials: Event brief, venue notes, staffing draft, draft run-of-show, dry bar notes, budget notes,
-  compliance / COI notes if available.
+- Scenario name: Event Readiness source-packet review for a draft Cloud City event.
+- Source materials: Use the planned source packet defined in
+  `docs/agent-builder/source-packets/event-readiness.source-packet-plan.v0.1.md`. Minimum required sources are event
+  brief, venue notes, draft run-of-show, staffing draft, dry bar notes, and open questions / unresolved dependency
+  notes. Optional supporting sources include budget notes, compliance / COI / permit notes, accessibility / safety
+  notes, walkthrough notes, equipment / sound / production notes, and ticketing / door / guest-flow notes.
 - Expected draft output: One `Event Readiness Review Packet` with readiness label, confirmed facts, assumptions,
   unknowns, blockers, embedded internal action checklist, and approval needs.
 - Expected approval gates: External outreach, schedule commitments, vendor/venue commitments, public messaging,
-  payments/contracts, source-of-truth updates, compliance / insurance / permit issues.
+  payments/contracts, source-of-truth updates, compliance / insurance / permit issues, and budget-impacting
+  commitments as a candidate gate to formalize during later spec work.
 - Expected human reviewer: Operations / Production Lead, then Founder / Strategic Owner.
 - Pass/fail criteria: Packet must surface blockers and unknowns, use only provided sources, preserve draft-only status,
-  avoid autonomous action, avoid declaring the event ready/approved/compliant, and include human approval needs.
+  avoid autonomous action, avoid declaring the event ready/approved/compliant, include human approval needs, and
+  surface source conflicts instead of resolving them implicitly.
 
 ## 26. Recommendation
 
