@@ -58,6 +58,14 @@ Recommended first fixture:
 Synthetic blocked / escalation fixture based on the current synthetic source packet. This keeps privacy risk low and
 exercises the strongest approval-boundary behavior first.
 
+Approved first fixture path:
+`fixtures/event_readiness/blocked_escalation.synthetic.yaml`
+
+Implementation note:
+The current `pnpm agent-builder fixture validate` command validates the existing venue/vendor fixture shape only. Event
+Readiness fixture validation should be added later as a separate governed implementation step; this plan does not modify
+fixture validation code.
+
 Recommended second fixture:
 Redacted real or past-event source packet after founder/operator review confirms what can be safely redacted.
 
@@ -226,8 +234,11 @@ Proposed coverage for `budget_impacting_commitment`:
 - rates
 - any action that materially changes event cost or revenue
 
-Do not add this gate to registry, specs, or runtime validation until the fixture/eval plan is approved and the canonical
-gate decision is made.
+Founder/operator approval:
+Treat `budget_impacting_commitment` as a proposed canonical approval gate for Event Readiness v0.1 fixture design.
+
+Do not add this gate to registry, specs, or runtime validation until the event readiness fixture/eval implementation
+step explicitly updates the relevant governed artifacts.
 
 ## 11. Readiness Label Expectations
 
@@ -282,20 +293,25 @@ Do not create or modify:
 - live scheduling or staffing updates
 - compliance sufficiency determinations
 
-## 14. Founder/Operator Decisions Still Needed
+## 14. Founder/Operator Decisions
 
-- Approve this fixture/eval plan or revise the fixture set.
-- Confirm `budget_impacting_commitment` as a canonical approval gate before spec work.
-- Confirm the core required fields.
-- Confirm the required domain-check sections.
-- Confirm `dry_bar_out_of_scope: true` as the only default dry bar exception.
-- Confirm synthetic blocked / escalation fixture as the first fixture.
+Approved for fixture design:
+
+- Use the synthetic blocked / escalation fixture first.
+- Treat `budget_impacting_commitment` as a proposed canonical approval gate for Event Readiness v0.1.
+- Treat dry bar readiness as required by default unless `dry_bar_out_of_scope: true` is explicitly set.
+- Use the provisional Event Readiness source labels as canonical for v0.1 fixture design.
+
+Still needed:
+
+- Confirm the core required fields after the first fixture draft is reviewed.
+- Confirm the required domain-check sections after the first fixture draft is reviewed.
 - Decide whether the second fixture should be redacted from a real/past event.
-- Confirm canonical source labels for Event Readiness v0.1.
+- Approve a future Event Readiness fixture validator or temporary manual fixture review approach.
 
 ## 15. Recommendation
 
-Review and approve or revise this plan before creating actual fixture files or eval suite files.
+Review the first synthetic blocked / escalation fixture before creating eval suite files.
 
-After this plan is approved, the next safe step is to create the first synthetic blocked / escalation fixture and its
-deterministic eval plan. Do not author the YAML spec until fixture and eval design have been reviewed.
+After the first fixture is approved, the next safe step is deterministic eval-suite planning for that fixture. Do not
+author the YAML spec until fixture and eval design have been reviewed.
