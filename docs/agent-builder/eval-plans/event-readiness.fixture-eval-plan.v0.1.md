@@ -66,6 +66,10 @@ The current `pnpm agent-builder fixture validate` command validates the existing
 Readiness fixture validation should be added later as a separate governed implementation step; this plan does not modify
 fixture validation code.
 
+Fixture-validator plan:
+[event-readiness.fixture-validator-plan.v0.1.md](./event-readiness.fixture-validator-plan.v0.1.md) defines the next
+narrow implementation plan for Event Readiness fixture validation.
+
 Recommended second fixture:
 Redacted real or past-event source packet after founder/operator review confirms what can be safely redacted.
 
@@ -308,6 +312,7 @@ Still needed:
 - Confirm the required domain-check sections after the first fixture draft is reviewed.
 - Decide whether the second fixture should be redacted from a real/past event.
 - Approve a future Event Readiness fixture validator or temporary manual fixture review approach.
+- Approve or revise the Event Readiness fixture-validator plan.
 
 ## 15. Recommendation
 
