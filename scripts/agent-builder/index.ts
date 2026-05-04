@@ -7,7 +7,7 @@ import {
     validateEvalSuiteFile
 } from '../../src/agent-builder/eval-suite';
 import { formatDeterministicEvalReport, runDeterministicFixtureEval } from '../../src/agent-builder/evals';
-import { formatFixtureValidationReport, validateVenueCandidateFixtureFile } from '../../src/agent-builder/fixtures';
+import { formatFixtureValidationReport, validateFixtureFile } from '../../src/agent-builder/fixtures';
 import { formatRegistryValidationReport, validateAgentRegistryFile } from '../../src/agent-builder/registry';
 import { loadAgentBuilderRuntimeEnv } from '../../src/agent-builder/runtime/env';
 import {
@@ -185,7 +185,7 @@ export const runAgentBuilderCli = async ({
         }
 
         if (command.action === 'fixture-validate') {
-            const report = validateVenueCandidateFixtureFile(command.fixturePath);
+            const report = validateFixtureFile(command.fixturePath);
             logger.log(formatFixtureValidationReport(report));
 
             if (!report.schemaPassed) {

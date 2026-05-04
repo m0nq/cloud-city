@@ -1,10 +1,11 @@
 /** @jest-environment node */
 
 import { validateEvalSuite, runEvalSuite, runEvalSuiteFile } from '../../src/agent-builder/eval-suite';
-import { validateVenueCandidateFixture } from '../../src/agent-builder/fixtures';
+import { validateFixture, validateVenueCandidateFixture } from '../../src/agent-builder/fixtures';
 import { loadYamlFile } from '../../src/agent-builder/validation';
 
 const fixturePath = 'fixtures/venue_candidates/warehouse416.public.yaml';
+const eventReadinessFixturePath = 'fixtures/event_readiness/blocked_escalation.synthetic.yaml';
 const suitePath = 'evals/venue_vendor_research.eval-suite.yaml';
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
@@ -26,6 +27,68 @@ describe('Agent Builder eval harness', () => {
 
         expect(report.schemaPassed).toBe(false);
         expect(report.errors.join('\n')).toContain('candidate_name');
+    });
+
+    it('preserves generic validation for existing venue candidate fixtures', () => {
+        const report = validateFixture(loadYamlFile(fixturePath), fixturePath);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors).toEqual([]);
+        expect(report.fixtureType).toBe('venue_candidate');
+        expect(report.fixtureName).toBe('Warehouse416');
+    });
+
+    it('passes for a valid Event Readiness fixture', () => {
+        const report = validateFixture(loadYamlFile(eventReadinessFixturePath), eventReadinessFixturePath);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors).toEqual([]);
+        expect(report.fixtureType).toBe('event_readiness');
+        expect(report.fixtureName).toBe('Cloud City Twilight Gallery Session');
+    });
+
+    it('fails clearly for an unknown fixture type', () => {
+        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as Record<string, unknown>);
+        fixture.fixture_type = 'unknown_fixture_type';
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('Unknown fixture_type: unknown_fixture_type');
+    });
+
+    it('fails when an Event Readiness fixture omits the budget-impacting approval gate', () => {
+        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as { required_approval_gates: string[] });
+        fixture.required_approval_gates = fixture.required_approval_gates.filter(
+            gate => gate !== 'budget_impacting_commitment'
+        );
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('budget_impacting_commitment');
+    });
+
+    it('requires dry bar checks unless dry_bar_out_of_scope is true', () => {
+        const fixture = clone(
+            loadYamlFile(eventReadinessFixturePath) as {
+                dry_bar_out_of_scope: boolean;
+                required_domain_check_sections: string[];
+            }
+        );
+        fixture.required_domain_check_sections = fixture.required_domain_check_sections.filter(
+            section => section !== 'dry_bar_readiness_notes'
+        );
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('dry_bar_readiness_notes');
+
+        fixture.dry_bar_out_of_scope = true;
+        const outOfScopeReport = validateFixture(fixture);
+
+        expect(outOfScopeReport.schemaPassed).toBe(true);
     });
 
     it('passes for a valid eval suite', () => {
