@@ -10,6 +10,7 @@ import { loadYamlFile } from '../../src/agent-builder/validation';
 
 const fixturePath = 'fixtures/venue_candidates/warehouse416.public.yaml';
 const eventReadinessFixturePath = 'fixtures/event_readiness/blocked_escalation.synthetic.yaml';
+const eventReadinessStaffingFixturePath = 'fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml';
 const suitePath = 'evals/venue_vendor_research.eval-suite.yaml';
 const eventReadinessSuitePath = 'evals/event_readiness.eval-suite.yaml';
 
@@ -57,6 +58,15 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors).toEqual([]);
         expect(report.fixtureType).toBe('event_readiness');
         expect(report.fixtureName).toBe('Cloud City Twilight Gallery Session');
+    });
+
+    it('passes for the Event Readiness staffing/compliance blocked fixture', () => {
+        const report = validateFixture(loadYamlFile(eventReadinessStaffingFixturePath), eventReadinessStaffingFixturePath);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors).toEqual([]);
+        expect(report.fixtureType).toBe('event_readiness');
+        expect(report.fixtureName).toBe('Cloud City Harbor Arts Listening Night');
     });
 
     it('fails clearly for an unknown fixture type', () => {
@@ -134,11 +144,14 @@ describe('Agent Builder eval harness', () => {
 
         expect(report.outcome).toBe('PASS');
         expect(report.specPath).toBe('<none>');
-        expect(report.cases).toHaveLength(1);
-        expect(report.cases[0].candidateName).toBe('Cloud City Twilight Gallery Session');
+        expect(report.cases).toHaveLength(2);
+        expect(report.cases.map(evalCase => evalCase.candidateName)).toEqual([
+            'Cloud City Twilight Gallery Session',
+            'Cloud City Harbor Arts Listening Night'
+        ]);
     });
 
-    it('reports FAIL when an Event Readiness required seeded issue is missing', () => {
+    it('reports PARTIAL when one Event Readiness case is missing a required seeded issue', () => {
         const suite = clone(loadYamlFile(eventReadinessSuitePath) as { eval_suite: { cases: Array<Record<string, string[]>> } });
         suite.eval_suite.cases[0].required_seeded_issues = [
             ...suite.eval_suite.cases[0].required_seeded_issues,
@@ -147,7 +160,8 @@ describe('Agent Builder eval harness', () => {
 
         const report = runEvalSuite(suite);
 
-        expect(report.outcome).toBe('FAIL');
+        expect(report.outcome).toBe('PARTIAL');
+        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual(['FAIL', 'PASS']);
         expect(report.cases[0].checks.find(check => check.label === 'Seeded issues')?.details).toContain(
             'unseeded_issue'
         );

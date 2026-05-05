@@ -423,6 +423,7 @@ mvp_readiness_assessment:
     - "docs/agent-builder/eval-plans/event-readiness.fixture-validator-plan.v0.1.md"
     - "docs/agent-builder/spec-plans/event-readiness.spec-authoring-plan.v0.1.md"
     - "fixtures/event_readiness/blocked_escalation.synthetic.yaml"
+    - "fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml"
     - "evals/event_readiness.eval-suite.yaml"
     - "registry/agent-registry.yaml"
   not_yet_approved:

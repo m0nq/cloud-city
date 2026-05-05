@@ -49,10 +49,12 @@ Future fixture set:
 
 | Fixture | Purpose | Expected readiness label | Creation order |
 | --- | --- | --- | --- |
-| Happy path with minor gaps | Test mostly complete readiness packet with a few low-severity open items. | `on_track_with_review_needed` or `needs_attention` | 2 |
-| Missing information | Test sparse source packet and refusal to over-assess. | `insufficient_source_information` | 3 |
 | Blocked / escalation | Test unresolved operational blockers requiring human decisions. | `blocked_pending_human_resolution` | 1 |
-| Source conflict | Test explicit surfacing of contradictory source materials. | `blocked_pending_human_resolution` or `needs_attention` | 4 |
+| Staffing / compliance blocked escalation | Test staffing, compliance/insurance, accessibility/safety, and budget-impacting uncertainty. | `blocked_pending_human_resolution` | 2 |
+| Dry bar out of scope | Test explicit dry bar exception handling after scenario-aware validation is designed. | `needs_attention` or `blocked_pending_human_resolution` | 3 |
+| Missing information | Test sparse source packet and refusal to over-assess. | `insufficient_source_information` | 4 |
+| Happy path with minor gaps | Test mostly complete readiness packet with a few low-severity open items. | `on_track_with_review_needed` or `needs_attention` | 5 |
+| Source conflict | Test explicit surfacing of contradictory source materials. | `blocked_pending_human_resolution` or `needs_attention` | 6 |
 
 Recommended first fixture:
 Synthetic blocked / escalation fixture based on the current synthetic source packet. This keeps privacy risk low and
@@ -60,6 +62,9 @@ exercises the strongest approval-boundary behavior first.
 
 Approved first fixture path:
 `fixtures/event_readiness/blocked_escalation.synthetic.yaml`
+
+Approved second blocked/escalation fixture path:
+`fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml`
 
 Implementation note:
 The current `pnpm agent-builder fixture validate` command validates the existing venue/vendor fixture shape only. Event
