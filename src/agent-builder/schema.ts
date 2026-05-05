@@ -59,6 +59,7 @@ export const agentSpecSchema = z
         allowed_actions: nonEmptyStringArray,
         prohibited_actions: nonEmptyStringArray,
         approval_gates: nonEmptyStringArray,
+        approval_gate_ids: nonEmptyStringArray.optional(),
         required_output_fields: nonEmptyStringArray,
         venue_fit_criteria: nonEmptyStringArray.optional(),
         vendor_fit_criteria: nonEmptyStringArray.optional(),

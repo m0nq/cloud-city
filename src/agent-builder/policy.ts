@@ -39,10 +39,68 @@ const requiredEvaluationTests = [
     'business_model_fit'
 ];
 
+const requiredEventReadinessApprovalGateIds = [
+    'external_outreach',
+    'schedule_commitments',
+    'vendor_venue_commitments',
+    'public_messaging',
+    'payments_contracts',
+    'source_of_truth_updates',
+    'compliance_insurance_permit_issues',
+    'accessibility_safety_determinations',
+    'budget_impacting_commitment'
+];
+
+const requiredEventReadinessEvaluationTests = [
+    'required_core_fields_present',
+    'required_domain_check_sections_present',
+    'allowed_readiness_label_only',
+    'no_ready_approved_cleared_compliant_declaration',
+    'valid_source_labels_only',
+    'confirmed_facts_include_source_labels',
+    'assumptions_separate_from_confirmed_facts',
+    'unknowns_are_surfaced',
+    'source_conflicts_are_surfaced',
+    'access_time_conflict_detected',
+    'sound_end_time_conflict_detected',
+    'load_out_conflict_detected',
+    'power_outlet_conflict_detected',
+    'door_check_in_staffing_gap_detected',
+    'dry_bar_readiness_blockers_detected',
+    'compliance_accessibility_safety_unknowns_escalated',
+    'budget_impacting_issues_flagged',
+    'checklist_items_are_human_review_findings',
+    'approval_needs_included',
+    'no_autonomous_action_language'
+];
+
+type DomainPolicyRequirements = {
+    requiredApprovalGateValues: (spec: AgentSpec) => string[];
+    requiredApprovalGates: string[];
+    requiredEvaluationTests: string[];
+};
+
+const venueVendorPolicyRequirements: DomainPolicyRequirements = {
+    requiredApprovalGateValues: spec => spec.approval_gates,
+    requiredApprovalGates,
+    requiredEvaluationTests
+};
+
+const domainPolicyRequirementsBySlug: Record<string, DomainPolicyRequirements> = {
+    venue_vendor_research: venueVendorPolicyRequirements,
+    event_readiness: {
+        requiredApprovalGateValues: spec => spec.approval_gate_ids || [],
+        requiredApprovalGates: requiredEventReadinessApprovalGateIds,
+        requiredEvaluationTests: requiredEventReadinessEvaluationTests
+    }
+};
+
 export const AGENT_BUILDER_POLICY_REQUIREMENTS = {
     requiredProhibitedActions,
     requiredApprovalGates,
-    requiredEvaluationTests
+    requiredEvaluationTests,
+    requiredEventReadinessApprovalGateIds,
+    requiredEventReadinessEvaluationTests
 };
 
 const normalize = (value: string) => value.trim().toLowerCase();
@@ -59,12 +117,19 @@ const makeCheck = (id: string, label: string, passed: boolean, details: string):
     details
 });
 
+const getDomainPolicyRequirements = (spec: AgentSpec) =>
+    domainPolicyRequirementsBySlug[spec.agent.slug] || venueVendorPolicyRequirements;
+
 export const runPolicyChecks = (spec: AgentSpec): PolicyReport => {
+    const domainPolicyRequirements = getDomainPolicyRequirements(spec);
     const missingProhibitedActions = missingValues(spec.prohibited_actions, requiredProhibitedActions);
-    const missingApprovalGates = missingValues(spec.approval_gates, requiredApprovalGates);
+    const missingApprovalGates = missingValues(
+        domainPolicyRequirements.requiredApprovalGateValues(spec),
+        domainPolicyRequirements.requiredApprovalGates
+    );
     const missingEvaluationTests = missingValues(
         spec.evaluation_tests.map(test => test.id),
-        requiredEvaluationTests
+        domainPolicyRequirements.requiredEvaluationTests
     );
 
     const checks = [
