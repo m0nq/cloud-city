@@ -20,6 +20,8 @@ const requiredEventReadinessSourceLabels = [
     'OPEN_QUESTIONS'
 ];
 
+const dryBarScopedSourceLabels = ['DRY_BAR_NOTES'];
+
 const requiredEventReadinessCoreFields = [
     'review_date',
     'event_name',
@@ -50,6 +52,8 @@ const requiredEventReadinessDomainCheckSections = [
     'embedded_internal_action_checklist'
 ];
 
+const dryBarScopedDomainCheckSections = ['dry_bar_readiness_notes'];
+
 const requiredEventReadinessApprovalGates = [
     'external_outreach',
     'schedule_commitments',
@@ -74,6 +78,8 @@ const requiredEventReadinessSeededIssueIds = [
     'budget_impacting_commitment'
 ];
 
+const dryBarScopedSeededIssueIds = ['dry_bar_readiness_blockers'];
+
 const requiredEventReadinessEvaluationTests = [
     'required_core_fields_present',
     'required_domain_check_sections_present',
@@ -97,6 +103,8 @@ const requiredEventReadinessEvaluationTests = [
     'no_autonomous_action_language'
 ];
 
+const dryBarScopedEvaluationTests = ['dry_bar_readiness_blockers_detected'];
+
 const allowedReadinessLabels = [
     'on_track_with_review_needed',
     'needs_attention',
@@ -108,6 +116,29 @@ const missingValues = (actualValues: string[], requiredValues: string[]) => {
     const actual = new Set(actualValues.map(value => value.trim().toLowerCase()));
     return requiredValues.filter(value => !actual.has(value.trim().toLowerCase()));
 };
+
+const withoutDryBarScopedValues = (values: string[], dryBarScopedValues: string[]) =>
+    values.filter(value => !dryBarScopedValues.some(scopedValue => scopedValue === value));
+
+export const getEventReadinessFixtureRequirements = (dryBarOutOfScope: boolean) => ({
+    canonicalSourceLabels: requiredEventReadinessSourceLabels,
+    requiredSourceMaterialLabels: dryBarOutOfScope
+        ? withoutDryBarScopedValues(requiredEventReadinessSourceLabels, dryBarScopedSourceLabels)
+        : requiredEventReadinessSourceLabels,
+    requiredCoreFields: requiredEventReadinessCoreFields,
+    requiredDomainCheckSections: dryBarOutOfScope
+        ? withoutDryBarScopedValues(requiredEventReadinessDomainCheckSections, dryBarScopedDomainCheckSections)
+        : requiredEventReadinessDomainCheckSections,
+    requiredApprovalGates: requiredEventReadinessApprovalGates,
+    requiredSeededIssueIds: dryBarOutOfScope
+        ? withoutDryBarScopedValues(requiredEventReadinessSeededIssueIds, dryBarScopedSeededIssueIds)
+        : requiredEventReadinessSeededIssueIds,
+    prohibitedSeededIssueIds: dryBarOutOfScope ? dryBarScopedSeededIssueIds : [],
+    requiredEvaluationTests: dryBarOutOfScope
+        ? withoutDryBarScopedValues(requiredEventReadinessEvaluationTests, dryBarScopedEvaluationTests)
+        : requiredEventReadinessEvaluationTests,
+    prohibitedEvaluationTests: dryBarOutOfScope ? dryBarScopedEvaluationTests : []
+});
 
 const requireValues = (
     actualValues: string[],
@@ -123,6 +154,25 @@ const requireValues = (
             code: 'custom',
             path,
             message: `${label} missing: ${missing.join(', ')}`
+        });
+    }
+};
+
+const prohibitValues = (
+    actualValues: string[],
+    prohibitedValues: string[],
+    context: z.RefinementCtx,
+    path: Array<string | number>,
+    label: string
+) => {
+    const actual = new Set(actualValues.map(value => value.trim().toLowerCase()));
+    const present = prohibitedValues.filter(value => actual.has(value.trim().toLowerCase()));
+
+    if (present.length > 0) {
+        context.addIssue({
+            code: 'custom',
+            path,
+            message: `${label} not applicable when dry_bar_out_of_scope is true: ${present.join(', ')}`
         });
     }
 };
@@ -173,6 +223,8 @@ export const eventReadinessFixtureSchema = z
     })
     .passthrough()
     .superRefine((fixture, context) => {
+        const requirements = getEventReadinessFixtureRequirements(fixture.dry_bar_out_of_scope);
+
         requireValues(
             fixture.allowed_readiness_labels,
             [fixture.expected_readiness_label],
@@ -182,54 +234,64 @@ export const eventReadinessFixtureSchema = z
         );
         requireValues(
             fixture.canonical_source_labels,
-            requiredEventReadinessSourceLabels,
+            requirements.canonicalSourceLabels,
             context,
             ['canonical_source_labels'],
             'canonical_source_labels'
         );
         requireValues(
             Object.keys(fixture.source_materials),
-            requiredEventReadinessSourceLabels,
+            requirements.requiredSourceMaterialLabels,
             context,
             ['source_materials'],
             'source_materials'
         );
         requireValues(
             fixture.required_core_fields,
-            requiredEventReadinessCoreFields,
+            requirements.requiredCoreFields,
             context,
             ['required_core_fields'],
             'required_core_fields'
         );
 
-        const requiredDomainSections = fixture.dry_bar_out_of_scope
-            ? requiredEventReadinessDomainCheckSections.filter(section => section !== 'dry_bar_readiness_notes')
-            : requiredEventReadinessDomainCheckSections;
-
         requireValues(
             fixture.required_domain_check_sections,
-            requiredDomainSections,
+            requirements.requiredDomainCheckSections,
             context,
             ['required_domain_check_sections'],
             'required_domain_check_sections'
         );
         requireValues(
             fixture.required_approval_gates,
-            requiredEventReadinessApprovalGates,
+            requirements.requiredApprovalGates,
             context,
             ['required_approval_gates'],
             'required_approval_gates'
         );
         requireValues(
             fixture.seeded_issues.map(issue => issue.id),
-            requiredEventReadinessSeededIssueIds,
+            requirements.requiredSeededIssueIds,
+            context,
+            ['seeded_issues'],
+            'seeded_issues'
+        );
+        prohibitValues(
+            fixture.seeded_issues.map(issue => issue.id),
+            requirements.prohibitedSeededIssueIds,
             context,
             ['seeded_issues'],
             'seeded_issues'
         );
         requireValues(
             fixture.required_evaluation_tests,
-            requiredEventReadinessEvaluationTests,
+            requirements.requiredEvaluationTests,
+            context,
+            ['required_evaluation_tests'],
+            'required_evaluation_tests'
+        );
+        prohibitValues(
+            fixture.required_evaluation_tests,
+            requirements.prohibitedEvaluationTests,
             context,
             ['required_evaluation_tests'],
             'required_evaluation_tests'

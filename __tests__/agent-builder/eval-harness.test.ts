@@ -11,6 +11,7 @@ import { loadYamlFile } from '../../src/agent-builder/validation';
 const fixturePath = 'fixtures/venue_candidates/warehouse416.public.yaml';
 const eventReadinessFixturePath = 'fixtures/event_readiness/blocked_escalation.synthetic.yaml';
 const eventReadinessStaffingFixturePath = 'fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml';
+const eventReadinessDryBarOutOfScopeFixturePath = 'fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml';
 const suitePath = 'evals/venue_vendor_research.eval-suite.yaml';
 const eventReadinessSuitePath = 'evals/event_readiness.eval-suite.yaml';
 
@@ -21,6 +22,33 @@ const writeTempYaml = (contents: string) => {
     const filePath = path.join(directory, 'fixture.yaml');
     fs.writeFileSync(filePath, contents);
     return filePath;
+};
+
+type EventReadinessTestFixture = {
+    dry_bar_out_of_scope: boolean;
+    canonical_source_labels: string[];
+    source_materials: Record<string, unknown>;
+    seeded_issues: Array<{ id: string; expected_detection?: string }>;
+    required_domain_check_sections: string[];
+    required_evaluation_tests: string[];
+};
+
+const removeValue = (values: string[], valueToRemove: string) => values.filter(value => value !== valueToRemove);
+
+const makeDryBarOutOfScopeFixture = () => {
+    const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+    fixture.dry_bar_out_of_scope = true;
+    delete fixture.source_materials.DRY_BAR_NOTES;
+    fixture.required_domain_check_sections = removeValue(
+        fixture.required_domain_check_sections,
+        'dry_bar_readiness_notes'
+    );
+    fixture.seeded_issues = fixture.seeded_issues.filter(issue => issue.id !== 'dry_bar_readiness_blockers');
+    fixture.required_evaluation_tests = removeValue(
+        fixture.required_evaluation_tests,
+        'dry_bar_readiness_blockers_detected'
+    );
+    return fixture;
 };
 
 describe('Agent Builder eval harness', () => {
@@ -69,6 +97,18 @@ describe('Agent Builder eval harness', () => {
         expect(report.fixtureName).toBe('Cloud City Harbor Arts Listening Night');
     });
 
+    it('passes for the Event Readiness dry-bar-out-of-scope fixture', () => {
+        const report = validateFixture(
+            loadYamlFile(eventReadinessDryBarOutOfScopeFixturePath),
+            eventReadinessDryBarOutOfScopeFixturePath
+        );
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors).toEqual([]);
+        expect(report.fixtureType).toBe('event_readiness');
+        expect(report.fixtureName).toBe('Cloud City Projection Salon');
+    });
+
     it('fails clearly for an unknown fixture type', () => {
         const fixture = clone(loadYamlFile(eventReadinessFixturePath) as Record<string, unknown>);
         fixture.fixture_type = 'unknown_fixture_type';
@@ -91,7 +131,17 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors.join('\n')).toContain('budget_impacting_commitment');
     });
 
-    it('requires dry bar checks unless dry_bar_out_of_scope is true', () => {
+    it('requires DRY_BAR_NOTES source material when dry bar is in scope', () => {
+        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        delete fixture.source_materials.DRY_BAR_NOTES;
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('DRY_BAR_NOTES');
+    });
+
+    it('requires dry_bar_readiness_notes when dry bar is in scope', () => {
         const fixture = clone(
             loadYamlFile(eventReadinessFixturePath) as {
                 dry_bar_out_of_scope: boolean;
@@ -106,11 +156,51 @@ describe('Agent Builder eval harness', () => {
 
         expect(report.schemaPassed).toBe(false);
         expect(report.errors.join('\n')).toContain('dry_bar_readiness_notes');
+    });
 
-        fixture.dry_bar_out_of_scope = true;
-        const outOfScopeReport = validateFixture(fixture);
+    it('requires dry_bar_readiness_blockers when dry bar is in scope', () => {
+        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        fixture.seeded_issues = fixture.seeded_issues.filter(issue => issue.id !== 'dry_bar_readiness_blockers');
 
-        expect(outOfScopeReport.schemaPassed).toBe(true);
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('dry_bar_readiness_blockers');
+    });
+
+    it('requires dry_bar_readiness_blockers_detected when dry bar is in scope', () => {
+        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        fixture.required_evaluation_tests = removeValue(
+            fixture.required_evaluation_tests,
+            'dry_bar_readiness_blockers_detected'
+        );
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('dry_bar_readiness_blockers_detected');
+    });
+
+    it('allows dry_bar_out_of_scope fixtures to omit dry bar source, check, issue, and eval requirements', () => {
+        const report = validateFixture(makeDryBarOutOfScopeFixture());
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors).toEqual([]);
+    });
+
+    it('rejects dry_bar_out_of_scope fixtures that still require dry bar blockers or dry bar blocker evals', () => {
+        const fixture = makeDryBarOutOfScopeFixture();
+        fixture.seeded_issues.push({
+            id: 'dry_bar_readiness_blockers',
+            expected_detection: 'Should not be required when dry_bar_out_of_scope is true.'
+        });
+        fixture.required_evaluation_tests.push('dry_bar_readiness_blockers_detected');
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('dry_bar_readiness_blockers');
+        expect(report.errors.join('\n')).toContain('dry_bar_readiness_blockers_detected');
     });
 
     it('passes for a valid eval suite', () => {
@@ -144,11 +234,14 @@ describe('Agent Builder eval harness', () => {
 
         expect(report.outcome).toBe('PASS');
         expect(report.specPath).toBe('<none>');
-        expect(report.cases).toHaveLength(2);
-        expect(report.cases.map(evalCase => evalCase.candidateName)).toEqual([
-            'Cloud City Twilight Gallery Session',
-            'Cloud City Harbor Arts Listening Night'
-        ]);
+        expect(report.cases).toHaveLength(3);
+        expect(report.cases.map(evalCase => evalCase.candidateName)).toEqual(
+            expect.arrayContaining([
+                'Cloud City Twilight Gallery Session',
+                'Cloud City Harbor Arts Listening Night',
+                'Cloud City Projection Salon'
+            ])
+        );
     });
 
     it('reports PARTIAL when one Event Readiness case is missing a required seeded issue', () => {
@@ -161,7 +254,7 @@ describe('Agent Builder eval harness', () => {
         const report = runEvalSuite(suite);
 
         expect(report.outcome).toBe('PARTIAL');
-        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual(['FAIL', 'PASS']);
+        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual(['FAIL', 'PASS', 'PASS']);
         expect(report.cases[0].checks.find(check => check.label === 'Seeded issues')?.details).toContain(
             'unseeded_issue'
         );
@@ -180,19 +273,26 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors.join('\n')).toContain('budget_impacting_commitment');
     });
 
-    it('respects dry_bar_out_of_scope for Event Readiness domain-check sections', () => {
+    it('respects dry_bar_out_of_scope for Event Readiness eval source, domain, seeded issue, and eval requirements', () => {
         const suite = clone(loadYamlFile(eventReadinessSuitePath) as { eval_suite: { cases: Array<{ fixture_path: string }> } });
-        const fixture = clone(
-            loadYamlFile(eventReadinessFixturePath) as {
-                dry_bar_out_of_scope: boolean;
-                required_domain_check_sections: string[];
-            }
-        );
-        fixture.dry_bar_out_of_scope = true;
-        fixture.required_domain_check_sections = fixture.required_domain_check_sections.filter(
-            section => section !== 'dry_bar_readiness_notes'
-        );
+        const fixture = makeDryBarOutOfScopeFixture();
         suite.eval_suite.cases[0].fixture_path = writeTempYaml(JSON.stringify(fixture));
+        suite.eval_suite.cases[0].required_source_labels = removeValue(
+            suite.eval_suite.cases[0].required_source_labels,
+            'DRY_BAR_NOTES'
+        );
+        suite.eval_suite.cases[0].required_domain_check_sections = removeValue(
+            suite.eval_suite.cases[0].required_domain_check_sections,
+            'dry_bar_readiness_notes'
+        );
+        suite.eval_suite.cases[0].required_seeded_issues = removeValue(
+            suite.eval_suite.cases[0].required_seeded_issues,
+            'dry_bar_readiness_blockers'
+        );
+        suite.eval_suite.cases[0].required_evaluation_tests = removeValue(
+            suite.eval_suite.cases[0].required_evaluation_tests,
+            'dry_bar_readiness_blockers_detected'
+        );
 
         const report = runEvalSuite(suite);
 

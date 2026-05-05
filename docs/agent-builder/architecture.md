@@ -99,6 +99,7 @@ pnpm agent-builder eval validate evals/venue_vendor_research.eval-suite.yaml
 pnpm agent-builder eval run evals/venue_vendor_research.eval-suite.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/blocked_escalation.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml
+pnpm agent-builder fixture validate fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml
 pnpm agent-builder eval validate evals/event_readiness.eval-suite.yaml
 pnpm agent-builder eval run evals/event_readiness.eval-suite.yaml
 ```

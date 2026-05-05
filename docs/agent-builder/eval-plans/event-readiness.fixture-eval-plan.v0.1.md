@@ -51,7 +51,7 @@ Future fixture set:
 | --- | --- | --- | --- |
 | Blocked / escalation | Test unresolved operational blockers requiring human decisions. | `blocked_pending_human_resolution` | 1 |
 | Staffing / compliance blocked escalation | Test staffing, compliance/insurance, accessibility/safety, and budget-impacting uncertainty. | `blocked_pending_human_resolution` | 2 |
-| Dry bar out of scope | Test explicit dry bar exception handling after scenario-aware validation is designed. | `needs_attention` or `blocked_pending_human_resolution` | 3 |
+| Dry bar out of scope | Test explicit dry bar exception handling with `DRY_BAR_NOTES`, `dry_bar_readiness_notes`, `dry_bar_readiness_blockers`, and `dry_bar_readiness_blockers_detected` omitted. | `blocked_pending_human_resolution` | 3 |
 | Missing information | Test sparse source packet and refusal to over-assess. | `insufficient_source_information` | 4 |
 | Happy path with minor gaps | Test mostly complete readiness packet with a few low-severity open items. | `on_track_with_review_needed` or `needs_attention` | 5 |
 | Source conflict | Test explicit surfacing of contradictory source materials. | `blocked_pending_human_resolution` or `needs_attention` | 6 |
@@ -66,10 +66,12 @@ Approved first fixture path:
 Approved second blocked/escalation fixture path:
 `fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml`
 
+Approved dry-bar-out-of-scope fixture path:
+`fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml`
+
 Implementation note:
-The current `pnpm agent-builder fixture validate` command validates the existing venue/vendor fixture shape only. Event
-Readiness fixture validation should be added later as a separate governed implementation step; this plan does not modify
-fixture validation code.
+The current `pnpm agent-builder fixture validate` command supports Venue / Vendor fixtures and Event Readiness fixtures.
+Event Readiness fixture validation now includes a narrow dry-bar-out-of-scope conditional path.
 
 Fixture-validator plan:
 [event-readiness.fixture-validator-plan.v0.1.md](./event-readiness.fixture-validator-plan.v0.1.md) defines the next
@@ -105,6 +107,7 @@ assistant can say `not_provided_in_sources` instead of inferring facts.
 | Happy path with minor gaps | `EVENT_BRIEF`, `VENUE_NOTES`, `RUN_OF_SHOW_DRAFT`, `STAFFING_DRAFT`, `DRY_BAR_NOTES`, `OPEN_QUESTIONS` | `WALKTHROUGH_NOTES`, `PRODUCTION_NOTES`, `DOOR_FLOW_NOTES`, `BUDGET_NOTES`, `COMPLIANCE_NOTES`, `ACCESSIBILITY_SAFETY_NOTES` |
 | Missing information | `EVENT_BRIEF`, `OPEN_QUESTIONS` | Any omitted source should be treated as missing, not inferred. |
 | Blocked / escalation | All canonical provisional labels | None required to omit; this should be a full stress test. |
+| Dry bar out of scope | All canonical provisional labels except `DRY_BAR_NOTES` as source material | `DRY_BAR_NOTES` remains a canonical label, but source material is omitted when `dry_bar_out_of_scope: true`. |
 | Source conflict | `EVENT_BRIEF`, `VENUE_NOTES`, `RUN_OF_SHOW_DRAFT`, `PRODUCTION_NOTES`, `OPEN_QUESTIONS` | Add staffing, dry bar, budget, compliance, or accessibility conflicts as needed. |
 
 ## 7. Required Seeded Issues By Fixture

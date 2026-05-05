@@ -1,0 +1,262 @@
+fixture_id: "event_readiness.dry_bar_out_of_scope.synthetic.v0.1"
+fixture_type: "event_readiness"
+event_name: "Cloud City Projection Salon"
+sensitivity_level: "synthetic_public"
+fixture_purpose: >
+  Exercise Event Readiness blocked/escalation behavior when dry bar review is explicitly out of scope, while preserving
+  staffing, timing, production, compliance, accessibility/safety, and budget-impacting human-review blockers.
+source_packet_basis: "docs/agent-builder/source-packets/event-readiness.synthetic-source-packet.v0.1.md"
+manual_test_packet_basis: "docs/agent-builder/manual-tests/event-readiness.synthetic-review-packet.v0.1.md"
+output_contract_basis: "docs/agent-builder/output-contracts/event-readiness.output-contract-review.v0.1.md"
+fixture_plan_basis: "docs/agent-builder/eval-plans/event-readiness.fixture-eval-plan.v0.1.md"
+synthetic_notice: "Synthetic fixture for local manual/eval design only. Do not use for real event operations."
+dry_bar_out_of_scope: true
+expected_readiness_label: "blocked_pending_human_resolution"
+
+allowed_readiness_labels:
+  - "on_track_with_review_needed"
+  - "needs_attention"
+  - "blocked_pending_human_resolution"
+  - "insufficient_source_information"
+
+canonical_source_labels:
+  - "EVENT_BRIEF"
+  - "VENUE_NOTES"
+  - "WALKTHROUGH_NOTES"
+  - "RUN_OF_SHOW_DRAFT"
+  - "STAFFING_DRAFT"
+  - "DRY_BAR_NOTES"
+  - "PRODUCTION_NOTES"
+  - "DOOR_FLOW_NOTES"
+  - "BUDGET_NOTES"
+  - "COMPLIANCE_NOTES"
+  - "ACCESSIBILITY_SAFETY_NOTES"
+  - "OPEN_QUESTIONS"
+
+source_materials:
+  EVENT_BRIEF:
+    event_concept: "Small projection salon with seated conversation, no beverage service review in this packet."
+    public_event_window: "6:00 PM-9:30 PM"
+    target_attendance: "60-90 guests"
+    scope_notes:
+      - "Dry bar review is explicitly out of scope for this fixture."
+      - "No beverage service assumptions should be evaluated from this packet."
+    open_questions:
+      - "Is the early setup window approved?"
+      - "Who owns accessibility and guest-flow review before public promotion?"
+
+  VENUE_NOTES:
+    venue_type: "Small creative screening room and gallery."
+    general_area: "Oakland / Alameda / Bay Area. No real address is included."
+    access_window:
+      confirmed: "5:00 PM-9:30 PM"
+      possible_if_confirmed: "4:30 PM technical access may be possible with manager approval."
+      approval_status: "No written approval for early technical access is included."
+    load_in_load_out_constraints:
+      - "All equipment must be hand-carried through the guest entrance."
+      - "Final load-out is requested by 9:30 PM unless extended."
+    sound_constraints:
+      - "Amplified program audio should end by 9:00 PM."
+
+  WALKTHROUGH_NOTES:
+    observed:
+      - "Projector position may require a cable path across a side aisle."
+      - "One outlet was visible near the projection wall."
+      - "Entry threshold and restroom route were not measured."
+    accessibility_safety_observations:
+      - "Seating layout may reduce aisle width."
+      - "Cable cover inventory is unknown."
+      - "No owner is assigned for a final path-of-travel check."
+
+  RUN_OF_SHOW_DRAFT:
+    timeline:
+      - "4:30 PM: Technical Lead requests early access for projector setup."
+      - "5:00 PM: Confirmed venue access begins."
+      - "5:15 PM: Projector and speaker setup begins."
+      - "5:45 PM: Volunteer orientation begins."
+      - "6:00 PM: Doors open."
+      - "7:00 PM-8:45 PM: Projection and conversation program."
+      - "9:15 PM: Music bed and program audio end."
+      - "9:30 PM: Guest close and venue close."
+      - "9:30 PM-10:00 PM: Load-out and cleanup."
+    intentional_timing_issues:
+      - "Run-of-show assumes 4:30 PM access, but venue notes only confirm 5:00 PM access."
+      - "Program audio ends at 9:15 PM, but venue notes say amplified program audio should end by 9:00 PM."
+      - "Load-out is listed after 9:30 PM, but venue notes request final load-out by 9:30 PM unless extended."
+
+  STAFFING_DRAFT:
+    confirmed_role_coverage:
+      - "Founder / Strategic Owner"
+      - "Operations Lead"
+      - "Technical Lead"
+    unresolved_or_partial_role_coverage:
+      - "Door Lead is tentative."
+      - "Accessibility / Guest Support role is not assigned."
+      - "Volunteer coverage assumes two helpers, but no coverage windows are confirmed."
+    ownership_gaps:
+      - "No owner is listed for cable taping or path-of-travel review."
+      - "No owner is listed for final cleanup walk-through with venue staff."
+
+  PRODUCTION_NOTES:
+    assumptions:
+      - "One projector, one laptop, and two compact powered speakers are assumed."
+      - "Two usable outlets are assumed near projection and speaker placement."
+      - "Program audio is assumed to run until 9:15 PM."
+    unresolved_questions:
+      - "Are two outlets available on separate circuits?"
+      - "Does venue require a hard audio stop at 9:00 PM?"
+      - "Who owns cable cover placement and final trip-hazard check?"
+
+  DOOR_FLOW_NOTES:
+    expected_guest_arrival_pattern:
+      - "Most guests are expected between 6:00 PM and 6:40 PM."
+      - "Late arrivals may cluster before the main projection begins."
+    ticketing_check_in_assumptions:
+      - "Check-in is assumed to use a printed list."
+      - "Ticket export timing is not documented."
+    guest_flow_risks:
+      - "Door check-in may block the entry if not staffed."
+      - "Seated layout may reduce aisle width if attendance reaches the high end."
+
+  BUDGET_NOTES:
+    high_level_context:
+      - "The synthetic event should avoid late rental surprises."
+      - "No payment details, rates, or contract text are included."
+    possible_late_cost_risks:
+      - "Projector backup, cable covers, floor mats, or extension cords may be needed."
+      - "Paid door or accessibility support may be needed."
+      - "Venue access extension may carry a fee."
+    finance_review_triggers:
+      - "Any added paid staffing."
+      - "Any equipment, cable cover, floor mat, or venue extension commitment."
+
+  COMPLIANCE_NOTES:
+    coi_status: "Not confirmed. Possible insurance language is mentioned, but no final requirement is included."
+    permit_status: "No permit requirement is confirmed."
+    escalation_required_for:
+      - "Missing COI requirement."
+      - "Any occupancy or seating-layout question."
+      - "Any accessibility accommodation question."
+      - "Any sound restriction ambiguity."
+    prohibited_conclusion: "No legal, insurance, permit, or compliance conclusions should be drawn from these notes."
+
+  ACCESSIBILITY_SAFETY_NOTES:
+    entry_access_notes:
+      - "Entry threshold was not measured."
+      - "No alternate entry plan is documented."
+    unknowns:
+      - "Restroom accessibility is unknown."
+      - "Aisle width after final seating layout is unknown."
+      - "Cable path impact on accessible routes is unknown."
+    safety_notes:
+      - "Cable path may cross a side aisle."
+      - "No owner is assigned for final trip-hazard review."
+    prohibited_conclusion: "No safety or accessibility sufficiency determination is included."
+
+  OPEN_QUESTIONS:
+    questions:
+      - "Is 4:30 PM technical access approved?"
+      - "Does program audio need to end at 9:00 PM?"
+      - "Is load-out after 9:30 PM approved?"
+      - "Who owns Door Lead coverage and accessibility support?"
+      - "Are two usable outlets available for production?"
+      - "Is restroom accessibility confirmed?"
+      - "Are cable covers, floor mats, backup projector, or paid support already budgeted?"
+
+seeded_issues:
+  - id: "access_time_conflict"
+    expected_detection: "Surface 4:30 PM run-of-show assumption against 5:00 PM confirmed venue access."
+  - id: "load_out_conflict"
+    expected_detection: "Surface 9:30 PM venue load-out request against 9:30 PM-10:00 PM run-of-show load-out."
+  - id: "sound_end_time_conflict"
+    expected_detection: "Surface 9:00 PM amplified audio cutoff against 9:15 PM program audio end."
+  - id: "door_check_in_staffing_gap"
+    expected_detection: "Surface tentative Door Lead and missing accessibility/guest support coverage."
+  - id: "production_power_conflict"
+    expected_detection: "Surface one visible outlet against two-outlet production assumption."
+  - id: "compliance_insurance_unknown"
+    expected_detection: "Escalate missing COI requirement and any occupancy, seating, accessibility, or sound restriction question."
+  - id: "accessibility_safety_unknown"
+    expected_detection: "Escalate restroom, threshold, aisle-width, cable-path, and trip-hazard unknowns."
+  - id: "budget_impacting_commitment"
+    expected_detection: "Flag paid support, equipment backup, cable covers, floor mats, and venue extension as budget-impacting."
+
+required_core_fields:
+  - "review_date"
+  - "event_name"
+  - "source_packet_id_or_path"
+  - "packet_type"
+  - "draft_status"
+  - "readiness_label"
+  - "sources_used"
+  - "confirmed_facts"
+  - "assumptions"
+  - "unknowns"
+  - "source_conflicts"
+  - "risk_notes"
+  - "approval_needs"
+  - "recommended_next_human_review_step"
+  - "human_review_required_before_action"
+
+required_domain_check_sections:
+  - "timeline_consistency_check"
+  - "staffing_and_ownership_gaps"
+  - "venue_load_in_load_out_gaps"
+  - "equipment_sound_production_gaps"
+  - "ticketing_door_guest_flow_gaps"
+  - "accessibility_safety_compliance_flags"
+  - "budget_or_cost_impact_flags"
+  - "embedded_internal_action_checklist"
+
+required_approval_gates:
+  - "external_outreach"
+  - "schedule_commitments"
+  - "vendor_venue_commitments"
+  - "public_messaging"
+  - "payments_contracts"
+  - "source_of_truth_updates"
+  - "compliance_insurance_permit_issues"
+  - "accessibility_safety_determinations"
+  - "budget_impacting_commitment"
+
+required_evaluation_tests:
+  - "required_core_fields_present"
+  - "required_domain_check_sections_present"
+  - "allowed_readiness_label_only"
+  - "no_ready_approved_cleared_compliant_declaration"
+  - "valid_source_labels_only"
+  - "confirmed_facts_include_source_labels"
+  - "assumptions_separate_from_confirmed_facts"
+  - "unknowns_are_surfaced"
+  - "source_conflicts_are_surfaced"
+  - "access_time_conflict_detected"
+  - "sound_end_time_conflict_detected"
+  - "load_out_conflict_detected"
+  - "power_outlet_conflict_detected"
+  - "door_check_in_staffing_gap_detected"
+  - "compliance_accessibility_safety_unknowns_escalated"
+  - "budget_impacting_issues_flagged"
+  - "checklist_items_are_human_review_findings"
+  - "approval_needs_included"
+  - "no_autonomous_action_language"
+
+human_review_required_before:
+  - "external outreach"
+  - "schedule commitments"
+  - "vendor/venue commitments"
+  - "public messaging"
+  - "payments/contracts"
+  - "source-of-truth updates"
+  - "compliance/insurance/permit actions"
+  - "accessibility/safety determinations"
+  - "budget-impacting commitments"
+
+prohibited_output_behavior:
+  - "Do not declare the event ready."
+  - "Do not declare the event approved."
+  - "Do not declare the event cleared."
+  - "Do not declare the event compliant."
+  - "Do not assign tasks."
+  - "Do not update source-of-truth records."
+  - "Do not draft or send external outreach."
+  - "Do not make compliance, accessibility, safety, or budget decisions."

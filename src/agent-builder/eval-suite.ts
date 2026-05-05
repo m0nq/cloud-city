@@ -4,6 +4,7 @@ import { ZodError, z } from 'zod';
 
 import type { AgentSpec } from './schema';
 import {
+    getEventReadinessFixtureRequirements,
     validateFixtureFile,
     validateVenueCandidateFixtureFile,
     type EventReadinessFixture,
@@ -359,9 +360,7 @@ export const runEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalRunRe
     if (isEventReadiness) {
         const cases = suite.cases.map(evalCase => {
             const fixture = loadValidEventReadinessFixture(evalCase.fixture_path);
-            const requiredDomainSections = fixture.dry_bar_out_of_scope
-                ? evalCase.required_domain_check_sections.filter(section => section !== 'dry_bar_readiness_notes')
-                : evalCase.required_domain_check_sections;
+            const fixtureRequirements = getEventReadinessFixtureRequirements(fixture.dry_bar_out_of_scope);
             const checks = [
                 makeExactValueCheck(
                     'Expected readiness label',
@@ -376,17 +375,17 @@ export const runEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalRunRe
                 makeChecklistItem(
                     'Required domain-check sections',
                     fixture.required_domain_check_sections,
-                    requiredDomainSections
+                    evalCase.required_domain_check_sections
                 ),
                 makeChecklistItem(
                     'Canonical source labels',
                     fixture.canonical_source_labels,
-                    evalCase.required_source_labels
+                    fixtureRequirements.canonicalSourceLabels
                 ),
                 makeAllowedValuesCheck(
                     'Canonical source labels valid',
                     fixture.canonical_source_labels,
-                    evalCase.required_source_labels
+                    fixtureRequirements.canonicalSourceLabels
                 ),
                 makeChecklistItem(
                     'Source materials',
@@ -396,7 +395,7 @@ export const runEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalRunRe
                 makeAllowedValuesCheck(
                     'Source material labels valid',
                     sourceMaterialLabels(fixture),
-                    evalCase.required_source_labels
+                    fixtureRequirements.canonicalSourceLabels
                 ),
                 makeChecklistItem('Seeded issues', seededIssueIds(fixture), evalCase.required_seeded_issues),
                 makeChecklistItem(

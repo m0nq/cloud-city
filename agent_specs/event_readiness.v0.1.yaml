@@ -222,6 +222,10 @@ dry_bar_default_rule:
   rule: >
     Dry bar readiness is required by default for Cloud City Event Readiness. If dry bar is in scope and dry bar source
     material is missing, report not_provided_in_sources or needs_human_review. Do not invent dry bar feasibility.
+  fixture_eval_validation_note: >
+    When dry_bar_out_of_scope is true, local fixture and eval validation do not require DRY_BAR_NOTES source material,
+    dry_bar_readiness_notes, dry_bar_readiness_blockers, or dry_bar_readiness_blockers_detected. Dry bar remains in the
+    canonical source-label vocabulary.
 
 required_output_fields:
   - "review_date"
@@ -424,6 +428,7 @@ mvp_readiness_assessment:
     - "docs/agent-builder/spec-plans/event-readiness.spec-authoring-plan.v0.1.md"
     - "fixtures/event_readiness/blocked_escalation.synthetic.yaml"
     - "fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml"
+    - "fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml"
     - "evals/event_readiness.eval-suite.yaml"
     - "registry/agent-registry.yaml"
   not_yet_approved:

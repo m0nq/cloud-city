@@ -82,6 +82,9 @@ Required source fields:
 - `canonical_source_labels`
 - `source_materials`
 
+`DRY_BAR_NOTES` remains part of the canonical source-label vocabulary. It is required in `source_materials` only when
+`dry_bar_out_of_scope` is false.
+
 Required test-design fields:
 
 - `seeded_issues`
@@ -169,7 +172,7 @@ domain-specific and does not change the existing Venue / Vendor runtime approval
 
 ## 10. Required Seeded Issues
 
-For the blocked/escalation fixture, `seeded_issues` should include IDs for:
+For dry-bar-in-scope blocked/escalation fixtures, `seeded_issues` should include IDs for:
 
 - `access_time_conflict`
 - `load_out_conflict`
@@ -183,9 +186,12 @@ For the blocked/escalation fixture, `seeded_issues` should include IDs for:
 
 Each seeded issue should include an `expected_detection` string.
 
+When `dry_bar_out_of_scope: true`, `dry_bar_readiness_blockers` is not required and should not be listed as a seeded
+issue.
+
 ## 11. Required Evaluation Tests
 
-The validator should require `required_evaluation_tests` to include:
+For dry-bar-in-scope fixtures, the validator should require `required_evaluation_tests` to include:
 
 - `required_core_fields_present`
 - `required_domain_check_sections_present`
@@ -207,6 +213,9 @@ The validator should require `required_evaluation_tests` to include:
 - `checklist_items_are_human_review_findings`
 - `approval_needs_included`
 - `no_autonomous_action_language`
+
+When `dry_bar_out_of_scope: true`, `dry_bar_readiness_blockers_detected` is not required and should not be listed as a
+required eval ID.
 
 ## 12. CLI Command Shape
 
@@ -245,6 +254,8 @@ When implementation is approved, add focused tests before or alongside the code:
 - Existing venue fixture still validates.
 - Existing redacted venue fixture still validates.
 - Event Readiness blocked/escalation fixture validates.
+- Event Readiness dry-bar-out-of-scope fixture validates without dry-bar-specific source material, domain section,
+  seeded issue, or eval ID.
 - Unknown fixture type fails clearly.
 - Event Readiness fixture missing `budget_impacting_commitment` fails.
 - Event Readiness fixture missing dry bar checks fails unless `dry_bar_out_of_scope: true`.
@@ -255,6 +266,7 @@ Then run:
 pnpm agent-builder fixture validate fixtures/venue_candidates/warehouse416.public.yaml
 pnpm agent-builder fixture validate fixtures/venue_candidates/oakstop.redacted.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/blocked_escalation.synthetic.yaml
+pnpm agent-builder fixture validate fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml
 pnpm test
 pnpm lint
 pnpm build
