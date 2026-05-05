@@ -259,7 +259,7 @@ This packet does not make legal, compliance, accessibility, or safety sufficienc
   `VENUE_NOTES`, `RUN_OF_SHOW_DRAFT`)
 - Late dry bar purchases may be needed for menu quality. (`BUDGET_NOTES`, `DRY_BAR_NOTES`)
 
-Budget-impacting commitments should be treated as a candidate approval gate to formalize later during spec work.
+Budget-impacting commitments use the Event Readiness v0.1 `budget_impacting_commitment` approval gate.
 
 ## 16. Risk Notes
 
@@ -345,7 +345,7 @@ Human approval is needed before:
 - source-of-truth updates to schedules, task boards, budgets, venue notes, staffing plans, run-of-show, or event briefs
 - compliance/insurance/permit actions or conclusions
 - accessibility/safety determinations
-- budget-impacting commitments, treated here as a candidate gate to formalize later during spec work
+- budget-impacting commitments
 
 ## 19. Recommended Next Human Review Step
 

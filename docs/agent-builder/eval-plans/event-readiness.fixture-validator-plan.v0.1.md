@@ -164,8 +164,8 @@ For Event Readiness v0.1, required approval gates should include:
 - `accessibility_safety_determinations`
 - `budget_impacting_commitment`
 
-`budget_impacting_commitment` is accepted for Event Readiness v0.1 fixture design. A later spec/registry/runtime step
-must decide how to reconcile this with the existing canonical approval gate list used by Venue / Vendor Research.
+`budget_impacting_commitment` is canonical for Event Readiness v0.1 spec, fixture, and eval validation. It remains
+domain-specific and does not change the existing Venue / Vendor runtime approval-gate list.
 
 ## 10. Required Seeded Issues
 
@@ -265,7 +265,6 @@ pnpm build
 Do not implement in the fixture-validator step:
 
 - Event Readiness YAML agent spec
-- Event Readiness registry entry
 - Event Readiness eval suite
 - Event Readiness runtime generation
 - Event Readiness runtime-output validation

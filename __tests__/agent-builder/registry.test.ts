@@ -14,6 +14,10 @@ describe('Agent Builder registry validation', () => {
         expect(report.schemaPassed).toBe(true);
         expect(report.errors).toEqual([]);
         expect(report.checks.every(check => check.passed)).toBe(true);
+        expect(report.registry?.registry.entries.map(entry => entry.id)).toEqual([
+            'agent.venue_vendor_research',
+            'agent.event_readiness'
+        ]);
     });
 
     it('fails when the registry entry points to a missing spec file', () => {

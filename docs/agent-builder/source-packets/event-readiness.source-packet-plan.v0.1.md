@@ -391,7 +391,8 @@ This list is provisional and requires founder/operator review:
 - Which docs win when sources conflict?
 - Which readiness gaps have occurred most often in the final 2-3 weeks before events?
 - Which source-of-truth docs must humans update after reviewing the readiness packet?
-- Should budget-impacting commitments become a distinct canonical approval gate?
+- Should `budget_impacting_commitment` remain Event Readiness-specific in future versions or become a wider Agent
+  Builder approval gate?
 
 ## 12. Next Step After This Plan
 

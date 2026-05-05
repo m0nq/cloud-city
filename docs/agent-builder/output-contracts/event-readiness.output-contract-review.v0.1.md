@@ -144,10 +144,10 @@ Required approval categories:
 - source-of-truth updates
 - compliance/insurance/permit actions
 - accessibility/safety determinations
-- budget-impacting commitments as a candidate gate to formalize later during spec work
+- budget-impacting commitments
 
-Budget-impacting commitments should remain a candidate gate unless or until the canonical approval-gate registry/schema
-includes it.
+`budget_impacting_commitment` is now canonical for Event Readiness v0.1 spec, fixture, and eval validation. It remains
+domain-specific and does not change the Venue / Vendor runtime approval-gate IDs.
 
 ## 9. Eval Candidates For Later
 
@@ -203,7 +203,7 @@ Do not require these yet:
 - Approve or revise the synthetic source packet.
 - Approve or revise the manual-test review packet.
 - Confirm whether the proposed required schema fields are too broad, too narrow, or about right.
-- Decide whether budget-impacting commitments should become a canonical approval gate.
+- Review whether `budget_impacting_commitment` should remain Event Readiness-specific in future versions.
 - Decide whether dry bar readiness should always be required for Cloud City event readiness.
 - Decide whether the first fixture should be synthetic only or redacted from a real/past event.
 - Decide which source labels should become canonical.

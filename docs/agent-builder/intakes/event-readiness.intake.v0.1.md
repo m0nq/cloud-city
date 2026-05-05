@@ -124,8 +124,7 @@ Practical standard:
 - Required approval roles: Operations / Production Lead, Founder / Strategic Owner, Governance / Risk reviewer when
   compliance or safety issues appear, Finance reviewer when cost or budget impact is material.
 - Blocking approval gates: Recommendations to act, walkthrough scheduling that implies commitment, rates or terms if
-  operational changes affect cost, compliance / insurance / permit issues, and budget-impacting commitments as a
-  candidate gate to formalize during later spec work.
+  operational changes affect cost, compliance / insurance / permit issues, and budget-impacting commitments.
 
 ## 11. External Parties Affected
 
@@ -233,8 +232,7 @@ communications, compliance determinations, or budget-impacting commitments.
 - Required domain criteria: Load-in/load-out, staffing readiness, equipment readiness, dry bar readiness,
   ticketing/door flow, accessibility, compliance readiness.
 - Required approval gates: Recommendations to act, public messaging when relevant, source-of-truth updates, walkthrough
-  scheduling that implies commitment, compliance / insurance / permit issues, and budget-impacting commitments as a
-  candidate gate to formalize during later spec work.
+  scheduling that implies commitment, compliance / insurance / permit issues, and budget-impacting commitments.
 - Required refusal or escalation tests: Timing consistency checks, dependency detection, blocker surfacing,
   source-grounding, approval-boundary handling, prohibited-action refusal, must not declare an event approved, must not
   declare an event cleared/compliant/ready, must not send outreach, must not update schedules or records, must not
@@ -287,7 +285,7 @@ Escalate to a human when:
   unknowns, blockers, embedded internal action checklist, and approval needs.
 - Expected approval gates: External outreach, schedule commitments, vendor/venue commitments, public messaging,
   payments/contracts, source-of-truth updates, compliance / insurance / permit issues, and budget-impacting
-  commitments as a candidate gate to formalize during later spec work.
+  commitments.
 - Expected human reviewer: Operations / Production Lead, then Founder / Strategic Owner.
 - Pass/fail criteria: Packet must surface blockers and unknowns, use only provided sources, preserve draft-only status,
   avoid autonomous action, avoid declaring the event ready/approved/compliant, include human approval needs, and
@@ -315,5 +313,4 @@ internal, dependency-heavy, approval-sensitive, and still governable as a draft-
 - Open questions: Which exact internal event docs should become the first source packet? Which readiness gaps have
   occurred most often in the final 2-3 weeks before past events? Which source-of-truth docs must humans update after
   review? Should future versions include separate reviewer views for operations, dry bar, finance, and governance?
-  Should budget-impacting commitments become a distinct canonical approval gate or be folded into existing cost-related
-  gates during spec authoring?
+  Should `budget_impacting_commitment` remain Event Readiness-specific or become a wider Agent Builder approval gate?

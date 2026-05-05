@@ -536,7 +536,7 @@ This synthetic packet is designed to test:
 - production and power conflicts
 - door/check-in and guest-flow assumptions
 - compliance/accessibility escalation
-- budget-impacting candidate gate
+- budget-impacting approval gate
 - refusal to declare event ready/approved/compliant
 - surfacing conflicts instead of resolving them implicitly
 

@@ -10,19 +10,21 @@ The Agent Builder is currently a local, CLI-driven system for designing, validat
 
 The Agent Builder can:
 
-- validate the Venue / Vendor Research Assistant spec
+- validate the Venue / Vendor Research Assistant and Event Readiness Assistant specs
 - validate the local agent registry
-- run deterministic eval suites against approved fixtures
-- generate a draft Venue / Vendor review packet with the Vercel AI SDK runtime
-- validate saved or piped runtime output before a human relies on it
+- run deterministic eval suites against approved Venue / Vendor and Event Readiness fixtures
+- generate a draft Venue / Vendor review packet with the existing Vercel AI SDK runtime prototype
+- validate saved or piped Venue / Vendor runtime output before a human relies on it
 - enforce canonical approval gate IDs and structured confirmed fact sources
 - flag missing fixture-required approval gates, schema failures, implied commitment language, prohibited action leakage, and weak unknowns-vs-assumptions discipline
 
 Current status:
 
+- Venue / Vendor spec, registry entry, fixture/eval suite, runtime prototype, and runtime-output validator merged
+- Event Readiness spec, registry entry, blocked/escalation fixture validation, deterministic eval support, and domain-aware spec policy validation merged
 - Vercel runtime prototype merged
 - runtime-output validator merged
-- `main` at `48c357d feat(agent-builder): add runtime output validation`
+- Event Readiness has no runtime generation or runtime-output validation approval
 
 ## Current Limits
 
@@ -57,6 +59,7 @@ The CLI loads `.env.local` and `.env` from the app root if present. Already-expo
 
 ```sh
 pnpm agent-builder validate agent_specs/venue_vendor_research.v0.1b.yaml
+pnpm agent-builder validate agent_specs/event_readiness.v0.1.yaml
 ```
 
 2. Validate the registry:
@@ -69,15 +72,16 @@ pnpm agent-builder registry validate registry/agent-registry.yaml
 
 ```sh
 pnpm agent-builder eval run evals/venue_vendor_research.eval-suite.yaml
+pnpm agent-builder eval run evals/event_readiness.eval-suite.yaml
 ```
 
-4. Generate a runtime packet:
+4. For Venue / Vendor only, generate a runtime packet when local runtime env vars are configured:
 
 ```sh
 pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
-5. Validate a saved runtime packet:
+5. For Venue / Vendor only, validate a saved runtime packet:
 
 ```sh
 pnpm agent-builder runtime validate-output --output <path> --fixture <fixture>
@@ -91,7 +95,7 @@ pnpm agent-builder runtime validate-output \
   --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
-6. Or generate and validate through a pipe:
+6. Or generate and validate a Venue / Vendor packet through a pipe:
 
 ```sh
 pnpm --silent agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml \
@@ -166,8 +170,12 @@ Human approval is required before:
 - recommendations to act
 - walkthrough scheduling that implies commitment
 - compliance, insurance, or permit issues
+- schedule commitments
+- vendor/venue commitments
+- accessibility/safety determinations
+- budget-impacting commitments
 
-Canonical approval gate IDs used by runtime outputs:
+Canonical Venue / Vendor approval gate IDs used by runtime outputs:
 
 - `external_outreach`
 - `rates_or_terms`
@@ -178,6 +186,18 @@ Canonical approval gate IDs used by runtime outputs:
 - `recommendations_to_act`
 - `walkthrough_scheduling_that_implies_commitment`
 - `compliance_insurance_permit_issues`
+
+Canonical Event Readiness approval gate IDs used by spec, fixture, and eval validation:
+
+- `external_outreach`
+- `schedule_commitments`
+- `vendor_venue_commitments`
+- `public_messaging`
+- `payments_contracts`
+- `source_of_truth_updates`
+- `compliance_insurance_permit_issues`
+- `accessibility_safety_determinations`
+- `budget_impacting_commitment`
 
 ## Operating Rules
 
@@ -255,15 +275,15 @@ Do not add UI, integrations, tools, or write access until the schema and eval la
 
 Near-term:
 
-- SDK decision-record template
-- reusable decision records for provider/runtime changes
-- test the lifecycle and intake template against at least one additional agent candidate
-- additional redacted fixtures
-- more business-domain agents
+- registry/export/log drafting maturity for governed local artifacts
+- additional Event Readiness and Venue / Vendor fixtures
+- spec authoring ergonomics that preserve local-first, draft-only governance
+- reusable decision records for provider/runtime changes before any runtime expansion
 
 Later:
 
 - internal UI after runtime-output validation is established
+- Event Readiness runtime-output validation only after separate approval
 - approval workflow design
 - governed runtime review for OpenAI Agents SDK JS
 - local/open-weight model feasibility spike if those models pass Cloud City eval gates

@@ -412,7 +412,7 @@ cooperation_review:
     - "Do not invent dry bar, staffing, compliance, accessibility, safety, or budget facts."
 
 mvp_readiness_assessment:
-  current_status: "first_spec_draft"
+  current_status: "governed_spec_fixture_eval_registry_baseline"
   supported_artifacts:
     - "docs/agent-builder/intakes/event-readiness.intake.v0.1.md"
     - "docs/agent-builder/source-packets/event-readiness.source-packet-plan.v0.1.md"
@@ -424,8 +424,8 @@ mvp_readiness_assessment:
     - "docs/agent-builder/spec-plans/event-readiness.spec-authoring-plan.v0.1.md"
     - "fixtures/event_readiness/blocked_escalation.synthetic.yaml"
     - "evals/event_readiness.eval-suite.yaml"
+    - "registry/agent-registry.yaml"
   not_yet_approved:
-    - "registry entry"
     - "runtime generation"
     - "runtime-output validation"
     - "scaffold command"
@@ -435,13 +435,13 @@ mvp_readiness_assessment:
     - "external action behavior"
 
 review_outcome:
-  outcome: "ready_for_spec_validation_only"
+  outcome: "ready_for_local_registry_fixture_eval_validation_only"
   rationale: >
     The spec is bounded to local, draft-only, source-grounded Event Readiness review and aligns with the existing
-    blocked/escalation fixture and deterministic eval suite. It does not approve registry, runtime, scaffold, routes,
-    integrations, model/tool access, or external action.
+    blocked/escalation fixture, deterministic eval suite, and local read-only registry entry. It does not approve
+    runtime, scaffold, routes, integrations, model/tool access, Drive writes, or external action.
 
 future_cleanup:
-  - "Generalize spec policy validation so each workflow/domain can define its own required gates and eval IDs without carrying Venue / Vendor-era compatibility strings."
+  - "Keep Event Readiness runtime-output validation out of scope until a separate governed implementation step is approved."
 
-next_action: "Validate this spec locally, then review before any registry, runtime, scaffold, or integration work."
+next_action: "Validate this spec, fixture, eval suite, and registry locally before any runtime, scaffold, or integration work."

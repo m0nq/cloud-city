@@ -9,13 +9,24 @@ The Agent Builder foundation is a local, governance-aware validation and runtime
 - `scripts/agent-builder/` provides a pnpm-runnable CLI.
 - `fixtures/` stores minimal redacted test inputs.
 - `evals/` stores deterministic eval-suite definitions that bind specs to fixtures and required checks.
-- `registry/agent-registry.yaml` stores local read-only registry metadata for validated specs.
+- `registry/agent-registry.yaml` stores local read-only registry metadata for validated, governed-baseline specs.
 - `docs/agent-builder/` records governance, implementation, and SDK spike planning.
 - `src/agent-builder/runtime/` contains the first local runtime prototype for structured draft packets.
 
+## Registry Status
+
+The local registry currently includes:
+
+- Venue / Vendor Research Assistant v0.1b.
+- Event Readiness Assistant v0.1.
+
+Registry entries are local metadata only. They do not approve runtime behavior, tools, routes, integrations, Drive
+writes, or operational use without human approval.
+
 ## Runtime Status
 
-The first implementation runtime is Vercel AI SDK, merged in `4d67104 feat(agent-builder): add Vercel runtime prototype`.
+The only implementation runtime prototype is the Venue / Vendor Vercel AI SDK draft-packet command, merged in
+`4d67104 feat(agent-builder): add Vercel runtime prototype`.
 
 Run the current CLI-only runtime from the app root:
 
@@ -25,7 +36,7 @@ pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/war
 
 The CLI loads local runtime env from `.env.local` and `.env` if present, without overriding already-exported shell values. Use `pnpm --silent` when piping runtime JSON into validation.
 
-The runtime remains:
+That Venue / Vendor runtime remains:
 
 - CLI-only
 - draft-only
@@ -35,6 +46,9 @@ The runtime remains:
 - no production integrations
 - stdout-only by default
 - validated with the shared Venue / Vendor review packet Zod schema
+
+Event Readiness has no runtime generation or runtime-output validation yet. Its current governed baseline is local spec,
+fixture, eval-suite, and registry validation only.
 
 The completed SDK spike found:
 
@@ -70,7 +84,10 @@ The command validates the registry schema, confirms each referenced spec file ex
 
 ## Eval Flow
 
-The first eval command is deterministic. It loads a validated spec and a minimal fixture, then checks whether the spec contains required output fields, venue fit criteria, and evaluation tests relevant to that fixture.
+The eval commands are deterministic and local-only. Venue / Vendor evals bind a validated spec to fixture-required
+fields, venue criteria, approval gates, and eval tests. Event Readiness evals validate the fixture/eval design for
+readiness labels, source labels, domain-check sections, seeded issues, approval gates, eval IDs, and prohibited output
+behavior.
 
 ## Eval Harness Flow
 
@@ -80,9 +97,14 @@ Run fixture and suite validation from the app root:
 pnpm agent-builder fixture validate fixtures/venue_candidates/warehouse416.public.yaml
 pnpm agent-builder eval validate evals/venue_vendor_research.eval-suite.yaml
 pnpm agent-builder eval run evals/venue_vendor_research.eval-suite.yaml
+pnpm agent-builder fixture validate fixtures/event_readiness/blocked_escalation.synthetic.yaml
+pnpm agent-builder eval validate evals/event_readiness.eval-suite.yaml
+pnpm agent-builder eval run evals/event_readiness.eval-suite.yaml
 ```
 
-The eval runner remains local-only and deterministic. It validates the suite, validates referenced fixtures, validates the referenced spec, then checks whether the spec contains each case's required output fields, venue criteria, approval gates, and eval tests. It does not call a model or execute tools.
+The eval runner remains local-only and deterministic. Venue / Vendor suites validate the referenced spec before checking
+fixture/case requirements. Event Readiness suites validate fixture/eval design without requiring a spec path. Neither
+path calls a model or executes tools.
 
 ## SDK Lifecycle & Re-Evaluation Policy
 
@@ -102,4 +124,6 @@ Re-evaluate SDK, runtime, and model choices:
 
 ## Next Architecture Step
 
-Before adding a UI, create a reusable runtime-output validation command. It should validate generated review packets independently from the model call so local files, stdout captures, and future UI outputs can pass through the same safety checks.
+Mature registry/export/log drafting conventions before considering Event Readiness runtime-output validation, read-only
+Drive sync, UI, tools, routes, or integrations. Runtime expansion remains approval-gated and out of scope for the
+current Event Readiness baseline.

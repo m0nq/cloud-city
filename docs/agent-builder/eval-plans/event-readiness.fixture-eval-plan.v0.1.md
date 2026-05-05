@@ -223,11 +223,11 @@ Use existing approval categories from Agent Builder doctrine:
 - `walkthrough_scheduling_that_implies_commitment`
 - `compliance_insurance_permit_issues`
 
-Proposed Event Readiness v0.1 canonical gate to add before spec work:
+Event Readiness v0.1 canonical approval gate:
 
 - `budget_impacting_commitment`
 
-Proposed coverage for `budget_impacting_commitment`:
+Coverage for `budget_impacting_commitment`:
 
 - rental decisions
 - staffing cost changes
@@ -239,10 +239,7 @@ Proposed coverage for `budget_impacting_commitment`:
 - any action that materially changes event cost or revenue
 
 Founder/operator approval:
-Treat `budget_impacting_commitment` as a proposed canonical approval gate for Event Readiness v0.1 fixture design.
-
-Do not add this gate to registry, specs, or runtime validation until the event readiness fixture/eval implementation
-step explicitly updates the relevant governed artifacts.
+Treat `budget_impacting_commitment` as canonical for Event Readiness v0.1 spec, fixture, and eval validation.
 
 ## 11. Readiness Label Expectations
 
@@ -302,7 +299,7 @@ Do not create or modify:
 Approved for fixture design:
 
 - Use the synthetic blocked / escalation fixture first.
-- Treat `budget_impacting_commitment` as a proposed canonical approval gate for Event Readiness v0.1.
+- Treat `budget_impacting_commitment` as a canonical approval gate for Event Readiness v0.1.
 - Treat dry bar readiness as required by default unless `dry_bar_out_of_scope: true` is explicitly set.
 - Use the provisional Event Readiness source labels as canonical for v0.1 fixture design.
 

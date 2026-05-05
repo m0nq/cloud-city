@@ -37,18 +37,23 @@ scope into registry, runtime, scaffold, routes, integrations, tools, or external
 
 ## 3. Recommended Spec Artifact
 
-Create this future spec only after founder/operator approval of this plan:
+Status update: this plan has been implemented as the Event Readiness v0.1 governed baseline. The spec, local registry
+entry, blocked/escalation fixture validation, deterministic eval suite, and domain-aware spec policy validation now
+exist. Runtime generation, runtime-output validation, scaffold commands, routes, integrations, model/tool access, and
+external action behavior remain out of scope.
+
+Created spec:
 
 ```text
 agent_specs/event_readiness.v0.1.yaml
 ```
 
-Proposed identity:
+Implemented identity:
 
 - Name: `Event Readiness Assistant`
 - Slug: `event_readiness`
 - Version: `0.1`
-- Status: `fixture_eval_planning_complete_spec_pending`
+- Status: `spec_draft_fixture_eval_supported`
 - Business domain: `Event Production / Operations`
 - Owner hat: `Operations / Production Lead`
 - Accountable human owner: `Founder / Strategic Owner`
@@ -331,8 +336,6 @@ The spec should require:
 
 Do not create or modify:
 
-- Event Readiness YAML spec until this plan is approved
-- registry entries
 - runtime generation
 - runtime-output validation
 - scaffold commands
@@ -364,5 +367,5 @@ After the spec is created, validate in this order:
 3. New spec validation command, if added or extended.
 4. Existing Venue / Vendor validation and evals to confirm no regression.
 
-Do not create a registry entry, runtime behavior, scaffold command, route, integration, or model/tool access until the
-Event Readiness spec passes review and the lifecycle advances to the next gate.
+Do not create runtime behavior, a scaffold command, route, integration, or model/tool access until the Event Readiness
+baseline passes review and the lifecycle advances to the next gate.

@@ -53,13 +53,30 @@ pnpm --silent agent-builder runtime vercel review --fixture fixtures/venue_candi
 
 ## Milestone 5: Runtime Output Validation Command
 
-Next engineering step:
-
 - Add a reusable command that validates saved or piped runtime review packets.
 - Check the shared Zod schema, required v0.1b fields, canonical approval gate IDs, structured confirmed fact sources, unknowns-over-assumptions discipline, cooperation notes, and no-implied-commitment language.
 - Use this command before any UI depends on runtime outputs.
 
+Status: complete for the Venue / Vendor runtime path.
+
 This should still be local-only and should not add routes, tools, OAuth, MCP, Drive, Gmail, Trello, payment, contract, or compliance integrations.
+
+## Milestone 6: Event Readiness Governed Baseline
+
+- Add the Event Readiness Assistant spec.
+- Add Event Readiness fixture validation and deterministic eval-suite support.
+- Make spec policy validation domain-aware so Event Readiness does not depend on Venue / Vendor-era gate or eval IDs.
+- Register Event Readiness in the local read-only registry without approving runtime generation, tools, routes,
+  integrations, Drive writes, or operational use.
+
+Status: complete.
+
+Next safe engineering area:
+
+- Mature local registry/export/log drafting conventions for governed artifacts.
+- Expand fixtures/evals before considering Event Readiness runtime-output validation.
+- Keep read-only Drive sync planning, runtime expansion, UI, tools, routes, and integrations out of scope until a
+  separate approval-gated phase.
 
 ## SDK Lifecycle & Re-Evaluation Policy
 
@@ -87,10 +104,14 @@ Re-evaluate SDK, runtime, and model choices:
 ## Acceptance Criteria
 
 - `pnpm agent-builder validate agent_specs/venue_vendor_research.v0.1b.yaml` exits 0.
+- `pnpm agent-builder validate agent_specs/event_readiness.v0.1.yaml` exits 0.
 - `pnpm agent-builder test agent_specs/venue_vendor_research.v0.1b.yaml --fixture fixtures/venue_candidates/warehouse416.public.yaml` exits 0.
 - `pnpm agent-builder registry validate registry/agent-registry.yaml` exits 0.
 - `pnpm agent-builder fixture validate fixtures/venue_candidates/warehouse416.public.yaml` exits 0.
+- `pnpm agent-builder fixture validate fixtures/event_readiness/blocked_escalation.synthetic.yaml` exits 0.
 - `pnpm agent-builder eval validate evals/venue_vendor_research.eval-suite.yaml` exits 0.
 - `pnpm agent-builder eval run evals/venue_vendor_research.eval-suite.yaml` exits 0.
+- `pnpm agent-builder eval validate evals/event_readiness.eval-suite.yaml` exits 0.
+- `pnpm agent-builder eval run evals/event_readiness.eval-suite.yaml` exits 0.
 - `pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml` produces a draft packet when required runtime env vars are available.
 - Jest tests cover valid spec, required field failure, unsafe execution flags, restricted data, missing approval gates, and missing eval tests.

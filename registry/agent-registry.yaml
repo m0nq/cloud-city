@@ -1,6 +1,6 @@
 registry:
   schema_version: "0.1"
-  updated_at: "2026-04-25"
+  updated_at: "2026-05-05"
   entries:
     - id: "agent.venue_vendor_research"
       spec_path: "agent_specs/venue_vendor_research.v0.1b.yaml"
@@ -11,3 +11,20 @@ registry:
       owner_hat: "Venue & Vendor Management Lead"
       status: "manual_mvp_tests_1_2_complete_spec_updated"
       evaluation_status: "manual_mvp_tests_1_2_complete_spec_updated"
+    - id: "agent.event_readiness"
+      spec_path: "agent_specs/event_readiness.v0.1.yaml"
+      agent_name: "Event Readiness Assistant"
+      slug: "event_readiness"
+      version: "0.1"
+      business_domain: "Event Production / Operations"
+      owner_hat: "Operations / Production Lead"
+      status: "spec_draft_fixture_eval_supported"
+      evaluation_status: "blocked_escalation_fixture_eval_supported"
+      implementation_stage: "draft_only_manual_mvp"
+      governance_posture: "local_first_cli_first_draft_only_human_reviewed_approval_gated_source_grounded"
+      runtime_approved: false
+      tools_approved: false
+      routes_approved: false
+      integrations_approved: false
+      drive_write_approved: false
+      operational_use_requires_human_approval: true
