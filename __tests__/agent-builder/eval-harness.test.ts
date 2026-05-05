@@ -181,6 +181,32 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors.join('\n')).toContain('dry_bar_readiness_blockers_detected');
     });
 
+    it('allows canonical Event Readiness source labels to include dry bar when dry bar source material is omitted', () => {
+        const fixture = makeDryBarOutOfScopeFixture();
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(fixture.canonical_source_labels).toContain('DRY_BAR_NOTES');
+        expect(Object.keys(fixture.source_materials)).not.toContain('DRY_BAR_NOTES');
+    });
+
+    it('reports noncanonical Event Readiness source-material labels during eval runs', () => {
+        const suite = clone(loadYamlFile(eventReadinessSuitePath) as { eval_suite: { cases: Array<{ fixture_path: string }> } });
+        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        fixture.source_materials.NONCANONICAL_SOURCE = {
+            note: 'This key should not be accepted as an Event Readiness source label.'
+        };
+        suite.eval_suite.cases[0].fixture_path = writeTempYaml(JSON.stringify(fixture));
+
+        const report = runEvalSuite(suite);
+
+        expect(report.outcome).toBe('PARTIAL');
+        expect(report.cases[0].checks.find(check => check.label === 'Source material labels valid')?.details).toContain(
+            'NONCANONICAL_SOURCE'
+        );
+    });
+
     it('allows dry_bar_out_of_scope fixtures to omit dry bar source, check, issue, and eval requirements', () => {
         const report = validateFixture(makeDryBarOutOfScopeFixture());
 
@@ -244,6 +270,31 @@ describe('Agent Builder eval harness', () => {
         );
     });
 
+    it('uses explicit source-material labels for Event Readiness eval cases', () => {
+        const suite = loadYamlFile(eventReadinessSuitePath) as {
+            eval_suite: {
+                cases: Array<{
+                    id: string;
+                    canonical_source_labels?: string[];
+                    required_source_labels?: string[];
+                    required_source_material_labels?: string[];
+                }>;
+            };
+        };
+
+        for (const evalCase of suite.eval_suite.cases) {
+            expect(evalCase.canonical_source_labels).toContain('DRY_BAR_NOTES');
+            expect(evalCase.required_source_material_labels).toBeDefined();
+            expect(evalCase.required_source_labels).toBeUndefined();
+        }
+
+        const dryBarOutOfScopeCase = suite.eval_suite.cases.find(
+            evalCase => evalCase.id === 'dry_bar_out_of_scope_synthetic'
+        );
+        expect(dryBarOutOfScopeCase?.canonical_source_labels).toContain('DRY_BAR_NOTES');
+        expect(dryBarOutOfScopeCase?.required_source_material_labels).not.toContain('DRY_BAR_NOTES');
+    });
+
     it('reports PARTIAL when one Event Readiness case is missing a required seeded issue', () => {
         const suite = clone(loadYamlFile(eventReadinessSuitePath) as { eval_suite: { cases: Array<Record<string, string[]>> } });
         suite.eval_suite.cases[0].required_seeded_issues = [
@@ -274,11 +325,23 @@ describe('Agent Builder eval harness', () => {
     });
 
     it('respects dry_bar_out_of_scope for Event Readiness eval source, domain, seeded issue, and eval requirements', () => {
-        const suite = clone(loadYamlFile(eventReadinessSuitePath) as { eval_suite: { cases: Array<{ fixture_path: string }> } });
+        const suite = clone(
+            loadYamlFile(eventReadinessSuitePath) as {
+                eval_suite: {
+                    cases: Array<{
+                        fixture_path: string;
+                        required_source_material_labels: string[];
+                        required_domain_check_sections: string[];
+                        required_seeded_issues: string[];
+                        required_evaluation_tests: string[];
+                    }>;
+                };
+            }
+        );
         const fixture = makeDryBarOutOfScopeFixture();
         suite.eval_suite.cases[0].fixture_path = writeTempYaml(JSON.stringify(fixture));
-        suite.eval_suite.cases[0].required_source_labels = removeValue(
-            suite.eval_suite.cases[0].required_source_labels,
+        suite.eval_suite.cases[0].required_source_material_labels = removeValue(
+            suite.eval_suite.cases[0].required_source_material_labels,
             'DRY_BAR_NOTES'
         );
         suite.eval_suite.cases[0].required_domain_check_sections = removeValue(

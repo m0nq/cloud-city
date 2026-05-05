@@ -86,8 +86,8 @@ The command validates the registry schema, confirms each referenced spec file ex
 
 The eval commands are deterministic and local-only. Venue / Vendor evals bind a validated spec to fixture-required
 fields, venue criteria, approval gates, and eval tests. Event Readiness evals validate the fixture/eval design for
-readiness labels, source labels, domain-check sections, seeded issues, approval gates, eval IDs, and prohibited output
-behavior.
+readiness labels, canonical source-label vocabulary, required source-material labels, domain-check sections, seeded
+issues, approval gates, eval IDs, and prohibited output behavior.
 
 ## Eval Harness Flow
 

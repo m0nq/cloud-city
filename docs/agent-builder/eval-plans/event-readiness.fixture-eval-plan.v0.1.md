@@ -100,9 +100,12 @@ Canonical provisional source labels for Event Readiness v0.1:
 Each future fixture should declare which source labels are present. Missing optional sources should be explicit so the
 assistant can say `not_provided_in_sources` instead of inferring facts.
 
-## 6. Required Source Labels By Fixture
+## 6. Required Source Material Labels By Fixture
 
-| Fixture | Required source labels | Optional source labels to vary |
+Event Readiness eval cases distinguish the canonical source-label vocabulary from the source material labels required
+for a specific fixture.
+
+| Fixture | Required source material labels | Optional source material labels to vary |
 | --- | --- | --- |
 | Happy path with minor gaps | `EVENT_BRIEF`, `VENUE_NOTES`, `RUN_OF_SHOW_DRAFT`, `STAFFING_DRAFT`, `DRY_BAR_NOTES`, `OPEN_QUESTIONS` | `WALKTHROUGH_NOTES`, `PRODUCTION_NOTES`, `DOOR_FLOW_NOTES`, `BUDGET_NOTES`, `COMPLIANCE_NOTES`, `ACCESSIBILITY_SAFETY_NOTES` |
 | Missing information | `EVENT_BRIEF`, `OPEN_QUESTIONS` | Any omitted source should be treated as missing, not inferred. |

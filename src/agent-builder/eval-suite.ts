@@ -24,7 +24,9 @@ export const evalSuiteCaseSchema = z
         expected_readiness_label: nonEmptyString.optional(),
         required_core_fields: stringArray,
         required_domain_check_sections: stringArray,
+        canonical_source_labels: stringArray,
         required_source_labels: stringArray,
+        required_source_material_labels: stringArray,
         required_seeded_issues: stringArray,
         required_output_fields: stringArray,
         required_venue_fit_criteria: stringArray,
@@ -161,6 +163,16 @@ const isEventReadinessSuite = (suite: EvalSuite['eval_suite']) => getSuiteFixtur
 const seededIssueIds = (fixture: EventReadinessFixture) => fixture.seeded_issues.map(issue => issue.id);
 
 const sourceMaterialLabels = (fixture: EventReadinessFixture) => Object.keys(fixture.source_materials);
+
+const eventReadinessCanonicalSourceLabels = (
+    evalCase: EvalSuiteCase,
+    fixtureRequirements: ReturnType<typeof getEventReadinessFixtureRequirements>
+) => (evalCase.canonical_source_labels.length > 0 ? evalCase.canonical_source_labels : fixtureRequirements.canonicalSourceLabels);
+
+const eventReadinessRequiredSourceMaterialLabels = (evalCase: EvalSuiteCase) =>
+    evalCase.required_source_material_labels.length > 0
+        ? evalCase.required_source_material_labels
+        : evalCase.required_source_labels;
 
 const makeExactValueCheck = (label: string, actualValue: string, expectedValue?: string): EvalChecklistItem => {
     const passed = !expectedValue || normalize(actualValue) === normalize(expectedValue);
@@ -361,6 +373,8 @@ export const runEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalRunRe
         const cases = suite.cases.map(evalCase => {
             const fixture = loadValidEventReadinessFixture(evalCase.fixture_path);
             const fixtureRequirements = getEventReadinessFixtureRequirements(fixture.dry_bar_out_of_scope);
+            const canonicalSourceLabels = eventReadinessCanonicalSourceLabels(evalCase, fixtureRequirements);
+            const requiredSourceMaterialLabels = eventReadinessRequiredSourceMaterialLabels(evalCase);
             const checks = [
                 makeExactValueCheck(
                     'Expected readiness label',
@@ -380,22 +394,22 @@ export const runEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalRunRe
                 makeChecklistItem(
                     'Canonical source labels',
                     fixture.canonical_source_labels,
-                    fixtureRequirements.canonicalSourceLabels
+                    canonicalSourceLabels
                 ),
                 makeAllowedValuesCheck(
                     'Canonical source labels valid',
                     fixture.canonical_source_labels,
-                    fixtureRequirements.canonicalSourceLabels
+                    canonicalSourceLabels
                 ),
                 makeChecklistItem(
                     'Source materials',
                     sourceMaterialLabels(fixture),
-                    evalCase.required_source_labels
+                    requiredSourceMaterialLabels
                 ),
                 makeAllowedValuesCheck(
                     'Source material labels valid',
                     sourceMaterialLabels(fixture),
-                    fixtureRequirements.canonicalSourceLabels
+                    canonicalSourceLabels
                 ),
                 makeChecklistItem('Seeded issues', seededIssueIds(fixture), evalCase.required_seeded_issues),
                 makeChecklistItem(
