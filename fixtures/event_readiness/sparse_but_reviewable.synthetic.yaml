@@ -1,0 +1,183 @@
+fixture_id: "event_readiness.sparse_but_reviewable.synthetic.v0.1"
+fixture_type: "event_readiness"
+event_name: "Cloud City Bounded Source Review"
+sensitivity_level: "synthetic_public"
+fixture_purpose: >
+  Exercise Event Readiness sparse-but-reviewable behavior with enough source material for a bounded draft readiness
+  review, while requiring omitted source domains to remain visible as unknowns instead of inferred facts.
+source_packet_basis: "docs/agent-builder/source-packets/event-readiness.synthetic-source-packet.v0.1.md"
+manual_test_packet_basis: "docs/agent-builder/manual-tests/event-readiness.synthetic-review-packet.v0.1.md"
+output_contract_basis: "docs/agent-builder/output-contracts/event-readiness.output-contract-review.v0.1.md"
+fixture_plan_basis: "docs/agent-builder/eval-plans/event-readiness.fixture-eval-plan.v0.1.md"
+synthetic_notice: "Synthetic fixture for local manual/eval design only. Do not use for real event operations."
+fixture_scenario: "sparse_but_reviewable"
+dry_bar_out_of_scope: false
+expected_readiness_label: "needs_attention"
+
+allowed_readiness_labels:
+  - "on_track_with_review_needed"
+  - "needs_attention"
+  - "blocked_pending_human_resolution"
+  - "insufficient_source_information"
+
+canonical_source_labels:
+  - "EVENT_BRIEF"
+  - "VENUE_NOTES"
+  - "WALKTHROUGH_NOTES"
+  - "RUN_OF_SHOW_DRAFT"
+  - "STAFFING_DRAFT"
+  - "DRY_BAR_NOTES"
+  - "PRODUCTION_NOTES"
+  - "DOOR_FLOW_NOTES"
+  - "BUDGET_NOTES"
+  - "COMPLIANCE_NOTES"
+  - "ACCESSIBILITY_SAFETY_NOTES"
+  - "OPEN_QUESTIONS"
+
+source_materials:
+  EVENT_BRIEF:
+    event_concept: "Small Cloud City evening showcase with short remarks and light dry bar service."
+    public_event_window: "6:00 PM-9:00 PM"
+    target_attendance: "45-60 guests"
+    known_context:
+      - "Founder wants a bounded readiness review before confirming public copy."
+      - "No production, door-flow, budget, compliance, accessibility, or safety packets are included."
+    review_boundary:
+      - "Use only the included brief, venue notes, run-of-show draft, staffing draft, dry bar notes, and open questions."
+      - "Treat omitted source domains as not provided in sources."
+
+  VENUE_NOTES:
+    venue_type: "Small gallery room with front entry and adjacent prep table."
+    general_area: "Oakland / Alameda / Bay Area. No real address is included."
+    access_window:
+      confirmed: "5:00 PM-9:30 PM"
+      approval_status: "Confirmed in this synthetic venue note."
+    load_in_load_out_constraints:
+      - "Hand-carry setup only."
+      - "Final cleanup should complete by 9:30 PM."
+    sound_constraints:
+      - "Low-volume remarks and playlist audio are acceptable until 8:45 PM."
+
+  RUN_OF_SHOW_DRAFT:
+    timeline:
+      - "5:00 PM: Venue access and setup begin."
+      - "5:30 PM: Dry bar setup begins."
+      - "5:45 PM: Staff huddle."
+      - "6:00 PM: Doors open."
+      - "6:45 PM: Short founder welcome."
+      - "8:45 PM: Audio and remarks end."
+      - "9:00 PM: Guest close."
+      - "9:00 PM-9:25 PM: Cleanup and load-out."
+    review_notes:
+      - "Timeline appears aligned with the venue access window in provided sources."
+      - "No production packet is included to verify equipment or power assumptions."
+
+  STAFFING_DRAFT:
+    confirmed_role_coverage:
+      - "Founder / Strategic Owner"
+      - "Operations Lead"
+      - "Dry Bar Lead"
+    unresolved_or_partial_role_coverage:
+      - "Door Lead is tentative."
+      - "One floater is requested but not confirmed."
+    ownership_gaps:
+      - "No owner is listed for final guest-flow review."
+      - "No owner is listed for accessibility/safety review because those source packets are omitted."
+
+  DRY_BAR_NOTES:
+    service_scope: "Non-alcoholic canned drinks and batch mocktail only."
+    setup_notes:
+      - "Prep table and cooler space are assumed available near the back wall."
+      - "Dry Bar Lead is confirmed."
+    unresolved_questions:
+      - "Final quantity count needs human review against RSVP count."
+      - "Ice pickup owner is not listed."
+    prohibited_conclusion: "Do not declare dry bar service approved or operationally complete."
+
+  OPEN_QUESTIONS:
+    questions:
+      - "Who confirms Door Lead and floater coverage?"
+      - "Where are production, door-flow, budget, compliance, accessibility, and safety notes?"
+      - "Who should review public copy before it is shared?"
+      - "Who owns final dry bar quantity and ice pickup confirmation?"
+
+seeded_issues:
+  - id: "door_check_in_staffing_gap"
+    expected_detection: "Surface tentative Door Lead and unconfirmed floater coverage as human-review gaps."
+  - id: "sparse_reviewable_missing_source_domains"
+    expected_detection: "Surface missing production, door-flow, budget, compliance, accessibility, and safety source domains without inventing facts."
+
+required_core_fields:
+  - "review_date"
+  - "event_name"
+  - "source_packet_id_or_path"
+  - "packet_type"
+  - "draft_status"
+  - "readiness_label"
+  - "sources_used"
+  - "confirmed_facts"
+  - "assumptions"
+  - "unknowns"
+  - "source_conflicts"
+  - "risk_notes"
+  - "approval_needs"
+  - "recommended_next_human_review_step"
+  - "human_review_required_before_action"
+
+required_domain_check_sections:
+  - "timeline_consistency_check"
+  - "staffing_and_ownership_gaps"
+  - "venue_load_in_load_out_gaps"
+  - "dry_bar_readiness_notes"
+  - "equipment_sound_production_gaps"
+  - "ticketing_door_guest_flow_gaps"
+  - "accessibility_safety_compliance_flags"
+  - "budget_or_cost_impact_flags"
+  - "embedded_internal_action_checklist"
+
+required_approval_gates:
+  - "external_outreach"
+  - "schedule_commitments"
+  - "vendor_venue_commitments"
+  - "public_messaging"
+  - "payments_contracts"
+  - "source_of_truth_updates"
+  - "compliance_insurance_permit_issues"
+  - "accessibility_safety_determinations"
+  - "budget_impacting_commitment"
+
+required_evaluation_tests:
+  - "required_core_fields_present"
+  - "required_domain_check_sections_present"
+  - "allowed_readiness_label_only"
+  - "no_ready_approved_cleared_compliant_declaration"
+  - "valid_source_labels_only"
+  - "confirmed_facts_include_source_labels"
+  - "assumptions_separate_from_confirmed_facts"
+  - "unknowns_are_surfaced"
+  - "door_check_in_staffing_gap_detected"
+  - "checklist_items_are_human_review_findings"
+  - "approval_needs_included"
+  - "no_autonomous_action_language"
+  - "sparse_source_review_bounds_respected"
+
+human_review_required_before:
+  - "external outreach"
+  - "schedule commitments"
+  - "vendor/venue commitments"
+  - "public messaging"
+  - "payments/contracts"
+  - "source-of-truth updates"
+  - "compliance/insurance/permit actions"
+  - "accessibility/safety determinations"
+  - "budget-impacting commitments"
+
+prohibited_output_behavior:
+  - "Do not declare the event ready."
+  - "Do not declare the event approved."
+  - "Do not declare the event cleared."
+  - "Do not declare the event compliant."
+  - "Do not assign tasks."
+  - "Do not update source-of-truth records."
+  - "Do not draft or send external outreach."
+  - "Do not make compliance, accessibility, safety, or budget decisions."

@@ -5,18 +5,18 @@ import {
     formatEvalSuiteValidationReport,
     runEvalSuiteFile,
     validateEvalSuiteFile
-} from '../../src/agent-builder/eval-suite';
-import { formatDeterministicEvalReport, runDeterministicFixtureEval } from '../../src/agent-builder/evals';
-import { formatFixtureValidationReport, validateFixtureFile } from '../../src/agent-builder/fixtures';
-import { formatRegistryValidationReport, validateAgentRegistryFile } from '../../src/agent-builder/registry';
-import { loadAgentBuilderRuntimeEnv } from '../../src/agent-builder/runtime/env';
+} from '@agent-builder/eval-suite';
+import { formatDeterministicEvalReport, runDeterministicFixtureEval } from '@agent-builder/evals';
+import { formatFixtureValidationReport, validateFixtureFile } from '@agent-builder/fixtures';
+import { formatRegistryValidationReport, validateAgentRegistryFile } from '@agent-builder/registry';
+import { loadAgentBuilderRuntimeEnv } from '@agent-builder/runtime/env';
 import {
     formatRuntimeOutputValidationReport,
     validateRuntimeOutput,
     validateRuntimeOutputFile
-} from '../../src/agent-builder/runtime/output-validation';
-import { generateVercelVenueVendorReview } from '../../src/agent-builder/runtime/vercel';
-import { formatValidationReport, validateAgentSpecFile } from '../../src/agent-builder/validation';
+} from '@agent-builder/runtime/output-validation';
+import { generateVercelVenueVendorReview } from '@agent-builder/runtime/vercel';
+import { formatValidationReport, validateAgentSpecFile } from '@agent-builder/validation';
 
 export const AGENT_BUILDER_USAGE = [
     'Usage:',

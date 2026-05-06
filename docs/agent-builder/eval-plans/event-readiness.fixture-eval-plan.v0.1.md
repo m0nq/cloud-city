@@ -53,8 +53,9 @@ Future fixture set:
 | Staffing / compliance blocked escalation | Test staffing, compliance/insurance, accessibility/safety, and budget-impacting uncertainty. | `blocked_pending_human_resolution` | 2 |
 | Dry bar out of scope | Test explicit dry bar exception handling with `DRY_BAR_NOTES`, `dry_bar_readiness_notes`, `dry_bar_readiness_blockers`, and `dry_bar_readiness_blockers_detected` omitted. | `blocked_pending_human_resolution` | 3 |
 | Insufficient source information | Test a source packet too thin for meaningful draft readiness review. | `insufficient_source_information` | 4 |
-| Happy path with minor gaps | Test mostly complete readiness packet with a few low-severity open items. | `on_track_with_review_needed` or `needs_attention` | 5 |
-| Source conflict | Test explicit surfacing of contradictory source materials. | `blocked_pending_human_resolution` or `needs_attention` | 6 |
+| Sparse but reviewable | Test a bounded source packet with enough material for draft review and explicit missing-domain unknowns. | `needs_attention` | 5 |
+| Happy path with minor gaps | Test mostly complete readiness packet with a few low-severity open items. | `on_track_with_review_needed` or `needs_attention` | 6 |
+| Source conflict | Test explicit surfacing of contradictory source materials. | `blocked_pending_human_resolution` or `needs_attention` | 7 |
 
 Recommended first fixture:
 Synthetic blocked / escalation fixture based on the current synthetic source packet. This keeps privacy risk low and
@@ -72,9 +73,13 @@ Approved dry-bar-out-of-scope fixture path:
 Approved insufficient-source fixture path:
 `fixtures/event_readiness/insufficient_source_information.synthetic.yaml`
 
+Approved sparse-but-reviewable fixture path:
+`fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml`
+
 Implementation note:
 The current `pnpm agent-builder fixture validate` command supports Venue / Vendor fixtures and Event Readiness fixtures.
-Event Readiness fixture validation now includes narrow dry-bar-out-of-scope and insufficient-source conditional paths.
+Event Readiness fixture validation now includes narrow dry-bar-out-of-scope, insufficient-source, and
+sparse-but-reviewable conditional paths.
 
 Fixture-validator plan:
 [event-readiness.fixture-validator-plan.v0.1.md](./event-readiness.fixture-validator-plan.v0.1.md) defines the next
@@ -110,7 +115,8 @@ for a specific fixture.
 
 | Fixture | Required source material labels | Optional source material labels to vary |
 | --- | --- | --- |
-| Happy path with minor gaps | `EVENT_BRIEF`, `VENUE_NOTES`, `RUN_OF_SHOW_DRAFT`, `STAFFING_DRAFT`, `DRY_BAR_NOTES`, `OPEN_QUESTIONS` | `WALKTHROUGH_NOTES`, `PRODUCTION_NOTES`, `DOOR_FLOW_NOTES`, `BUDGET_NOTES`, `COMPLIANCE_NOTES`, `ACCESSIBILITY_SAFETY_NOTES` |
+| Sparse but reviewable | `EVENT_BRIEF`, `VENUE_NOTES`, `RUN_OF_SHOW_DRAFT`, `STAFFING_DRAFT`, `DRY_BAR_NOTES`, `OPEN_QUESTIONS` | `WALKTHROUGH_NOTES`, `PRODUCTION_NOTES`, `DOOR_FLOW_NOTES`, `BUDGET_NOTES`, `COMPLIANCE_NOTES`, `ACCESSIBILITY_SAFETY_NOTES` |
+| Happy path with minor gaps | All canonical provisional labels, unless a future scenario explicitly narrows them. | Minor open items should come from provided sources, not omitted domains. |
 | Insufficient source information | `EVENT_BRIEF`, `OPEN_QUESTIONS` | Any omitted source should be treated as missing, not inferred. |
 | Blocked / escalation | All canonical provisional labels | None required to omit; this should be a full stress test. |
 | Dry bar out of scope | All canonical provisional labels except `DRY_BAR_NOTES` as source material | `DRY_BAR_NOTES` remains a canonical label, but source material is omitted when `dry_bar_out_of_scope: true`. |
@@ -133,6 +139,15 @@ for a specific fixture.
 - Operational blocker seeded issues are not required because the source packet does not include enough operational facts.
 - All canonical approval gates remain required so insufficient evidence does not narrow the governance boundary.
 - Output should avoid filling gaps with generic event advice.
+
+### Sparse But Reviewable
+
+- Required seeded issues: `door_check_in_staffing_gap` and `sparse_reviewable_missing_source_domains`.
+- Hard blocker seeded issues are not required for the first sparse fixture because the packet is intentionally
+  non-blocking.
+- All canonical domain check sections and approval gates remain required.
+- `fixture_scenario` should not be combined with `dry_bar_out_of_scope: true` unless a future scenario explicitly
+  supports that combination.
 
 ### Blocked / Escalation
 

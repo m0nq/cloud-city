@@ -13,6 +13,7 @@ const eventReadinessFixturePath = 'fixtures/event_readiness/blocked_escalation.s
 const eventReadinessStaffingFixturePath = 'fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml';
 const eventReadinessDryBarOutOfScopeFixturePath = 'fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml';
 const eventReadinessInsufficientSourceFixturePath = 'fixtures/event_readiness/insufficient_source_information.synthetic.yaml';
+const eventReadinessSparseReviewableFixturePath = 'fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml';
 const suitePath = 'evals/venue_vendor_research.eval-suite.yaml';
 const eventReadinessSuitePath = 'evals/event_readiness.eval-suite.yaml';
 
@@ -97,6 +98,46 @@ const makeInsufficientSourceFixture = () => {
     return fixture;
 };
 
+const makeSparseReviewableFixture = () => {
+    const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+    fixture.fixture_scenario = 'sparse_but_reviewable';
+    fixture.expected_readiness_label = 'needs_attention';
+    fixture.source_materials = {
+        EVENT_BRIEF: fixture.source_materials.EVENT_BRIEF,
+        VENUE_NOTES: fixture.source_materials.VENUE_NOTES,
+        RUN_OF_SHOW_DRAFT: fixture.source_materials.RUN_OF_SHOW_DRAFT,
+        STAFFING_DRAFT: fixture.source_materials.STAFFING_DRAFT,
+        DRY_BAR_NOTES: fixture.source_materials.DRY_BAR_NOTES,
+        OPEN_QUESTIONS: fixture.source_materials.OPEN_QUESTIONS
+    };
+    fixture.seeded_issues = [
+        {
+            id: 'door_check_in_staffing_gap',
+            expected_detection: 'Surface tentative door/check-in coverage as a human-review gap.'
+        },
+        {
+            id: 'sparse_reviewable_missing_source_domains',
+            expected_detection: 'Surface omitted production, door-flow, budget, compliance, accessibility, and safety sources.'
+        }
+    ];
+    fixture.required_evaluation_tests = [
+        'required_core_fields_present',
+        'required_domain_check_sections_present',
+        'allowed_readiness_label_only',
+        'no_ready_approved_cleared_compliant_declaration',
+        'valid_source_labels_only',
+        'confirmed_facts_include_source_labels',
+        'assumptions_separate_from_confirmed_facts',
+        'unknowns_are_surfaced',
+        'door_check_in_staffing_gap_detected',
+        'checklist_items_are_human_review_findings',
+        'approval_needs_included',
+        'no_autonomous_action_language',
+        'sparse_source_review_bounds_respected'
+    ];
+    return fixture;
+};
+
 describe('Agent Builder eval harness', () => {
     it('passes for a valid venue candidate fixture', () => {
         const report = validateVenueCandidateFixture(loadYamlFile(fixturePath), fixturePath);
@@ -165,6 +206,18 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors).toEqual([]);
         expect(report.fixtureType).toBe('event_readiness');
         expect(report.fixtureName).toBe('Cloud City Source Gap Review');
+    });
+
+    it('passes for the Event Readiness sparse-but-reviewable fixture', () => {
+        const report = validateFixture(
+            loadYamlFile(eventReadinessSparseReviewableFixturePath),
+            eventReadinessSparseReviewableFixturePath
+        );
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors).toEqual([]);
+        expect(report.fixtureType).toBe('event_readiness');
+        expect(report.fixtureName).toBe('Cloud City Bounded Source Review');
     });
 
     it('fails clearly for an unknown fixture type', () => {
@@ -292,6 +345,17 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors.join('\n')).toContain('access_time_conflict');
     });
 
+    it('requires an explicit sparse-but-reviewable scenario before relaxing Event Readiness fixture requirements', () => {
+        const fixture = makeSparseReviewableFixture();
+        delete fixture.fixture_scenario;
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('WALKTHROUGH_NOTES');
+        expect(report.errors.join('\n')).toContain('access_time_conflict');
+    });
+
     it('does not relax Event Readiness fixture requirements based on expected_readiness_label alone', () => {
         const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
         fixture.expected_readiness_label = 'insufficient_source_information';
@@ -301,6 +365,17 @@ describe('Agent Builder eval harness', () => {
 
         expect(report.schemaPassed).toBe(false);
         expect(report.errors.join('\n')).toContain('VENUE_NOTES');
+    });
+
+    it('does not relax Event Readiness fixture requirements based on needs_attention alone', () => {
+        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        fixture.expected_readiness_label = 'needs_attention';
+        fixture.source_materials = makeSparseReviewableFixture().source_materials;
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('WALKTHROUGH_NOTES');
     });
 
     it('requires insufficient-source fixtures to use the insufficient_source_information readiness label', () => {
@@ -314,6 +389,17 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors.join('\n')).toContain('insufficient_source_information');
     });
 
+    it('requires sparse-but-reviewable fixtures to use the needs_attention readiness label', () => {
+        const fixture = makeSparseReviewableFixture();
+        fixture.expected_readiness_label = 'blocked_pending_human_resolution';
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('expected_readiness_label');
+        expect(report.errors.join('\n')).toContain('needs_attention');
+    });
+
     it('does not require operational seeded issues for insufficient-source fixtures', () => {
         const fixture = makeInsufficientSourceFixture();
 
@@ -322,6 +408,24 @@ describe('Agent Builder eval harness', () => {
         expect(report.schemaPassed).toBe(true);
         expect(fixture.seeded_issues.map(issue => issue.id)).not.toContain('access_time_conflict');
         expect(fixture.seeded_issues.map(issue => issue.id)).not.toContain('dry_bar_readiness_blockers');
+    });
+
+    it('allows sparse-but-reviewable fixtures to omit non-minimum source materials', () => {
+        const fixture = makeSparseReviewableFixture();
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(Object.keys(fixture.source_materials)).toEqual([
+            'EVENT_BRIEF',
+            'VENUE_NOTES',
+            'RUN_OF_SHOW_DRAFT',
+            'STAFFING_DRAFT',
+            'DRY_BAR_NOTES',
+            'OPEN_QUESTIONS'
+        ]);
+        expect(Object.keys(fixture.source_materials)).not.toContain('PRODUCTION_NOTES');
+        expect(Object.keys(fixture.source_materials)).not.toContain('COMPLIANCE_NOTES');
     });
 
     it('requires missing-source seeded issues for insufficient-source fixtures', () => {
@@ -354,6 +458,53 @@ describe('Agent Builder eval harness', () => {
 
         expect(report.schemaPassed).toBe(false);
         expect(report.errors.join('\n')).toContain('public_messaging');
+    });
+
+    it('keeps all canonical Event Readiness domain sections required for sparse-but-reviewable fixtures', () => {
+        const fixture = makeSparseReviewableFixture();
+        fixture.required_domain_check_sections = removeValue(
+            fixture.required_domain_check_sections,
+            'accessibility_safety_compliance_flags'
+        );
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('accessibility_safety_compliance_flags');
+    });
+
+    it('keeps all canonical Event Readiness approval gates required for sparse-but-reviewable fixtures', () => {
+        const fixture = makeSparseReviewableFixture();
+        fixture.required_approval_gates = fixture.required_approval_gates.filter(gate => gate !== 'public_messaging');
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('public_messaging');
+    });
+
+    it('requires sparse-but-reviewable fixtures to include the sparse-source bounds eval', () => {
+        const fixture = makeSparseReviewableFixture();
+        fixture.required_evaluation_tests = removeValue(
+            fixture.required_evaluation_tests,
+            'sparse_source_review_bounds_respected'
+        );
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('sparse_source_review_bounds_respected');
+    });
+
+    it('rejects unsupported sparse-but-reviewable dry-bar-out-of-scope combinations', () => {
+        const fixture = makeSparseReviewableFixture();
+        fixture.dry_bar_out_of_scope = true;
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('dry_bar_out_of_scope');
+        expect(report.errors.join('\n')).toContain('sparse_but_reviewable');
     });
 
     it('rejects dry_bar_out_of_scope fixtures that still require dry bar blockers or dry bar blocker evals', () => {
@@ -402,13 +553,14 @@ describe('Agent Builder eval harness', () => {
 
         expect(report.outcome).toBe('PASS');
         expect(report.specPath).toBe('<none>');
-        expect(report.cases).toHaveLength(4);
+        expect(report.cases).toHaveLength(5);
         expect(report.cases.map(evalCase => evalCase.candidateName)).toEqual(
             expect.arrayContaining([
                 'Cloud City Twilight Gallery Session',
                 'Cloud City Harbor Arts Listening Night',
                 'Cloud City Projection Salon',
-                'Cloud City Source Gap Review'
+                'Cloud City Source Gap Review',
+                'Cloud City Bounded Source Review'
             ])
         );
     });
@@ -448,7 +600,7 @@ describe('Agent Builder eval harness', () => {
         const report = runEvalSuite(suite);
 
         expect(report.outcome).toBe('PARTIAL');
-        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual(['FAIL', 'PASS', 'PASS', 'PASS']);
+        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual(['FAIL', 'PASS', 'PASS', 'PASS', 'PASS']);
         expect(report.cases[0].checks.find(check => check.label === 'Seeded issues')?.details).toContain(
             'unseeded_issue'
         );

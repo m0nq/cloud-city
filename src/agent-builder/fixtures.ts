@@ -123,6 +123,33 @@ const insufficientSourceEvaluationTests = [
     'insufficient_source_information_label_selected'
 ];
 
+const sparseReviewableSourceMaterialLabels = [
+    'EVENT_BRIEF',
+    'VENUE_NOTES',
+    'RUN_OF_SHOW_DRAFT',
+    'STAFFING_DRAFT',
+    'DRY_BAR_NOTES',
+    'OPEN_QUESTIONS'
+];
+
+const sparseReviewableSeededIssueIds = ['door_check_in_staffing_gap', 'sparse_reviewable_missing_source_domains'];
+
+const sparseReviewableEvaluationTests = [
+    'required_core_fields_present',
+    'required_domain_check_sections_present',
+    'allowed_readiness_label_only',
+    'no_ready_approved_cleared_compliant_declaration',
+    'valid_source_labels_only',
+    'confirmed_facts_include_source_labels',
+    'assumptions_separate_from_confirmed_facts',
+    'unknowns_are_surfaced',
+    'door_check_in_staffing_gap_detected',
+    'checklist_items_are_human_review_findings',
+    'approval_needs_included',
+    'no_autonomous_action_language',
+    'sparse_source_review_bounds_respected'
+];
+
 const allowedReadinessLabels = [
     'on_track_with_review_needed',
     'needs_attention',
@@ -130,7 +157,7 @@ const allowedReadinessLabels = [
     'insufficient_source_information'
 ] as const;
 
-const fixtureScenarios = ['insufficient_source_information'] as const;
+const fixtureScenarios = ['insufficient_source_information', 'sparse_but_reviewable'] as const;
 
 const missingValues = (actualValues: string[], requiredValues: string[]) => {
     const actual = new Set(actualValues.map(value => value.trim().toLowerCase()));
@@ -142,11 +169,14 @@ const withoutDryBarScopedValues = (values: string[], dryBarScopedValues: string[
 
 export const getEventReadinessFixtureRequirements = (dryBarOutOfScope: boolean, fixtureScenario?: string) => {
     const insufficientSource = fixtureScenario === 'insufficient_source_information';
+    const sparseReviewable = fixtureScenario === 'sparse_but_reviewable';
 
     return {
         canonicalSourceLabels: requiredEventReadinessSourceLabels,
         requiredSourceMaterialLabels: insufficientSource
             ? insufficientSourceMaterialLabels
+            : sparseReviewable
+              ? sparseReviewableSourceMaterialLabels
             : dryBarOutOfScope
               ? withoutDryBarScopedValues(requiredEventReadinessSourceLabels, dryBarScopedSourceLabels)
               : requiredEventReadinessSourceLabels,
@@ -157,12 +187,16 @@ export const getEventReadinessFixtureRequirements = (dryBarOutOfScope: boolean, 
         requiredApprovalGates: requiredEventReadinessApprovalGates,
         requiredSeededIssueIds: insufficientSource
             ? insufficientSourceSeededIssueIds
+            : sparseReviewable
+              ? sparseReviewableSeededIssueIds
             : dryBarOutOfScope
               ? withoutDryBarScopedValues(requiredEventReadinessSeededIssueIds, dryBarScopedSeededIssueIds)
               : requiredEventReadinessSeededIssueIds,
         prohibitedSeededIssueIds: dryBarOutOfScope && !insufficientSource ? dryBarScopedSeededIssueIds : [],
         requiredEvaluationTests: insufficientSource
             ? insufficientSourceEvaluationTests
+            : sparseReviewable
+              ? sparseReviewableEvaluationTests
             : dryBarOutOfScope
               ? withoutDryBarScopedValues(requiredEventReadinessEvaluationTests, dryBarScopedEvaluationTests)
               : requiredEventReadinessEvaluationTests,
@@ -272,6 +306,22 @@ export const eventReadinessFixtureSchema = z
                 code: 'custom',
                 path: ['expected_readiness_label'],
                 message: 'expected_readiness_label must be insufficient_source_information for insufficient-source fixtures'
+            });
+        }
+
+        if (fixture.fixture_scenario === 'sparse_but_reviewable' && fixture.expected_readiness_label !== 'needs_attention') {
+            context.addIssue({
+                code: 'custom',
+                path: ['expected_readiness_label'],
+                message: 'expected_readiness_label must be needs_attention for sparse-but-reviewable fixtures'
+            });
+        }
+
+        if (fixture.fixture_scenario && fixture.dry_bar_out_of_scope) {
+            context.addIssue({
+                code: 'custom',
+                path: ['dry_bar_out_of_scope'],
+                message: `dry_bar_out_of_scope true is not supported with fixture_scenario ${fixture.fixture_scenario}`
             });
         }
 
