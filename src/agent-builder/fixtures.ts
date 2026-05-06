@@ -105,12 +105,32 @@ const requiredEventReadinessEvaluationTests = [
 
 const dryBarScopedEvaluationTests = ['dry_bar_readiness_blockers_detected'];
 
+const insufficientSourceMaterialLabels = ['EVENT_BRIEF', 'OPEN_QUESTIONS'];
+
+const insufficientSourceSeededIssueIds = ['insufficient_core_source_packet', 'missing_operational_source_domains'];
+
+const insufficientSourceEvaluationTests = [
+    'required_core_fields_present',
+    'required_domain_check_sections_present',
+    'allowed_readiness_label_only',
+    'no_ready_approved_cleared_compliant_declaration',
+    'valid_source_labels_only',
+    'confirmed_facts_include_source_labels',
+    'assumptions_separate_from_confirmed_facts',
+    'unknowns_are_surfaced',
+    'approval_needs_included',
+    'no_autonomous_action_language',
+    'insufficient_source_information_label_selected'
+];
+
 const allowedReadinessLabels = [
     'on_track_with_review_needed',
     'needs_attention',
     'blocked_pending_human_resolution',
     'insufficient_source_information'
 ] as const;
+
+const fixtureScenarios = ['insufficient_source_information'] as const;
 
 const missingValues = (actualValues: string[], requiredValues: string[]) => {
     const actual = new Set(actualValues.map(value => value.trim().toLowerCase()));
@@ -120,25 +140,35 @@ const missingValues = (actualValues: string[], requiredValues: string[]) => {
 const withoutDryBarScopedValues = (values: string[], dryBarScopedValues: string[]) =>
     values.filter(value => !dryBarScopedValues.some(scopedValue => scopedValue === value));
 
-export const getEventReadinessFixtureRequirements = (dryBarOutOfScope: boolean) => ({
-    canonicalSourceLabels: requiredEventReadinessSourceLabels,
-    requiredSourceMaterialLabels: dryBarOutOfScope
-        ? withoutDryBarScopedValues(requiredEventReadinessSourceLabels, dryBarScopedSourceLabels)
-        : requiredEventReadinessSourceLabels,
-    requiredCoreFields: requiredEventReadinessCoreFields,
-    requiredDomainCheckSections: dryBarOutOfScope
-        ? withoutDryBarScopedValues(requiredEventReadinessDomainCheckSections, dryBarScopedDomainCheckSections)
-        : requiredEventReadinessDomainCheckSections,
-    requiredApprovalGates: requiredEventReadinessApprovalGates,
-    requiredSeededIssueIds: dryBarOutOfScope
-        ? withoutDryBarScopedValues(requiredEventReadinessSeededIssueIds, dryBarScopedSeededIssueIds)
-        : requiredEventReadinessSeededIssueIds,
-    prohibitedSeededIssueIds: dryBarOutOfScope ? dryBarScopedSeededIssueIds : [],
-    requiredEvaluationTests: dryBarOutOfScope
-        ? withoutDryBarScopedValues(requiredEventReadinessEvaluationTests, dryBarScopedEvaluationTests)
-        : requiredEventReadinessEvaluationTests,
-    prohibitedEvaluationTests: dryBarOutOfScope ? dryBarScopedEvaluationTests : []
-});
+export const getEventReadinessFixtureRequirements = (dryBarOutOfScope: boolean, fixtureScenario?: string) => {
+    const insufficientSource = fixtureScenario === 'insufficient_source_information';
+
+    return {
+        canonicalSourceLabels: requiredEventReadinessSourceLabels,
+        requiredSourceMaterialLabels: insufficientSource
+            ? insufficientSourceMaterialLabels
+            : dryBarOutOfScope
+              ? withoutDryBarScopedValues(requiredEventReadinessSourceLabels, dryBarScopedSourceLabels)
+              : requiredEventReadinessSourceLabels,
+        requiredCoreFields: requiredEventReadinessCoreFields,
+        requiredDomainCheckSections: dryBarOutOfScope
+            ? withoutDryBarScopedValues(requiredEventReadinessDomainCheckSections, dryBarScopedDomainCheckSections)
+            : requiredEventReadinessDomainCheckSections,
+        requiredApprovalGates: requiredEventReadinessApprovalGates,
+        requiredSeededIssueIds: insufficientSource
+            ? insufficientSourceSeededIssueIds
+            : dryBarOutOfScope
+              ? withoutDryBarScopedValues(requiredEventReadinessSeededIssueIds, dryBarScopedSeededIssueIds)
+              : requiredEventReadinessSeededIssueIds,
+        prohibitedSeededIssueIds: dryBarOutOfScope && !insufficientSource ? dryBarScopedSeededIssueIds : [],
+        requiredEvaluationTests: insufficientSource
+            ? insufficientSourceEvaluationTests
+            : dryBarOutOfScope
+              ? withoutDryBarScopedValues(requiredEventReadinessEvaluationTests, dryBarScopedEvaluationTests)
+              : requiredEventReadinessEvaluationTests,
+        prohibitedEvaluationTests: dryBarOutOfScope && !insufficientSource ? dryBarScopedEvaluationTests : []
+    };
+};
 
 const requireValues = (
     actualValues: string[],
@@ -208,6 +238,7 @@ export const eventReadinessFixtureSchema = z
         output_contract_basis: nonEmptyString,
         fixture_plan_basis: nonEmptyString,
         synthetic_notice: nonEmptyString,
+        fixture_scenario: z.enum(fixtureScenarios).optional(),
         dry_bar_out_of_scope: z.boolean(),
         expected_readiness_label: z.enum(allowedReadinessLabels),
         allowed_readiness_labels: z.array(z.enum(allowedReadinessLabels)).min(1),
@@ -223,7 +254,7 @@ export const eventReadinessFixtureSchema = z
     })
     .passthrough()
     .superRefine((fixture, context) => {
-        const requirements = getEventReadinessFixtureRequirements(fixture.dry_bar_out_of_scope);
+        const requirements = getEventReadinessFixtureRequirements(fixture.dry_bar_out_of_scope, fixture.fixture_scenario);
 
         requireValues(
             fixture.allowed_readiness_labels,
@@ -232,6 +263,18 @@ export const eventReadinessFixtureSchema = z
             ['allowed_readiness_labels'],
             'allowed_readiness_labels'
         );
+
+        if (
+            fixture.fixture_scenario === 'insufficient_source_information' &&
+            fixture.expected_readiness_label !== 'insufficient_source_information'
+        ) {
+            context.addIssue({
+                code: 'custom',
+                path: ['expected_readiness_label'],
+                message: 'expected_readiness_label must be insufficient_source_information for insufficient-source fixtures'
+            });
+        }
+
         requireValues(
             fixture.canonical_source_labels,
             requirements.canonicalSourceLabels,

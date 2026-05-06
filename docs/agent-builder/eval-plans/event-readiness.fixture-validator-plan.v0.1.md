@@ -73,6 +73,7 @@ Required identity and governance fields:
 - `output_contract_basis`
 - `fixture_plan_basis`
 - `synthetic_notice`
+- `fixture_scenario` when scenario-specific validation is needed
 - `dry_bar_out_of_scope`
 - `expected_readiness_label`
 - `allowed_readiness_labels`
@@ -115,6 +116,11 @@ fixture:
 
 Later fixture types may permit omitted labels, but omissions should be explicit and should drive
 `not_provided_in_sources` or `needs_human_review` behavior rather than inference.
+
+For `fixture_scenario: "insufficient_source_information"`, required source material labels are:
+
+- `EVENT_BRIEF`
+- `OPEN_QUESTIONS`
 
 ## 7. Required Core Fields
 
@@ -189,6 +195,14 @@ Each seeded issue should include an `expected_detection` string.
 When `dry_bar_out_of_scope: true`, `dry_bar_readiness_blockers` is not required and should not be listed as a seeded
 issue.
 
+For `fixture_scenario: "insufficient_source_information"`, required seeded issues are:
+
+- `insufficient_core_source_packet`
+- `missing_operational_source_domains`
+
+Operational blocker seeded issues are not required for this scenario because the fixture intentionally lacks the source
+material needed to test those findings.
+
 ## 11. Required Evaluation Tests
 
 For dry-bar-in-scope fixtures, the validator should require `required_evaluation_tests` to include:
@@ -216,6 +230,22 @@ For dry-bar-in-scope fixtures, the validator should require `required_evaluation
 
 When `dry_bar_out_of_scope: true`, `dry_bar_readiness_blockers_detected` is not required and should not be listed as a
 required eval ID.
+
+For `fixture_scenario: "insufficient_source_information"`, required eval IDs are:
+
+- `required_core_fields_present`
+- `required_domain_check_sections_present`
+- `allowed_readiness_label_only`
+- `no_ready_approved_cleared_compliant_declaration`
+- `valid_source_labels_only`
+- `confirmed_facts_include_source_labels`
+- `assumptions_separate_from_confirmed_facts`
+- `unknowns_are_surfaced`
+- `approval_needs_included`
+- `no_autonomous_action_language`
+- `insufficient_source_information_label_selected`
+
+All canonical Event Readiness approval gates remain required for insufficient-source fixtures.
 
 ## 12. CLI Command Shape
 
@@ -256,6 +286,8 @@ When implementation is approved, add focused tests before or alongside the code:
 - Event Readiness blocked/escalation fixture validates.
 - Event Readiness dry-bar-out-of-scope fixture validates without dry-bar-specific source material, domain section,
   seeded issue, or eval ID.
+- Event Readiness insufficient-source fixture validates with only `EVENT_BRIEF` and `OPEN_QUESTIONS` source materials
+  when `fixture_scenario: "insufficient_source_information"` is explicit.
 - Unknown fixture type fails clearly.
 - Event Readiness fixture missing `budget_impacting_commitment` fails.
 - Event Readiness fixture missing dry bar checks fails unless `dry_bar_out_of_scope: true`.
@@ -267,6 +299,7 @@ pnpm agent-builder fixture validate fixtures/venue_candidates/warehouse416.publi
 pnpm agent-builder fixture validate fixtures/venue_candidates/oakstop.redacted.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/blocked_escalation.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml
+pnpm agent-builder fixture validate fixtures/event_readiness/insufficient_source_information.synthetic.yaml
 pnpm test
 pnpm lint
 pnpm build

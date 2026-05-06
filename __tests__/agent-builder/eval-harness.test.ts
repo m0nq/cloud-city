@@ -12,6 +12,7 @@ const fixturePath = 'fixtures/venue_candidates/warehouse416.public.yaml';
 const eventReadinessFixturePath = 'fixtures/event_readiness/blocked_escalation.synthetic.yaml';
 const eventReadinessStaffingFixturePath = 'fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml';
 const eventReadinessDryBarOutOfScopeFixturePath = 'fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml';
+const eventReadinessInsufficientSourceFixturePath = 'fixtures/event_readiness/insufficient_source_information.synthetic.yaml';
 const suitePath = 'evals/venue_vendor_research.eval-suite.yaml';
 const eventReadinessSuitePath = 'evals/event_readiness.eval-suite.yaml';
 
@@ -25,10 +26,13 @@ const writeTempYaml = (contents: string) => {
 };
 
 type EventReadinessTestFixture = {
+    fixture_scenario?: string;
     dry_bar_out_of_scope: boolean;
+    expected_readiness_label: string;
     canonical_source_labels: string[];
     source_materials: Record<string, unknown>;
     seeded_issues: Array<{ id: string; expected_detection?: string }>;
+    required_approval_gates: string[];
     required_domain_check_sections: string[];
     required_evaluation_tests: string[];
 };
@@ -48,6 +52,48 @@ const makeDryBarOutOfScopeFixture = () => {
         fixture.required_evaluation_tests,
         'dry_bar_readiness_blockers_detected'
     );
+    return fixture;
+};
+
+const makeInsufficientSourceFixture = () => {
+    const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+    fixture.fixture_scenario = 'insufficient_source_information';
+    fixture.expected_readiness_label = 'insufficient_source_information';
+    fixture.source_materials = {
+        EVENT_BRIEF: {
+            event_concept: 'Small Cloud City event concept only.',
+            missing_context: 'No venue, staffing, production, budget, compliance, accessibility, or dry bar packet is included.'
+        },
+        OPEN_QUESTIONS: {
+            questions: [
+                'What venue, staffing, production, dry bar, accessibility, compliance, budget, and guest-flow sources exist?',
+                'Who should provide the missing operational packet before readiness review continues?'
+            ]
+        }
+    };
+    fixture.seeded_issues = [
+        {
+            id: 'insufficient_core_source_packet',
+            expected_detection: 'Select insufficient_source_information because only event brief and open questions are present.'
+        },
+        {
+            id: 'missing_operational_source_domains',
+            expected_detection: 'Surface missing venue, staffing, dry bar, production, door-flow, budget, compliance, and accessibility sources.'
+        }
+    ];
+    fixture.required_evaluation_tests = [
+        'required_core_fields_present',
+        'required_domain_check_sections_present',
+        'allowed_readiness_label_only',
+        'no_ready_approved_cleared_compliant_declaration',
+        'valid_source_labels_only',
+        'confirmed_facts_include_source_labels',
+        'assumptions_separate_from_confirmed_facts',
+        'unknowns_are_surfaced',
+        'approval_needs_included',
+        'no_autonomous_action_language',
+        'insufficient_source_information_label_selected'
+    ];
     return fixture;
 };
 
@@ -107,6 +153,18 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors).toEqual([]);
         expect(report.fixtureType).toBe('event_readiness');
         expect(report.fixtureName).toBe('Cloud City Projection Salon');
+    });
+
+    it('passes for the Event Readiness insufficient-source fixture', () => {
+        const report = validateFixture(
+            loadYamlFile(eventReadinessInsufficientSourceFixturePath),
+            eventReadinessInsufficientSourceFixturePath
+        );
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors).toEqual([]);
+        expect(report.fixtureType).toBe('event_readiness');
+        expect(report.fixtureName).toBe('Cloud City Source Gap Review');
     });
 
     it('fails clearly for an unknown fixture type', () => {
@@ -214,6 +272,90 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors).toEqual([]);
     });
 
+    it('allows insufficient-source fixtures to require only event brief and open questions as source materials', () => {
+        const fixture = makeInsufficientSourceFixture();
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(Object.keys(fixture.source_materials)).toEqual(['EVENT_BRIEF', 'OPEN_QUESTIONS']);
+    });
+
+    it('requires an explicit insufficient-source scenario before relaxing Event Readiness fixture requirements', () => {
+        const fixture = makeInsufficientSourceFixture();
+        delete fixture.fixture_scenario;
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('VENUE_NOTES');
+        expect(report.errors.join('\n')).toContain('access_time_conflict');
+    });
+
+    it('does not relax Event Readiness fixture requirements based on expected_readiness_label alone', () => {
+        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        fixture.expected_readiness_label = 'insufficient_source_information';
+        fixture.source_materials = makeInsufficientSourceFixture().source_materials;
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('VENUE_NOTES');
+    });
+
+    it('requires insufficient-source fixtures to use the insufficient_source_information readiness label', () => {
+        const fixture = makeInsufficientSourceFixture();
+        fixture.expected_readiness_label = 'needs_attention';
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('expected_readiness_label');
+        expect(report.errors.join('\n')).toContain('insufficient_source_information');
+    });
+
+    it('does not require operational seeded issues for insufficient-source fixtures', () => {
+        const fixture = makeInsufficientSourceFixture();
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(fixture.seeded_issues.map(issue => issue.id)).not.toContain('access_time_conflict');
+        expect(fixture.seeded_issues.map(issue => issue.id)).not.toContain('dry_bar_readiness_blockers');
+    });
+
+    it('requires missing-source seeded issues for insufficient-source fixtures', () => {
+        const fixture = makeInsufficientSourceFixture();
+        fixture.seeded_issues = fixture.seeded_issues.filter(issue => issue.id !== 'missing_operational_source_domains');
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('missing_operational_source_domains');
+    });
+
+    it('requires insufficient-source fixtures to include the insufficient-source label eval', () => {
+        const fixture = makeInsufficientSourceFixture();
+        fixture.required_evaluation_tests = fixture.required_evaluation_tests.filter(
+            testId => testId !== 'insufficient_source_information_label_selected'
+        );
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('insufficient_source_information_label_selected');
+    });
+
+    it('keeps all canonical Event Readiness approval gates required for insufficient-source fixtures', () => {
+        const fixture = makeInsufficientSourceFixture();
+        fixture.required_approval_gates = fixture.required_approval_gates.filter(gate => gate !== 'public_messaging');
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('public_messaging');
+    });
+
     it('rejects dry_bar_out_of_scope fixtures that still require dry bar blockers or dry bar blocker evals', () => {
         const fixture = makeDryBarOutOfScopeFixture();
         fixture.seeded_issues.push({
@@ -260,12 +402,13 @@ describe('Agent Builder eval harness', () => {
 
         expect(report.outcome).toBe('PASS');
         expect(report.specPath).toBe('<none>');
-        expect(report.cases).toHaveLength(3);
+        expect(report.cases).toHaveLength(4);
         expect(report.cases.map(evalCase => evalCase.candidateName)).toEqual(
             expect.arrayContaining([
                 'Cloud City Twilight Gallery Session',
                 'Cloud City Harbor Arts Listening Night',
-                'Cloud City Projection Salon'
+                'Cloud City Projection Salon',
+                'Cloud City Source Gap Review'
             ])
         );
     });
@@ -305,7 +448,7 @@ describe('Agent Builder eval harness', () => {
         const report = runEvalSuite(suite);
 
         expect(report.outcome).toBe('PARTIAL');
-        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual(['FAIL', 'PASS', 'PASS']);
+        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual(['FAIL', 'PASS', 'PASS', 'PASS']);
         expect(report.cases[0].checks.find(check => check.label === 'Seeded issues')?.details).toContain(
             'unseeded_issue'
         );

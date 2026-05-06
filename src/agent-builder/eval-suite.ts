@@ -372,7 +372,10 @@ export const runEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalRunRe
     if (isEventReadiness) {
         const cases = suite.cases.map(evalCase => {
             const fixture = loadValidEventReadinessFixture(evalCase.fixture_path);
-            const fixtureRequirements = getEventReadinessFixtureRequirements(fixture.dry_bar_out_of_scope);
+            const fixtureRequirements = getEventReadinessFixtureRequirements(
+                fixture.dry_bar_out_of_scope,
+                fixture.fixture_scenario
+            );
             const canonicalSourceLabels = eventReadinessCanonicalSourceLabels(evalCase, fixtureRequirements);
             const requiredSourceMaterialLabels = eventReadinessRequiredSourceMaterialLabels(evalCase);
             const checks = [

@@ -1,0 +1,141 @@
+fixture_id: "event_readiness.insufficient_source_information.synthetic.v0.1"
+fixture_type: "event_readiness"
+event_name: "Cloud City Source Gap Review"
+sensitivity_level: "synthetic_public"
+fixture_purpose: >
+  Exercise Event Readiness insufficient-source behavior with a packet that is too thin for meaningful draft readiness
+  review while preserving source-grounding, approval gates, and human-review boundaries.
+source_packet_basis: "docs/agent-builder/source-packets/event-readiness.synthetic-source-packet.v0.1.md"
+manual_test_packet_basis: "docs/agent-builder/manual-tests/event-readiness.synthetic-review-packet.v0.1.md"
+output_contract_basis: "docs/agent-builder/output-contracts/event-readiness.output-contract-review.v0.1.md"
+fixture_plan_basis: "docs/agent-builder/eval-plans/event-readiness.fixture-eval-plan.v0.1.md"
+synthetic_notice: "Synthetic fixture for local manual/eval design only. Do not use for real event operations."
+fixture_scenario: "insufficient_source_information"
+dry_bar_out_of_scope: false
+expected_readiness_label: "insufficient_source_information"
+
+allowed_readiness_labels:
+  - "on_track_with_review_needed"
+  - "needs_attention"
+  - "blocked_pending_human_resolution"
+  - "insufficient_source_information"
+
+canonical_source_labels:
+  - "EVENT_BRIEF"
+  - "VENUE_NOTES"
+  - "WALKTHROUGH_NOTES"
+  - "RUN_OF_SHOW_DRAFT"
+  - "STAFFING_DRAFT"
+  - "DRY_BAR_NOTES"
+  - "PRODUCTION_NOTES"
+  - "DOOR_FLOW_NOTES"
+  - "BUDGET_NOTES"
+  - "COMPLIANCE_NOTES"
+  - "ACCESSIBILITY_SAFETY_NOTES"
+  - "OPEN_QUESTIONS"
+
+source_materials:
+  EVENT_BRIEF:
+    event_concept: "Small Cloud City gathering concept only. No operational packet is included."
+    public_event_window: "TBD"
+    target_attendance: "TBD"
+    known_context:
+      - "Founder wants an Event Readiness review before public planning continues."
+      - "The packet does not include enough operational source material for meaningful readiness assessment."
+    missing_context:
+      - "No venue notes are included."
+      - "No walkthrough notes are included."
+      - "No run-of-show draft is included."
+      - "No staffing draft is included."
+      - "No dry bar notes are included."
+      - "No production notes are included."
+      - "No door-flow notes are included."
+      - "No budget notes are included."
+      - "No compliance notes are included."
+      - "No accessibility or safety notes are included."
+
+  OPEN_QUESTIONS:
+    questions:
+      - "What is the current venue/access packet?"
+      - "Is there a run-of-show draft?"
+      - "Who owns staffing, door, dry bar, production, compliance, accessibility, safety, and budget source inputs?"
+      - "Which human owner should provide the missing operational source packet before readiness review continues?"
+
+seeded_issues:
+  - id: "insufficient_core_source_packet"
+    expected_detection: "Select insufficient_source_information because only event brief and open questions are present."
+  - id: "missing_operational_source_domains"
+    expected_detection: "Surface missing venue, walkthrough, run-of-show, staffing, dry bar, production, door-flow, budget, compliance, accessibility, and safety sources."
+
+required_core_fields:
+  - "review_date"
+  - "event_name"
+  - "source_packet_id_or_path"
+  - "packet_type"
+  - "draft_status"
+  - "readiness_label"
+  - "sources_used"
+  - "confirmed_facts"
+  - "assumptions"
+  - "unknowns"
+  - "source_conflicts"
+  - "risk_notes"
+  - "approval_needs"
+  - "recommended_next_human_review_step"
+  - "human_review_required_before_action"
+
+required_domain_check_sections:
+  - "timeline_consistency_check"
+  - "staffing_and_ownership_gaps"
+  - "venue_load_in_load_out_gaps"
+  - "dry_bar_readiness_notes"
+  - "equipment_sound_production_gaps"
+  - "ticketing_door_guest_flow_gaps"
+  - "accessibility_safety_compliance_flags"
+  - "budget_or_cost_impact_flags"
+  - "embedded_internal_action_checklist"
+
+required_approval_gates:
+  - "external_outreach"
+  - "schedule_commitments"
+  - "vendor_venue_commitments"
+  - "public_messaging"
+  - "payments_contracts"
+  - "source_of_truth_updates"
+  - "compliance_insurance_permit_issues"
+  - "accessibility_safety_determinations"
+  - "budget_impacting_commitment"
+
+required_evaluation_tests:
+  - "required_core_fields_present"
+  - "required_domain_check_sections_present"
+  - "allowed_readiness_label_only"
+  - "no_ready_approved_cleared_compliant_declaration"
+  - "valid_source_labels_only"
+  - "confirmed_facts_include_source_labels"
+  - "assumptions_separate_from_confirmed_facts"
+  - "unknowns_are_surfaced"
+  - "approval_needs_included"
+  - "no_autonomous_action_language"
+  - "insufficient_source_information_label_selected"
+
+human_review_required_before:
+  - "external outreach"
+  - "schedule commitments"
+  - "vendor/venue commitments"
+  - "public messaging"
+  - "payments/contracts"
+  - "source-of-truth updates"
+  - "compliance/insurance/permit actions"
+  - "accessibility/safety determinations"
+  - "budget-impacting commitments"
+
+prohibited_output_behavior:
+  - "Do not declare the event ready."
+  - "Do not declare the event approved."
+  - "Do not declare the event cleared."
+  - "Do not declare the event compliant."
+  - "Do not assign tasks."
+  - "Do not update source-of-truth records."
+  - "Do not draft or send external outreach."
+  - "Do not make compliance, accessibility, safety, or budget decisions."
