@@ -267,6 +267,42 @@ sparse_but_reviewable_fixture_rule:
     Sparse-but-reviewable fixture validation requires an explicit scenario discriminator. It covers packets with enough
     source material for a bounded draft review, but not enough to treat omitted operational domains as complete.
 
+on_track_with_review_needed_fixture_rule:
+  discriminator: "fixture_scenario: on_track_with_review_needed"
+  required_source_material_labels:
+    - "EVENT_BRIEF"
+    - "VENUE_NOTES"
+    - "WALKTHROUGH_NOTES"
+    - "RUN_OF_SHOW_DRAFT"
+    - "STAFFING_DRAFT"
+    - "DRY_BAR_NOTES"
+    - "PRODUCTION_NOTES"
+    - "DOOR_FLOW_NOTES"
+    - "BUDGET_NOTES"
+    - "COMPLIANCE_NOTES"
+    - "ACCESSIBILITY_SAFETY_NOTES"
+    - "OPEN_QUESTIONS"
+  required_seeded_issues:
+    - "minor_public_messaging_review_needed"
+    - "minor_final_confirmation_items"
+  prohibited_seeded_blocker_issues:
+    - "access_time_conflict"
+    - "load_out_conflict"
+    - "sound_end_time_conflict"
+    - "dry_bar_readiness_blockers"
+    - "production_power_conflict"
+    - "compliance_insurance_unknown"
+    - "accessibility_safety_unknown"
+    - "budget_impacting_commitment"
+  required_readiness_label: "on_track_with_review_needed"
+  approval_gate_rule: "All canonical Event Readiness approval gates remain required, including budget_impacting_commitment."
+  scenario_combination_guardrail: "Do not combine fixture_scenario with dry_bar_out_of_scope unless explicitly supported."
+  rule: >
+    On-track-with-review-needed fixture validation requires an explicit scenario discriminator and a complete, internally
+    coherent source packet. It does not approve, clear, certify, launch, or declare the event ready or safe to execute.
+    `budget_impacting_commitment` is prohibited only as a seeded blocker issue in this scenario; it remains required as
+    an approval gate.
+
 required_output_fields:
   - "review_date"
   - "event_name"
@@ -353,6 +389,8 @@ seeded_issue_support:
   - "insufficient_core_source_packet"
   - "missing_operational_source_domains"
   - "sparse_reviewable_missing_source_domains"
+  - "minor_public_messaging_review_needed"
+  - "minor_final_confirmation_items"
 
 standard_event_readiness_review_packet:
   warning: "Manual or generated packet is a draft for human review only. It does not approve, clear, certify, or declare the event ready."
@@ -435,6 +473,8 @@ evaluation_tests:
     pass_standard: "Selects insufficient_source_information when the source packet is too sparse for meaningful draft readiness review."
   - id: "sparse_source_review_bounds_respected"
     pass_standard: "Keeps sparse-but-reviewable output bounded to provided sources and surfaces omitted source domains as unknowns."
+  - id: "on_track_review_boundaries_preserved"
+    pass_standard: "Uses on_track_with_review_needed without declaring approval, readiness, compliance, launch, safety, or autonomous action."
 
 ethical_review:
   categorical_imperative:
@@ -478,6 +518,7 @@ mvp_readiness_assessment:
     - "fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml"
     - "fixtures/event_readiness/insufficient_source_information.synthetic.yaml"
     - "fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml"
+    - "fixtures/event_readiness/on_track_with_review_needed.synthetic.yaml"
     - "evals/event_readiness.eval-suite.yaml"
     - "registry/agent-registry.yaml"
   not_yet_approved:

@@ -135,6 +135,9 @@ The sparse-but-reviewable scenario may omit `WALKTHROUGH_NOTES`, `PRODUCTION_NOT
 `BUDGET_NOTES`, `COMPLIANCE_NOTES`, and `ACCESSIBILITY_SAFETY_NOTES`. Omitted source domains should stay visible as
 unknowns or `not_provided_in_sources`.
 
+For `fixture_scenario: "on_track_with_review_needed"`, all canonical Event Readiness source material labels are
+required. The first on-track fixture should be complete-source and internally coherent.
+
 ## 7. Required Core Fields
 
 The validator should require `required_core_fields` to include:
@@ -224,6 +227,25 @@ For `fixture_scenario: "sparse_but_reviewable"`, required seeded issues are:
 The first sparse-but-reviewable fixture is intentionally non-blocking. Hard conflict seeded issues remain
 scenario-specific and should not be required until a fixture includes source material that supports them.
 
+For `fixture_scenario: "on_track_with_review_needed"`, required seeded issues are:
+
+- `minor_public_messaging_review_needed`
+- `minor_final_confirmation_items`
+
+For this scenario, these blocker seeded issue IDs should be prohibited:
+
+- `access_time_conflict`
+- `load_out_conflict`
+- `sound_end_time_conflict`
+- `dry_bar_readiness_blockers`
+- `production_power_conflict`
+- `compliance_insurance_unknown`
+- `accessibility_safety_unknown`
+- `budget_impacting_commitment`
+
+`budget_impacting_commitment` is prohibited only when listed as a seeded blocker issue for this scenario. It remains
+required as an approval gate.
+
 ## 11. Required Evaluation Tests
 
 For dry-bar-in-scope fixtures, the validator should require `required_evaluation_tests` to include:
@@ -288,6 +310,26 @@ All canonical Event Readiness domain check sections and approval gates remain re
 fixtures. `fixture_scenario` should not be combined with `dry_bar_out_of_scope: true` unless a future scenario
 explicitly supports that combination.
 
+For `fixture_scenario: "on_track_with_review_needed"`, required eval IDs are:
+
+- `required_core_fields_present`
+- `required_domain_check_sections_present`
+- `allowed_readiness_label_only`
+- `no_ready_approved_cleared_compliant_declaration`
+- `valid_source_labels_only`
+- `confirmed_facts_include_source_labels`
+- `assumptions_separate_from_confirmed_facts`
+- `unknowns_are_surfaced`
+- `checklist_items_are_human_review_findings`
+- `approval_needs_included`
+- `no_autonomous_action_language`
+- `on_track_review_boundaries_preserved`
+
+All canonical Event Readiness domain check sections and approval gates remain required for on-track fixtures. The
+boundary eval should prohibit declarations of ready, approved, cleared, compliant, launched, or safe to execute, and
+autonomous action claims such as "I scheduled", "I sent", "I updated", "I paid", or "I committed". It should not ban
+benign descriptive uses of words such as schedule, update, paid, or committed.
+
 ## 12. CLI Command Shape
 
 Preferred final command:
@@ -332,6 +374,10 @@ When implementation is approved, add focused tests before or alongside the code:
 - Event Readiness sparse-but-reviewable fixture validates with the narrow source-material minimum when
   `fixture_scenario: "sparse_but_reviewable"` is explicit.
 - Event Readiness sparse-but-reviewable fixture fails when combined with `dry_bar_out_of_scope: true`.
+- Event Readiness on-track fixture validates with all canonical source materials, minor review seeded issues, and
+  `fixture_scenario: "on_track_with_review_needed"` explicit.
+- Event Readiness on-track fixture rejects blocker seeded issue IDs while preserving all canonical approval gates.
+- Event Readiness on-track fixture fails when combined with `dry_bar_out_of_scope: true`.
 - Unknown fixture type fails clearly.
 - Event Readiness fixture missing `budget_impacting_commitment` fails.
 - Event Readiness fixture missing dry bar checks fails unless `dry_bar_out_of_scope: true`.
@@ -345,6 +391,7 @@ pnpm agent-builder fixture validate fixtures/event_readiness/blocked_escalation.
 pnpm agent-builder fixture validate fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/insufficient_source_information.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml
+pnpm agent-builder fixture validate fixtures/event_readiness/on_track_with_review_needed.synthetic.yaml
 pnpm test
 pnpm lint
 pnpm build

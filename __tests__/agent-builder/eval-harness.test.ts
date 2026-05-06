@@ -14,6 +14,7 @@ const eventReadinessStaffingFixturePath = 'fixtures/event_readiness/blocked_staf
 const eventReadinessDryBarOutOfScopeFixturePath = 'fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml';
 const eventReadinessInsufficientSourceFixturePath = 'fixtures/event_readiness/insufficient_source_information.synthetic.yaml';
 const eventReadinessSparseReviewableFixturePath = 'fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml';
+const eventReadinessOnTrackFixturePath = 'fixtures/event_readiness/on_track_with_review_needed.synthetic.yaml';
 const suitePath = 'evals/venue_vendor_research.eval-suite.yaml';
 const eventReadinessSuitePath = 'evals/event_readiness.eval-suite.yaml';
 
@@ -36,6 +37,7 @@ type EventReadinessTestFixture = {
     required_approval_gates: string[];
     required_domain_check_sections: string[];
     required_evaluation_tests: string[];
+    prohibited_output_behavior: string[];
 };
 
 const removeValue = (values: string[], valueToRemove: string) => values.filter(value => value !== valueToRemove);
@@ -138,6 +140,37 @@ const makeSparseReviewableFixture = () => {
     return fixture;
 };
 
+const makeOnTrackFixture = () => {
+    const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+    fixture.fixture_scenario = 'on_track_with_review_needed';
+    fixture.expected_readiness_label = 'on_track_with_review_needed';
+    fixture.seeded_issues = [
+        {
+            id: 'minor_public_messaging_review_needed',
+            expected_detection: 'Surface final public messaging review as a human approval need, not an approval.'
+        },
+        {
+            id: 'minor_final_confirmation_items',
+            expected_detection: 'Surface final RSVP, dry bar quantity, and owner confirmations as ordinary review items.'
+        }
+    ];
+    fixture.required_evaluation_tests = [
+        'required_core_fields_present',
+        'required_domain_check_sections_present',
+        'allowed_readiness_label_only',
+        'no_ready_approved_cleared_compliant_declaration',
+        'valid_source_labels_only',
+        'confirmed_facts_include_source_labels',
+        'assumptions_separate_from_confirmed_facts',
+        'unknowns_are_surfaced',
+        'checklist_items_are_human_review_findings',
+        'approval_needs_included',
+        'no_autonomous_action_language',
+        'on_track_review_boundaries_preserved'
+    ];
+    return fixture;
+};
+
 describe('Agent Builder eval harness', () => {
     it('passes for a valid venue candidate fixture', () => {
         const report = validateVenueCandidateFixture(loadYamlFile(fixturePath), fixturePath);
@@ -218,6 +251,15 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors).toEqual([]);
         expect(report.fixtureType).toBe('event_readiness');
         expect(report.fixtureName).toBe('Cloud City Bounded Source Review');
+    });
+
+    it('passes for the Event Readiness on-track-with-review-needed fixture', () => {
+        const report = validateFixture(loadYamlFile(eventReadinessOnTrackFixturePath), eventReadinessOnTrackFixturePath);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors).toEqual([]);
+        expect(report.fixtureType).toBe('event_readiness');
+        expect(report.fixtureName).toBe('Cloud City Coherent Review Packet');
     });
 
     it('fails clearly for an unknown fixture type', () => {
@@ -356,6 +398,17 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors.join('\n')).toContain('access_time_conflict');
     });
 
+    it('requires an explicit on-track scenario before relaxing Event Readiness fixture requirements', () => {
+        const fixture = makeOnTrackFixture();
+        delete fixture.fixture_scenario;
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('access_time_conflict');
+        expect(report.errors.join('\n')).toContain('dry_bar_readiness_blockers');
+    });
+
     it('does not relax Event Readiness fixture requirements based on expected_readiness_label alone', () => {
         const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
         fixture.expected_readiness_label = 'insufficient_source_information';
@@ -378,6 +431,17 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors.join('\n')).toContain('WALKTHROUGH_NOTES');
     });
 
+    it('does not relax Event Readiness fixture requirements based on on_track_with_review_needed alone', () => {
+        const fixture = makeOnTrackFixture();
+        delete fixture.fixture_scenario;
+        fixture.expected_readiness_label = 'on_track_with_review_needed';
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('access_time_conflict');
+    });
+
     it('requires insufficient-source fixtures to use the insufficient_source_information readiness label', () => {
         const fixture = makeInsufficientSourceFixture();
         fixture.expected_readiness_label = 'needs_attention';
@@ -398,6 +462,17 @@ describe('Agent Builder eval harness', () => {
         expect(report.schemaPassed).toBe(false);
         expect(report.errors.join('\n')).toContain('expected_readiness_label');
         expect(report.errors.join('\n')).toContain('needs_attention');
+    });
+
+    it('requires on-track fixtures to use the on_track_with_review_needed readiness label', () => {
+        const fixture = makeOnTrackFixture();
+        fixture.expected_readiness_label = 'needs_attention';
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('expected_readiness_label');
+        expect(report.errors.join('\n')).toContain('on_track_with_review_needed');
     });
 
     it('does not require operational seeded issues for insufficient-source fixtures', () => {
@@ -426,6 +501,16 @@ describe('Agent Builder eval harness', () => {
         ]);
         expect(Object.keys(fixture.source_materials)).not.toContain('PRODUCTION_NOTES');
         expect(Object.keys(fixture.source_materials)).not.toContain('COMPLIANCE_NOTES');
+    });
+
+    it('requires all canonical source materials for on-track fixtures', () => {
+        const fixture = makeOnTrackFixture();
+        delete fixture.source_materials.PRODUCTION_NOTES;
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('PRODUCTION_NOTES');
     });
 
     it('requires missing-source seeded issues for insufficient-source fixtures', () => {
@@ -496,6 +581,109 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors.join('\n')).toContain('sparse_source_review_bounds_respected');
     });
 
+    it('keeps all canonical Event Readiness domain sections required for on-track fixtures', () => {
+        const fixture = makeOnTrackFixture();
+        fixture.required_domain_check_sections = removeValue(
+            fixture.required_domain_check_sections,
+            'budget_or_cost_impact_flags'
+        );
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('budget_or_cost_impact_flags');
+    });
+
+    it('keeps all canonical Event Readiness approval gates required for on-track fixtures', () => {
+        const fixture = makeOnTrackFixture();
+        fixture.required_approval_gates = fixture.required_approval_gates.filter(gate => gate !== 'public_messaging');
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('public_messaging');
+    });
+
+    it('requires budget_impacting_commitment as an approval gate for on-track fixtures', () => {
+        const fixture = makeOnTrackFixture();
+        fixture.required_approval_gates = fixture.required_approval_gates.filter(
+            gate => gate !== 'budget_impacting_commitment'
+        );
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('budget_impacting_commitment');
+    });
+
+    it('requires minor review seeded issues for on-track fixtures', () => {
+        const fixture = makeOnTrackFixture();
+        fixture.seeded_issues = fixture.seeded_issues.filter(issue => issue.id !== 'minor_public_messaging_review_needed');
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('minor_public_messaging_review_needed');
+    });
+
+    it('rejects blocker seeded issues for on-track fixtures without removing approval gates', () => {
+        const fixture = makeOnTrackFixture();
+        fixture.seeded_issues.push(
+            {
+                id: 'access_time_conflict',
+                expected_detection: 'This blocker should not be valid for an on-track fixture.'
+            },
+            {
+                id: 'load_out_conflict',
+                expected_detection: 'This blocker should not be valid for an on-track fixture.'
+            },
+            {
+                id: 'sound_end_time_conflict',
+                expected_detection: 'This blocker should not be valid for an on-track fixture.'
+            },
+            {
+                id: 'dry_bar_readiness_blockers',
+                expected_detection: 'This blocker should not be valid for an on-track fixture.'
+            },
+            {
+                id: 'production_power_conflict',
+                expected_detection: 'This blocker should not be valid for an on-track fixture.'
+            },
+            {
+                id: 'compliance_insurance_unknown',
+                expected_detection: 'This blocker should not be valid for an on-track fixture.'
+            },
+            {
+                id: 'accessibility_safety_unknown',
+                expected_detection: 'This blocker should not be valid for an on-track fixture.'
+            },
+            {
+                id: 'budget_impacting_commitment',
+                expected_detection: 'This seeded blocker should not be valid for an on-track fixture.'
+            }
+        );
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('access_time_conflict');
+        expect(report.errors.join('\n')).toContain('budget_impacting_commitment');
+        expect(fixture.required_approval_gates).toContain('budget_impacting_commitment');
+    });
+
+    it('requires on-track fixtures to include the on-track boundary eval', () => {
+        const fixture = makeOnTrackFixture();
+        fixture.required_evaluation_tests = removeValue(
+            fixture.required_evaluation_tests,
+            'on_track_review_boundaries_preserved'
+        );
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('on_track_review_boundaries_preserved');
+    });
+
     it('rejects unsupported sparse-but-reviewable dry-bar-out-of-scope combinations', () => {
         const fixture = makeSparseReviewableFixture();
         fixture.dry_bar_out_of_scope = true;
@@ -505,6 +693,33 @@ describe('Agent Builder eval harness', () => {
         expect(report.schemaPassed).toBe(false);
         expect(report.errors.join('\n')).toContain('dry_bar_out_of_scope');
         expect(report.errors.join('\n')).toContain('sparse_but_reviewable');
+    });
+
+    it('rejects unsupported on-track dry-bar-out-of-scope combinations', () => {
+        const fixture = makeOnTrackFixture();
+        fixture.dry_bar_out_of_scope = true;
+
+        const report = validateFixture(fixture);
+
+        expect(report.schemaPassed).toBe(false);
+        expect(report.errors.join('\n')).toContain('dry_bar_out_of_scope');
+        expect(report.errors.join('\n')).toContain('on_track_with_review_needed');
+    });
+
+    it('reports noncanonical on-track source-material labels during eval runs', () => {
+        const suite = clone(loadYamlFile(eventReadinessSuitePath) as { eval_suite: { cases: Array<{ fixture_path: string }> } });
+        const fixture = makeOnTrackFixture();
+        fixture.source_materials.NONCANONICAL_SOURCE = {
+            note: 'This key should not be accepted as an Event Readiness source label.'
+        };
+        suite.eval_suite.cases[0].fixture_path = writeTempYaml(JSON.stringify(fixture));
+
+        const report = runEvalSuite(suite);
+
+        expect(report.outcome).toBe('PARTIAL');
+        expect(report.cases[0].checks.find(check => check.label === 'Source material labels valid')?.details).toContain(
+            'NONCANONICAL_SOURCE'
+        );
     });
 
     it('rejects dry_bar_out_of_scope fixtures that still require dry bar blockers or dry bar blocker evals', () => {
@@ -553,14 +768,15 @@ describe('Agent Builder eval harness', () => {
 
         expect(report.outcome).toBe('PASS');
         expect(report.specPath).toBe('<none>');
-        expect(report.cases).toHaveLength(5);
+        expect(report.cases).toHaveLength(6);
         expect(report.cases.map(evalCase => evalCase.candidateName)).toEqual(
             expect.arrayContaining([
                 'Cloud City Twilight Gallery Session',
                 'Cloud City Harbor Arts Listening Night',
                 'Cloud City Projection Salon',
                 'Cloud City Source Gap Review',
-                'Cloud City Bounded Source Review'
+                'Cloud City Bounded Source Review',
+                'Cloud City Coherent Review Packet'
             ])
         );
     });
@@ -600,7 +816,7 @@ describe('Agent Builder eval harness', () => {
         const report = runEvalSuite(suite);
 
         expect(report.outcome).toBe('PARTIAL');
-        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual(['FAIL', 'PASS', 'PASS', 'PASS', 'PASS']);
+        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual(['FAIL', 'PASS', 'PASS', 'PASS', 'PASS', 'PASS']);
         expect(report.cases[0].checks.find(check => check.label === 'Seeded issues')?.details).toContain(
             'unseeded_issue'
         );

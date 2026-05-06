@@ -150,6 +150,34 @@ const sparseReviewableEvaluationTests = [
     'sparse_source_review_bounds_respected'
 ];
 
+const onTrackSeededIssueIds = ['minor_public_messaging_review_needed', 'minor_final_confirmation_items'];
+
+const onTrackProhibitedSeededIssueIds = [
+    'access_time_conflict',
+    'load_out_conflict',
+    'sound_end_time_conflict',
+    'dry_bar_readiness_blockers',
+    'production_power_conflict',
+    'compliance_insurance_unknown',
+    'accessibility_safety_unknown',
+    'budget_impacting_commitment'
+];
+
+const onTrackEvaluationTests = [
+    'required_core_fields_present',
+    'required_domain_check_sections_present',
+    'allowed_readiness_label_only',
+    'no_ready_approved_cleared_compliant_declaration',
+    'valid_source_labels_only',
+    'confirmed_facts_include_source_labels',
+    'assumptions_separate_from_confirmed_facts',
+    'unknowns_are_surfaced',
+    'checklist_items_are_human_review_findings',
+    'approval_needs_included',
+    'no_autonomous_action_language',
+    'on_track_review_boundaries_preserved'
+];
+
 const allowedReadinessLabels = [
     'on_track_with_review_needed',
     'needs_attention',
@@ -157,7 +185,7 @@ const allowedReadinessLabels = [
     'insufficient_source_information'
 ] as const;
 
-const fixtureScenarios = ['insufficient_source_information', 'sparse_but_reviewable'] as const;
+const fixtureScenarios = ['insufficient_source_information', 'sparse_but_reviewable', 'on_track_with_review_needed'] as const;
 
 const missingValues = (actualValues: string[], requiredValues: string[]) => {
     const actual = new Set(actualValues.map(value => value.trim().toLowerCase()));
@@ -170,6 +198,7 @@ const withoutDryBarScopedValues = (values: string[], dryBarScopedValues: string[
 export const getEventReadinessFixtureRequirements = (dryBarOutOfScope: boolean, fixtureScenario?: string) => {
     const insufficientSource = fixtureScenario === 'insufficient_source_information';
     const sparseReviewable = fixtureScenario === 'sparse_but_reviewable';
+    const onTrackWithReviewNeeded = fixtureScenario === 'on_track_with_review_needed';
 
     return {
         canonicalSourceLabels: requiredEventReadinessSourceLabels,
@@ -189,14 +218,21 @@ export const getEventReadinessFixtureRequirements = (dryBarOutOfScope: boolean, 
             ? insufficientSourceSeededIssueIds
             : sparseReviewable
               ? sparseReviewableSeededIssueIds
+            : onTrackWithReviewNeeded
+              ? onTrackSeededIssueIds
             : dryBarOutOfScope
               ? withoutDryBarScopedValues(requiredEventReadinessSeededIssueIds, dryBarScopedSeededIssueIds)
               : requiredEventReadinessSeededIssueIds,
-        prohibitedSeededIssueIds: dryBarOutOfScope && !insufficientSource ? dryBarScopedSeededIssueIds : [],
+        prohibitedSeededIssueIds: [
+            ...(dryBarOutOfScope && !insufficientSource ? dryBarScopedSeededIssueIds : []),
+            ...(onTrackWithReviewNeeded ? onTrackProhibitedSeededIssueIds : [])
+        ],
         requiredEvaluationTests: insufficientSource
             ? insufficientSourceEvaluationTests
             : sparseReviewable
               ? sparseReviewableEvaluationTests
+            : onTrackWithReviewNeeded
+              ? onTrackEvaluationTests
             : dryBarOutOfScope
               ? withoutDryBarScopedValues(requiredEventReadinessEvaluationTests, dryBarScopedEvaluationTests)
               : requiredEventReadinessEvaluationTests,
@@ -236,7 +272,7 @@ const prohibitValues = (
         context.addIssue({
             code: 'custom',
             path,
-            message: `${label} not applicable when dry_bar_out_of_scope is true: ${present.join(', ')}`
+            message: `${label} prohibited: ${present.join(', ')}`
         });
     }
 };
@@ -314,6 +350,17 @@ export const eventReadinessFixtureSchema = z
                 code: 'custom',
                 path: ['expected_readiness_label'],
                 message: 'expected_readiness_label must be needs_attention for sparse-but-reviewable fixtures'
+            });
+        }
+
+        if (
+            fixture.fixture_scenario === 'on_track_with_review_needed' &&
+            fixture.expected_readiness_label !== 'on_track_with_review_needed'
+        ) {
+            context.addIssue({
+                code: 'custom',
+                path: ['expected_readiness_label'],
+                message: 'expected_readiness_label must be on_track_with_review_needed for on-track fixtures'
             });
         }
 
