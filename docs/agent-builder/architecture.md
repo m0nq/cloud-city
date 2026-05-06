@@ -129,6 +129,8 @@ Re-evaluate SDK, runtime, and model choices:
 
 ## Next Architecture Step
 
-Mature registry/export/log drafting conventions before considering Event Readiness runtime-output validation, read-only
-Drive sync, UI, tools, routes, or integrations. Runtime expansion remains approval-gated and out of scope for the
-current Event Readiness baseline.
+Define Event Readiness local draft-only test planning, starting with
+`docs/agent-builder/decision-records/event-readiness-local-draft-only-test-planning.v0.1.md`, and mature
+registry/export/log drafting conventions before considering Event Readiness runtime-output validation, read-only Drive
+sync, UI, tools, routes, or integrations. Runtime expansion remains approval-gated and out of scope for the current
+Event Readiness baseline.

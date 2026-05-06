@@ -9,6 +9,10 @@ Human review is required before fixture, eval, YAML spec, or runtime work.
 Current status: the Event Readiness v0.1 spec, registry entry, deterministic eval suite, and six-case pre-runtime
 fixture ladder now exist. Runtime generation and runtime-output validation remain unapproved and out of scope.
 
+Supersession note: sections that say "future schema/spec/fixture/eval work" preserve the historical planning path.
+For the current baseline, the spec, fixtures, registry entry, and deterministic eval suite are implemented. The next
+unapproved gate is local draft-only test planning before any Event Readiness runtime-output validation work.
+
 ## 1. Review Purpose
 
 This review converts the Event Readiness synthetic source packet and manual-test review packet into an output-contract
@@ -55,7 +59,8 @@ robustness.
 
 ## 4. Required Structured Schema Fields
 
-These are proposed fields for future schema/spec work. They are not a current schema implementation.
+These were proposed fields for schema/spec work and now align with the implemented Event Readiness v0.1 spec and
+fixture/eval baseline. They are still not a runtime-output schema implementation.
 
 | Field name | Required? | Reason | Source from manual-test packet | Later eval implication |
 | --- | --- | --- | --- | --- |
@@ -178,14 +183,15 @@ Deterministic eval checks that should eventually be created:
 
 ## 10. Fixture Implications
 
-Future fixtures should test:
+Future or already-implemented fixtures should test:
 
 - Happy path with minor gaps: mostly complete event packet with a few low-severity unknowns.
 - Missing-information path: sparse packet that should produce `insufficient_source_information` or strong unknowns.
 - Blocked/escalation path: unresolved access, compliance, staffing, dry bar, or budget-impacting issues.
 - Source-conflict path: contradictory venue, run-of-show, production, or staffing inputs.
 
-Do not create fixtures from this review. Fixture design still requires founder/operator approval.
+Historical note: this review did not itself create fixtures. Event Readiness now has a six-case synthetic fixture ladder
+under `fixtures/event_readiness/`; additional fixtures still require founder/operator approval.
 
 ## 11. Fields To Defer
 
@@ -213,6 +219,8 @@ Do not require these yet:
 
 ## 13. Recommendation
 
-Proceed to fixture/eval planning only after founder/operator review of this output contract review.
+Treat this as the historical output-contract planning record for the implemented Event Readiness v0.1 pre-runtime
+baseline.
 
-Do not proceed to YAML spec until fixture/eval design is approved.
+Next planning should define local draft-only Event Readiness test expectations before any runtime-output validation,
+runtime generation, routes, tools, integrations, Drive sync, Drive writes, or UI work.

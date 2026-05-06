@@ -73,6 +73,9 @@ Status: complete.
 
 Next safe engineering area:
 
+- Define Event Readiness local draft-only test planning before any runtime-output validation or runtime generation work.
+  The planning gate is recorded in
+  `docs/agent-builder/decision-records/event-readiness-local-draft-only-test-planning.v0.1.md`.
 - Mature local registry/export/log drafting conventions for governed artifacts.
 - Expand fixtures/evals before considering Event Readiness runtime-output validation.
 - Keep read-only Drive sync planning, runtime expansion, UI, tools, routes, and integrations out of scope until a

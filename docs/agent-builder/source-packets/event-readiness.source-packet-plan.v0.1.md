@@ -1,5 +1,10 @@
 # Event Readiness Source Packet Plan v0.1
 
+Current-status note: this is the historical source-packet planning record for Event Readiness v0.1. The synthetic source
+packet, manual-test packet, output-contract review, six synthetic fixtures, eval suite, spec, and registry entry now
+exist as a validated pre-runtime baseline. This document still governs source-packet expectations for future local
+draft-only test planning; it does not approve runtime, routes, tools, integrations, Drive sync, Drive writes, or UI.
+
 ## 1. Purpose
 
 This plan defines the first source packet needed to test the Event Readiness Assistant intake. It is not a fixture,
@@ -30,12 +35,17 @@ treated as a planning artifact only, not as a fixture, eval suite, schema, or im
 ## 3. Operating Doctrine
 
 - local-first
+- CLI-first
 - draft-only
 - source-grounded
 - human-reviewed
+- approval-gated
 - no tools
 - no routes
 - no integrations
+- no Drive sync
+- no Drive writes
+- no UI
 - no external action
 - humans approve
 - humans execute
@@ -396,6 +406,9 @@ This list is provisional and requires founder/operator review:
 
 ## 12. Next Step After This Plan
 
-After founder/operator review, revise or approve the synthetic source packet, manual-test review packet,
-output-contract review, and fixture/eval plan. Do not create fixtures, evals, specs, registry entries, runtime behavior,
-or scaffold commands until these planning artifacts are approved.
+Historical note: the synthetic source packet, manual-test review packet, output-contract review, fixture/eval plan,
+fixtures, eval suite, spec, and registry entry now exist for Event Readiness v0.1.
+
+Next source-packet work should support local draft-only test planning only. Do not create runtime behavior,
+runtime-output validation code, scaffold commands, routes, tools, integrations, Drive sync, Drive writes, UI, or
+operational source-of-truth updates from this source-packet plan.

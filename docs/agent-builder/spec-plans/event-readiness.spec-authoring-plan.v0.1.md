@@ -7,6 +7,10 @@ integration, or operational source of truth.
 
 Human review is required before authoring `agent_specs/event_readiness.v0.1.yaml`.
 
+Current-status note: `agent_specs/event_readiness.v0.1.yaml` now exists and validates as part of the Event Readiness
+v0.1 pre-runtime baseline. This document is retained as the historical spec-authoring plan; language about the "future
+spec" describes the path that led to the current spec and should not be read as approval for runtime work.
+
 ## 1. Purpose
 
 Translate the Event Readiness intake, output contract, fixture, and deterministic eval suite into a bounded YAML spec
@@ -155,7 +159,7 @@ If sources conflict, the assistant must surface the conflict for human review ra
 
 ## 9. Output Contract To Encode
 
-The future spec should split the output contract into core required fields and required domain-check sections.
+The implemented spec splits the output contract into core required fields and required domain-check sections.
 
 Core required fields:
 
@@ -346,7 +350,11 @@ Do not create or modify:
 - external action behavior
 - additional fixtures or eval suites unless separately approved
 
-## 18. Open Decisions Before Spec Authoring
+## 18. Historical Open Decisions Before Spec Authoring
+
+Current status: the spec has been authored, and the implemented baseline preserves `budget_impacting_commitment`,
+`dry_bar_out_of_scope: true`, and no draft external outreach for Event Readiness v0.1. These notes remain for provenance
+and future version planning.
 
 - Confirm whether `budget_impacting_commitment` should remain Event Readiness-only for v0.1 or become a wider Agent
   Builder canonical approval gate later.
@@ -358,14 +366,14 @@ Do not create or modify:
 
 ## 19. Recommendation
 
-Approve this plan, then author `agent_specs/event_readiness.v0.1.yaml` as the next bounded artifact.
+Treat this as the historical plan that led to `agent_specs/event_readiness.v0.1.yaml`.
 
-After the spec is created, validate in this order:
+For the current pre-runtime baseline, validate in this order:
 
 1. Event Readiness fixture validation.
 2. Event Readiness deterministic eval suite.
-3. New spec validation command, if added or extended.
+3. Event Readiness spec validation.
 4. Existing Venue / Vendor validation and evals to confirm no regression.
 
-Do not create runtime behavior, a scaffold command, route, integration, or model/tool access until the Event Readiness
-baseline passes review and the lifecycle advances to the next gate.
+Do not create runtime behavior, runtime-output validation code, a scaffold command, route, integration, Drive sync,
+Drive writes, UI, or model/tool access until a separate local draft-only test planning gate is reviewed and approved.

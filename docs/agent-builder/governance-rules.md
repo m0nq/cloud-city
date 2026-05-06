@@ -21,6 +21,12 @@ Specs must prohibit sending outreach, negotiating, committing, making payments, 
 
 Specs must require approval for external outreach, rates or terms, contracts, payments, public messaging, and source-of-truth updates.
 
+Domain-specific specs may add stricter approval gate IDs. Event Readiness v0.1 additionally requires
+`schedule_commitments`, `vendor_venue_commitments`, `payments_contracts`,
+`compliance_insurance_permit_issues`, `accessibility_safety_determinations`, and
+`budget_impacting_commitment` in its spec, fixtures, and eval suite. These IDs do not approve runtime, tools,
+routes, integrations, Drive writes, or operational use.
+
 ## Registry Rules
 
 - Registry validation is local and read-only.

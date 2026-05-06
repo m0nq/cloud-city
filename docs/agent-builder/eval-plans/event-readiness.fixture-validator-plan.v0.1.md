@@ -387,6 +387,7 @@ Then run:
 pnpm agent-builder fixture validate fixtures/venue_candidates/warehouse416.public.yaml
 pnpm agent-builder fixture validate fixtures/venue_candidates/oakstop.redacted.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/blocked_escalation.synthetic.yaml
+pnpm agent-builder fixture validate fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/insufficient_source_information.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml
