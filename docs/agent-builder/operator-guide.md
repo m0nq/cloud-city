@@ -21,7 +21,7 @@ The Agent Builder can:
 Current status:
 
 - Venue / Vendor spec, registry entry, fixture/eval suite, runtime prototype, and runtime-output validator merged
-- Event Readiness spec, registry entry, six-case pre-runtime fixture/eval ladder, and domain-aware spec policy validation merged
+- Event Readiness spec, registry entry, seven-case pre-runtime fixture/eval ladder, and domain-aware spec policy validation merged
 - Vercel runtime prototype merged
 - runtime-output validator merged
 - Event Readiness has no runtime generation or runtime-output validation approval

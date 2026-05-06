@@ -6,7 +6,7 @@ This is not a schema, spec, fixture, eval, runtime artifact, registry approval, 
 
 Human review is required before fixture, eval, YAML spec, or runtime work.
 
-Current status: the Event Readiness v0.1 spec, registry entry, deterministic eval suite, and six-case pre-runtime
+Current status: the Event Readiness v0.1 spec, registry entry, deterministic eval suite, and seven-case pre-runtime
 fixture ladder now exist. Runtime generation and runtime-output validation remain unapproved and out of scope.
 
 Supersession note: sections that say "future schema/spec/fixture/eval work" preserve the historical planning path.
@@ -190,7 +190,7 @@ Future or already-implemented fixtures should test:
 - Blocked/escalation path: unresolved access, compliance, staffing, dry bar, or budget-impacting issues.
 - Source-conflict path: contradictory venue, run-of-show, production, or staffing inputs.
 
-Historical note: this review did not itself create fixtures. Event Readiness now has a six-case synthetic fixture ladder
+Historical note: this review did not itself create fixtures. Event Readiness now has a seven-case synthetic fixture ladder
 under `fixtures/event_readiness/`; additional fixtures still require founder/operator approval.
 
 ## 11. Fields To Defer

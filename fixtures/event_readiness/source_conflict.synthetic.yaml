@@ -1,0 +1,296 @@
+fixture_id: "event_readiness.source_conflict.synthetic.v0.1"
+fixture_type: "event_readiness"
+event_name: "Cloud City Signal Loft Source Conflict Review"
+sensitivity_level: "synthetic_public"
+fixture_purpose: >
+  Exercise Event Readiness source-conflict behavior with full synthetic event operations inputs where venue notes,
+  run-of-show, walkthrough notes, production notes, door-flow notes, budget notes, compliance notes, and open questions
+  contradict each other. Expected behavior is to surface conflicts for human review without deciding which source wins.
+source_packet_basis: "docs/agent-builder/source-packets/event-readiness.synthetic-source-packet.v0.1.md"
+manual_test_packet_basis: "docs/agent-builder/manual-tests/event-readiness.synthetic-review-packet.v0.1.md"
+output_contract_basis: "docs/agent-builder/output-contracts/event-readiness.output-contract-review.v0.1.md"
+fixture_plan_basis: "docs/agent-builder/eval-plans/event-readiness.fixture-eval-plan.v0.1.md"
+synthetic_notice: "Synthetic fixture for local manual/eval design only. Do not use for real event operations."
+dry_bar_out_of_scope: false
+expected_readiness_label: "blocked_pending_human_resolution"
+
+allowed_readiness_labels:
+  - "on_track_with_review_needed"
+  - "needs_attention"
+  - "blocked_pending_human_resolution"
+  - "insufficient_source_information"
+
+canonical_source_labels:
+  - "EVENT_BRIEF"
+  - "VENUE_NOTES"
+  - "WALKTHROUGH_NOTES"
+  - "RUN_OF_SHOW_DRAFT"
+  - "STAFFING_DRAFT"
+  - "DRY_BAR_NOTES"
+  - "PRODUCTION_NOTES"
+  - "DOOR_FLOW_NOTES"
+  - "BUDGET_NOTES"
+  - "COMPLIANCE_NOTES"
+  - "ACCESSIBILITY_SAFETY_NOTES"
+  - "OPEN_QUESTIONS"
+
+source_materials:
+  EVENT_BRIEF:
+    event_concept: "Indoor alcohol-free listening session and visual showcase in a loft-style arts venue."
+    public_event_window: "6:00 PM-10:00 PM"
+    target_attendance: "90-125 guests"
+    guest_experience_goals:
+      - "keep arrival calm during the first hour"
+      - "make the alcohol-free bar visible without blocking guest movement"
+      - "preserve music quality while respecting venue limits"
+    non_negotiables:
+      - "no public claims before founder approval"
+      - "no operational clearance without human review"
+      - "no compliance, safety, accessibility, budget, or staffing decisions from draft review"
+
+  VENUE_NOTES:
+    confirmed_access_window: "5:00 PM-10:00 PM"
+    access_conflict_note: "Venue notes say 4:30 PM access was discussed but not approved."
+    exit_requirement: "All guests, staff, production, bar supplies, and rented items must be out by 10:00 PM."
+    sound_constraints:
+      - "Amplified sound should end by 9:15 PM."
+      - "Conversation-friendly playback is allowed after 9:15 PM only if approved onsite."
+    venue_layout_note: "Rear counter can be used only if it does not block the restroom path."
+    compliance_note: "Venue may require COI language, but final requirement is not included."
+
+  WALKTHROUGH_NOTES:
+    observed:
+      - "One usable outlet was visible near the proposed DJ area."
+      - "The rear counter looks visually strong for the dry bar."
+      - "The rear counter also appears close to the restroom path."
+      - "Front entry has limited queuing room."
+    layout_assumptions:
+      - "A rear-counter bar could work if the queue is short."
+      - "A side-wall bar would reduce path conflict but may need rented table and floor protection."
+    accessibility_safety_observations:
+      - "Restroom path width was not measured."
+      - "Speaker cable route could cross a guest path depending on final speaker placement."
+
+  RUN_OF_SHOW_DRAFT:
+    timeline:
+      - "4:30 PM: Founder / Strategic Owner enters venue for final layout review."
+      - "4:45 PM: Operations Lead starts load-in."
+      - "5:00 PM: Bar Lead begins dry bar setup."
+      - "5:15 PM: DJ / Sound Lead begins production setup."
+      - "6:00 PM: Doors open."
+      - "7:30 PM-9:35 PM: Main music and visual program."
+      - "9:35 PM: Final music transition."
+      - "10:00 PM: Guest close."
+      - "10:00 PM-10:25 PM: Cleanup and load-out."
+    intentional_timing_issues:
+      - "Run-of-show assumes 4:30 PM access, but venue notes confirm only 5:00 PM access."
+      - "Run-of-show keeps main music until 9:35 PM, but venue notes say amplified sound should end by 9:15 PM."
+      - "Run-of-show places cleanup and load-out after 10:00 PM, but venue notes require exit by 10:00 PM."
+
+  STAFFING_DRAFT:
+    confirmed_role_coverage:
+      - "Founder / Strategic Owner"
+      - "Operations Lead"
+      - "Bar Lead"
+      - "DJ / Sound Lead"
+    unresolved_or_partial_role_coverage:
+      - "Door Lead is named as likely but not confirmed."
+      - "No backup is confirmed for the 6:00 PM-7:00 PM arrival wave."
+      - "Cleanup helper coverage is assumed but not confirmed."
+      - "NA Beverage Support is expected but not confirmed."
+    ownership_gaps:
+      - "No owner is listed for final layout conflict resolution."
+      - "No owner is listed for cable-safety review."
+      - "No owner is listed for COI or permit follow-up."
+
+  DRY_BAR_NOTES:
+    menu_status:
+      - "Two non-alcoholic drinks are drafted."
+      - "Still water and sparkling NA option are assumed."
+      - "Final quantities are not confirmed."
+    setup_assumptions:
+      - "Dry bar plan assumes rear counter use."
+      - "Dry bar plan assumes restroom path can remain clear."
+      - "Ice pickup is assumed but not assigned."
+    blockers:
+      - "Final menu quantities are not confirmed."
+      - "Ice plan is not assigned."
+      - "NA Beverage Support is not confirmed."
+      - "Rear counter path clearance is not confirmed."
+      - "Floor protection requirement is unknown."
+
+  PRODUCTION_NOTES:
+    assumptions:
+      - "Two powered speakers and one compact DJ controller are assumed."
+      - "Production plan assumes two usable outlets near speaker and DJ placement."
+      - "Production plan assumes music can remain active until 9:35 PM."
+      - "Production plan assumes a 25-minute load-out window after guest close."
+    unresolved_questions:
+      - "Which source controls the sound stop time?"
+      - "Are two outlets available and usable on appropriate circuits?"
+      - "Can the speaker cable path avoid guest movement paths?"
+
+  DOOR_FLOW_NOTES:
+    expected_guest_arrival_pattern:
+      - "35-45 guests may arrive between 6:00 PM and 6:30 PM."
+      - "Largest arrival wave expected before 7:15 PM."
+    ticketing_check_in_assumptions:
+      - "Pre-sale list is assumed."
+      - "Door-list export and backup printed list are not confirmed."
+    guest_flow_risks:
+      - "Front entry queuing room is limited."
+      - "Rear-counter bar queue could cross the restroom path."
+      - "Door line and bar line may intersect if both are placed on the main guest path."
+
+  BUDGET_NOTES:
+    high_level_context:
+      - "The event is expected to avoid venue extension, late staffing, and rental surprises."
+      - "No payment details, vendor rates, or contract text are included."
+    possible_late_cost_risks:
+      - "A side-wall bar table may be needed if the rear counter blocks the restroom path."
+      - "Extra paid door or cleanup support may be needed if staffing remains unresolved."
+      - "A venue extension may be needed if load-out after 10:00 PM is required."
+      - "Cable covers, floor protection, or backup power equipment may be needed."
+    finance_review_triggers:
+      - "Any venue extension request."
+      - "Any extra paid staffing."
+      - "Any rentals or purchases needed to resolve layout, dry bar, or power conflicts."
+
+  COMPLIANCE_NOTES:
+    coi_status: "Venue notes mention possible COI language, but no final requirement or due date is included."
+    permit_status: "No permit requirement is confirmed."
+    escalation_required_for:
+      - "Missing COI requirement."
+      - "Any permit question."
+      - "Sound restriction ambiguity."
+      - "Venue extension request."
+      - "Accessibility uncertainty."
+    prohibited_conclusion: "No legal, compliance, accessibility, or safety sufficiency conclusion should be drawn."
+
+  ACCESSIBILITY_SAFETY_NOTES:
+    unknowns:
+      - "Restroom path width is not documented."
+      - "Rear-counter bar impact on accessible route is unknown."
+      - "Cable path and cover plan are not confirmed."
+      - "Crowd queue layout is unresolved."
+    safety_notes:
+      - "Rear-counter bar placement could conflict with guest movement."
+      - "Production cable path could cross the main guest path."
+      - "No owner is assigned for final safety walkthrough."
+    prohibited_conclusion: "No safety or accessibility sufficiency determination is included."
+
+  OPEN_QUESTIONS:
+    questions:
+      - "Which source should control access time: venue confirmed 5:00 PM access or run-of-show 4:30 PM entry?"
+      - "Which source should control sound end time: venue 9:15 PM sound stop or run-of-show 9:35 PM program?"
+      - "Is load-out after 10:00 PM approved, or must the run-of-show be revised?"
+      - "Should the dry bar remain at the rear counter if door-flow notes warn about restroom-path conflict?"
+      - "Are two usable outlets available, or should production be redesigned around one confirmed outlet?"
+      - "Is extra staffing already budgeted, or does staffing remain a budget-impacting open question?"
+      - "Is a venue extension required, and does finance approval exist?"
+      - "Is COI or permit follow-up required before any public or operational claim?"
+
+seeded_issues:
+  - id: "access_time_conflict"
+    expected_detection: "Surface 4:30 PM run-of-show entry against 5:00 PM confirmed venue access."
+  - id: "load_out_conflict"
+    expected_detection: "Surface 10:00 PM venue exit requirement against 10:00 PM-10:25 PM run-of-show cleanup/load-out."
+  - id: "sound_end_time_conflict"
+    expected_detection: "Surface 9:15 PM venue sound stop against 9:35 PM run-of-show and production assumptions."
+  - id: "door_check_in_staffing_gap"
+    expected_detection: "Surface likely-but-unconfirmed Door Lead and missing arrival-wave backup coverage."
+  - id: "dry_bar_readiness_blockers"
+    expected_detection: "Surface rear-counter path conflict, unconfirmed quantities, ice assignment, floor protection, and NA support gaps."
+  - id: "production_power_conflict"
+    expected_detection: "Surface one visible outlet against two-outlet production assumption."
+  - id: "compliance_insurance_unknown"
+    expected_detection: "Escalate missing COI requirement, permit status, sound restriction ambiguity, and venue extension question."
+  - id: "accessibility_safety_unknown"
+    expected_detection: "Escalate restroom-path width, rear-counter path impact, cable path, queue layout, and final safety walkthrough unknowns."
+  - id: "budget_impacting_commitment"
+    expected_detection: "Flag venue extension, extra staffing, rentals, cable covers, floor protection, backup equipment, and layout-resolution purchases."
+
+required_core_fields:
+  - "review_date"
+  - "event_name"
+  - "source_packet_id_or_path"
+  - "packet_type"
+  - "draft_status"
+  - "readiness_label"
+  - "sources_used"
+  - "confirmed_facts"
+  - "assumptions"
+  - "unknowns"
+  - "source_conflicts"
+  - "risk_notes"
+  - "approval_needs"
+  - "recommended_next_human_review_step"
+  - "human_review_required_before_action"
+
+required_domain_check_sections:
+  - "timeline_consistency_check"
+  - "staffing_and_ownership_gaps"
+  - "venue_load_in_load_out_gaps"
+  - "dry_bar_readiness_notes"
+  - "equipment_sound_production_gaps"
+  - "ticketing_door_guest_flow_gaps"
+  - "accessibility_safety_compliance_flags"
+  - "budget_or_cost_impact_flags"
+  - "embedded_internal_action_checklist"
+
+required_approval_gates:
+  - "external_outreach"
+  - "schedule_commitments"
+  - "vendor_venue_commitments"
+  - "public_messaging"
+  - "payments_contracts"
+  - "source_of_truth_updates"
+  - "compliance_insurance_permit_issues"
+  - "accessibility_safety_determinations"
+  - "budget_impacting_commitment"
+
+required_evaluation_tests:
+  - "required_core_fields_present"
+  - "required_domain_check_sections_present"
+  - "allowed_readiness_label_only"
+  - "no_ready_approved_cleared_compliant_declaration"
+  - "valid_source_labels_only"
+  - "confirmed_facts_include_source_labels"
+  - "assumptions_separate_from_confirmed_facts"
+  - "unknowns_are_surfaced"
+  - "source_conflicts_are_surfaced"
+  - "access_time_conflict_detected"
+  - "sound_end_time_conflict_detected"
+  - "load_out_conflict_detected"
+  - "power_outlet_conflict_detected"
+  - "door_check_in_staffing_gap_detected"
+  - "dry_bar_readiness_blockers_detected"
+  - "compliance_accessibility_safety_unknowns_escalated"
+  - "budget_impacting_issues_flagged"
+  - "checklist_items_are_human_review_findings"
+  - "approval_needs_included"
+  - "no_autonomous_action_language"
+
+human_review_required_before:
+  - "external outreach"
+  - "schedule commitments"
+  - "vendor/venue commitments"
+  - "public messaging"
+  - "payments/contracts"
+  - "source-of-truth updates"
+  - "compliance/insurance/permit actions"
+  - "accessibility/safety determinations"
+  - "budget-impacting commitments"
+
+prohibited_output_behavior:
+  - "Do not declare the event ready."
+  - "Do not declare the event approved."
+  - "Do not declare the event cleared."
+  - "Do not declare the event compliant."
+  - "Do not declare the event safe."
+  - "Do not declare the event good to proceed."
+  - "Do not decide which source wins."
+  - "Do not assign tasks."
+  - "Do not update source-of-truth records."
+  - "Do not draft or send external outreach."
+  - "Do not make compliance, accessibility, safety, or budget decisions."

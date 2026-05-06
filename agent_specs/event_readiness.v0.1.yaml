@@ -8,7 +8,7 @@ agent:
   accountable_human_owner: "Founder / Strategic Owner"
   automation_class: "custom_agent_candidate"
   implementation_stage: "draft_only_manual_mvp"
-  evaluation_status: "six_case_pre_runtime_fixture_eval_supported"
+  evaluation_status: "seven_case_pre_runtime_fixture_eval_supported"
 
 purpose:
   summary: >
@@ -514,6 +514,7 @@ mvp_readiness_assessment:
     - "docs/agent-builder/eval-plans/event-readiness.fixture-validator-plan.v0.1.md"
     - "docs/agent-builder/spec-plans/event-readiness.spec-authoring-plan.v0.1.md"
     - "fixtures/event_readiness/blocked_escalation.synthetic.yaml"
+    - "fixtures/event_readiness/source_conflict.synthetic.yaml"
     - "fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml"
     - "fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml"
     - "fixtures/event_readiness/insufficient_source_information.synthetic.yaml"
@@ -534,7 +535,7 @@ review_outcome:
   outcome: "ready_for_local_registry_fixture_eval_validation_only"
   rationale: >
     The spec is bounded to local, draft-only, source-grounded Event Readiness review and aligns with the existing
-    six-case deterministic pre-runtime fixture/eval baseline and local read-only registry entry. It does not approve
+    seven-case deterministic pre-runtime fixture/eval baseline and local read-only registry entry. It does not approve
     runtime, scaffold, routes, integrations, model/tool access, Drive writes, or external action.
 
 future_cleanup:

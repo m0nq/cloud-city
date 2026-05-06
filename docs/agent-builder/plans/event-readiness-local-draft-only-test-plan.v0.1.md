@@ -285,13 +285,14 @@ The packet recognizes an internally coherent, complete synthetic packet with min
 all approval gates and must not declare the event ready, approved, cleared, compliant, launched, safe, or good to
 proceed.
 
-### future source_conflict case
+### source_conflict
 
 Status:
-Planning only. No new fixture or eval is approved by this plan.
+Implemented as a pre-runtime fixture/eval slice. This does not approve runtime, model calls, routes, tools,
+integrations, Drive behavior, UI, source-of-truth updates, autonomous action, or operational use.
 
-Proposed oracle:
-A future source-conflict case should seed explicit contradictions across venue notes, run-of-show, production notes,
+Oracle:
+The source-conflict case seeds explicit contradictions across venue notes, run-of-show, production notes,
 staffing, door-flow, budget, or open questions. The expected behavior is to surface conflicts with source labels and
 route them to human review without deciding which source wins.
 
@@ -358,7 +359,7 @@ Before future L1 runtime planning can even be considered, all of the following m
 - Source packet requirements and redaction rules are accepted.
 - Approval gate IDs are visible and complete.
 - Failure handling is documented.
-- The future source-conflict case is either planned as a fixture/eval slice or explicitly deferred.
+- The source-conflict fixture/eval slice remains bounded to pre-runtime validation.
 - A separate human-approved runtime-output validation plan exists before any runtime work.
 
 Still deferred:

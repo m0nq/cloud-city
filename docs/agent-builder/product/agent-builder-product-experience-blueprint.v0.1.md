@@ -417,8 +417,7 @@ Future product walkthrough:
 
 8. Run synthetic tests:
    The product shows positive, sparse, insufficient-source, dry-bar-out-of-scope, source-conflict, and blocked escalation
-   scenarios as test oracles. Existing v0.1 fixtures cover several of these scenarios; future source-conflict planning
-   remains a conceptual next test slice.
+   scenarios as test oracles. Existing v0.1 fixtures now include the source-conflict pre-runtime slice.
 
 9. Approve agent status:
    Event Readiness remains L0 until a separate planning gate and future runtime-output validation gate are approved.

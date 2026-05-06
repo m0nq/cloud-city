@@ -19,7 +19,7 @@ registry:
       business_domain: "Event Production / Operations"
       owner_hat: "Operations / Production Lead"
       status: "spec_draft_fixture_eval_supported"
-      evaluation_status: "six_case_pre_runtime_fixture_eval_supported"
+      evaluation_status: "seven_case_pre_runtime_fixture_eval_supported"
       implementation_stage: "draft_only_manual_mvp"
       governance_posture: "local_first_cli_first_draft_only_human_reviewed_approval_gated_source_grounded"
       runtime_approved: false

@@ -9,13 +9,13 @@ Human review is required before creating actual fixtures, eval suites, YAML spec
 or scaffold behavior.
 
 Current status: the Event Readiness v0.1 pre-runtime baseline now has a validating spec, local registry entry,
-deterministic eval suite, and six implemented synthetic fixture cases. This document preserves the historical planning
+deterministic eval suite, and seven implemented synthetic fixture cases. This document preserves the historical planning
 record while noting the implemented fixture/eval baseline.
 
 ## 1. Purpose
 
 This plan turned the Event Readiness intake, source-packet work, manual-test packet, and output-contract review into a
-fixture/eval design. It records what the current six-case pre-runtime fixture ladder tests and which deterministic
+fixture/eval design. It records what the current seven-case pre-runtime fixture ladder tests and which deterministic
 checks are implemented for v0.1.
 
 ## 2. Inputs
@@ -47,23 +47,23 @@ report `not_applicable`, `not_provided_in_sources`, or
 
 ## 4. Fixture Set
 
-Current six-case pre-runtime fixture ladder:
+Current seven-case pre-runtime fixture ladder:
 
 | Fixture | Purpose | Expected readiness label | Creation order |
 | --- | --- | --- | --- |
 | Blocked / escalation | Test unresolved operational blockers requiring human decisions. | `blocked_pending_human_resolution` | 1 |
-| Staffing / compliance blocked escalation | Test staffing, compliance/insurance, accessibility/safety, and budget-impacting uncertainty. | `blocked_pending_human_resolution` | 2 |
-| Dry bar out of scope | Test explicit dry bar exception handling with `DRY_BAR_NOTES`, `dry_bar_readiness_notes`, `dry_bar_readiness_blockers`, and `dry_bar_readiness_blockers_detected` omitted. | `blocked_pending_human_resolution` | 3 |
-| Insufficient source information | Test a source packet too thin for meaningful draft readiness review. | `insufficient_source_information` | 4 |
-| Sparse but reviewable | Test a bounded source packet with enough material for draft review and explicit missing-domain unknowns. | `needs_attention` | 5 |
-| On track with review needed | Test a complete, internally coherent packet with minor human-review items and all approval gates preserved. | `on_track_with_review_needed` | 6 |
+| Source conflict | Test explicit surfacing of contradictory source materials without deciding which source wins. | `blocked_pending_human_resolution` | 2 |
+| Staffing / compliance blocked escalation | Test staffing, compliance/insurance, accessibility/safety, and budget-impacting uncertainty. | `blocked_pending_human_resolution` | 3 |
+| Dry bar out of scope | Test explicit dry bar exception handling with `DRY_BAR_NOTES`, `dry_bar_readiness_notes`, `dry_bar_readiness_blockers`, and `dry_bar_readiness_blockers_detected` omitted. | `blocked_pending_human_resolution` | 4 |
+| Insufficient source information | Test a source packet too thin for meaningful draft readiness review. | `insufficient_source_information` | 5 |
+| Sparse but reviewable | Test a bounded source packet with enough material for draft review and explicit missing-domain unknowns. | `needs_attention` | 6 |
+| On track with review needed | Test a complete, internally coherent packet with minor human-review items and all approval gates preserved. | `on_track_with_review_needed` | 7 |
 
 Future candidate fixtures:
 
 | Fixture | Purpose | Expected readiness label | Candidate order |
 | --- | --- | --- | --- |
-| Happy path with minor gaps | Test mostly complete readiness packet with a few low-severity open items. | `on_track_with_review_needed` or `needs_attention` | 7 |
-| Source conflict | Test explicit surfacing of contradictory source materials. | `blocked_pending_human_resolution` or `needs_attention` | 8 |
+| Happy path with minor gaps | Test mostly complete readiness packet with a few low-severity open items. | `on_track_with_review_needed` or `needs_attention` | 8 |
 
 Recommended first fixture:
 Synthetic blocked / escalation fixture based on the current synthetic source packet. This keeps privacy risk low and
@@ -71,6 +71,9 @@ exercises the strongest approval-boundary behavior first.
 
 Approved first fixture path:
 `fixtures/event_readiness/blocked_escalation.synthetic.yaml`
+
+Approved source-conflict fixture path:
+`fixtures/event_readiness/source_conflict.synthetic.yaml`
 
 Approved second blocked/escalation fixture path:
 `fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml`
@@ -356,13 +359,12 @@ Approved for fixture design:
 - Treat dry bar readiness as required by default unless `dry_bar_out_of_scope: true` is explicitly set.
 - Use the provisional Event Readiness source labels as canonical for v0.1 fixture design.
 
-Still needed after the six-case pre-runtime baseline:
+Still needed after the seven-case pre-runtime baseline:
 
 - Decide whether a future fixture should be redacted from a real/past event.
-- Decide whether source-conflict coverage should become the next Event Readiness fixture/eval slice.
 - Keep runtime generation and runtime-output validation behind a separate governed approval gate.
 
 ## 15. Recommendation
 
-Treat the six implemented synthetic fixture cases as the current Event Readiness v0.1 pre-runtime fixture/eval baseline.
+Treat the seven implemented synthetic fixture cases as the current Event Readiness v0.1 pre-runtime fixture/eval baseline.
 Do not add runtime behavior, routes, tools, integrations, Drive sync, Drive writes, or UI from this planning artifact.

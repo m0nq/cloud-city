@@ -10,6 +10,7 @@ import { loadYamlFile } from '../../src/agent-builder/validation';
 
 const fixturePath = 'fixtures/venue_candidates/warehouse416.public.yaml';
 const eventReadinessFixturePath = 'fixtures/event_readiness/blocked_escalation.synthetic.yaml';
+const eventReadinessSourceConflictFixturePath = 'fixtures/event_readiness/source_conflict.synthetic.yaml';
 const eventReadinessStaffingFixturePath = 'fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml';
 const eventReadinessDryBarOutOfScopeFixturePath = 'fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml';
 const eventReadinessInsufficientSourceFixturePath = 'fixtures/event_readiness/insufficient_source_information.synthetic.yaml';
@@ -215,6 +216,15 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors).toEqual([]);
         expect(report.fixtureType).toBe('event_readiness');
         expect(report.fixtureName).toBe('Cloud City Harbor Arts Listening Night');
+    });
+
+    it('passes for the Event Readiness source-conflict fixture', () => {
+        const report = validateFixture(loadYamlFile(eventReadinessSourceConflictFixturePath), eventReadinessSourceConflictFixturePath);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors).toEqual([]);
+        expect(report.fixtureType).toBe('event_readiness');
+        expect(report.fixtureName).toBe('Cloud City Signal Loft Source Conflict Review');
     });
 
     it('passes for the Event Readiness dry-bar-out-of-scope fixture', () => {
@@ -768,10 +778,11 @@ describe('Agent Builder eval harness', () => {
 
         expect(report.outcome).toBe('PASS');
         expect(report.specPath).toBe('<none>');
-        expect(report.cases).toHaveLength(6);
+        expect(report.cases).toHaveLength(7);
         expect(report.cases.map(evalCase => evalCase.candidateName)).toEqual(
             expect.arrayContaining([
                 'Cloud City Twilight Gallery Session',
+                'Cloud City Signal Loft Source Conflict Review',
                 'Cloud City Harbor Arts Listening Night',
                 'Cloud City Projection Salon',
                 'Cloud City Source Gap Review',
@@ -816,7 +827,15 @@ describe('Agent Builder eval harness', () => {
         const report = runEvalSuite(suite);
 
         expect(report.outcome).toBe('PARTIAL');
-        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual(['FAIL', 'PASS', 'PASS', 'PASS', 'PASS', 'PASS']);
+        expect(report.cases.map(evalCase => evalCase.outcome)).toEqual([
+            'FAIL',
+            'PASS',
+            'PASS',
+            'PASS',
+            'PASS',
+            'PASS',
+            'PASS'
+        ]);
         expect(report.cases[0].checks.find(check => check.label === 'Seeded issues')?.details).toContain(
             'unseeded_issue'
         );

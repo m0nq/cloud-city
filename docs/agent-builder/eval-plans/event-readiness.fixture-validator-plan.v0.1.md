@@ -5,13 +5,13 @@ Draft implementation-planning artifact only.
 This is not validator code, a fixture schema implementation, an eval suite, a YAML agent spec, a registry entry, runtime
 behavior, scaffold behavior, or operational source of truth.
 
-Current status: Event Readiness fixture validation has been implemented for the six-case pre-runtime fixture ladder.
+Current status: Event Readiness fixture validation has been implemented for the seven-case pre-runtime fixture ladder.
 This document preserves the historical validator plan and records the implemented validation baseline.
 
 ## 1. Purpose
 
 This plan defined how Event Readiness fixture validation should work before validator code was written. It now serves as
-the current v0.1 fixture-validation baseline for the six implemented synthetic Event Readiness fixtures.
+the current v0.1 fixture-validation baseline for the seven implemented synthetic Event Readiness fixtures.
 
 ## 2. Current Validator State
 
@@ -24,7 +24,7 @@ Current code path:
 - The Venue / Vendor fixture schema still requires venue/vendor fields such as `candidate_name`, `candidate_type`,
   `required_venue_fit_criteria`, `required_approval_gates`, and `required_evaluation_tests`.
 - The Event Readiness fixture schema requires `fixture_type: "event_readiness"` and applies scenario-aware validation
-  for the six-case pre-runtime fixture ladder.
+  for the seven-case pre-runtime fixture ladder.
 
 Implication:
 The Event Readiness fixture path remains separate from the Venue / Vendor shape so domain-specific source labels,
@@ -366,6 +366,8 @@ When implementation is approved, add focused tests before or alongside the code:
 - Existing venue fixture still validates.
 - Existing redacted venue fixture still validates.
 - Event Readiness blocked/escalation fixture validates.
+- Event Readiness source-conflict fixture validates with the default blocked full-source requirements and no new
+  scenario discriminator.
 - Event Readiness dry-bar-out-of-scope fixture validates without dry-bar-specific source material, domain section,
   seeded issue, or eval ID.
 - Event Readiness insufficient-source fixture validates with only `EVENT_BRIEF` and `OPEN_QUESTIONS` source materials
@@ -387,6 +389,7 @@ Then run:
 pnpm agent-builder fixture validate fixtures/venue_candidates/warehouse416.public.yaml
 pnpm agent-builder fixture validate fixtures/venue_candidates/oakstop.redacted.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/blocked_escalation.synthetic.yaml
+pnpm agent-builder fixture validate fixtures/event_readiness/source_conflict.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/insufficient_source_information.synthetic.yaml
