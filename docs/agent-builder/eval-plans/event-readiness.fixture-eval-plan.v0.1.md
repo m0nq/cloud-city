@@ -8,13 +8,15 @@ operational source of truth.
 Human review is required before creating actual fixtures, eval suites, YAML specs, registry entries, runtime behavior,
 or scaffold behavior.
 
+Current status: the Event Readiness v0.1 pre-runtime baseline now has a validating spec, local registry entry,
+deterministic eval suite, and six implemented synthetic fixture cases. This document preserves the historical planning
+record while noting the implemented fixture/eval baseline.
+
 ## 1. Purpose
 
-This plan turns the Event Readiness intake, source-packet work, manual-test packet, and output-contract review into a
-fixture/eval design. It defines what the future fixture set should test and which deterministic checks should exist
-later.
-
-It does not create fixture files or eval files.
+This plan turned the Event Readiness intake, source-packet work, manual-test packet, and output-contract review into a
+fixture/eval design. It records what the current six-case pre-runtime fixture ladder tests and which deterministic
+checks are implemented for v0.1.
 
 ## 2. Inputs
 
@@ -31,21 +33,21 @@ It does not create fixture files or eval files.
 - Agent Creation Lifecycle:
   [agent-creation-lifecycle.v0.1.md](../agent-creation-lifecycle.v0.1.md)
 
-## 3. Planning Verdict
+## 3. Historical Planning Verdict
 
-Proceed to fixture/eval planning, not fixture/eval creation.
+At the time this plan was written, the next step was fixture/eval planning rather than fixture/eval creation.
 
-The current manual-test work is enough to define a v0.1 test design because it demonstrates source-grounded,
+The manual-test work was enough to define a v0.1 test design because it demonstrated source-grounded,
 approval-safe review behavior across timing, staffing, venue, dry bar, production, guest-flow, budget, compliance,
 accessibility, and source-conflict concerns.
 
-This plan treats the output-contract fields as proposed v0.1 design input. The future schema should split core required
-fields from domain-check sections so the assistant can report `not_applicable`, `not_provided_in_sources`, or
+The implemented v0.1 fixture/eval baseline splits core required fields from domain-check sections so the assistant can
+report `not_applicable`, `not_provided_in_sources`, or
 `needs_human_review` instead of inventing unsupported findings.
 
 ## 4. Fixture Set
 
-Future fixture set:
+Current six-case pre-runtime fixture ladder:
 
 | Fixture | Purpose | Expected readiness label | Creation order |
 | --- | --- | --- | --- |
@@ -55,6 +57,11 @@ Future fixture set:
 | Insufficient source information | Test a source packet too thin for meaningful draft readiness review. | `insufficient_source_information` | 4 |
 | Sparse but reviewable | Test a bounded source packet with enough material for draft review and explicit missing-domain unknowns. | `needs_attention` | 5 |
 | On track with review needed | Test a complete, internally coherent packet with minor human-review items and all approval gates preserved. | `on_track_with_review_needed` | 6 |
+
+Future candidate fixtures:
+
+| Fixture | Purpose | Expected readiness label | Candidate order |
+| --- | --- | --- | --- |
 | Happy path with minor gaps | Test mostly complete readiness packet with a few low-severity open items. | `on_track_with_review_needed` or `needs_attention` | 7 |
 | Source conflict | Test explicit surfacing of contradictory source materials. | `blocked_pending_human_resolution` or `needs_attention` | 8 |
 
@@ -254,25 +261,24 @@ Future deterministic evals should check:
 - no autonomous action language appears
 - missing source domains produce `not_provided_in_sources` or `needs_human_review`, not invented analysis
 - `insufficient_source_information_label_selected` is required for insufficient-source fixtures
+- `sparse_source_review_bounds_respected` is required for sparse-but-reviewable fixtures
 - `on_track_review_boundaries_preserved` is required for on-track-with-review-needed fixtures
 
 ## 10. Canonical Approval Gates
 
-Use existing approval categories from Agent Builder doctrine:
+Event Readiness v0.1 uses its own canonical approval gate IDs for spec, fixture, and eval validation:
 
 - `external_outreach`
-- `rates_or_terms`
-- `contracts`
-- `payments`
+- `schedule_commitments`
+- `vendor_venue_commitments`
 - `public_messaging`
+- `payments_contracts`
 - `source_of_truth_updates`
-- `recommendations_to_act`
-- `walkthrough_scheduling_that_implies_commitment`
 - `compliance_insurance_permit_issues`
-
-Event Readiness v0.1 canonical approval gate:
-
+- `accessibility_safety_determinations`
 - `budget_impacting_commitment`
+
+These IDs are separate from the Venue / Vendor runtime approval-gate IDs.
 
 Coverage for `budget_impacting_commitment`:
 
@@ -350,17 +356,13 @@ Approved for fixture design:
 - Treat dry bar readiness as required by default unless `dry_bar_out_of_scope: true` is explicitly set.
 - Use the provisional Event Readiness source labels as canonical for v0.1 fixture design.
 
-Still needed:
+Still needed after the six-case pre-runtime baseline:
 
-- Confirm the core required fields after the first fixture draft is reviewed.
-- Confirm the required domain-check sections after the first fixture draft is reviewed.
-- Decide whether the second fixture should be redacted from a real/past event.
-- Approve a future Event Readiness fixture validator or temporary manual fixture review approach.
-- Approve or revise the Event Readiness fixture-validator plan.
+- Decide whether a future fixture should be redacted from a real/past event.
+- Decide whether source-conflict coverage should become the next Event Readiness fixture/eval slice.
+- Keep runtime generation and runtime-output validation behind a separate governed approval gate.
 
 ## 15. Recommendation
 
-Review the first synthetic blocked / escalation fixture before creating eval suite files.
-
-After the first fixture is approved, the next safe step is deterministic eval-suite planning for that fixture. Do not
-author the YAML spec until fixture and eval design have been reviewed.
+Treat the six implemented synthetic fixture cases as the current Event Readiness v0.1 pre-runtime fixture/eval baseline.
+Do not add runtime behavior, routes, tools, integrations, Drive sync, Drive writes, or UI from this planning artifact.

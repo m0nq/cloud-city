@@ -48,7 +48,7 @@ That Venue / Vendor runtime remains:
 - validated with the shared Venue / Vendor review packet Zod schema
 
 Event Readiness has no runtime generation or runtime-output validation yet. Its current governed baseline is local spec,
-fixture, eval-suite, and registry validation only.
+registry, and six-case pre-runtime fixture/eval validation only.
 
 The completed SDK spike found:
 
@@ -101,6 +101,8 @@ pnpm agent-builder fixture validate fixtures/event_readiness/blocked_escalation.
 pnpm agent-builder fixture validate fixtures/event_readiness/blocked_staffing_compliance.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/dry_bar_out_of_scope.synthetic.yaml
 pnpm agent-builder fixture validate fixtures/event_readiness/insufficient_source_information.synthetic.yaml
+pnpm agent-builder fixture validate fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml
+pnpm agent-builder fixture validate fixtures/event_readiness/on_track_with_review_needed.synthetic.yaml
 pnpm agent-builder eval validate evals/event_readiness.eval-suite.yaml
 pnpm agent-builder eval run evals/event_readiness.eval-suite.yaml
 ```

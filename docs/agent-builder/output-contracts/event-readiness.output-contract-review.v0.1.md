@@ -6,6 +6,9 @@ This is not a schema, spec, fixture, eval, runtime artifact, registry approval, 
 
 Human review is required before fixture, eval, YAML spec, or runtime work.
 
+Current status: the Event Readiness v0.1 spec, registry entry, deterministic eval suite, and six-case pre-runtime
+fixture ladder now exist. Runtime generation and runtime-output validation remain unapproved and out of scope.
+
 ## 1. Review Purpose
 
 This review converts the Event Readiness synthetic source packet and manual-test review packet into an output-contract

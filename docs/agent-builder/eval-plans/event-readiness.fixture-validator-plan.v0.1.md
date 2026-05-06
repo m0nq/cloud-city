@@ -5,16 +5,13 @@ Draft implementation-planning artifact only.
 This is not validator code, a fixture schema implementation, an eval suite, a YAML agent spec, a registry entry, runtime
 behavior, scaffold behavior, or operational source of truth.
 
-Human review is required before implementing Event Readiness fixture validation.
+Current status: Event Readiness fixture validation has been implemented for the six-case pre-runtime fixture ladder.
+This document preserves the historical validator plan and records the implemented validation baseline.
 
 ## 1. Purpose
 
-This plan defines how Event Readiness fixture validation should work before writing validator code. It exists because
-the first Event Readiness fixture now exists at
-[blocked_escalation.synthetic.yaml](../../../fixtures/event_readiness/blocked_escalation.synthetic.yaml), while the
-current `pnpm agent-builder fixture validate` command validates only the existing venue/vendor fixture shape.
-
-The goal is to make the next code step narrow and safe.
+This plan defined how Event Readiness fixture validation should work before validator code was written. It now serves as
+the current v0.1 fixture-validation baseline for the six implemented synthetic Event Readiness fixtures.
 
 ## 2. Current Validator State
 
@@ -22,14 +19,16 @@ Current code path:
 
 - Fixture validation lives in `src/agent-builder/fixtures.ts`.
 - CLI routing lives in `scripts/agent-builder/index.ts`.
-- `pnpm agent-builder fixture validate <fixture-path>` currently calls `validateVenueCandidateFixtureFile`.
-- The current fixture schema requires venue/vendor fields such as `candidate_name`, `candidate_type`,
+- `pnpm agent-builder fixture validate <fixture-path>` dispatches Venue / Vendor and Event Readiness fixtures through
+  the appropriate schema path.
+- The Venue / Vendor fixture schema still requires venue/vendor fields such as `candidate_name`, `candidate_type`,
   `required_venue_fit_criteria`, `required_approval_gates`, and `required_evaluation_tests`.
-- `candidate_type` is currently limited to `venue` or `vendor`.
+- The Event Readiness fixture schema requires `fixture_type: "event_readiness"` and applies scenario-aware validation
+  for the six-case pre-runtime fixture ladder.
 
 Implication:
-The Event Readiness fixture should not be forced into the venue/vendor shape. It needs its own schema path or a
-dispatcher that can select the correct schema by fixture type.
+The Event Readiness fixture path remains separate from the Venue / Vendor shape so domain-specific source labels,
+approval gates, seeded issues, and eval IDs stay explicit.
 
 ## 3. Recommended Approach
 
@@ -397,12 +396,11 @@ pnpm lint
 pnpm build
 ```
 
-## 15. What Not To Implement Yet
+## 15. What Not To Implement In Validator Cleanup
 
-Do not implement in the fixture-validator step:
+The Event Readiness YAML spec, deterministic eval suite, and six fixture cases now exist. Future validator cleanup
+should still not implement:
 
-- Event Readiness YAML agent spec
-- Event Readiness eval suite
 - Event Readiness runtime generation
 - Event Readiness runtime-output validation
 - scaffold commands
@@ -413,7 +411,6 @@ Do not implement in the fixture-validator step:
 
 ## 16. Recommendation
 
-Approve this validator plan before code work.
-
-After approval, the next safe code step is to add Event Readiness fixture validation as an additive schema/dispatcher
-change while preserving existing venue/vendor validation behavior.
+Treat this as the implemented Event Readiness v0.1 fixture-validation baseline. Future changes should preserve the
+separate Venue / Vendor and Event Readiness schema paths, keep scenario rules explicit, and avoid runtime, route, tool,
+integration, Drive, or UI behavior unless separately approved.

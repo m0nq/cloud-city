@@ -8,7 +8,7 @@ agent:
   accountable_human_owner: "Founder / Strategic Owner"
   automation_class: "custom_agent_candidate"
   implementation_stage: "draft_only_manual_mvp"
-  evaluation_status: "blocked_escalation_fixture_eval_supported"
+  evaluation_status: "six_case_pre_runtime_fixture_eval_supported"
 
 purpose:
   summary: >
@@ -534,7 +534,7 @@ review_outcome:
   outcome: "ready_for_local_registry_fixture_eval_validation_only"
   rationale: >
     The spec is bounded to local, draft-only, source-grounded Event Readiness review and aligns with the existing
-    blocked/escalation fixture, deterministic eval suite, and local read-only registry entry. It does not approve
+    six-case deterministic pre-runtime fixture/eval baseline and local read-only registry entry. It does not approve
     runtime, scaffold, routes, integrations, model/tool access, Drive writes, or external action.
 
 future_cleanup:
