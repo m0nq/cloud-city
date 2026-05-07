@@ -305,7 +305,7 @@ describe('Event Readiness future runtime-output sample packets', () => {
         expect(report.humanReviewRequiredBeforeAction).toBe(true);
         expect(report.approvedForOperationalUse).toBe(false);
         expect(report.promotableToHumanReviewDraft).toBe(true);
-        expect(report.errors.join('\n')).toContain('review flags require human review');
+        expect(report.errors.join('\n')).toContain('review flag(s) require human review');
     });
 
     it('maps malformed packets to FAIL and blocks promotion to usable human-review draft status', () => {
@@ -332,7 +332,33 @@ describe('Event Readiness future runtime-output sample packets', () => {
         expect(report.errors.join('\n')).toContain('readiness_label');
     });
 
-    for (const sample of sampleCases) {
+    it('fails packets with prohibited operational authority claims', () => {
+        const report = validateEventReadinessRuntimeOutput(loadSamplePacket('authority_claim.invalid.synthetic.json'));
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.reviewState).toBe('validation_blocked');
+        expect(report.promotableToHumanReviewDraft).toBe(false);
+        expect(report.approvedForOperationalUse).toBe(false);
+        expect(report.checks.find(check => check.id === 'no_authority_claims')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('Authority claims are prohibited');
+    });
+
+    it('does not block contextual uses of ready, safe, approved, or compliance vocabulary', () => {
+        const contextualSamples = [
+            'blocked_escalation.valid.synthetic.json',
+            'source_conflict.valid.synthetic.json',
+            'on_track_with_review_needed.valid.synthetic.json'
+        ];
+
+        for (const fileName of contextualSamples) {
+            const report = validateEventReadinessRuntimeOutput(loadSamplePacket(fileName));
+
+            expect(report.checks.find(check => check.id === 'no_authority_claims')?.outcome).toBe('PASS');
+            expect(report.outcome).toBe('PASS');
+        }
+    });
+
+    for (const sample of sampleCases.filter(sample => sample.fileName !== 'authority_claim.invalid.synthetic.json')) {
         test.todo(`future validator returns ${sample.expectedOutcome} for ${sample.fileName}`);
     }
 });
