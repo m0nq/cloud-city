@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { eventReadinessRuntimeOutputPacketSchema } from '../../src/agent-builder/runtime/event-readiness-output-schema';
+import { validateEventReadinessRuntimeOutput } from '../../src/agent-builder/runtime/event-readiness-output-validation';
 
 type ExpectedOutcome = 'PASS' | 'PARTIAL' | 'FAIL';
 type ExpectedReviewState = 'pass_for_human_review' | 'validation_needs_human_review' | 'validation_blocked';
@@ -278,6 +279,57 @@ describe('Event Readiness future runtime-output sample packets', () => {
 
         expect(result.success).toBe(false);
         expect(String(result.error)).toContain('human_review_required_before_action');
+    });
+
+    it('maps structurally valid PASS samples to pass-for-human-review only', () => {
+        const passSamples = sampleCases.filter(sample => sample.expectedOutcome === 'PASS');
+
+        for (const sample of passSamples) {
+            const report = validateEventReadinessRuntimeOutput(loadSamplePacket(sample.fileName));
+
+            expect(report.outcome).toBe('PASS');
+            expect(report.reviewState).toBe('pass_for_human_review');
+            expect(report.humanReviewRequiredBeforeAction).toBe(true);
+            expect(report.approvedForOperationalUse).toBe(false);
+            expect(report.promotableToHumanReviewDraft).toBe(true);
+        }
+    });
+
+    it('maps the structurally valid PARTIAL sample to needs-human-review without approval', () => {
+        const report = validateEventReadinessRuntimeOutput(
+            loadSamplePacket('sparse_but_reviewable.partial.synthetic.json')
+        );
+
+        expect(report.outcome).toBe('PARTIAL');
+        expect(report.reviewState).toBe('validation_needs_human_review');
+        expect(report.humanReviewRequiredBeforeAction).toBe(true);
+        expect(report.approvedForOperationalUse).toBe(false);
+        expect(report.promotableToHumanReviewDraft).toBe(true);
+        expect(report.errors.join('\n')).toContain('review flags require human review');
+    });
+
+    it('maps malformed packets to FAIL and blocks promotion to usable human-review draft status', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json')) as Record<string, unknown>;
+        delete packet.sources_used;
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.reviewState).toBe('validation_blocked');
+        expect(report.humanReviewRequiredBeforeAction).toBe(true);
+        expect(report.approvedForOperationalUse).toBe(false);
+        expect(report.promotableToHumanReviewDraft).toBe(false);
+    });
+
+    it('returns useful schema issue details on schema parse failure', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.readiness_label = 'ready_for_operations';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'event_readiness_schema_validation')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('readiness_label');
     });
 
     for (const sample of sampleCases) {
