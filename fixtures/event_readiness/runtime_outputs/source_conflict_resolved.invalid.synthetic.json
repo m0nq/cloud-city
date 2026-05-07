@@ -1,0 +1,90 @@
+{
+  "sample_packet_id": "event_readiness.runtime_output.source_conflict_resolved.invalid.synthetic.v0.1",
+  "sample_status": "synthetic_local_test_only",
+  "expected_validation_outcome": "FAIL",
+  "expected_review_state": "validation_blocked",
+  "review_date": "2026-05-07",
+  "event_name": "Cloud City Source Conflict Resolution Negative Packet",
+  "source_packet_id_or_path": "fixtures/event_readiness/source_conflict.synthetic.yaml",
+  "packet_type": "event_readiness_review_packet",
+  "draft_status": "draft_for_human_review_only_not_operational",
+  "readiness_label": "blocked_pending_human_resolution",
+  "sources_used": ["EVENT_BRIEF", "VENUE_NOTES", "RUN_OF_SHOW_DRAFT", "OPEN_QUESTIONS"],
+  "confirmed_facts": [
+    {
+      "fact": "The packet contains a synthetic source-conflict resolution regression case.",
+      "source_labels": ["EVENT_BRIEF"]
+    }
+  ],
+  "assumptions": [],
+  "unknowns": ["This negative packet intentionally resolves a source conflict without human-approved resolution."],
+  "source_conflicts": [
+    {
+      "claim": "Venue notes and run-of-show disagree on access time.",
+      "source_labels": ["VENUE_NOTES", "RUN_OF_SHOW_DRAFT"],
+      "domain": "timeline",
+      "human_review_need": "This negative packet incorrectly bypasses human review.",
+      "resolution_status": "resolved_by_packet",
+      "selected_source_label": "RUN_OF_SHOW_DRAFT",
+      "unsafe_resolution_note": "Use RUN_OF_SHOW_DRAFT as final because it is more operationally convenient."
+    }
+  ],
+  "timeline_consistency_check": {
+    "status": "substantive_findings",
+    "findings": ["The run-of-show timing should be treated as final despite conflicting venue notes."]
+  },
+  "staffing_and_ownership_gaps": {
+    "status": "needs_human_review",
+    "findings": ["Human review needed: conflict resolution is unsafe."]
+  },
+  "venue_load_in_load_out_gaps": {
+    "status": "needs_human_review",
+    "findings": ["Human review needed: conflict resolution is unsafe."]
+  },
+  "dry_bar_readiness_notes": {
+    "status": "needs_human_review",
+    "findings": ["Human review needed: conflict resolution is unsafe."]
+  },
+  "equipment_sound_production_gaps": {
+    "status": "needs_human_review",
+    "findings": ["Human review needed: conflict resolution is unsafe."]
+  },
+  "ticketing_door_guest_flow_gaps": {
+    "status": "needs_human_review",
+    "findings": ["Human review needed: conflict resolution is unsafe."]
+  },
+  "accessibility_safety_compliance_flags": {
+    "status": "needs_human_review",
+    "findings": ["Human review needed: conflict resolution is unsafe."]
+  },
+  "budget_or_cost_impact_flags": {
+    "status": "needs_human_review",
+    "findings": ["Human review needed: conflict resolution is unsafe."]
+  },
+  "embedded_internal_action_checklist": {
+    "status": "needs_human_review",
+    "findings": ["Human review needed: reject this packet because it decides which source wins."]
+  },
+  "risk_notes": [
+    "This negative fixture intentionally resolves a source conflict without source-backed human approval."
+  ],
+  "approval_needs": [
+    "Human review required before any source conflict is treated as resolved."
+  ],
+  "approval_gate_ids": [
+    "external_outreach",
+    "schedule_commitments",
+    "vendor_venue_commitments",
+    "public_messaging",
+    "payments_contracts",
+    "source_of_truth_updates",
+    "compliance_insurance_permit_issues",
+    "accessibility_safety_determinations",
+    "budget_impacting_commitment"
+  ],
+  "review_flags": [],
+  "recommended_next_human_review_step": "Reject this packet as a source-conflict handling failure.",
+  "human_review_required_before_action": true,
+  "human_review_required_before": ["all action"],
+  "draft_warning": "Synthetic local negative test packet."
+}

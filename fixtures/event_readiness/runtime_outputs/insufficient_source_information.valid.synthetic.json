@@ -1,0 +1,88 @@
+{
+  "sample_packet_id": "event_readiness.runtime_output.insufficient_source_information.valid.synthetic.v0.1",
+  "sample_status": "synthetic_local_test_only",
+  "expected_validation_outcome": "PASS",
+  "expected_review_state": "pass_for_human_review",
+  "review_date": "2026-05-07",
+  "event_name": "Cloud City Source Gap Review",
+  "source_packet_id_or_path": "fixtures/event_readiness/insufficient_source_information.synthetic.yaml",
+  "packet_type": "event_readiness_review_packet",
+  "draft_status": "draft_for_human_review_only_not_operational",
+  "readiness_label": "insufficient_source_information",
+  "sources_used": ["EVENT_BRIEF", "OPEN_QUESTIONS"],
+  "confirmed_facts": [
+    {
+      "fact": "Only an event brief and open questions are present in the synthetic source packet.",
+      "source_labels": ["EVENT_BRIEF", "OPEN_QUESTIONS"]
+    }
+  ],
+  "assumptions": [],
+  "unknowns": [
+    "Venue notes are not provided in sources.",
+    "Run-of-show, staffing, dry bar, production, door-flow, budget, compliance, accessibility, and safety notes are not provided in sources."
+  ],
+  "source_conflicts": [],
+  "timeline_consistency_check": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: provide venue and run-of-show source material before timeline review."]
+  },
+  "staffing_and_ownership_gaps": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: provide staffing source material before readiness review."]
+  },
+  "venue_load_in_load_out_gaps": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: provide venue access and load-out source material."]
+  },
+  "dry_bar_readiness_notes": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: provide dry bar source material or explicit out-of-scope status."]
+  },
+  "equipment_sound_production_gaps": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: provide production source material."]
+  },
+  "ticketing_door_guest_flow_gaps": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: provide ticketing and door-flow source material."]
+  },
+  "accessibility_safety_compliance_flags": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: provide accessibility, safety, compliance, COI, and permit source material."]
+  },
+  "budget_or_cost_impact_flags": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: provide budget source material before cost-impact review."]
+  },
+  "embedded_internal_action_checklist": {
+    "status": "needs_human_review",
+    "findings": ["Human review needed: assemble a bounded source packet before readiness review continues."]
+  },
+  "risk_notes": [
+    "The packet is too thin for meaningful readiness review and does not fill gaps with generic event advice."
+  ],
+  "approval_needs": [
+    "All Event Readiness approval gates remain required because insufficient source information does not narrow governance boundaries."
+  ],
+  "approval_gate_ids": [
+    "external_outreach",
+    "schedule_commitments",
+    "vendor_venue_commitments",
+    "public_messaging",
+    "payments_contracts",
+    "source_of_truth_updates",
+    "compliance_insurance_permit_issues",
+    "accessibility_safety_determinations",
+    "budget_impacting_commitment"
+  ],
+  "review_flags": [],
+  "recommended_next_human_review_step": "Founder or Operations should provide a bounded source packet before any readiness review continues.",
+  "human_review_required_before_action": true,
+  "human_review_required_before": [
+    "all operational action",
+    "public messaging",
+    "source-of-truth updates",
+    "schedule, venue, compliance, accessibility, safety, or budget decisions"
+  ],
+  "draft_warning": "Synthetic local test packet. Draft for human review only. This packet does not provide operational guidance."
+}

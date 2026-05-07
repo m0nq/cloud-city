@@ -1,0 +1,102 @@
+{
+  "sample_packet_id": "event_readiness.runtime_output.sparse_but_reviewable.partial.synthetic.v0.1",
+  "sample_status": "synthetic_local_test_only",
+  "expected_validation_outcome": "PARTIAL",
+  "expected_review_state": "validation_needs_human_review",
+  "review_date": "2026-05-07",
+  "event_name": "Cloud City Bounded Source Review",
+  "source_packet_id_or_path": "fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml",
+  "packet_type": "event_readiness_review_packet",
+  "draft_status": "draft_for_human_review_only_not_operational",
+  "readiness_label": "needs_attention",
+  "sources_used": ["EVENT_BRIEF", "VENUE_NOTES", "RUN_OF_SHOW_DRAFT", "STAFFING_DRAFT", "DRY_BAR_NOTES", "OPEN_QUESTIONS"],
+  "confirmed_facts": [
+    {
+      "fact": "The provided sources include a brief, venue notes, run-of-show draft, staffing draft, dry bar notes, and open questions.",
+      "source_labels": ["EVENT_BRIEF", "VENUE_NOTES", "RUN_OF_SHOW_DRAFT", "STAFFING_DRAFT", "DRY_BAR_NOTES", "OPEN_QUESTIONS"]
+    }
+  ],
+  "assumptions": [],
+  "unknowns": [
+    "Production notes are not provided in sources.",
+    "Door-flow, budget, compliance, accessibility, and safety notes are not provided in sources."
+  ],
+  "source_conflicts": [],
+  "timeline_consistency_check": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: timeline appears bounded by provided sources but lacks production verification."]
+  },
+  "staffing_and_ownership_gaps": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: Door Lead and floater coverage remain tentative."]
+  },
+  "venue_load_in_load_out_gaps": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: venue access and cleanup timing appear source-bounded but still require human review."]
+  },
+  "dry_bar_readiness_notes": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: final quantities and ice pickup ownership remain open."]
+  },
+  "equipment_sound_production_gaps": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: production source material is omitted."]
+  },
+  "ticketing_door_guest_flow_gaps": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: door-flow source material is omitted and door coverage is tentative."]
+  },
+  "accessibility_safety_compliance_flags": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: accessibility, safety, and compliance sources are omitted."]
+  },
+  "budget_or_cost_impact_flags": {
+    "status": "not_provided_in_sources",
+    "findings": ["Human review needed: budget source material is omitted."]
+  },
+  "embedded_internal_action_checklist": {
+    "status": "needs_human_review",
+    "findings": [
+      "Human review needed: confirm Door Lead and floater coverage.",
+      "Human review needed: request omitted production, budget, compliance, accessibility, and safety source domains."
+    ]
+  },
+  "risk_notes": [
+    "This packet is structurally reviewable but incomplete source domains require human attention."
+  ],
+  "approval_needs": [
+    "All canonical Event Readiness approval gates remain required before action."
+  ],
+  "approval_gate_ids": [
+    "external_outreach",
+    "schedule_commitments",
+    "vendor_venue_commitments",
+    "public_messaging",
+    "payments_contracts",
+    "source_of_truth_updates",
+    "compliance_insurance_permit_issues",
+    "accessibility_safety_determinations",
+    "budget_impacting_commitment"
+  ],
+  "review_flags": [
+    {
+      "id": "sparse_missing_optional_domains",
+      "severity": "needs_review",
+      "domain": "source_grounding",
+      "message": "Production, door-flow, budget, compliance, accessibility, and safety source domains are omitted and surfaced as missing.",
+      "source_labels": ["EVENT_BRIEF", "OPEN_QUESTIONS"],
+      "approval_gate_ids": ["compliance_insurance_permit_issues", "accessibility_safety_determinations", "budget_impacting_commitment"],
+      "recommended_human_review_role": "Governance / Risk reviewer",
+      "blocking": false
+    }
+  ],
+  "recommended_next_human_review_step": "Operations should review the bounded packet and request omitted source domains before action.",
+  "human_review_required_before_action": true,
+  "human_review_required_before": [
+    "public messaging",
+    "schedule commitments",
+    "source-of-truth updates",
+    "compliance, accessibility, safety, or budget decisions"
+  ],
+  "draft_warning": "Synthetic local test packet. Draft for human review only. PARTIAL does not approve action."
+}

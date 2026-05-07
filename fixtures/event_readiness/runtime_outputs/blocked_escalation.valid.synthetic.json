@@ -1,0 +1,146 @@
+{
+  "sample_packet_id": "event_readiness.runtime_output.blocked_escalation.valid.synthetic.v0.1",
+  "sample_status": "synthetic_local_test_only",
+  "expected_validation_outcome": "PASS",
+  "expected_review_state": "pass_for_human_review",
+  "review_date": "2026-05-07",
+  "event_name": "Cloud City Twilight Gallery Session",
+  "source_packet_id_or_path": "fixtures/event_readiness/blocked_escalation.synthetic.yaml",
+  "packet_type": "event_readiness_review_packet",
+  "draft_status": "draft_for_human_review_only_not_operational",
+  "readiness_label": "blocked_pending_human_resolution",
+  "sources_used": [
+    "EVENT_BRIEF",
+    "VENUE_NOTES",
+    "WALKTHROUGH_NOTES",
+    "RUN_OF_SHOW_DRAFT",
+    "STAFFING_DRAFT",
+    "DRY_BAR_NOTES",
+    "PRODUCTION_NOTES",
+    "DOOR_FLOW_NOTES",
+    "BUDGET_NOTES",
+    "COMPLIANCE_NOTES",
+    "ACCESSIBILITY_SAFETY_NOTES",
+    "OPEN_QUESTIONS"
+  ],
+  "confirmed_facts": [
+    {
+      "fact": "The synthetic event window is listed as 4:00 PM-10:00 PM.",
+      "source_labels": ["EVENT_BRIEF", "VENUE_NOTES"]
+    },
+    {
+      "fact": "The run-of-show assumes setup activities before the confirmed venue access window.",
+      "source_labels": ["RUN_OF_SHOW_DRAFT", "VENUE_NOTES"]
+    }
+  ],
+  "assumptions": [
+    "Dry bar service is intended to be central to the guest experience, but readiness is not approved by this packet."
+  ],
+  "unknowns": [
+    "Whether early access is approved.",
+    "Whether load-out after venue close is approved.",
+    "Whether compliance, accessibility, safety, and budget-impacting questions have human owner decisions."
+  ],
+  "source_conflicts": [
+    {
+      "claim": "Run-of-show assumes early access while venue notes confirm later access.",
+      "source_labels": ["RUN_OF_SHOW_DRAFT", "VENUE_NOTES"],
+      "domain": "timeline",
+      "human_review_need": "Operations and founder review required before treating setup timing as settled.",
+      "resolution_status": "unresolved_for_human_review"
+    },
+    {
+      "claim": "Run-of-show cleanup extends past the venue-requested final load-out time.",
+      "source_labels": ["RUN_OF_SHOW_DRAFT", "VENUE_NOTES"],
+      "domain": "venue_load_out",
+      "human_review_need": "Venue extension and staffing review required.",
+      "resolution_status": "unresolved_for_human_review"
+    }
+  ],
+  "timeline_consistency_check": {
+    "status": "substantive_findings",
+    "findings": [
+      "Human review needed: confirm whether early access and post-close load-out are approved."
+    ]
+  },
+  "staffing_and_ownership_gaps": {
+    "status": "substantive_findings",
+    "findings": [
+      "Human review needed: confirm door, dry bar support, floater, and cleanup ownership."
+    ]
+  },
+  "venue_load_in_load_out_gaps": {
+    "status": "substantive_findings",
+    "findings": [
+      "Human review needed: reconcile hand-carry load-in and final load-out constraints."
+    ]
+  },
+  "dry_bar_readiness_notes": {
+    "status": "substantive_findings",
+    "findings": [
+      "Human review needed: confirm supplies, setup, service support, and floor protection."
+    ]
+  },
+  "equipment_sound_production_gaps": {
+    "status": "substantive_findings",
+    "findings": [
+      "Human review needed: reconcile sound cutoff and power assumptions."
+    ]
+  },
+  "ticketing_door_guest_flow_gaps": {
+    "status": "substantive_findings",
+    "findings": [
+      "Human review needed: confirm door coverage and guest flow before public messaging."
+    ]
+  },
+  "accessibility_safety_compliance_flags": {
+    "status": "substantive_findings",
+    "findings": [
+      "Human review needed: accessibility, safety, COI, and permit sufficiency are not determined."
+    ]
+  },
+  "budget_or_cost_impact_flags": {
+    "status": "substantive_findings",
+    "findings": [
+      "Human review needed: rental, staffing, equipment, and venue-extension costs require approval."
+    ]
+  },
+  "embedded_internal_action_checklist": {
+    "status": "substantive_findings",
+    "findings": [
+      "Human review needed: confirm early access.",
+      "Human review needed: confirm load-out extension.",
+      "Human review needed: confirm dry bar supply owner."
+    ]
+  },
+  "risk_notes": [
+    "This packet surfaces blockers for human review and does not approve operational action."
+  ],
+  "approval_needs": [
+    "Human approval required before outreach, schedule commitments, public messaging, source-of-truth updates, compliance decisions, accessibility or safety determinations, and budget-impacting commitments."
+  ],
+  "approval_gate_ids": [
+    "external_outreach",
+    "schedule_commitments",
+    "vendor_venue_commitments",
+    "public_messaging",
+    "payments_contracts",
+    "source_of_truth_updates",
+    "compliance_insurance_permit_issues",
+    "accessibility_safety_determinations",
+    "budget_impacting_commitment"
+  ],
+  "review_flags": [],
+  "recommended_next_human_review_step": "Operations and Governance should review the timing, load-out, dry bar, compliance, accessibility, safety, and budget blockers before any action.",
+  "human_review_required_before_action": true,
+  "human_review_required_before": [
+    "external outreach",
+    "schedule commitments",
+    "vendor or venue commitments",
+    "public messaging",
+    "payments or contracts",
+    "source-of-truth updates",
+    "compliance, accessibility, safety, or budget decisions"
+  ],
+  "draft_warning": "Synthetic local test packet. Draft for human review only. This packet does not approve, clear, certify, or declare the event ready."
+}

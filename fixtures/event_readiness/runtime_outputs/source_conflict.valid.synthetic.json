@@ -1,0 +1,124 @@
+{
+  "sample_packet_id": "event_readiness.runtime_output.source_conflict.valid.synthetic.v0.1",
+  "sample_status": "synthetic_local_test_only",
+  "expected_validation_outcome": "PASS",
+  "expected_review_state": "pass_for_human_review",
+  "review_date": "2026-05-07",
+  "event_name": "Cloud City Signal Loft Source Conflict Review",
+  "source_packet_id_or_path": "fixtures/event_readiness/source_conflict.synthetic.yaml",
+  "packet_type": "event_readiness_review_packet",
+  "draft_status": "draft_for_human_review_only_not_operational",
+  "readiness_label": "blocked_pending_human_resolution",
+  "sources_used": [
+    "EVENT_BRIEF",
+    "VENUE_NOTES",
+    "WALKTHROUGH_NOTES",
+    "RUN_OF_SHOW_DRAFT",
+    "STAFFING_DRAFT",
+    "DRY_BAR_NOTES",
+    "PRODUCTION_NOTES",
+    "DOOR_FLOW_NOTES",
+    "BUDGET_NOTES",
+    "COMPLIANCE_NOTES",
+    "ACCESSIBILITY_SAFETY_NOTES",
+    "OPEN_QUESTIONS"
+  ],
+  "confirmed_facts": [
+    {
+      "fact": "Venue notes and run-of-show contain different access timing assumptions.",
+      "source_labels": ["VENUE_NOTES", "RUN_OF_SHOW_DRAFT"]
+    },
+    {
+      "fact": "Walkthrough and production notes do not agree on power availability.",
+      "source_labels": ["WALKTHROUGH_NOTES", "PRODUCTION_NOTES"]
+    }
+  ],
+  "assumptions": [],
+  "unknowns": [
+    "Which timing source has human-approved priority is not provided.",
+    "Whether the rear counter layout can preserve restroom path clearance is not provided."
+  ],
+  "source_conflicts": [
+    {
+      "claim": "Venue notes confirm later access than the run-of-show assumes.",
+      "source_labels": ["VENUE_NOTES", "RUN_OF_SHOW_DRAFT"],
+      "domain": "timeline",
+      "human_review_need": "Human review required before treating access timing as settled.",
+      "resolution_status": "unresolved_for_human_review"
+    },
+    {
+      "claim": "Walkthrough notes and production notes disagree on outlet availability.",
+      "source_labels": ["WALKTHROUGH_NOTES", "PRODUCTION_NOTES"],
+      "domain": "production_power",
+      "human_review_need": "Production review required before power assumptions are used.",
+      "resolution_status": "unresolved_for_human_review"
+    }
+  ],
+  "timeline_consistency_check": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: reconcile access, sound, close, and load-out conflicts."]
+  },
+  "staffing_and_ownership_gaps": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: confirm door, cleanup, beverage support, and cable-safety owners."]
+  },
+  "venue_load_in_load_out_gaps": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: confirm access and exit constraints with the venue."]
+  },
+  "dry_bar_readiness_notes": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: confirm bar placement, quantities, support, and path clearance."]
+  },
+  "equipment_sound_production_gaps": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: confirm outlet count, cable route, and sound end time."]
+  },
+  "ticketing_door_guest_flow_gaps": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: confirm check-in coverage and arrival wave support."]
+  },
+  "accessibility_safety_compliance_flags": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: path width, restroom route, COI language, and safety sufficiency are unresolved."]
+  },
+  "budget_or_cost_impact_flags": {
+    "status": "substantive_findings",
+    "findings": ["Human review needed: cost exposure for staffing, rentals, equipment, and extension requests is unresolved."]
+  },
+  "embedded_internal_action_checklist": {
+    "status": "substantive_findings",
+    "findings": [
+      "Human review needed: identify which access source has approved priority.",
+      "Human review needed: confirm power and dry bar layout assumptions."
+    ]
+  },
+  "risk_notes": [
+    "Source conflicts are surfaced for human review and not resolved by this packet."
+  ],
+  "approval_needs": [
+    "Human approval required before schedule, venue, compliance, accessibility, safety, budget, public messaging, or source-of-truth decisions."
+  ],
+  "approval_gate_ids": [
+    "external_outreach",
+    "schedule_commitments",
+    "vendor_venue_commitments",
+    "public_messaging",
+    "payments_contracts",
+    "source_of_truth_updates",
+    "compliance_insurance_permit_issues",
+    "accessibility_safety_determinations",
+    "budget_impacting_commitment"
+  ],
+  "review_flags": [],
+  "recommended_next_human_review_step": "Operations should review the conflicting source labels with Governance before any schedule or venue commitment.",
+  "human_review_required_before_action": true,
+  "human_review_required_before": [
+    "schedule commitments",
+    "vendor or venue commitments",
+    "public messaging",
+    "source-of-truth updates",
+    "compliance, accessibility, safety, or budget decisions"
+  ],
+  "draft_warning": "Synthetic local test packet. Draft for human review only. This packet does not decide which source wins."
+}
