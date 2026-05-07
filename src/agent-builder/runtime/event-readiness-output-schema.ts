@@ -1,0 +1,89 @@
+import { z } from 'zod';
+
+const nonEmptyString = z.string().trim().min(1);
+const nonEmptyStringArray = z.array(nonEmptyString).min(1);
+
+export const eventReadinessApprovalGateIdSchema = z.enum([
+    'external_outreach',
+    'schedule_commitments',
+    'vendor_venue_commitments',
+    'public_messaging',
+    'payments_contracts',
+    'source_of_truth_updates',
+    'compliance_insurance_permit_issues',
+    'accessibility_safety_determinations',
+    'budget_impacting_commitment'
+]);
+
+export const eventReadinessLabelSchema = z.enum([
+    'on_track_with_review_needed',
+    'needs_attention',
+    'blocked_pending_human_resolution',
+    'insufficient_source_information'
+]);
+
+export const eventReadinessDomainSectionSchema = z.object({
+    status: nonEmptyString,
+    findings: nonEmptyStringArray
+});
+
+export const eventReadinessConfirmedFactSchema = z.object({
+    fact: nonEmptyString,
+    source_labels: z.array(nonEmptyString)
+});
+
+export const eventReadinessSourceConflictSchema = z.object({
+    claim: nonEmptyString,
+    source_labels: z.array(nonEmptyString),
+    domain: nonEmptyString,
+    human_review_need: nonEmptyString,
+    resolution_status: nonEmptyString,
+    selected_source_label: nonEmptyString.optional(),
+    unsafe_resolution_note: nonEmptyString.optional()
+});
+
+export const eventReadinessReviewFlagSchema = z.object({
+    id: nonEmptyString,
+    severity: nonEmptyString,
+    domain: nonEmptyString,
+    message: nonEmptyString,
+    source_labels: z.array(nonEmptyString),
+    approval_gate_ids: z.array(eventReadinessApprovalGateIdSchema),
+    recommended_human_review_role: nonEmptyString,
+    blocking: z.boolean()
+});
+
+export const eventReadinessRuntimeOutputPacketSchema = z.object({
+    review_date: nonEmptyString,
+    event_name: nonEmptyString,
+    source_packet_id_or_path: nonEmptyString,
+    packet_type: z.literal('event_readiness_review_packet'),
+    draft_status: z.literal('draft_for_human_review_only_not_operational'),
+    readiness_label: eventReadinessLabelSchema,
+    sources_used: nonEmptyStringArray,
+    confirmed_facts: z.array(eventReadinessConfirmedFactSchema).min(1),
+    assumptions: z.array(nonEmptyString),
+    unknowns: z.array(nonEmptyString),
+    source_conflicts: z.array(eventReadinessSourceConflictSchema),
+    timeline_consistency_check: eventReadinessDomainSectionSchema,
+    staffing_and_ownership_gaps: eventReadinessDomainSectionSchema,
+    venue_load_in_load_out_gaps: eventReadinessDomainSectionSchema,
+    dry_bar_readiness_notes: eventReadinessDomainSectionSchema,
+    equipment_sound_production_gaps: eventReadinessDomainSectionSchema,
+    ticketing_door_guest_flow_gaps: eventReadinessDomainSectionSchema,
+    accessibility_safety_compliance_flags: eventReadinessDomainSectionSchema,
+    budget_or_cost_impact_flags: eventReadinessDomainSectionSchema,
+    embedded_internal_action_checklist: eventReadinessDomainSectionSchema,
+    risk_notes: nonEmptyStringArray,
+    approval_needs: nonEmptyStringArray,
+    approval_gate_ids: z.array(eventReadinessApprovalGateIdSchema).min(1),
+    review_flags: z.array(eventReadinessReviewFlagSchema),
+    recommended_next_human_review_step: nonEmptyString,
+    human_review_required_before_action: z.literal(true),
+    human_review_required_before: nonEmptyStringArray,
+    draft_warning: nonEmptyString
+});
+
+export type EventReadinessApprovalGateId = z.infer<typeof eventReadinessApprovalGateIdSchema>;
+export type EventReadinessLabel = z.infer<typeof eventReadinessLabelSchema>;
+export type EventReadinessRuntimeOutputPacket = z.infer<typeof eventReadinessRuntimeOutputPacketSchema>;

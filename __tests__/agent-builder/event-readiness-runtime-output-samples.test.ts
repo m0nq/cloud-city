@@ -3,6 +3,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import { eventReadinessRuntimeOutputPacketSchema } from '../../src/agent-builder/runtime/event-readiness-output-schema';
+
 type ExpectedOutcome = 'PASS' | 'PARTIAL' | 'FAIL';
 type ExpectedReviewState = 'pass_for_human_review' | 'validation_needs_human_review' | 'validation_blocked';
 
@@ -153,6 +155,8 @@ const outcomeToReviewState: Record<ExpectedOutcome, ExpectedReviewState> = {
 const loadSamplePacket = (fileName: string): EventReadinessSamplePacket =>
     JSON.parse(fs.readFileSync(path.join(runtimeOutputDirectory, fileName), 'utf8')) as EventReadinessSamplePacket;
 
+const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+
 describe('Event Readiness future runtime-output sample packets', () => {
     it('defines the complete Slice 1 sample set', () => {
         for (const sample of sampleCases) {
@@ -224,6 +228,56 @@ describe('Event Readiness future runtime-output sample packets', () => {
             expect(rawPacket).not.toMatch(/\b\d{3}[-.]\d{3}[-.]\d{4}\b/);
             expect(rawPacket).not.toMatch(/\b(card|routing|account)\s+(number|details)\b/i);
         }
+    });
+
+    it('parses all Slice 1 samples through the Event Readiness runtime-output packet schema', () => {
+        for (const sample of sampleCases) {
+            const packet = loadSamplePacket(sample.fileName);
+
+            expect(eventReadinessRuntimeOutputPacketSchema.safeParse(packet).success).toBe(true);
+        }
+    });
+
+    it('rejects a malformed packet missing a required core field', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json')) as Record<string, unknown>;
+        delete packet.packet_type;
+
+        const result = eventReadinessRuntimeOutputPacketSchema.safeParse(packet);
+
+        expect(result.success).toBe(false);
+        expect(String(result.error)).toContain('packet_type');
+    });
+
+    it('rejects a malformed packet with an unsupported readiness label', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.readiness_label = 'ready_for_operations';
+
+        const result = eventReadinessRuntimeOutputPacketSchema.safeParse(packet);
+
+        expect(result.success).toBe(false);
+        expect(String(result.error)).toContain('readiness_label');
+    });
+
+    it('rejects a malformed packet with an invalid domain section shape', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json')) as Record<string, unknown>;
+        packet.timeline_consistency_check = {
+            status: 'substantive_findings'
+        };
+
+        const result = eventReadinessRuntimeOutputPacketSchema.safeParse(packet);
+
+        expect(result.success).toBe(false);
+        expect(String(result.error)).toContain('timeline_consistency_check');
+    });
+
+    it('rejects a malformed packet that drops the draft-only human-review posture', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.human_review_required_before_action = false;
+
+        const result = eventReadinessRuntimeOutputPacketSchema.safeParse(packet);
+
+        expect(result.success).toBe(false);
+        expect(String(result.error)).toContain('human_review_required_before_action');
     });
 
     for (const sample of sampleCases) {
