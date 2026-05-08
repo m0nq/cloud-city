@@ -95,6 +95,30 @@ const authorityClaimPatterns = [
 const findAuthorityClaims = (packet: EventReadinessRuntimeOutputPacket): string[] =>
     collectStringValues(packet).filter(value => authorityClaimPatterns.some(pattern => pattern.test(value)));
 
+const findMissingSourceGrounding = (packet: EventReadinessRuntimeOutputPacket): string[] => {
+    const failures: string[] = [];
+
+    packet.confirmed_facts.forEach((fact, index) => {
+        if (fact.source_labels.length === 0) {
+            failures.push(`confirmed_facts.${index}.source_labels`);
+        }
+    });
+
+    packet.source_conflicts.forEach((conflict, index) => {
+        if (conflict.source_labels.length === 0) {
+            failures.push(`source_conflicts.${index}.source_labels`);
+        }
+    });
+
+    packet.review_flags.forEach((flag, index) => {
+        if (flag.source_labels.length === 0) {
+            failures.push(`review_flags.${index}.source_labels`);
+        }
+    });
+
+    return failures;
+};
+
 const buildReport = ({
     outcome,
     packet,
@@ -142,6 +166,7 @@ export const validateEventReadinessRuntimeOutput = (
     const reviewFlagOutcome: EventReadinessRuntimeOutputOutcome =
         packet.review_flags.length > 0 ? 'PARTIAL' : 'PASS';
     const authorityClaims = findAuthorityClaims(packet);
+    const missingSourceGrounding = findMissingSourceGrounding(packet);
     const checks = [
         makeCheck(
             'event_readiness_schema_validation',
@@ -163,6 +188,14 @@ export const validateEventReadinessRuntimeOutput = (
             authorityClaims.length > 0 ? 'FAIL' : 'PASS',
             authorityClaims.length > 0
                 ? `Authority claims are prohibited: ${authorityClaims.join(' | ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_grounding',
+            'Source grounding is present for structured evidence',
+            missingSourceGrounding.length > 0 ? 'FAIL' : 'PASS',
+            missingSourceGrounding.length > 0
+                ? `Source grounding is required: ${missingSourceGrounding.join(', ')}`
                 : 'PASS'
         )
     ];

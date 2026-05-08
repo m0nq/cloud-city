@@ -358,7 +358,36 @@ describe('Event Readiness future runtime-output sample packets', () => {
         }
     });
 
-    for (const sample of sampleCases.filter(sample => sample.fileName !== 'authority_claim.invalid.synthetic.json')) {
+    it('fails packets with missing source grounding on structured evidence', () => {
+        const report = validateEventReadinessRuntimeOutput(loadSamplePacket('missing_sources.invalid.synthetic.json'));
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.reviewState).toBe('validation_blocked');
+        expect(report.promotableToHumanReviewDraft).toBe(false);
+        expect(report.approvedForOperationalUse).toBe(false);
+        expect(report.checks.find(check => check.id === 'source_grounding')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('Source grounding is required');
+        expect(report.errors.join('\n')).toContain('confirmed_facts.0.source_labels');
+    });
+
+    it('preserves valid and partial sample outcomes under source-grounding validation', () => {
+        const reviewableSamples = sampleCases.filter(sample => sample.expectedOutcome !== 'FAIL');
+
+        for (const sample of reviewableSamples) {
+            const report = validateEventReadinessRuntimeOutput(loadSamplePacket(sample.fileName));
+
+            expect(report.outcome).toBe(sample.expectedOutcome);
+            expect(report.reviewState).toBe(sample.expectedReviewState);
+            expect(report.checks.find(check => check.id === 'source_grounding')?.outcome).toBe('PASS');
+            expect(report.approvedForOperationalUse).toBe(false);
+        }
+    });
+
+    for (const sample of sampleCases.filter(
+        sample =>
+            sample.fileName !== 'authority_claim.invalid.synthetic.json' &&
+            sample.fileName !== 'missing_sources.invalid.synthetic.json'
+    )) {
         test.todo(`future validator returns ${sample.expectedOutcome} for ${sample.fileName}`);
     }
 });
