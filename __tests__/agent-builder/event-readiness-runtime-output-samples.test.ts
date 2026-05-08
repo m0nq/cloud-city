@@ -383,11 +383,27 @@ describe('Event Readiness future runtime-output sample packets', () => {
         }
     });
 
-    for (const sample of sampleCases.filter(
-        sample =>
-            sample.fileName !== 'authority_claim.invalid.synthetic.json' &&
-            sample.fileName !== 'missing_sources.invalid.synthetic.json'
-    )) {
-        test.todo(`future validator returns ${sample.expectedOutcome} for ${sample.fileName}`);
-    }
+    it('fails packets that resolve source conflicts instead of surfacing them', () => {
+        const report = validateEventReadinessRuntimeOutput(
+            loadSamplePacket('source_conflict_resolved.invalid.synthetic.json')
+        );
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.reviewState).toBe('validation_blocked');
+        expect(report.promotableToHumanReviewDraft).toBe(false);
+        expect(report.approvedForOperationalUse).toBe(false);
+        expect(report.checks.find(check => check.id === 'source_conflicts_not_resolved')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('Source conflicts must be surfaced, not resolved by the packet');
+        expect(report.errors.join('\n')).toContain('source_conflicts.0');
+    });
+
+    it('preserves valid unresolved source-conflict packets under source-conflict validation', () => {
+        const report = validateEventReadinessRuntimeOutput(loadSamplePacket('source_conflict.valid.synthetic.json'));
+
+        expect(report.outcome).toBe('PASS');
+        expect(report.reviewState).toBe('pass_for_human_review');
+        expect(report.checks.find(check => check.id === 'source_conflicts_not_resolved')?.outcome).toBe('PASS');
+        expect(report.approvedForOperationalUse).toBe(false);
+    });
+
 });

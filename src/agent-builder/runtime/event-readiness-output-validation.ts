@@ -119,6 +119,22 @@ const findMissingSourceGrounding = (packet: EventReadinessRuntimeOutputPacket): 
     return failures;
 };
 
+const findResolvedSourceConflicts = (packet: EventReadinessRuntimeOutputPacket): string[] => {
+    const failures: string[] = [];
+
+    packet.source_conflicts.forEach((conflict, index) => {
+        if (
+            conflict.resolution_status !== 'unresolved_for_human_review' ||
+            conflict.selected_source_label ||
+            conflict.unsafe_resolution_note
+        ) {
+            failures.push(`source_conflicts.${index}`);
+        }
+    });
+
+    return failures;
+};
+
 const buildReport = ({
     outcome,
     packet,
@@ -167,6 +183,7 @@ export const validateEventReadinessRuntimeOutput = (
         packet.review_flags.length > 0 ? 'PARTIAL' : 'PASS';
     const authorityClaims = findAuthorityClaims(packet);
     const missingSourceGrounding = findMissingSourceGrounding(packet);
+    const resolvedSourceConflicts = findResolvedSourceConflicts(packet);
     const checks = [
         makeCheck(
             'event_readiness_schema_validation',
@@ -196,6 +213,14 @@ export const validateEventReadinessRuntimeOutput = (
             missingSourceGrounding.length > 0 ? 'FAIL' : 'PASS',
             missingSourceGrounding.length > 0
                 ? `Source grounding is required: ${missingSourceGrounding.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_conflicts_not_resolved',
+            'Source conflicts are surfaced for human review',
+            resolvedSourceConflicts.length > 0 ? 'FAIL' : 'PASS',
+            resolvedSourceConflicts.length > 0
+                ? `Source conflicts must be surfaced, not resolved by the packet: ${resolvedSourceConflicts.join(', ')}`
                 : 'PASS'
         )
     ];
