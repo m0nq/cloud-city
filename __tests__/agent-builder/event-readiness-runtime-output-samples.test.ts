@@ -3,7 +3,10 @@
 import fs from 'fs';
 import path from 'path';
 
-import { eventReadinessRuntimeOutputPacketSchema } from '../../src/agent-builder/runtime/event-readiness-output-schema';
+import {
+    eventReadinessCanonicalSourceLabels,
+    eventReadinessRuntimeOutputPacketSchema
+} from '../../src/agent-builder/runtime/event-readiness-output-schema';
 import { validateEventReadinessRuntimeOutput } from '../../src/agent-builder/runtime/event-readiness-output-validation';
 
 type ExpectedOutcome = 'PASS' | 'PARTIAL' | 'FAIL';
@@ -132,20 +135,7 @@ const requiredDomainSections = [
     'embedded_internal_action_checklist'
 ] as const;
 
-const canonicalSourceLabels = new Set([
-    'EVENT_BRIEF',
-    'VENUE_NOTES',
-    'WALKTHROUGH_NOTES',
-    'RUN_OF_SHOW_DRAFT',
-    'STAFFING_DRAFT',
-    'DRY_BAR_NOTES',
-    'PRODUCTION_NOTES',
-    'DOOR_FLOW_NOTES',
-    'BUDGET_NOTES',
-    'COMPLIANCE_NOTES',
-    'ACCESSIBILITY_SAFETY_NOTES',
-    'OPEN_QUESTIONS'
-]);
+const canonicalSourceLabels = new Set<string>(eventReadinessCanonicalSourceLabels);
 
 const outcomeToReviewState: Record<ExpectedOutcome, ExpectedReviewState> = {
     PASS: 'pass_for_human_review',
@@ -379,6 +369,81 @@ describe('Event Readiness future runtime-output sample packets', () => {
             expect(report.outcome).toBe(sample.expectedOutcome);
             expect(report.reviewState).toBe(sample.expectedReviewState);
             expect(report.checks.find(check => check.id === 'source_grounding')?.outcome).toBe('PASS');
+            expect(report.approvedForOperationalUse).toBe(false);
+        }
+    });
+
+    it('fails packets with non-canonical labels in sources_used', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.sources_used.push('UNAPPROVED_SOURCE_LABEL');
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.reviewState).toBe('validation_blocked');
+        expect(report.promotableToHumanReviewDraft).toBe(false);
+        expect(report.approvedForOperationalUse).toBe(false);
+        expect(report.checks.find(check => check.id === 'canonical_source_labels')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('sources_used.12: UNAPPROVED_SOURCE_LABEL');
+    });
+
+    it('fails packets with non-canonical labels in confirmed fact source labels', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.confirmed_facts[0].source_labels.push('UNAPPROVED_SOURCE_LABEL');
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'canonical_source_labels')?.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_label_consistency')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('confirmed_facts.0.source_labels.2: UNAPPROVED_SOURCE_LABEL');
+    });
+
+    it('fails packets with non-canonical labels in source conflict source labels', () => {
+        const packet = clone(loadSamplePacket('source_conflict.valid.synthetic.json'));
+        packet.source_conflicts[0].source_labels.push('UNAPPROVED_SOURCE_LABEL');
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'canonical_source_labels')?.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_label_consistency')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('source_conflicts.0.source_labels.2: UNAPPROVED_SOURCE_LABEL');
+    });
+
+    it('fails packets with non-canonical labels in review flag source labels', () => {
+        const packet = clone(loadSamplePacket('sparse_but_reviewable.partial.synthetic.json'));
+        packet.review_flags[0].source_labels.push('UNAPPROVED_SOURCE_LABEL');
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'canonical_source_labels')?.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_label_consistency')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('review_flags.0.source_labels.2: UNAPPROVED_SOURCE_LABEL');
+    });
+
+    it('fails packets with nested source labels not declared in sources_used', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.sources_used = packet.sources_used.filter(label => label !== 'EVENT_BRIEF');
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'canonical_source_labels')?.outcome).toBe('PASS');
+        expect(report.checks.find(check => check.id === 'source_label_consistency')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('confirmed_facts.0.source_labels.0: EVENT_BRIEF');
+    });
+
+    it('preserves existing invalid sample outcomes under source-label validation', () => {
+        const invalidSamples = sampleCases.filter(sample => sample.expectedOutcome === 'FAIL');
+
+        for (const sample of invalidSamples) {
+            const report = validateEventReadinessRuntimeOutput(loadSamplePacket(sample.fileName));
+
+            expect(report.outcome).toBe('FAIL');
+            expect(report.reviewState).toBe('validation_blocked');
+            expect(report.promotableToHumanReviewDraft).toBe(false);
             expect(report.approvedForOperationalUse).toBe(false);
         }
     });

@@ -1,6 +1,7 @@
 import { ZodError } from 'zod';
 
 import {
+    eventReadinessCanonicalSourceLabels,
     eventReadinessRuntimeOutputPacketSchema,
     type EventReadinessRuntimeOutputPacket
 } from './event-readiness-output-schema';
@@ -119,6 +120,47 @@ const findMissingSourceGrounding = (packet: EventReadinessRuntimeOutputPacket): 
     return failures;
 };
 
+const eventReadinessCanonicalSourceLabelSet = new Set<string>(eventReadinessCanonicalSourceLabels);
+
+const collectSourceLabelReferences = (packet: EventReadinessRuntimeOutputPacket): Array<{
+    path: string;
+    label: string;
+}> => [
+    ...packet.sources_used.map((label, index) => ({ path: `sources_used.${index}`, label })),
+    ...packet.confirmed_facts.flatMap((fact, factIndex) =>
+        fact.source_labels.map((label, labelIndex) => ({
+            path: `confirmed_facts.${factIndex}.source_labels.${labelIndex}`,
+            label
+        }))
+    ),
+    ...packet.source_conflicts.flatMap((conflict, conflictIndex) =>
+        conflict.source_labels.map((label, labelIndex) => ({
+            path: `source_conflicts.${conflictIndex}.source_labels.${labelIndex}`,
+            label
+        }))
+    ),
+    ...packet.review_flags.flatMap((flag, flagIndex) =>
+        flag.source_labels.map((label, labelIndex) => ({
+            path: `review_flags.${flagIndex}.source_labels.${labelIndex}`,
+            label
+        }))
+    )
+];
+
+const findInvalidSourceLabels = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    collectSourceLabelReferences(packet)
+        .filter(reference => !eventReadinessCanonicalSourceLabelSet.has(reference.label))
+        .map(reference => `${reference.path}: ${reference.label}`);
+
+const findUndeclaredSourceLabelReferences = (packet: EventReadinessRuntimeOutputPacket): string[] => {
+    const declaredLabels = new Set(packet.sources_used);
+
+    return collectSourceLabelReferences(packet)
+        .filter(reference => !reference.path.startsWith('sources_used.'))
+        .filter(reference => !declaredLabels.has(reference.label))
+        .map(reference => `${reference.path}: ${reference.label}`);
+};
+
 const findResolvedSourceConflicts = (packet: EventReadinessRuntimeOutputPacket): string[] => {
     const failures: string[] = [];
 
@@ -183,6 +225,8 @@ export const validateEventReadinessRuntimeOutput = (
         packet.review_flags.length > 0 ? 'PARTIAL' : 'PASS';
     const authorityClaims = findAuthorityClaims(packet);
     const missingSourceGrounding = findMissingSourceGrounding(packet);
+    const invalidSourceLabels = findInvalidSourceLabels(packet);
+    const undeclaredSourceLabelReferences = findUndeclaredSourceLabelReferences(packet);
     const resolvedSourceConflicts = findResolvedSourceConflicts(packet);
     const checks = [
         makeCheck(
@@ -213,6 +257,22 @@ export const validateEventReadinessRuntimeOutput = (
             missingSourceGrounding.length > 0 ? 'FAIL' : 'PASS',
             missingSourceGrounding.length > 0
                 ? `Source grounding is required: ${missingSourceGrounding.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'canonical_source_labels',
+            'Source labels use the Event Readiness canonical vocabulary',
+            invalidSourceLabels.length > 0 ? 'FAIL' : 'PASS',
+            invalidSourceLabels.length > 0
+                ? `Source labels must be canonical Event Readiness labels: ${invalidSourceLabels.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_label_consistency',
+            'Nested source labels are declared in sources_used',
+            undeclaredSourceLabelReferences.length > 0 ? 'FAIL' : 'PASS',
+            undeclaredSourceLabelReferences.length > 0
+                ? `Nested source labels must be declared in sources_used: ${undeclaredSourceLabelReferences.join(', ')}`
                 : 'PASS'
         ),
         makeCheck(

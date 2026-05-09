@@ -3,6 +3,21 @@ import { z } from 'zod';
 const nonEmptyString = z.string().trim().min(1);
 const nonEmptyStringArray = z.array(nonEmptyString).min(1);
 
+export const eventReadinessCanonicalSourceLabels = [
+    'EVENT_BRIEF',
+    'VENUE_NOTES',
+    'WALKTHROUGH_NOTES',
+    'RUN_OF_SHOW_DRAFT',
+    'STAFFING_DRAFT',
+    'DRY_BAR_NOTES',
+    'PRODUCTION_NOTES',
+    'DOOR_FLOW_NOTES',
+    'BUDGET_NOTES',
+    'COMPLIANCE_NOTES',
+    'ACCESSIBILITY_SAFETY_NOTES',
+    'OPEN_QUESTIONS'
+] as const;
+
 export const eventReadinessApprovalGateIdSchema = z.enum([
     'external_outreach',
     'schedule_commitments',
@@ -86,4 +101,5 @@ export const eventReadinessRuntimeOutputPacketSchema = z.object({
 
 export type EventReadinessApprovalGateId = z.infer<typeof eventReadinessApprovalGateIdSchema>;
 export type EventReadinessLabel = z.infer<typeof eventReadinessLabelSchema>;
+export type EventReadinessSourceLabel = (typeof eventReadinessCanonicalSourceLabels)[number];
 export type EventReadinessRuntimeOutputPacket = z.infer<typeof eventReadinessRuntimeOutputPacketSchema>;
