@@ -1,10 +1,13 @@
 import { ZodError } from 'zod';
 
 import {
+    eventReadinessAllowedPreparedByRoles,
     eventReadinessAllowedRedactionStatuses,
+    eventReadinessAllowedSensitivityLevels,
     eventReadinessAllowedSourceDomainOmissionReasons,
     eventReadinessAllowedSourcePacketKinds,
     eventReadinessCanonicalSourceLabels,
+    eventReadinessPreparedAtDatePattern,
     eventReadinessRuntimeOutputPacketSchema,
     eventReadinessSyntheticSourcePacketIdPattern,
     type EventReadinessRuntimeOutputPacket
@@ -127,6 +130,8 @@ const findMissingSourceGrounding = (packet: EventReadinessRuntimeOutputPacket): 
 const eventReadinessCanonicalSourceLabelSet = new Set<string>(eventReadinessCanonicalSourceLabels);
 const eventReadinessAllowedSourcePacketKindSet = new Set<string>(eventReadinessAllowedSourcePacketKinds);
 const eventReadinessAllowedRedactionStatusSet = new Set<string>(eventReadinessAllowedRedactionStatuses);
+const eventReadinessAllowedPreparedByRoleSet = new Set<string>(eventReadinessAllowedPreparedByRoles);
+const eventReadinessAllowedSensitivityLevelSet = new Set<string>(eventReadinessAllowedSensitivityLevels);
 const eventReadinessAllowedOmissionReasonSet = new Set<string>(
     eventReadinessAllowedSourceDomainOmissionReasons
 );
@@ -259,6 +264,30 @@ const findSourcePacketIdPathSlugMismatches = (packet: EventReadinessRuntimeOutpu
             ({ index, parsedSourcePacketId, sourcePacketPathSlug }) =>
                 `source_packets.${index}.source_packet_id slug: ${parsedSourcePacketId?.slug} ` +
                 `must match source_packet_path slug: ${sourcePacketPathSlug}`
+        );
+
+const findInvalidPreparedAtDates = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({ sourcePacket, index }))
+        .filter(({ sourcePacket }) => !eventReadinessPreparedAtDatePattern.test(sourcePacket.prepared_at))
+        .map(({ sourcePacket, index }) => `source_packets.${index}.prepared_at: ${sourcePacket.prepared_at}`);
+
+const findInvalidPreparedByRoles = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({ sourcePacket, index }))
+        .filter(({ sourcePacket }) => !eventReadinessAllowedPreparedByRoleSet.has(sourcePacket.prepared_by_role))
+        .map(
+            ({ sourcePacket, index }) =>
+                `source_packets.${index}.prepared_by_role: ${sourcePacket.prepared_by_role}`
+        );
+
+const findInvalidSensitivityLevels = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({ sourcePacket, index }))
+        .filter(({ sourcePacket }) => !eventReadinessAllowedSensitivityLevelSet.has(sourcePacket.sensitivity_level))
+        .map(
+            ({ sourcePacket, index }) =>
+                `source_packets.${index}.sensitivity_level: ${sourcePacket.sensitivity_level}`
         );
 
 const findNonNullContentHashes = (packet: EventReadinessRuntimeOutputPacket): string[] =>
@@ -422,6 +451,9 @@ export const validateEventReadinessRuntimeOutput = (
     const invalidSourcePacketIds = findInvalidSourcePacketIds(packet);
     const sourcePacketIdVersionMismatches = findSourcePacketIdVersionMismatches(packet);
     const sourcePacketIdPathSlugMismatches = findSourcePacketIdPathSlugMismatches(packet);
+    const invalidPreparedAtDates = findInvalidPreparedAtDates(packet);
+    const invalidPreparedByRoles = findInvalidPreparedByRoles(packet);
+    const invalidSensitivityLevels = findInvalidSensitivityLevels(packet);
     const nonNullContentHashes = findNonNullContentHashes(packet);
     const invalidSourcePacketPaths = findInvalidSourcePacketPaths(packet);
     const sourcePacketPathMismatches = findSourcePacketPathMismatches(packet);
@@ -432,6 +464,8 @@ export const validateEventReadinessRuntimeOutput = (
     const resolvedSourceConflicts = findResolvedSourceConflicts(packet);
     const allowedSourcePacketKinds = eventReadinessAllowedSourcePacketKinds.join(', ');
     const allowedRedactionStatuses = eventReadinessAllowedRedactionStatuses.join(', ');
+    const allowedPreparedByRoles = eventReadinessAllowedPreparedByRoles.join(', ');
+    const allowedSensitivityLevels = eventReadinessAllowedSensitivityLevels.join(', ');
     const sourcePacketIdFormatDetails =
         'source_packet_id must match event_readiness.source_packet.<slug>.synthetic.v<major>.<minor>';
     const checks = [
@@ -527,6 +561,30 @@ export const validateEventReadinessRuntimeOutput = (
             sourcePacketIdPathSlugMismatches.length > 0 ? 'FAIL' : 'PASS',
             sourcePacketIdPathSlugMismatches.length > 0
                 ? `source_packet_id slug must match source_packet_path slug: ${sourcePacketIdPathSlugMismatches.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_packet_prepared_at_format',
+            'Source packet prepared_at uses YYYY-MM-DD preparation date metadata',
+            invalidPreparedAtDates.length > 0 ? 'FAIL' : 'PASS',
+            invalidPreparedAtDates.length > 0
+                ? `prepared_at must use YYYY-MM-DD: ${invalidPreparedAtDates.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_packet_prepared_by_role_allowed',
+            'Source packet prepared_by_role is allowed for L1 fixture metadata',
+            invalidPreparedByRoles.length > 0 ? 'FAIL' : 'PASS',
+            invalidPreparedByRoles.length > 0
+                ? `prepared_by_role must be one of ${allowedPreparedByRoles}: ${invalidPreparedByRoles.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_packet_sensitivity_level_allowed',
+            'Source packet sensitivity_level is allowed for L1 synthetic fixtures',
+            invalidSensitivityLevels.length > 0 ? 'FAIL' : 'PASS',
+            invalidSensitivityLevels.length > 0
+                ? `sensitivity_level must be one of ${allowedSensitivityLevels}: ${invalidSensitivityLevels.join(', ')}`
                 : 'PASS'
         ),
         makeCheck(

@@ -29,6 +29,12 @@ export const eventReadinessAllowedSourceDomainOmissionReasons = [
     'not_applicable_to_packet'
 ] as const;
 
+export const eventReadinessAllowedPreparedByRoles = ['Agent Systems Architect'] as const;
+
+export const eventReadinessAllowedSensitivityLevels = ['internal_confidential'] as const;
+
+export const eventReadinessPreparedAtDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+
 export const eventReadinessSyntheticSourcePacketIdPattern =
     /^event_readiness\.source_packet\.([a-z0-9]+(?:_[a-z0-9]+)*)\.synthetic\.(v\d+\.\d+)$/;
 
@@ -140,6 +146,8 @@ export type EventReadinessSourcePacketKind = (typeof eventReadinessAllowedSource
 export type EventReadinessRedactionStatus = (typeof eventReadinessAllowedRedactionStatuses)[number];
 export type EventReadinessSourceDomainOmissionReason =
     (typeof eventReadinessAllowedSourceDomainOmissionReasons)[number];
+export type EventReadinessPreparedByRole = (typeof eventReadinessAllowedPreparedByRoles)[number];
+export type EventReadinessSensitivityLevel = (typeof eventReadinessAllowedSensitivityLevels)[number];
 export type EventReadinessSourceDomainOmission = z.infer<typeof eventReadinessSourceDomainOmissionSchema>;
 export type EventReadinessSourcePacketReference = z.infer<typeof eventReadinessSourcePacketReferenceSchema>;
 export type EventReadinessRuntimeOutputPacket = z.infer<typeof eventReadinessRuntimeOutputPacketSchema>;

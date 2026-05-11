@@ -582,6 +582,43 @@ describe('Event Readiness future runtime-output sample packets', () => {
         expect(report.errors.join('\n')).toContain('source_packet_id version: v0.1');
     });
 
+    it('fails packets whose source packet prepared_at date is not YYYY-MM-DD', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].prepared_at = 'May 9, 2026';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_packet_prepared_at_format')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('source_packets.0.prepared_at: May 9, 2026');
+    });
+
+    it('fails packets whose source packet prepared_by_role is not allowed for L1 fixtures', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].prepared_by_role = 'Automation Runtime';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_packet_prepared_by_role_allowed')?.outcome).toBe(
+            'FAIL'
+        );
+        expect(report.errors.join('\n')).toContain('source_packets.0.prepared_by_role: Automation Runtime');
+    });
+
+    it('fails packets whose source packet sensitivity_level is not allowed for L1 synthetic fixtures', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].sensitivity_level = 'public';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_packet_sensitivity_level_allowed')?.outcome).toBe(
+            'FAIL'
+        );
+        expect(report.errors.join('\n')).toContain('source_packets.0.sensitivity_level: public');
+    });
+
     it('does not read referenced YAML source packets during declared provenance validation', () => {
         const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
         const readFileSpy = jest.spyOn(fs, 'readFileSync');
