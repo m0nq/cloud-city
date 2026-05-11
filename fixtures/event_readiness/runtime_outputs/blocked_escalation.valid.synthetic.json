@@ -6,6 +6,34 @@
   "review_date": "2026-05-07",
   "event_name": "Cloud City Twilight Gallery Session",
   "source_packet_id_or_path": "fixtures/event_readiness/blocked_escalation.synthetic.yaml",
+  "source_packets": [
+    {
+      "source_packet_id": "event_readiness.source_packet.blocked_escalation.synthetic.v0.1",
+      "source_packet_version": "v0.1",
+      "source_packet_path": "fixtures/event_readiness/blocked_escalation.synthetic.yaml",
+      "source_packet_kind": "synthetic_fixture",
+      "prepared_by_role": "Agent Systems Architect",
+      "prepared_at": "2026-05-09",
+      "sensitivity_level": "internal_confidential",
+      "redaction_status": "synthetic_no_real_data",
+      "source_labels_present": [
+        "EVENT_BRIEF",
+        "VENUE_NOTES",
+        "WALKTHROUGH_NOTES",
+        "RUN_OF_SHOW_DRAFT",
+        "STAFFING_DRAFT",
+        "DRY_BAR_NOTES",
+        "PRODUCTION_NOTES",
+        "DOOR_FLOW_NOTES",
+        "BUDGET_NOTES",
+        "COMPLIANCE_NOTES",
+        "ACCESSIBILITY_SAFETY_NOTES",
+        "OPEN_QUESTIONS"
+      ],
+      "source_domains_omitted": [],
+      "content_hash": null
+    }
+  ],
   "packet_type": "event_readiness_review_packet",
   "draft_status": "draft_for_human_review_only_not_operational",
   "readiness_label": "blocked_pending_human_resolution",
@@ -26,11 +54,17 @@
   "confirmed_facts": [
     {
       "fact": "The synthetic event window is listed as 4:00 PM-10:00 PM.",
-      "source_labels": ["EVENT_BRIEF", "VENUE_NOTES"]
+      "source_labels": [
+        "EVENT_BRIEF",
+        "VENUE_NOTES"
+      ]
     },
     {
       "fact": "The run-of-show assumes setup activities before the confirmed venue access window.",
-      "source_labels": ["RUN_OF_SHOW_DRAFT", "VENUE_NOTES"]
+      "source_labels": [
+        "RUN_OF_SHOW_DRAFT",
+        "VENUE_NOTES"
+      ]
     }
   ],
   "assumptions": [
@@ -44,14 +78,20 @@
   "source_conflicts": [
     {
       "claim": "Run-of-show assumes early access while venue notes confirm later access.",
-      "source_labels": ["RUN_OF_SHOW_DRAFT", "VENUE_NOTES"],
+      "source_labels": [
+        "RUN_OF_SHOW_DRAFT",
+        "VENUE_NOTES"
+      ],
       "domain": "timeline",
       "human_review_need": "Operations and founder review required before treating setup timing as settled.",
       "resolution_status": "unresolved_for_human_review"
     },
     {
       "claim": "Run-of-show cleanup extends past the venue-requested final load-out time.",
-      "source_labels": ["RUN_OF_SHOW_DRAFT", "VENUE_NOTES"],
+      "source_labels": [
+        "RUN_OF_SHOW_DRAFT",
+        "VENUE_NOTES"
+      ],
       "domain": "venue_load_out",
       "human_review_need": "Venue extension and staffing review required.",
       "resolution_status": "unresolved_for_human_review"

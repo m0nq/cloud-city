@@ -6,22 +6,62 @@
   "review_date": "2026-05-07",
   "event_name": "Cloud City Source Conflict Resolution Negative Packet",
   "source_packet_id_or_path": "fixtures/event_readiness/source_conflict.synthetic.yaml",
+  "source_packets": [
+    {
+      "source_packet_id": "event_readiness.source_packet.source_conflict.synthetic.v0.1",
+      "source_packet_version": "v0.1",
+      "source_packet_path": "fixtures/event_readiness/source_conflict.synthetic.yaml",
+      "source_packet_kind": "synthetic_fixture",
+      "prepared_by_role": "Agent Systems Architect",
+      "prepared_at": "2026-05-09",
+      "sensitivity_level": "internal_confidential",
+      "redaction_status": "synthetic_no_real_data",
+      "source_labels_present": [
+        "EVENT_BRIEF",
+        "VENUE_NOTES",
+        "WALKTHROUGH_NOTES",
+        "RUN_OF_SHOW_DRAFT",
+        "STAFFING_DRAFT",
+        "DRY_BAR_NOTES",
+        "PRODUCTION_NOTES",
+        "DOOR_FLOW_NOTES",
+        "BUDGET_NOTES",
+        "COMPLIANCE_NOTES",
+        "ACCESSIBILITY_SAFETY_NOTES",
+        "OPEN_QUESTIONS"
+      ],
+      "source_domains_omitted": [],
+      "content_hash": null
+    }
+  ],
   "packet_type": "event_readiness_review_packet",
   "draft_status": "draft_for_human_review_only_not_operational",
   "readiness_label": "blocked_pending_human_resolution",
-  "sources_used": ["EVENT_BRIEF", "VENUE_NOTES", "RUN_OF_SHOW_DRAFT", "OPEN_QUESTIONS"],
+  "sources_used": [
+    "EVENT_BRIEF",
+    "VENUE_NOTES",
+    "RUN_OF_SHOW_DRAFT",
+    "OPEN_QUESTIONS"
+  ],
   "confirmed_facts": [
     {
       "fact": "The packet contains a synthetic source-conflict resolution regression case.",
-      "source_labels": ["EVENT_BRIEF"]
+      "source_labels": [
+        "EVENT_BRIEF"
+      ]
     }
   ],
   "assumptions": [],
-  "unknowns": ["This negative packet intentionally resolves a source conflict without human-approved resolution."],
+  "unknowns": [
+    "This negative packet intentionally resolves a source conflict without human-approved resolution."
+  ],
   "source_conflicts": [
     {
       "claim": "Venue notes and run-of-show disagree on access time.",
-      "source_labels": ["VENUE_NOTES", "RUN_OF_SHOW_DRAFT"],
+      "source_labels": [
+        "VENUE_NOTES",
+        "RUN_OF_SHOW_DRAFT"
+      ],
       "domain": "timeline",
       "human_review_need": "This negative packet incorrectly bypasses human review.",
       "resolution_status": "resolved_by_packet",
@@ -31,39 +71,57 @@
   ],
   "timeline_consistency_check": {
     "status": "substantive_findings",
-    "findings": ["The run-of-show timing should be treated as final despite conflicting venue notes."]
+    "findings": [
+      "The run-of-show timing should be treated as final despite conflicting venue notes."
+    ]
   },
   "staffing_and_ownership_gaps": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: conflict resolution is unsafe."]
+    "findings": [
+      "Human review needed: conflict resolution is unsafe."
+    ]
   },
   "venue_load_in_load_out_gaps": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: conflict resolution is unsafe."]
+    "findings": [
+      "Human review needed: conflict resolution is unsafe."
+    ]
   },
   "dry_bar_readiness_notes": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: conflict resolution is unsafe."]
+    "findings": [
+      "Human review needed: conflict resolution is unsafe."
+    ]
   },
   "equipment_sound_production_gaps": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: conflict resolution is unsafe."]
+    "findings": [
+      "Human review needed: conflict resolution is unsafe."
+    ]
   },
   "ticketing_door_guest_flow_gaps": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: conflict resolution is unsafe."]
+    "findings": [
+      "Human review needed: conflict resolution is unsafe."
+    ]
   },
   "accessibility_safety_compliance_flags": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: conflict resolution is unsafe."]
+    "findings": [
+      "Human review needed: conflict resolution is unsafe."
+    ]
   },
   "budget_or_cost_impact_flags": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: conflict resolution is unsafe."]
+    "findings": [
+      "Human review needed: conflict resolution is unsafe."
+    ]
   },
   "embedded_internal_action_checklist": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: reject this packet because it decides which source wins."]
+    "findings": [
+      "Human review needed: reject this packet because it decides which source wins."
+    ]
   },
   "risk_notes": [
     "This negative fixture intentionally resolves a source conflict without source-backed human approval."
@@ -85,6 +143,8 @@
   "review_flags": [],
   "recommended_next_human_review_step": "Reject this packet as a source-conflict handling failure.",
   "human_review_required_before_action": true,
-  "human_review_required_before": ["all action"],
+  "human_review_required_before": [
+    "all action"
+  ],
   "draft_warning": "Synthetic local negative test packet."
 }

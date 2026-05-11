@@ -6,10 +6,41 @@
   "review_date": "2026-05-07",
   "event_name": "Cloud City Missing Sources Negative Packet",
   "source_packet_id_or_path": "fixtures/event_readiness/blocked_escalation.synthetic.yaml",
+  "source_packets": [
+    {
+      "source_packet_id": "event_readiness.source_packet.blocked_escalation.synthetic.v0.1",
+      "source_packet_version": "v0.1",
+      "source_packet_path": "fixtures/event_readiness/blocked_escalation.synthetic.yaml",
+      "source_packet_kind": "synthetic_fixture",
+      "prepared_by_role": "Agent Systems Architect",
+      "prepared_at": "2026-05-09",
+      "sensitivity_level": "internal_confidential",
+      "redaction_status": "synthetic_no_real_data",
+      "source_labels_present": [
+        "EVENT_BRIEF",
+        "VENUE_NOTES",
+        "WALKTHROUGH_NOTES",
+        "RUN_OF_SHOW_DRAFT",
+        "STAFFING_DRAFT",
+        "DRY_BAR_NOTES",
+        "PRODUCTION_NOTES",
+        "DOOR_FLOW_NOTES",
+        "BUDGET_NOTES",
+        "COMPLIANCE_NOTES",
+        "ACCESSIBILITY_SAFETY_NOTES",
+        "OPEN_QUESTIONS"
+      ],
+      "source_domains_omitted": [],
+      "content_hash": null
+    }
+  ],
   "packet_type": "event_readiness_review_packet",
   "draft_status": "draft_for_human_review_only_not_operational",
   "readiness_label": "blocked_pending_human_resolution",
-  "sources_used": ["EVENT_BRIEF", "UNAPPROVED_SOURCE_LABEL"],
+  "sources_used": [
+    "EVENT_BRIEF",
+    "UNAPPROVED_SOURCE_LABEL"
+  ],
   "confirmed_facts": [
     {
       "fact": "This fact intentionally lacks canonical source labels for validator tests.",
@@ -17,43 +48,63 @@
     }
   ],
   "assumptions": [],
-  "unknowns": ["This negative packet intentionally violates source-grounding rules."],
+  "unknowns": [
+    "This negative packet intentionally violates source-grounding rules."
+  ],
   "source_conflicts": [],
   "timeline_consistency_check": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: source labels are intentionally invalid in this negative packet."]
+    "findings": [
+      "Human review needed: source labels are intentionally invalid in this negative packet."
+    ]
   },
   "staffing_and_ownership_gaps": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: source grounding failed."]
+    "findings": [
+      "Human review needed: source grounding failed."
+    ]
   },
   "venue_load_in_load_out_gaps": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: source grounding failed."]
+    "findings": [
+      "Human review needed: source grounding failed."
+    ]
   },
   "dry_bar_readiness_notes": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: source grounding failed."]
+    "findings": [
+      "Human review needed: source grounding failed."
+    ]
   },
   "equipment_sound_production_gaps": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: source grounding failed."]
+    "findings": [
+      "Human review needed: source grounding failed."
+    ]
   },
   "ticketing_door_guest_flow_gaps": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: source grounding failed."]
+    "findings": [
+      "Human review needed: source grounding failed."
+    ]
   },
   "accessibility_safety_compliance_flags": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: source grounding failed."]
+    "findings": [
+      "Human review needed: source grounding failed."
+    ]
   },
   "budget_or_cost_impact_flags": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: source grounding failed."]
+    "findings": [
+      "Human review needed: source grounding failed."
+    ]
   },
   "embedded_internal_action_checklist": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: reject this packet until source labels are repaired."]
+    "findings": [
+      "Human review needed: reject this packet until source labels are repaired."
+    ]
   },
   "risk_notes": [
     "This negative fixture intentionally includes missing and invalid source labels."
@@ -75,6 +126,8 @@
   "review_flags": [],
   "recommended_next_human_review_step": "Reject this packet as a source-grounding failure.",
   "human_review_required_before_action": true,
-  "human_review_required_before": ["all action"],
+  "human_review_required_before": [
+    "all action"
+  ],
   "draft_warning": "Synthetic local negative test packet."
 }

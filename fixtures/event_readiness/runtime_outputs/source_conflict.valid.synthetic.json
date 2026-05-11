@@ -6,6 +6,34 @@
   "review_date": "2026-05-07",
   "event_name": "Cloud City Signal Loft Source Conflict Review",
   "source_packet_id_or_path": "fixtures/event_readiness/source_conflict.synthetic.yaml",
+  "source_packets": [
+    {
+      "source_packet_id": "event_readiness.source_packet.source_conflict.synthetic.v0.1",
+      "source_packet_version": "v0.1",
+      "source_packet_path": "fixtures/event_readiness/source_conflict.synthetic.yaml",
+      "source_packet_kind": "synthetic_fixture",
+      "prepared_by_role": "Agent Systems Architect",
+      "prepared_at": "2026-05-09",
+      "sensitivity_level": "internal_confidential",
+      "redaction_status": "synthetic_no_real_data",
+      "source_labels_present": [
+        "EVENT_BRIEF",
+        "VENUE_NOTES",
+        "WALKTHROUGH_NOTES",
+        "RUN_OF_SHOW_DRAFT",
+        "STAFFING_DRAFT",
+        "DRY_BAR_NOTES",
+        "PRODUCTION_NOTES",
+        "DOOR_FLOW_NOTES",
+        "BUDGET_NOTES",
+        "COMPLIANCE_NOTES",
+        "ACCESSIBILITY_SAFETY_NOTES",
+        "OPEN_QUESTIONS"
+      ],
+      "source_domains_omitted": [],
+      "content_hash": null
+    }
+  ],
   "packet_type": "event_readiness_review_packet",
   "draft_status": "draft_for_human_review_only_not_operational",
   "readiness_label": "blocked_pending_human_resolution",
@@ -26,11 +54,17 @@
   "confirmed_facts": [
     {
       "fact": "Venue notes and run-of-show contain different access timing assumptions.",
-      "source_labels": ["VENUE_NOTES", "RUN_OF_SHOW_DRAFT"]
+      "source_labels": [
+        "VENUE_NOTES",
+        "RUN_OF_SHOW_DRAFT"
+      ]
     },
     {
       "fact": "Walkthrough and production notes do not agree on power availability.",
-      "source_labels": ["WALKTHROUGH_NOTES", "PRODUCTION_NOTES"]
+      "source_labels": [
+        "WALKTHROUGH_NOTES",
+        "PRODUCTION_NOTES"
+      ]
     }
   ],
   "assumptions": [],
@@ -41,14 +75,20 @@
   "source_conflicts": [
     {
       "claim": "Venue notes confirm later access than the run-of-show assumes.",
-      "source_labels": ["VENUE_NOTES", "RUN_OF_SHOW_DRAFT"],
+      "source_labels": [
+        "VENUE_NOTES",
+        "RUN_OF_SHOW_DRAFT"
+      ],
       "domain": "timeline",
       "human_review_need": "Human review required before treating access timing as settled.",
       "resolution_status": "unresolved_for_human_review"
     },
     {
       "claim": "Walkthrough notes and production notes disagree on outlet availability.",
-      "source_labels": ["WALKTHROUGH_NOTES", "PRODUCTION_NOTES"],
+      "source_labels": [
+        "WALKTHROUGH_NOTES",
+        "PRODUCTION_NOTES"
+      ],
       "domain": "production_power",
       "human_review_need": "Production review required before power assumptions are used.",
       "resolution_status": "unresolved_for_human_review"
@@ -56,35 +96,51 @@
   ],
   "timeline_consistency_check": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: reconcile access, sound, close, and load-out conflicts."]
+    "findings": [
+      "Human review needed: reconcile access, sound, close, and load-out conflicts."
+    ]
   },
   "staffing_and_ownership_gaps": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: confirm door, cleanup, beverage support, and cable-safety owners."]
+    "findings": [
+      "Human review needed: confirm door, cleanup, beverage support, and cable-safety owners."
+    ]
   },
   "venue_load_in_load_out_gaps": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: confirm access and exit constraints with the venue."]
+    "findings": [
+      "Human review needed: confirm access and exit constraints with the venue."
+    ]
   },
   "dry_bar_readiness_notes": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: confirm bar placement, quantities, support, and path clearance."]
+    "findings": [
+      "Human review needed: confirm bar placement, quantities, support, and path clearance."
+    ]
   },
   "equipment_sound_production_gaps": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: confirm outlet count, cable route, and sound end time."]
+    "findings": [
+      "Human review needed: confirm outlet count, cable route, and sound end time."
+    ]
   },
   "ticketing_door_guest_flow_gaps": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: confirm check-in coverage and arrival wave support."]
+    "findings": [
+      "Human review needed: confirm check-in coverage and arrival wave support."
+    ]
   },
   "accessibility_safety_compliance_flags": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: path width, restroom route, COI language, and safety sufficiency are unresolved."]
+    "findings": [
+      "Human review needed: path width, restroom route, COI language, and safety sufficiency are unresolved."
+    ]
   },
   "budget_or_cost_impact_flags": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: cost exposure for staffing, rentals, equipment, and extension requests is unresolved."]
+    "findings": [
+      "Human review needed: cost exposure for staffing, rentals, equipment, and extension requests is unresolved."
+    ]
   },
   "embedded_internal_action_checklist": {
     "status": "substantive_findings",

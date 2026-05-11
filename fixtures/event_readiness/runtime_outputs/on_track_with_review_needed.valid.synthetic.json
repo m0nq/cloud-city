@@ -6,6 +6,34 @@
   "review_date": "2026-05-07",
   "event_name": "Cloud City Coherent Review Packet",
   "source_packet_id_or_path": "fixtures/event_readiness/on_track_with_review_needed.synthetic.yaml",
+  "source_packets": [
+    {
+      "source_packet_id": "event_readiness.source_packet.on_track_with_review_needed.synthetic.v0.1",
+      "source_packet_version": "v0.1",
+      "source_packet_path": "fixtures/event_readiness/on_track_with_review_needed.synthetic.yaml",
+      "source_packet_kind": "synthetic_fixture",
+      "prepared_by_role": "Agent Systems Architect",
+      "prepared_at": "2026-05-09",
+      "sensitivity_level": "internal_confidential",
+      "redaction_status": "synthetic_no_real_data",
+      "source_labels_present": [
+        "EVENT_BRIEF",
+        "VENUE_NOTES",
+        "WALKTHROUGH_NOTES",
+        "RUN_OF_SHOW_DRAFT",
+        "STAFFING_DRAFT",
+        "DRY_BAR_NOTES",
+        "PRODUCTION_NOTES",
+        "DOOR_FLOW_NOTES",
+        "BUDGET_NOTES",
+        "COMPLIANCE_NOTES",
+        "ACCESSIBILITY_SAFETY_NOTES",
+        "OPEN_QUESTIONS"
+      ],
+      "source_domains_omitted": [],
+      "content_hash": null
+    }
+  ],
   "packet_type": "event_readiness_review_packet",
   "draft_status": "draft_for_human_review_only_not_operational",
   "readiness_label": "on_track_with_review_needed",
@@ -26,11 +54,18 @@
   "confirmed_facts": [
     {
       "fact": "The synthetic packet provides complete source domains and an internally coherent event window.",
-      "source_labels": ["EVENT_BRIEF", "VENUE_NOTES", "RUN_OF_SHOW_DRAFT"]
+      "source_labels": [
+        "EVENT_BRIEF",
+        "VENUE_NOTES",
+        "RUN_OF_SHOW_DRAFT"
+      ]
     },
     {
       "fact": "Final public copy review remains a human approval item.",
-      "source_labels": ["RUN_OF_SHOW_DRAFT", "DOOR_FLOW_NOTES"]
+      "source_labels": [
+        "RUN_OF_SHOW_DRAFT",
+        "DOOR_FLOW_NOTES"
+      ]
     }
   ],
   "assumptions": [],
@@ -40,35 +75,51 @@
   "source_conflicts": [],
   "timeline_consistency_check": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: final timing remains a draft reference and not an approved schedule commitment."]
+    "findings": [
+      "Human review needed: final timing remains a draft reference and not an approved schedule commitment."
+    ]
   },
   "staffing_and_ownership_gaps": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: confirm final day-of contact list and floater decision."]
+    "findings": [
+      "Human review needed: confirm final day-of contact list and floater decision."
+    ]
   },
   "venue_load_in_load_out_gaps": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: confirm final cleanup owner before event operations."]
+    "findings": [
+      "Human review needed: confirm final cleanup owner before event operations."
+    ]
   },
   "dry_bar_readiness_notes": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: confirm final quantities and ice pickup owner."]
+    "findings": [
+      "Human review needed: confirm final quantities and ice pickup owner."
+    ]
   },
   "equipment_sound_production_gaps": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: production support should confirm cable tape check."]
+    "findings": [
+      "Human review needed: production support should confirm cable tape check."
+    ]
   },
   "ticketing_door_guest_flow_gaps": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: founder review required before public-facing copy is shared."]
+    "findings": [
+      "Human review needed: founder review required before public-facing copy is shared."
+    ]
   },
   "accessibility_safety_compliance_flags": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: final restroom route and furniture placement review remain human responsibilities."]
+    "findings": [
+      "Human review needed: final restroom route and furniture placement review remain human responsibilities."
+    ]
   },
   "budget_or_cost_impact_flags": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: no budget-impacting commitment is approved by this packet."]
+    "findings": [
+      "Human review needed: no budget-impacting commitment is approved by this packet."
+    ]
   },
   "embedded_internal_action_checklist": {
     "status": "substantive_findings",

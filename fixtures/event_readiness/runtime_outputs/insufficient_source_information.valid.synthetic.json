@@ -6,14 +6,79 @@
   "review_date": "2026-05-07",
   "event_name": "Cloud City Source Gap Review",
   "source_packet_id_or_path": "fixtures/event_readiness/insufficient_source_information.synthetic.yaml",
+  "source_packets": [
+    {
+      "source_packet_id": "event_readiness.source_packet.insufficient_source_information.synthetic.v0.1",
+      "source_packet_version": "v0.1",
+      "source_packet_path": "fixtures/event_readiness/insufficient_source_information.synthetic.yaml",
+      "source_packet_kind": "synthetic_fixture",
+      "prepared_by_role": "Agent Systems Architect",
+      "prepared_at": "2026-05-09",
+      "sensitivity_level": "internal_confidential",
+      "redaction_status": "synthetic_no_real_data",
+      "source_labels_present": [
+        "EVENT_BRIEF",
+        "OPEN_QUESTIONS"
+      ],
+      "source_domains_omitted": [
+        {
+          "source_label": "VENUE_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "WALKTHROUGH_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "RUN_OF_SHOW_DRAFT",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "STAFFING_DRAFT",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "DRY_BAR_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "PRODUCTION_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "DOOR_FLOW_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "BUDGET_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "COMPLIANCE_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "ACCESSIBILITY_SAFETY_NOTES",
+          "reason": "not_provided_in_sources"
+        }
+      ],
+      "content_hash": null
+    }
+  ],
   "packet_type": "event_readiness_review_packet",
   "draft_status": "draft_for_human_review_only_not_operational",
   "readiness_label": "insufficient_source_information",
-  "sources_used": ["EVENT_BRIEF", "OPEN_QUESTIONS"],
+  "sources_used": [
+    "EVENT_BRIEF",
+    "OPEN_QUESTIONS"
+  ],
   "confirmed_facts": [
     {
       "fact": "Only an event brief and open questions are present in the synthetic source packet.",
-      "source_labels": ["EVENT_BRIEF", "OPEN_QUESTIONS"]
+      "source_labels": [
+        "EVENT_BRIEF",
+        "OPEN_QUESTIONS"
+      ]
     }
   ],
   "assumptions": [],
@@ -24,39 +89,57 @@
   "source_conflicts": [],
   "timeline_consistency_check": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: provide venue and run-of-show source material before timeline review."]
+    "findings": [
+      "Human review needed: provide venue and run-of-show source material before timeline review."
+    ]
   },
   "staffing_and_ownership_gaps": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: provide staffing source material before readiness review."]
+    "findings": [
+      "Human review needed: provide staffing source material before readiness review."
+    ]
   },
   "venue_load_in_load_out_gaps": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: provide venue access and load-out source material."]
+    "findings": [
+      "Human review needed: provide venue access and load-out source material."
+    ]
   },
   "dry_bar_readiness_notes": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: provide dry bar source material or explicit out-of-scope status."]
+    "findings": [
+      "Human review needed: provide dry bar source material or explicit out-of-scope status."
+    ]
   },
   "equipment_sound_production_gaps": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: provide production source material."]
+    "findings": [
+      "Human review needed: provide production source material."
+    ]
   },
   "ticketing_door_guest_flow_gaps": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: provide ticketing and door-flow source material."]
+    "findings": [
+      "Human review needed: provide ticketing and door-flow source material."
+    ]
   },
   "accessibility_safety_compliance_flags": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: provide accessibility, safety, compliance, COI, and permit source material."]
+    "findings": [
+      "Human review needed: provide accessibility, safety, compliance, COI, and permit source material."
+    ]
   },
   "budget_or_cost_impact_flags": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: provide budget source material before cost-impact review."]
+    "findings": [
+      "Human review needed: provide budget source material before cost-impact review."
+    ]
   },
   "embedded_internal_action_checklist": {
     "status": "needs_human_review",
-    "findings": ["Human review needed: assemble a bounded source packet before readiness review continues."]
+    "findings": [
+      "Human review needed: assemble a bounded source packet before readiness review continues."
+    ]
   },
   "risk_notes": [
     "The packet is too thin for meaningful readiness review and does not fill gaps with generic event advice."

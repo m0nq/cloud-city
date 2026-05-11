@@ -68,10 +68,30 @@ export const eventReadinessReviewFlagSchema = z.object({
     blocking: z.boolean()
 });
 
+export const eventReadinessSourceDomainOmissionSchema = z.object({
+    source_label: nonEmptyString,
+    reason: nonEmptyString
+});
+
+export const eventReadinessSourcePacketReferenceSchema = z.object({
+    source_packet_id: nonEmptyString,
+    source_packet_version: nonEmptyString,
+    source_packet_path: nonEmptyString,
+    source_packet_kind: nonEmptyString,
+    prepared_by_role: nonEmptyString,
+    prepared_at: nonEmptyString,
+    sensitivity_level: nonEmptyString,
+    redaction_status: nonEmptyString,
+    source_labels_present: z.array(nonEmptyString),
+    source_domains_omitted: z.array(eventReadinessSourceDomainOmissionSchema),
+    content_hash: z.unknown()
+});
+
 export const eventReadinessRuntimeOutputPacketSchema = z.object({
     review_date: nonEmptyString,
     event_name: nonEmptyString,
     source_packet_id_or_path: nonEmptyString,
+    source_packets: z.array(eventReadinessSourcePacketReferenceSchema),
     packet_type: z.literal('event_readiness_review_packet'),
     draft_status: z.literal('draft_for_human_review_only_not_operational'),
     readiness_label: eventReadinessLabelSchema,
@@ -102,4 +122,6 @@ export const eventReadinessRuntimeOutputPacketSchema = z.object({
 export type EventReadinessApprovalGateId = z.infer<typeof eventReadinessApprovalGateIdSchema>;
 export type EventReadinessLabel = z.infer<typeof eventReadinessLabelSchema>;
 export type EventReadinessSourceLabel = (typeof eventReadinessCanonicalSourceLabels)[number];
+export type EventReadinessSourceDomainOmission = z.infer<typeof eventReadinessSourceDomainOmissionSchema>;
+export type EventReadinessSourcePacketReference = z.infer<typeof eventReadinessSourcePacketReferenceSchema>;
 export type EventReadinessRuntimeOutputPacket = z.infer<typeof eventReadinessRuntimeOutputPacketSchema>;

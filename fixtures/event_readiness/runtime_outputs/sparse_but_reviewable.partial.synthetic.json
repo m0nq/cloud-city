@@ -6,14 +6,75 @@
   "review_date": "2026-05-07",
   "event_name": "Cloud City Bounded Source Review",
   "source_packet_id_or_path": "fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml",
+  "source_packets": [
+    {
+      "source_packet_id": "event_readiness.source_packet.sparse_but_reviewable.synthetic.v0.1",
+      "source_packet_version": "v0.1",
+      "source_packet_path": "fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml",
+      "source_packet_kind": "synthetic_fixture",
+      "prepared_by_role": "Agent Systems Architect",
+      "prepared_at": "2026-05-09",
+      "sensitivity_level": "internal_confidential",
+      "redaction_status": "synthetic_no_real_data",
+      "source_labels_present": [
+        "EVENT_BRIEF",
+        "VENUE_NOTES",
+        "RUN_OF_SHOW_DRAFT",
+        "STAFFING_DRAFT",
+        "DRY_BAR_NOTES",
+        "OPEN_QUESTIONS"
+      ],
+      "source_domains_omitted": [
+        {
+          "source_label": "WALKTHROUGH_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "PRODUCTION_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "DOOR_FLOW_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "BUDGET_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "COMPLIANCE_NOTES",
+          "reason": "not_provided_in_sources"
+        },
+        {
+          "source_label": "ACCESSIBILITY_SAFETY_NOTES",
+          "reason": "not_provided_in_sources"
+        }
+      ],
+      "content_hash": null
+    }
+  ],
   "packet_type": "event_readiness_review_packet",
   "draft_status": "draft_for_human_review_only_not_operational",
   "readiness_label": "needs_attention",
-  "sources_used": ["EVENT_BRIEF", "VENUE_NOTES", "RUN_OF_SHOW_DRAFT", "STAFFING_DRAFT", "DRY_BAR_NOTES", "OPEN_QUESTIONS"],
+  "sources_used": [
+    "EVENT_BRIEF",
+    "VENUE_NOTES",
+    "RUN_OF_SHOW_DRAFT",
+    "STAFFING_DRAFT",
+    "DRY_BAR_NOTES",
+    "OPEN_QUESTIONS"
+  ],
   "confirmed_facts": [
     {
       "fact": "The provided sources include a brief, venue notes, run-of-show draft, staffing draft, dry bar notes, and open questions.",
-      "source_labels": ["EVENT_BRIEF", "VENUE_NOTES", "RUN_OF_SHOW_DRAFT", "STAFFING_DRAFT", "DRY_BAR_NOTES", "OPEN_QUESTIONS"]
+      "source_labels": [
+        "EVENT_BRIEF",
+        "VENUE_NOTES",
+        "RUN_OF_SHOW_DRAFT",
+        "STAFFING_DRAFT",
+        "DRY_BAR_NOTES",
+        "OPEN_QUESTIONS"
+      ]
     }
   ],
   "assumptions": [],
@@ -24,35 +85,51 @@
   "source_conflicts": [],
   "timeline_consistency_check": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: timeline appears bounded by provided sources but lacks production verification."]
+    "findings": [
+      "Human review needed: timeline appears bounded by provided sources but lacks production verification."
+    ]
   },
   "staffing_and_ownership_gaps": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: Door Lead and floater coverage remain tentative."]
+    "findings": [
+      "Human review needed: Door Lead and floater coverage remain tentative."
+    ]
   },
   "venue_load_in_load_out_gaps": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: venue access and cleanup timing appear source-bounded but still require human review."]
+    "findings": [
+      "Human review needed: venue access and cleanup timing appear source-bounded but still require human review."
+    ]
   },
   "dry_bar_readiness_notes": {
     "status": "substantive_findings",
-    "findings": ["Human review needed: final quantities and ice pickup ownership remain open."]
+    "findings": [
+      "Human review needed: final quantities and ice pickup ownership remain open."
+    ]
   },
   "equipment_sound_production_gaps": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: production source material is omitted."]
+    "findings": [
+      "Human review needed: production source material is omitted."
+    ]
   },
   "ticketing_door_guest_flow_gaps": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: door-flow source material is omitted and door coverage is tentative."]
+    "findings": [
+      "Human review needed: door-flow source material is omitted and door coverage is tentative."
+    ]
   },
   "accessibility_safety_compliance_flags": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: accessibility, safety, and compliance sources are omitted."]
+    "findings": [
+      "Human review needed: accessibility, safety, and compliance sources are omitted."
+    ]
   },
   "budget_or_cost_impact_flags": {
     "status": "not_provided_in_sources",
-    "findings": ["Human review needed: budget source material is omitted."]
+    "findings": [
+      "Human review needed: budget source material is omitted."
+    ]
   },
   "embedded_internal_action_checklist": {
     "status": "needs_human_review",
@@ -84,8 +161,15 @@
       "severity": "needs_review",
       "domain": "source_grounding",
       "message": "Production, door-flow, budget, compliance, accessibility, and safety source domains are omitted and surfaced as missing.",
-      "source_labels": ["EVENT_BRIEF", "OPEN_QUESTIONS"],
-      "approval_gate_ids": ["compliance_insurance_permit_issues", "accessibility_safety_determinations", "budget_impacting_commitment"],
+      "source_labels": [
+        "EVENT_BRIEF",
+        "OPEN_QUESTIONS"
+      ],
+      "approval_gate_ids": [
+        "compliance_insurance_permit_issues",
+        "accessibility_safety_determinations",
+        "budget_impacting_commitment"
+      ],
       "recommended_human_review_role": "Governance / Risk reviewer",
       "blocking": false
     }

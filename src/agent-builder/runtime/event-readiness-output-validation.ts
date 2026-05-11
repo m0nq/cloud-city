@@ -121,6 +121,14 @@ const findMissingSourceGrounding = (packet: EventReadinessRuntimeOutputPacket): 
 };
 
 const eventReadinessCanonicalSourceLabelSet = new Set<string>(eventReadinessCanonicalSourceLabels);
+const eventReadinessAllowedSourcePacketKind = 'synthetic_fixture';
+const eventReadinessAllowedRedactionStatus = 'synthetic_no_real_data';
+const eventReadinessAllowedOmissionReasons = new Set([
+    'not_provided_in_sources',
+    'intentionally_redacted',
+    'out_of_scope_by_human_instruction',
+    'not_applicable_to_packet'
+]);
 
 const collectSourceLabelReferences = (packet: EventReadinessRuntimeOutputPacket): Array<{
     path: string;
@@ -158,6 +166,114 @@ const findUndeclaredSourceLabelReferences = (packet: EventReadinessRuntimeOutput
     return collectSourceLabelReferences(packet)
         .filter(reference => !reference.path.startsWith('sources_used.'))
         .filter(reference => !declaredLabels.has(reference.label))
+        .map(reference => `${reference.path}: ${reference.label}`);
+};
+
+const findInvalidSourcePacketKinds = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({ sourcePacket, index }))
+        .filter(({ sourcePacket }) => sourcePacket.source_packet_kind !== eventReadinessAllowedSourcePacketKind)
+        .map(
+            ({ sourcePacket, index }) =>
+                `source_packets.${index}.source_packet_kind: ${sourcePacket.source_packet_kind}`
+        );
+
+const findInvalidRedactionStatuses = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({ sourcePacket, index }))
+        .filter(({ sourcePacket }) => sourcePacket.redaction_status !== eventReadinessAllowedRedactionStatus)
+        .map(
+            ({ sourcePacket, index }) =>
+                `source_packets.${index}.redaction_status: ${sourcePacket.redaction_status}`
+        );
+
+const findNonNullContentHashes = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({ sourcePacket, index }))
+        .filter(({ sourcePacket }) => sourcePacket.content_hash !== null)
+        .map(({ index }) => `source_packets.${index}.content_hash`);
+
+const findInvalidSourcePacketPaths = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({
+            path: `source_packets.${index}.source_packet_path`,
+            value: sourcePacket.source_packet_path
+        }))
+        .filter(({ value }) => {
+            const pathSegments = value.split(/[\\/]+/);
+            const hasProtocol = /^[a-z][a-z0-9+.-]*:\/\//i.test(value);
+            const hasPathTraversal = pathSegments.includes('..');
+            const isAbsolute = value.startsWith('/') || /^[A-Z]:[\\/]/i.test(value);
+            const isUnbounded = value.endsWith('/') || value.includes('*') || !value.endsWith('.synthetic.yaml');
+            const isOutsideEventReadinessFixtures = !value.startsWith('fixtures/event_readiness/');
+
+            return hasProtocol || hasPathTraversal || isAbsolute || isUnbounded || isOutsideEventReadinessFixtures;
+        })
+        .map(({ path, value }) => `${path}: ${value}`);
+
+const findSourcePacketPathMismatches = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({ sourcePacket, index }))
+        .filter(({ sourcePacket }) => sourcePacket.source_packet_path !== packet.source_packet_id_or_path)
+        .map(
+            ({ sourcePacket, index }) =>
+                `source_packets.${index}.source_packet_path: ${sourcePacket.source_packet_path} must match source_packet_id_or_path: ${packet.source_packet_id_or_path}`
+        );
+
+const findInvalidSourcePacketLabels = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets.flatMap((sourcePacket, sourcePacketIndex) => [
+        ...sourcePacket.source_labels_present
+            .map((label, labelIndex) => ({
+                path: `source_packets.${sourcePacketIndex}.source_labels_present.${labelIndex}`,
+                label
+            }))
+            .filter(reference => !eventReadinessCanonicalSourceLabelSet.has(reference.label))
+            .map(reference => `${reference.path}: ${reference.label}`),
+        ...sourcePacket.source_domains_omitted
+            .map((omission, omissionIndex) => ({
+                path: `source_packets.${sourcePacketIndex}.source_domains_omitted.${omissionIndex}.source_label`,
+                label: omission.source_label
+            }))
+            .filter(reference => !eventReadinessCanonicalSourceLabelSet.has(reference.label))
+            .map(reference => `${reference.path}: ${reference.label}`)
+    ]);
+
+const findInvalidSourceDomainOmissionReasons = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets.flatMap((sourcePacket, sourcePacketIndex) =>
+        sourcePacket.source_domains_omitted
+            .map((omission, omissionIndex) => ({
+                path: `source_packets.${sourcePacketIndex}.source_domains_omitted.${omissionIndex}.reason`,
+                reason: omission.reason
+            }))
+            .filter(reference => !eventReadinessAllowedOmissionReasons.has(reference.reason))
+            .map(reference => `${reference.path}: ${reference.reason}`)
+    );
+
+const findSourceLabelOmissionOverlaps = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets.flatMap((sourcePacket, sourcePacketIndex) => {
+        const presentLabels = new Set(sourcePacket.source_labels_present);
+
+        return sourcePacket.source_domains_omitted
+            .map((omission, omissionIndex) => ({
+                path: `source_packets.${sourcePacketIndex}.source_domains_omitted.${omissionIndex}.source_label`,
+                label: omission.source_label
+            }))
+            .filter(reference => presentLabels.has(reference.label))
+            .map(reference => `${reference.path}: ${reference.label}`);
+    });
+
+const findUncoveredSourcesUsed = (packet: EventReadinessRuntimeOutputPacket): string[] => {
+    const sourcePacket = packet.source_packets[0];
+
+    if (!sourcePacket) {
+        return packet.sources_used.map((label, index) => `sources_used.${index}: ${label}`);
+    }
+
+    const sourceLabelsPresent = new Set(sourcePacket.source_labels_present);
+
+    return packet.sources_used
+        .map((label, index) => ({ path: `sources_used.${index}`, label }))
+        .filter(reference => !sourceLabelsPresent.has(reference.label))
         .map(reference => `${reference.path}: ${reference.label}`);
 };
 
@@ -227,6 +343,15 @@ export const validateEventReadinessRuntimeOutput = (
     const missingSourceGrounding = findMissingSourceGrounding(packet);
     const invalidSourceLabels = findInvalidSourceLabels(packet);
     const undeclaredSourceLabelReferences = findUndeclaredSourceLabelReferences(packet);
+    const invalidSourcePacketKinds = findInvalidSourcePacketKinds(packet);
+    const invalidRedactionStatuses = findInvalidRedactionStatuses(packet);
+    const nonNullContentHashes = findNonNullContentHashes(packet);
+    const invalidSourcePacketPaths = findInvalidSourcePacketPaths(packet);
+    const sourcePacketPathMismatches = findSourcePacketPathMismatches(packet);
+    const invalidSourcePacketLabels = findInvalidSourcePacketLabels(packet);
+    const invalidSourceDomainOmissionReasons = findInvalidSourceDomainOmissionReasons(packet);
+    const sourceLabelOmissionOverlaps = findSourceLabelOmissionOverlaps(packet);
+    const uncoveredSourcesUsed = findUncoveredSourcesUsed(packet);
     const resolvedSourceConflicts = findResolvedSourceConflicts(packet);
     const checks = [
         makeCheck(
@@ -273,6 +398,86 @@ export const validateEventReadinessRuntimeOutput = (
             undeclaredSourceLabelReferences.length > 0 ? 'FAIL' : 'PASS',
             undeclaredSourceLabelReferences.length > 0
                 ? `Nested source labels must be declared in sources_used: ${undeclaredSourceLabelReferences.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'single_source_packet_only',
+            'Exactly one source packet is declared for L1 provenance',
+            packet.source_packets.length === 1 ? 'PASS' : 'FAIL',
+            packet.source_packets.length === 1
+                ? 'PASS'
+                : `L1 provenance requires exactly one source packet; received ${packet.source_packets.length}`
+        ),
+        makeCheck(
+            'source_packet_kind_allowed',
+            'Source packet kind is allowed for L1 provenance',
+            invalidSourcePacketKinds.length > 0 ? 'FAIL' : 'PASS',
+            invalidSourcePacketKinds.length > 0
+                ? `Only synthetic_fixture source packets are allowed: ${invalidSourcePacketKinds.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'redaction_status_allowed',
+            'Source packet redaction status is allowed for L1 provenance',
+            invalidRedactionStatuses.length > 0 ? 'FAIL' : 'PASS',
+            invalidRedactionStatuses.length > 0
+                ? `Only synthetic_no_real_data redaction status is allowed: ${invalidRedactionStatuses.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'content_hash_nullable_for_l1',
+            'Content hash remains null for L1 provenance',
+            nonNullContentHashes.length > 0 ? 'FAIL' : 'PASS',
+            nonNullContentHashes.length > 0
+                ? `content_hash must be null for L1 provenance: ${nonNullContentHashes.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_packet_path_bounded_to_fixtures',
+            'Source packet path is a bounded repo-relative synthetic fixture path',
+            invalidSourcePacketPaths.length > 0 ? 'FAIL' : 'PASS',
+            invalidSourcePacketPaths.length > 0
+                ? `source_packet_path must be a repo-relative synthetic fixture under fixtures/event_readiness/: ${invalidSourcePacketPaths.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_packet_path_matches_legacy_reference',
+            'Source packet path matches the legacy source packet reference',
+            sourcePacketPathMismatches.length > 0 ? 'FAIL' : 'PASS',
+            sourcePacketPathMismatches.length > 0
+                ? `source_packet_path must match source_packet_id_or_path: ${sourcePacketPathMismatches.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_labels_present_canonical',
+            'Source packet labels use the Event Readiness canonical vocabulary',
+            invalidSourcePacketLabels.length > 0 ? 'FAIL' : 'PASS',
+            invalidSourcePacketLabels.length > 0
+                ? `Source packet labels must be canonical Event Readiness labels: ${invalidSourcePacketLabels.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_domains_omitted_reasons_allowed',
+            'Omitted source domains use allowed reasons',
+            invalidSourceDomainOmissionReasons.length > 0 ? 'FAIL' : 'PASS',
+            invalidSourceDomainOmissionReasons.length > 0
+                ? `Source domain omission reasons are not allowed: ${invalidSourceDomainOmissionReasons.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_labels_present_and_omitted_do_not_overlap',
+            'Present and omitted source labels do not overlap',
+            sourceLabelOmissionOverlaps.length > 0 ? 'FAIL' : 'PASS',
+            sourceLabelOmissionOverlaps.length > 0
+                ? `Source labels cannot be both present and omitted: ${sourceLabelOmissionOverlaps.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'sources_used_covered_by_source_packet',
+            'sources_used labels are covered by the declared source packet',
+            uncoveredSourcesUsed.length > 0 ? 'FAIL' : 'PASS',
+            uncoveredSourcesUsed.length > 0
+                ? `sources_used labels must appear in source_labels_present: ${uncoveredSourcesUsed.join(', ')}`
                 : 'PASS'
         ),
         makeCheck(

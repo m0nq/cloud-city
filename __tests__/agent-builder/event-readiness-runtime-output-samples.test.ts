@@ -20,6 +20,22 @@ type EventReadinessSamplePacket = {
     review_date: string;
     event_name: string;
     source_packet_id_or_path: string;
+    source_packets: Array<{
+        source_packet_id: string;
+        source_packet_version: string;
+        source_packet_path: string;
+        source_packet_kind: string;
+        prepared_by_role: string;
+        prepared_at: string;
+        sensitivity_level: string;
+        redaction_status: string;
+        source_labels_present: string[];
+        source_domains_omitted: Array<{
+            source_label: string;
+            reason: string;
+        }>;
+        content_hash: null | string;
+    }>;
     packet_type: string;
     draft_status: string;
     readiness_label: string;
@@ -107,6 +123,7 @@ const requiredCoreFields = [
     'review_date',
     'event_name',
     'source_packet_id_or_path',
+    'source_packets',
     'packet_type',
     'draft_status',
     'readiness_label',
@@ -174,6 +191,11 @@ describe('Event Readiness future runtime-output sample packets', () => {
             expect(packet.human_review_required_before_action).toBe(true);
             expect(packet.draft_warning.toLowerCase()).toContain('synthetic');
             expect(packet.source_packet_id_or_path).toMatch(/^fixtures\/event_readiness\//);
+            expect(packet.source_packets).toHaveLength(1);
+            expect(packet.source_packets[0].source_packet_path).toBe(packet.source_packet_id_or_path);
+            expect(packet.source_packets[0].source_packet_kind).toBe('synthetic_fixture');
+            expect(packet.source_packets[0].redaction_status).toBe('synthetic_no_real_data');
+            expect(packet.source_packets[0].content_hash).toBeNull();
         }
     });
 
@@ -433,6 +455,146 @@ describe('Event Readiness future runtime-output sample packets', () => {
         expect(report.checks.find(check => check.id === 'canonical_source_labels')?.outcome).toBe('PASS');
         expect(report.checks.find(check => check.id === 'source_label_consistency')?.outcome).toBe('FAIL');
         expect(report.errors.join('\n')).toContain('confirmed_facts.0.source_labels.0: EVENT_BRIEF');
+    });
+
+    it('fails packets missing declared source packet provenance', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json')) as Record<string, unknown>;
+        delete packet.source_packets;
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'event_readiness_schema_validation')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('source_packets');
+    });
+
+    it('fails packets with more than one declared source packet', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets.push(clone(packet.source_packets[0]));
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'single_source_packet_only')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('exactly one source packet');
+    });
+
+    it('fails packets with a source packet kind not allowed for L1 provenance', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].source_packet_kind = 'redacted_local_packet';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_packet_kind_allowed')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('redacted_local_packet');
+    });
+
+    it('fails packets with a redaction status not allowed for L1 provenance', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].redaction_status = 'redaction_status_unknown';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'redaction_status_allowed')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('redaction_status_unknown');
+    });
+
+    it('fails packets with non-null source packet content hashes', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].content_hash = 'sha256:future-policy-required';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'content_hash_nullable_for_l1')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('content_hash must be null');
+    });
+
+    it.each([
+        ['/private/tmp/blocked_escalation.synthetic.yaml'],
+        ['https://drive.google.com/file/d/example'],
+        ['fixtures/event_readiness/../event_readiness/blocked_escalation.synthetic.yaml'],
+        ['fixtures/event_readiness/']
+    ])('fails packets with unbounded or nonlocal source packet paths: %s', sourcePacketPath => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].source_packet_path = sourcePacketPath;
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_packet_path_bounded_to_fixtures')?.outcome).toBe(
+            'FAIL'
+        );
+        expect(report.errors.join('\n')).toContain(sourcePacketPath);
+    });
+
+    it('fails packets whose source packet path differs from source_packet_id_or_path', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].source_packet_path = 'fixtures/event_readiness/on_track_with_review_needed.synthetic.yaml';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_packet_path_matches_legacy_reference')?.outcome).toBe(
+            'FAIL'
+        );
+        expect(report.errors.join('\n')).toContain('must match source_packet_id_or_path');
+    });
+
+    it('fails packets with non-canonical labels in source_labels_present', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].source_labels_present.push('UNAPPROVED_SOURCE_LABEL');
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_labels_present_canonical')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('UNAPPROVED_SOURCE_LABEL');
+    });
+
+    it('fails packets with unsupported omitted source-domain reasons', () => {
+        const packet = clone(loadSamplePacket('insufficient_source_information.valid.synthetic.json'));
+        packet.source_packets[0].source_domains_omitted[0].reason = 'unknown_without_policy';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_domains_omitted_reasons_allowed')?.outcome).toBe(
+            'FAIL'
+        );
+        expect(report.errors.join('\n')).toContain('unknown_without_policy');
+    });
+
+    it('fails packets where source labels are both present and omitted', () => {
+        const packet = clone(loadSamplePacket('insufficient_source_information.valid.synthetic.json'));
+        packet.source_packets[0].source_domains_omitted.push({
+            source_label: 'EVENT_BRIEF',
+            reason: 'not_provided_in_sources'
+        });
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_labels_present_and_omitted_do_not_overlap')?.outcome)
+            .toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('EVENT_BRIEF');
+    });
+
+    it('fails packets whose sources_used labels are not covered by the declared source packet', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].source_labels_present = packet.source_packets[0].source_labels_present.filter(
+            label => label !== 'EVENT_BRIEF'
+        );
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'sources_used_covered_by_source_packet')?.outcome).toBe(
+            'FAIL'
+        );
+        expect(report.errors.join('\n')).toContain('sources_used.0: EVENT_BRIEF');
     });
 
     it('preserves existing invalid sample outcomes under source-label validation', () => {
