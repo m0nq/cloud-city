@@ -543,6 +543,59 @@ describe('Event Readiness future runtime-output sample packets', () => {
         expect(report.errors.join('\n')).toContain('must match source_packet_id_or_path');
     });
 
+    it('fails packets with malformed source packet IDs', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].source_packet_id = 'blocked_escalation';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_packet_id_format')?.outcome).toBe('FAIL');
+        expect(report.errors.join('\n')).toContain('source_packets.0.source_packet_id: blocked_escalation');
+    });
+
+    it('fails packets whose source packet ID slug differs from the source packet path slug', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].source_packet_id = 'event_readiness.source_packet.source_conflict.synthetic.v0.1';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_packet_id_path_slug_consistency')?.outcome).toBe(
+            'FAIL'
+        );
+        expect(report.errors.join('\n')).toContain('source_conflict');
+        expect(report.errors.join('\n')).toContain('blocked_escalation');
+    });
+
+    it('fails packets whose source packet version differs from the source packet ID version suffix', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        packet.source_packets[0].source_packet_version = 'v0.2';
+
+        const report = validateEventReadinessRuntimeOutput(packet);
+
+        expect(report.outcome).toBe('FAIL');
+        expect(report.checks.find(check => check.id === 'source_packet_id_version_consistency')?.outcome).toBe(
+            'FAIL'
+        );
+        expect(report.errors.join('\n')).toContain('source_packet_version: v0.2');
+        expect(report.errors.join('\n')).toContain('source_packet_id version: v0.1');
+    });
+
+    it('does not read referenced YAML source packets during declared provenance validation', () => {
+        const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        const readFileSpy = jest.spyOn(fs, 'readFileSync');
+
+        try {
+            const report = validateEventReadinessRuntimeOutput(packet);
+
+            expect(report.outcome).toBe('PASS');
+            expect(readFileSpy).not.toHaveBeenCalled();
+        } finally {
+            readFileSpy.mockRestore();
+        }
+    });
+
     it('fails packets with non-canonical labels in source_labels_present', () => {
         const packet = clone(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
         packet.source_packets[0].source_labels_present.push('UNAPPROVED_SOURCE_LABEL');

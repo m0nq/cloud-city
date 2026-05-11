@@ -6,6 +6,7 @@ import {
     eventReadinessAllowedSourcePacketKinds,
     eventReadinessCanonicalSourceLabels,
     eventReadinessRuntimeOutputPacketSchema,
+    eventReadinessSyntheticSourcePacketIdPattern,
     type EventReadinessRuntimeOutputPacket
 } from './event-readiness-output-schema';
 
@@ -129,6 +130,32 @@ const eventReadinessAllowedRedactionStatusSet = new Set<string>(eventReadinessAl
 const eventReadinessAllowedOmissionReasonSet = new Set<string>(
     eventReadinessAllowedSourceDomainOmissionReasons
 );
+const eventReadinessSyntheticSourcePacketPathPattern =
+    /^fixtures\/event_readiness\/([a-z0-9]+(?:_[a-z0-9]+)*)\.synthetic\.yaml$/;
+
+const parseSyntheticSourcePacketId = (
+    sourcePacketId: string
+): {
+    slug: string;
+    version: string;
+} | null => {
+    const match = eventReadinessSyntheticSourcePacketIdPattern.exec(sourcePacketId);
+
+    if (!match) {
+        return null;
+    }
+
+    return {
+        slug: match[1],
+        version: match[2]
+    };
+};
+
+const parseSyntheticSourcePacketPathSlug = (sourcePacketPath: string): string | null => {
+    const match = eventReadinessSyntheticSourcePacketPathPattern.exec(sourcePacketPath);
+
+    return match?.[1] ?? null;
+};
 
 const collectSourceLabelReferences = (packet: EventReadinessRuntimeOutputPacket): Array<{
     path: string;
@@ -189,6 +216,49 @@ const findInvalidRedactionStatuses = (packet: EventReadinessRuntimeOutputPacket)
         .map(
             ({ sourcePacket, index }) =>
                 `source_packets.${index}.redaction_status: ${sourcePacket.redaction_status}`
+        );
+
+const findInvalidSourcePacketIds = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({ sourcePacket, index }))
+        .filter(({ sourcePacket }) => !parseSyntheticSourcePacketId(sourcePacket.source_packet_id))
+        .map(
+            ({ sourcePacket, index }) =>
+                `source_packets.${index}.source_packet_id: ${sourcePacket.source_packet_id}`
+        );
+
+const findSourcePacketIdVersionMismatches = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({
+            sourcePacket,
+            index,
+            parsedSourcePacketId: parseSyntheticSourcePacketId(sourcePacket.source_packet_id)
+        }))
+        .filter(({ sourcePacket, parsedSourcePacketId }) =>
+            parsedSourcePacketId ? sourcePacket.source_packet_version !== parsedSourcePacketId.version : false
+        )
+        .map(
+            ({ sourcePacket, index, parsedSourcePacketId }) =>
+                `source_packets.${index}.source_packet_version: ${sourcePacket.source_packet_version} ` +
+                `must match source_packet_id version: ${parsedSourcePacketId?.version}`
+        );
+
+const findSourcePacketIdPathSlugMismatches = (packet: EventReadinessRuntimeOutputPacket): string[] =>
+    packet.source_packets
+        .map((sourcePacket, index) => ({
+            sourcePacket,
+            index,
+            parsedSourcePacketId: parseSyntheticSourcePacketId(sourcePacket.source_packet_id),
+            sourcePacketPathSlug: parseSyntheticSourcePacketPathSlug(sourcePacket.source_packet_path)
+        }))
+        .filter(
+            ({ parsedSourcePacketId, sourcePacketPathSlug }) =>
+                parsedSourcePacketId && sourcePacketPathSlug && parsedSourcePacketId.slug !== sourcePacketPathSlug
+        )
+        .map(
+            ({ index, parsedSourcePacketId, sourcePacketPathSlug }) =>
+                `source_packets.${index}.source_packet_id slug: ${parsedSourcePacketId?.slug} ` +
+                `must match source_packet_path slug: ${sourcePacketPathSlug}`
         );
 
 const findNonNullContentHashes = (packet: EventReadinessRuntimeOutputPacket): string[] =>
@@ -349,6 +419,9 @@ export const validateEventReadinessRuntimeOutput = (
     const undeclaredSourceLabelReferences = findUndeclaredSourceLabelReferences(packet);
     const invalidSourcePacketKinds = findInvalidSourcePacketKinds(packet);
     const invalidRedactionStatuses = findInvalidRedactionStatuses(packet);
+    const invalidSourcePacketIds = findInvalidSourcePacketIds(packet);
+    const sourcePacketIdVersionMismatches = findSourcePacketIdVersionMismatches(packet);
+    const sourcePacketIdPathSlugMismatches = findSourcePacketIdPathSlugMismatches(packet);
     const nonNullContentHashes = findNonNullContentHashes(packet);
     const invalidSourcePacketPaths = findInvalidSourcePacketPaths(packet);
     const sourcePacketPathMismatches = findSourcePacketPathMismatches(packet);
@@ -359,6 +432,8 @@ export const validateEventReadinessRuntimeOutput = (
     const resolvedSourceConflicts = findResolvedSourceConflicts(packet);
     const allowedSourcePacketKinds = eventReadinessAllowedSourcePacketKinds.join(', ');
     const allowedRedactionStatuses = eventReadinessAllowedRedactionStatuses.join(', ');
+    const sourcePacketIdFormatDetails =
+        'source_packet_id must match event_readiness.source_packet.<slug>.synthetic.v<major>.<minor>';
     const checks = [
         makeCheck(
             'event_readiness_schema_validation',
@@ -428,6 +503,30 @@ export const validateEventReadinessRuntimeOutput = (
             invalidRedactionStatuses.length > 0 ? 'FAIL' : 'PASS',
             invalidRedactionStatuses.length > 0
                 ? `Only ${allowedRedactionStatuses} redaction status is allowed: ${invalidRedactionStatuses.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_packet_id_format',
+            'Source packet ID follows the Event Readiness synthetic ID convention',
+            invalidSourcePacketIds.length > 0 ? 'FAIL' : 'PASS',
+            invalidSourcePacketIds.length > 0
+                ? `${sourcePacketIdFormatDetails}: ${invalidSourcePacketIds.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_packet_id_version_consistency',
+            'Source packet version matches the source packet ID version suffix',
+            sourcePacketIdVersionMismatches.length > 0 ? 'FAIL' : 'PASS',
+            sourcePacketIdVersionMismatches.length > 0
+                ? `source_packet_version must match source_packet_id version: ${sourcePacketIdVersionMismatches.join(', ')}`
+                : 'PASS'
+        ),
+        makeCheck(
+            'source_packet_id_path_slug_consistency',
+            'Source packet ID slug matches the source packet path slug',
+            sourcePacketIdPathSlugMismatches.length > 0 ? 'FAIL' : 'PASS',
+            sourcePacketIdPathSlugMismatches.length > 0
+                ? `source_packet_id slug must match source_packet_path slug: ${sourcePacketIdPathSlugMismatches.join(', ')}`
                 : 'PASS'
         ),
         makeCheck(

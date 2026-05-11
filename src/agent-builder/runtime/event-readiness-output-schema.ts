@@ -29,6 +29,9 @@ export const eventReadinessAllowedSourceDomainOmissionReasons = [
     'not_applicable_to_packet'
 ] as const;
 
+export const eventReadinessSyntheticSourcePacketIdPattern =
+    /^event_readiness\.source_packet\.([a-z0-9]+(?:_[a-z0-9]+)*)\.synthetic\.(v\d+\.\d+)$/;
+
 export const eventReadinessApprovalGateIdSchema = z.enum([
     'external_outreach',
     'schedule_commitments',
