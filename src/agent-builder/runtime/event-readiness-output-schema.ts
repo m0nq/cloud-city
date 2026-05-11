@@ -18,6 +18,17 @@ export const eventReadinessCanonicalSourceLabels = [
     'OPEN_QUESTIONS'
 ] as const;
 
+export const eventReadinessAllowedSourcePacketKinds = ['synthetic_fixture'] as const;
+
+export const eventReadinessAllowedRedactionStatuses = ['synthetic_no_real_data'] as const;
+
+export const eventReadinessAllowedSourceDomainOmissionReasons = [
+    'not_provided_in_sources',
+    'intentionally_redacted',
+    'out_of_scope_by_human_instruction',
+    'not_applicable_to_packet'
+] as const;
+
 export const eventReadinessApprovalGateIdSchema = z.enum([
     'external_outreach',
     'schedule_commitments',
@@ -122,6 +133,10 @@ export const eventReadinessRuntimeOutputPacketSchema = z.object({
 export type EventReadinessApprovalGateId = z.infer<typeof eventReadinessApprovalGateIdSchema>;
 export type EventReadinessLabel = z.infer<typeof eventReadinessLabelSchema>;
 export type EventReadinessSourceLabel = (typeof eventReadinessCanonicalSourceLabels)[number];
+export type EventReadinessSourcePacketKind = (typeof eventReadinessAllowedSourcePacketKinds)[number];
+export type EventReadinessRedactionStatus = (typeof eventReadinessAllowedRedactionStatuses)[number];
+export type EventReadinessSourceDomainOmissionReason =
+    (typeof eventReadinessAllowedSourceDomainOmissionReasons)[number];
 export type EventReadinessSourceDomainOmission = z.infer<typeof eventReadinessSourceDomainOmissionSchema>;
 export type EventReadinessSourcePacketReference = z.infer<typeof eventReadinessSourcePacketReferenceSchema>;
 export type EventReadinessRuntimeOutputPacket = z.infer<typeof eventReadinessRuntimeOutputPacketSchema>;

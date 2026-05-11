@@ -1,6 +1,9 @@
 import { ZodError } from 'zod';
 
 import {
+    eventReadinessAllowedRedactionStatuses,
+    eventReadinessAllowedSourceDomainOmissionReasons,
+    eventReadinessAllowedSourcePacketKinds,
     eventReadinessCanonicalSourceLabels,
     eventReadinessRuntimeOutputPacketSchema,
     type EventReadinessRuntimeOutputPacket
@@ -121,14 +124,11 @@ const findMissingSourceGrounding = (packet: EventReadinessRuntimeOutputPacket): 
 };
 
 const eventReadinessCanonicalSourceLabelSet = new Set<string>(eventReadinessCanonicalSourceLabels);
-const eventReadinessAllowedSourcePacketKind = 'synthetic_fixture';
-const eventReadinessAllowedRedactionStatus = 'synthetic_no_real_data';
-const eventReadinessAllowedOmissionReasons = new Set([
-    'not_provided_in_sources',
-    'intentionally_redacted',
-    'out_of_scope_by_human_instruction',
-    'not_applicable_to_packet'
-]);
+const eventReadinessAllowedSourcePacketKindSet = new Set<string>(eventReadinessAllowedSourcePacketKinds);
+const eventReadinessAllowedRedactionStatusSet = new Set<string>(eventReadinessAllowedRedactionStatuses);
+const eventReadinessAllowedOmissionReasonSet = new Set<string>(
+    eventReadinessAllowedSourceDomainOmissionReasons
+);
 
 const collectSourceLabelReferences = (packet: EventReadinessRuntimeOutputPacket): Array<{
     path: string;
@@ -172,7 +172,9 @@ const findUndeclaredSourceLabelReferences = (packet: EventReadinessRuntimeOutput
 const findInvalidSourcePacketKinds = (packet: EventReadinessRuntimeOutputPacket): string[] =>
     packet.source_packets
         .map((sourcePacket, index) => ({ sourcePacket, index }))
-        .filter(({ sourcePacket }) => sourcePacket.source_packet_kind !== eventReadinessAllowedSourcePacketKind)
+        .filter(({ sourcePacket }) =>
+            !eventReadinessAllowedSourcePacketKindSet.has(sourcePacket.source_packet_kind)
+        )
         .map(
             ({ sourcePacket, index }) =>
                 `source_packets.${index}.source_packet_kind: ${sourcePacket.source_packet_kind}`
@@ -181,7 +183,9 @@ const findInvalidSourcePacketKinds = (packet: EventReadinessRuntimeOutputPacket)
 const findInvalidRedactionStatuses = (packet: EventReadinessRuntimeOutputPacket): string[] =>
     packet.source_packets
         .map((sourcePacket, index) => ({ sourcePacket, index }))
-        .filter(({ sourcePacket }) => sourcePacket.redaction_status !== eventReadinessAllowedRedactionStatus)
+        .filter(({ sourcePacket }) =>
+            !eventReadinessAllowedRedactionStatusSet.has(sourcePacket.redaction_status)
+        )
         .map(
             ({ sourcePacket, index }) =>
                 `source_packets.${index}.redaction_status: ${sourcePacket.redaction_status}`
@@ -245,7 +249,7 @@ const findInvalidSourceDomainOmissionReasons = (packet: EventReadinessRuntimeOut
                 path: `source_packets.${sourcePacketIndex}.source_domains_omitted.${omissionIndex}.reason`,
                 reason: omission.reason
             }))
-            .filter(reference => !eventReadinessAllowedOmissionReasons.has(reference.reason))
+            .filter(reference => !eventReadinessAllowedOmissionReasonSet.has(reference.reason))
             .map(reference => `${reference.path}: ${reference.reason}`)
     );
 
@@ -353,6 +357,8 @@ export const validateEventReadinessRuntimeOutput = (
     const sourceLabelOmissionOverlaps = findSourceLabelOmissionOverlaps(packet);
     const uncoveredSourcesUsed = findUncoveredSourcesUsed(packet);
     const resolvedSourceConflicts = findResolvedSourceConflicts(packet);
+    const allowedSourcePacketKinds = eventReadinessAllowedSourcePacketKinds.join(', ');
+    const allowedRedactionStatuses = eventReadinessAllowedRedactionStatuses.join(', ');
     const checks = [
         makeCheck(
             'event_readiness_schema_validation',
@@ -413,7 +419,7 @@ export const validateEventReadinessRuntimeOutput = (
             'Source packet kind is allowed for L1 provenance',
             invalidSourcePacketKinds.length > 0 ? 'FAIL' : 'PASS',
             invalidSourcePacketKinds.length > 0
-                ? `Only synthetic_fixture source packets are allowed: ${invalidSourcePacketKinds.join(', ')}`
+                ? `Only ${allowedSourcePacketKinds} source packets are allowed: ${invalidSourcePacketKinds.join(', ')}`
                 : 'PASS'
         ),
         makeCheck(
@@ -421,7 +427,7 @@ export const validateEventReadinessRuntimeOutput = (
             'Source packet redaction status is allowed for L1 provenance',
             invalidRedactionStatuses.length > 0 ? 'FAIL' : 'PASS',
             invalidRedactionStatuses.length > 0
-                ? `Only synthetic_no_real_data redaction status is allowed: ${invalidRedactionStatuses.join(', ')}`
+                ? `Only ${allowedRedactionStatuses} redaction status is allowed: ${invalidRedactionStatuses.join(', ')}`
                 : 'PASS'
         ),
         makeCheck(
