@@ -7,7 +7,10 @@ import {
     eventReadinessCanonicalSourceLabels,
     eventReadinessRuntimeOutputPacketSchema
 } from '../../src/agent-builder/runtime/event-readiness-output-schema';
-import { validateEventReadinessRuntimeOutput } from '../../src/agent-builder/runtime/event-readiness-output-validation';
+import {
+    eventReadinessValidationCheckGroupById,
+    validateEventReadinessRuntimeOutput
+} from '../../src/agent-builder/runtime/event-readiness-output-validation';
 
 type ExpectedOutcome = 'PASS' | 'PARTIAL' | 'FAIL';
 type ExpectedReviewState = 'pass_for_human_review' | 'validation_needs_human_review' | 'validation_blocked';
@@ -159,6 +162,47 @@ const outcomeToReviewState: Record<ExpectedOutcome, ExpectedReviewState> = {
     PARTIAL: 'validation_needs_human_review',
     FAIL: 'validation_blocked'
 };
+
+const expectedValidationCheckGroups = [
+    'schema',
+    'governance_draft_posture',
+    'review_state_mapping',
+    'authority_claims',
+    'source_labels_grounding',
+    'source_conflicts',
+    'declared_provenance',
+    'provenance_identity',
+    'provenance_metadata',
+    'operational_approval_boundary'
+] as const;
+
+const expectedValidationCheckGroupsById = {
+    event_readiness_schema_validation: 'schema',
+    event_readiness_review_flag_mapping: 'review_state_mapping',
+    no_authority_claims: 'authority_claims',
+    source_grounding: 'source_labels_grounding',
+    canonical_source_labels: 'source_labels_grounding',
+    source_label_consistency: 'source_labels_grounding',
+    single_source_packet_only: 'declared_provenance',
+    source_packet_kind_allowed: 'declared_provenance',
+    redaction_status_allowed: 'declared_provenance',
+    source_packet_id_format: 'provenance_identity',
+    source_packet_id_version_consistency: 'provenance_identity',
+    source_packet_id_path_slug_consistency: 'provenance_identity',
+    source_packet_prepared_at_format: 'provenance_metadata',
+    source_packet_prepared_by_role_allowed: 'provenance_metadata',
+    source_packet_sensitivity_level_allowed: 'provenance_metadata',
+    content_hash_nullable_for_l1: 'declared_provenance',
+    source_packet_path_bounded_to_fixtures: 'declared_provenance',
+    source_packet_path_matches_legacy_reference: 'declared_provenance',
+    source_labels_present_canonical: 'declared_provenance',
+    source_domains_omitted_reasons_allowed: 'declared_provenance',
+    source_labels_present_and_omitted_do_not_overlap: 'declared_provenance',
+    sources_used_covered_by_source_packet: 'declared_provenance',
+    source_conflicts_not_resolved: 'source_conflicts'
+} as const;
+
+const expectedValidationCheckIds = Object.keys(expectedValidationCheckGroupsById);
 
 const loadSamplePacket = (fileName: string): EventReadinessSamplePacket =>
     JSON.parse(fs.readFileSync(path.join(runtimeOutputDirectory, fileName), 'utf8')) as EventReadinessSamplePacket;
@@ -318,6 +362,37 @@ describe('Event Readiness future runtime-output sample packets', () => {
         expect(report.approvedForOperationalUse).toBe(false);
         expect(report.promotableToHumanReviewDraft).toBe(true);
         expect(report.errors.join('\n')).toContain('review flag(s) require human review');
+    });
+
+    it('adds exactly one conceptual group to every existing validation check ID', () => {
+        const report = validateEventReadinessRuntimeOutput(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        const checkIds = report.checks.map(check => check.id);
+
+        expect(checkIds).toEqual(expectedValidationCheckIds);
+        expect(eventReadinessValidationCheckGroupById).toEqual(expectedValidationCheckGroupsById);
+
+        for (const check of report.checks) {
+            expect(check.group).toBe(expectedValidationCheckGroupsById[check.id]);
+            expect(expectedValidationCheckGroups).toContain(check.group);
+        }
+    });
+
+    it('does not introduce unknown validation check IDs without group metadata', () => {
+        for (const sample of sampleCases) {
+            const report = validateEventReadinessRuntimeOutput(loadSamplePacket(sample.fileName));
+            const checkIds = report.checks.map(check => check.id);
+
+            expect(new Set(checkIds).size).toBe(checkIds.length);
+            expect(checkIds).toEqual(expectedValidationCheckIds);
+            expect(report.outcome).toBe(sample.expectedOutcome);
+            expect(report.reviewState).toBe(sample.expectedReviewState);
+            expect(report.approvedForOperationalUse).toBe(false);
+
+            for (const check of report.checks) {
+                expect(check.group).toBe(eventReadinessValidationCheckGroupById[check.id]);
+                expect(check.group).toBeDefined();
+            }
+        }
     });
 
     it('maps malformed packets to FAIL and blocks promotion to usable human-review draft status', () => {

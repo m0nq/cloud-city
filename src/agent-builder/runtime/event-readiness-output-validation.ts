@@ -20,8 +20,54 @@ export type EventReadinessReviewState =
     | 'validation_needs_human_review'
     | 'validation_blocked';
 
+export const eventReadinessValidationCheckGroups = [
+    'schema',
+    'governance_draft_posture',
+    'review_state_mapping',
+    'authority_claims',
+    'source_labels_grounding',
+    'source_conflicts',
+    'declared_provenance',
+    'provenance_identity',
+    'provenance_metadata',
+    'operational_approval_boundary'
+] as const;
+
+export type EventReadinessRuntimeOutputValidationCheckGroup =
+    (typeof eventReadinessValidationCheckGroups)[number];
+
+export const eventReadinessValidationCheckGroupById = {
+    event_readiness_schema_validation: 'schema',
+    event_readiness_review_flag_mapping: 'review_state_mapping',
+    no_authority_claims: 'authority_claims',
+    source_grounding: 'source_labels_grounding',
+    canonical_source_labels: 'source_labels_grounding',
+    source_label_consistency: 'source_labels_grounding',
+    single_source_packet_only: 'declared_provenance',
+    source_packet_kind_allowed: 'declared_provenance',
+    redaction_status_allowed: 'declared_provenance',
+    source_packet_id_format: 'provenance_identity',
+    source_packet_id_version_consistency: 'provenance_identity',
+    source_packet_id_path_slug_consistency: 'provenance_identity',
+    source_packet_prepared_at_format: 'provenance_metadata',
+    source_packet_prepared_by_role_allowed: 'provenance_metadata',
+    source_packet_sensitivity_level_allowed: 'provenance_metadata',
+    content_hash_nullable_for_l1: 'declared_provenance',
+    source_packet_path_bounded_to_fixtures: 'declared_provenance',
+    source_packet_path_matches_legacy_reference: 'declared_provenance',
+    source_labels_present_canonical: 'declared_provenance',
+    source_domains_omitted_reasons_allowed: 'declared_provenance',
+    source_labels_present_and_omitted_do_not_overlap: 'declared_provenance',
+    sources_used_covered_by_source_packet: 'declared_provenance',
+    source_conflicts_not_resolved: 'source_conflicts'
+} as const satisfies Record<string, EventReadinessRuntimeOutputValidationCheckGroup>;
+
+export type EventReadinessRuntimeOutputValidationCheckId =
+    keyof typeof eventReadinessValidationCheckGroupById;
+
 export type EventReadinessRuntimeOutputValidationCheck = {
-    id: string;
+    id: EventReadinessRuntimeOutputValidationCheckId;
+    group: EventReadinessRuntimeOutputValidationCheckGroup;
     label: string;
     outcome: EventReadinessRuntimeOutputOutcome;
     details: string;
@@ -48,12 +94,13 @@ export const eventReadinessOutcomeToReviewState: Record<
 };
 
 const makeCheck = (
-    id: string,
+    id: EventReadinessRuntimeOutputValidationCheckId,
     label: string,
     outcome: EventReadinessRuntimeOutputOutcome,
     details: string
 ): EventReadinessRuntimeOutputValidationCheck => ({
     id,
+    group: eventReadinessValidationCheckGroupById[id],
     label,
     outcome,
     details
