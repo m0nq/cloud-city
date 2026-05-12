@@ -36,6 +36,99 @@ export const eventReadinessValidationCheckGroups = [
 export type EventReadinessRuntimeOutputValidationCheckGroup =
     (typeof eventReadinessValidationCheckGroups)[number];
 
+export type EventReadinessRuntimeOutputValidationCheckGroupMetadata = {
+    group: EventReadinessRuntimeOutputValidationCheckGroup;
+    label: string;
+    summary: string;
+    doesNotProve: string[];
+};
+
+export const eventReadinessValidationCheckGroupMetadataByGroup = {
+    schema: {
+        group: 'schema',
+        label: 'Packet Schema',
+        summary: 'Checks whether the packet matches the deterministic Event Readiness runtime-output shape.',
+        doesNotProve: [
+            'does not prove source truth, source completeness, source freshness, human approval, or operational approval'
+        ]
+    },
+    governance_draft_posture: {
+        group: 'governance_draft_posture',
+        label: 'Draft Governance Posture',
+        summary: 'Describes draft-only and human-review posture enforced by schema literals and report fields.',
+        doesNotProve: [
+            'does not prove human approval, operational approval, readiness, safety, compliance, or permission to act'
+        ]
+    },
+    review_state_mapping: {
+        group: 'review_state_mapping',
+        label: 'Review-State Mapping',
+        summary: 'Maps validation outcomes and review flags to human-review states.',
+        doesNotProve: [
+            'does not prove a human has reviewed, approved, executed, or accepted the packet'
+        ]
+    },
+    authority_claims: {
+        group: 'authority_claims',
+        label: 'Authority Claims',
+        summary: 'Blocks prohibited language that would imply operational authority or approval.',
+        doesNotProve: [
+            'does not prove the event is approved, safe, compliant, ready, or authorized for operations'
+        ]
+    },
+    source_labels_grounding: {
+        group: 'source_labels_grounding',
+        label: 'Source Labels / Grounding',
+        summary: 'Checks source-label presence, canonical labels, and intra-packet label consistency.',
+        doesNotProve: [
+            'does not prove semantic source verification, source truth, source completeness, or source freshness'
+        ]
+    },
+    source_conflicts: {
+        group: 'source_conflicts',
+        label: 'Source Conflicts',
+        summary: 'Checks that source conflicts are surfaced for human review rather than resolved by the packet.',
+        doesNotProve: [
+            'does not prove conflict resolution, source precedence, source truth, or permission to choose a winning source'
+        ]
+    },
+    declared_provenance: {
+        group: 'declared_provenance',
+        label: 'Declared Provenance',
+        summary: 'Checks deterministic declared-provenance metadata for the single synthetic source packet reference.',
+        doesNotProve: [
+            'does not prove source-packet binding, source file existence, source authenticity, semantic support, or operational approval'
+        ]
+    },
+    provenance_identity: {
+        group: 'provenance_identity',
+        label: 'Provenance Identity',
+        summary: 'Checks deterministic consistency across declared source packet ID, version, and path slug metadata.',
+        doesNotProve: [
+            'does not prove source-packet binding, source file existence, source authenticity, or source immutability'
+        ]
+    },
+    provenance_metadata: {
+        group: 'provenance_metadata',
+        label: 'Provenance Metadata',
+        summary: 'Checks date, preparation role, and sensitivity metadata for the synthetic L1 source packet reference.',
+        doesNotProve: [
+            'does not prove source freshness, human approval, reviewer identity, real data permission, or operational approval'
+        ]
+    },
+    operational_approval_boundary: {
+        group: 'operational_approval_boundary',
+        label: 'Operational Approval Boundary',
+        summary: 'Describes report-level fields that keep packets draft-only and require human action before use.',
+        doesNotProve: [
+            'does not prove operational approval, human approval, permission to execute, or authority to update source-of-truth records'
+        ]
+    }
+} as const satisfies Record<
+    EventReadinessRuntimeOutputValidationCheckGroup,
+    EventReadinessRuntimeOutputValidationCheckGroupMetadata
+>;
+
 export const eventReadinessValidationCheckGroupById = {
     event_readiness_schema_validation: 'schema',
     event_readiness_review_flag_mapping: 'review_state_mapping',

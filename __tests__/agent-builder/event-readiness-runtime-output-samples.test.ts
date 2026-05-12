@@ -8,6 +8,7 @@ import {
     eventReadinessRuntimeOutputPacketSchema
 } from '../../src/agent-builder/runtime/event-readiness-output-schema';
 import {
+    eventReadinessValidationCheckGroupMetadataByGroup,
     eventReadinessValidationCheckGroupById,
     validateEventReadinessRuntimeOutput
 } from '../../src/agent-builder/runtime/event-readiness-output-validation';
@@ -204,6 +205,16 @@ const expectedValidationCheckGroupsById = {
 
 const expectedValidationCheckIds = Object.keys(expectedValidationCheckGroupsById);
 
+const highRiskValidationGroupLanguage = {
+    schema: ['operational approval'],
+    governance_draft_posture: ['operational approval'],
+    source_labels_grounding: ['semantic source verification'],
+    source_conflicts: ['resolution'],
+    declared_provenance: ['source-packet binding'],
+    provenance_metadata: ['source freshness', 'real data'],
+    operational_approval_boundary: ['operational approval']
+} as const;
+
 const loadSamplePacket = (fileName: string): EventReadinessSamplePacket =>
     JSON.parse(fs.readFileSync(path.join(runtimeOutputDirectory, fileName), 'utf8')) as EventReadinessSamplePacket;
 
@@ -391,6 +402,51 @@ describe('Event Readiness future runtime-output sample packets', () => {
             for (const check of report.checks) {
                 expect(check.group).toBe(eventReadinessValidationCheckGroupById[check.id]);
                 expect(check.group).toBeDefined();
+            }
+        }
+    });
+
+    it('defines human-readable metadata for every existing validation check group', () => {
+        expect(Object.keys(eventReadinessValidationCheckGroupMetadataByGroup)).toEqual(expectedValidationCheckGroups);
+
+        for (const group of expectedValidationCheckGroups) {
+            const metadata = eventReadinessValidationCheckGroupMetadataByGroup[group];
+
+            expect(metadata.group).toBe(group);
+            expect(metadata.label.trim()).toBeTruthy();
+            expect(metadata.summary.trim()).toBeTruthy();
+            expect(metadata.doesNotProve.length).toBeGreaterThan(0);
+
+            for (const boundary of metadata.doesNotProve) {
+                expect(boundary.trim()).toBeTruthy();
+            }
+        }
+    });
+
+    it('resolves every emitted check group to human-readable metadata without changing outcomes', () => {
+        for (const sample of sampleCases) {
+            const report = validateEventReadinessRuntimeOutput(loadSamplePacket(sample.fileName));
+
+            expect(report.outcome).toBe(sample.expectedOutcome);
+            expect(report.reviewState).toBe(sample.expectedReviewState);
+            expect(report.approvedForOperationalUse).toBe(false);
+
+            for (const check of report.checks) {
+                expect(eventReadinessValidationCheckGroupMetadataByGroup[check.group]).toBeDefined();
+                expect(eventReadinessValidationCheckGroupMetadataByGroup[check.group].group).toBe(check.group);
+            }
+        }
+    });
+
+    it('keeps doesNotProve language on high-risk validation check groups', () => {
+        for (const [group, requiredPhrases] of Object.entries(highRiskValidationGroupLanguage)) {
+            const doesNotProveText =
+                eventReadinessValidationCheckGroupMetadataByGroup[
+                    group as keyof typeof highRiskValidationGroupLanguage
+                ].doesNotProve.join(' ');
+
+            for (const requiredPhrase of requiredPhrases) {
+                expect(doesNotProveText).toContain(requiredPhrase);
             }
         }
     });
