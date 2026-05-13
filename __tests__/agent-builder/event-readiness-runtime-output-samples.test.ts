@@ -205,6 +205,30 @@ const expectedValidationCheckGroupsById = {
 
 const expectedValidationCheckIds = Object.keys(expectedValidationCheckGroupsById);
 
+const expectedDeclaredSourcePacketReferenceSummaryCheckIds = [
+    'single_source_packet_only',
+    'source_packet_kind_allowed',
+    'redaction_status_allowed',
+    'source_packet_id_format',
+    'source_packet_id_version_consistency',
+    'source_packet_id_path_slug_consistency',
+    'content_hash_nullable_for_l1',
+    'source_packet_path_bounded_to_fixtures',
+    'source_packet_path_matches_legacy_reference',
+    'source_labels_present_canonical',
+    'source_domains_omitted_reasons_allowed',
+    'source_labels_present_and_omitted_do_not_overlap',
+    'sources_used_covered_by_source_packet'
+];
+
+const expectedDeclaredSourcePacketReferenceSummaryBoundaries = [
+    'source file existence',
+    'source truth',
+    'semantic support',
+    'human approval',
+    'operational approval'
+];
+
 const highRiskValidationGroupLanguage = {
     schema: ['operational approval'],
     governance_draft_posture: ['operational approval'],
@@ -403,6 +427,44 @@ describe('Event Readiness future runtime-output sample packets', () => {
                 expect(check.group).toBe(eventReadinessValidationCheckGroupById[check.id]);
                 expect(check.group).toBeDefined();
             }
+        }
+    });
+
+    it('adds a non-authoritative declared source packet reference summary to sample reports', () => {
+        const report = validateEventReadinessRuntimeOutput(loadSamplePacket('blocked_escalation.valid.synthetic.json'));
+        const summary = report.declaredSourcePacketReferenceSummary;
+
+        expect(summary).toEqual({
+            mode: 'declared_metadata_only',
+            referencedSourcePacketId: 'event_readiness.source_packet.blocked_escalation.synthetic.v0.1',
+            referencedSourcePacketPath: 'fixtures/event_readiness/blocked_escalation.synthetic.yaml',
+            referencedSourcePacketKind: 'synthetic_fixture',
+            referencedSourcePacketVersion: 'v0.1',
+            referenceStatus: 'declared_reference_passed_existing_checks',
+            checksUsed: expectedDeclaredSourcePacketReferenceSummaryCheckIds,
+            doesNotProve: expect.any(Array)
+        });
+
+        for (const boundary of expectedDeclaredSourcePacketReferenceSummaryBoundaries) {
+            expect(summary.doesNotProve).toContain(boundary);
+        }
+    });
+
+    it('keeps the declared source packet reference summary report-facing and non-authoritative', () => {
+        for (const sample of sampleCases) {
+            const report = validateEventReadinessRuntimeOutput(loadSamplePacket(sample.fileName));
+            const summary = report.declaredSourcePacketReferenceSummary;
+            const summaryText = JSON.stringify(summary).toLowerCase();
+
+            expect(report.outcome).toBe(sample.expectedOutcome);
+            expect(report.reviewState).toBe(sample.expectedReviewState);
+            expect(report.approvedForOperationalUse).toBe(false);
+            expect(report.promotableToHumanReviewDraft).toBe(sample.expectedOutcome !== 'FAIL');
+            expect(summary.mode).toBe('declared_metadata_only');
+            expect(summary.checksUsed).toEqual(expectedDeclaredSourcePacketReferenceSummaryCheckIds);
+            expect(summaryText).not.toContain('verified source');
+            expect(summaryText).not.toContain('approved source');
+            expect(summaryText).not.toContain('source-packet binding');
         }
     });
 
@@ -658,6 +720,9 @@ describe('Event Readiness future runtime-output sample packets', () => {
         expect(report.checks.find(check => check.id === 'source_packet_path_bounded_to_fixtures')?.outcome).toBe(
             'FAIL'
         );
+        expect(report.declaredSourcePacketReferenceSummary.referenceStatus).toBe(
+            'declared_reference_failed_existing_checks'
+        );
         expect(report.errors.join('\n')).toContain(sourcePacketPath);
     });
 
@@ -671,6 +736,9 @@ describe('Event Readiness future runtime-output sample packets', () => {
         expect(report.checks.find(check => check.id === 'source_packet_path_matches_legacy_reference')?.outcome).toBe(
             'FAIL'
         );
+        expect(report.declaredSourcePacketReferenceSummary.referenceStatus).toBe(
+            'declared_reference_failed_existing_checks'
+        );
         expect(report.errors.join('\n')).toContain('must match source_packet_id_or_path');
     });
 
@@ -682,6 +750,9 @@ describe('Event Readiness future runtime-output sample packets', () => {
 
         expect(report.outcome).toBe('FAIL');
         expect(report.checks.find(check => check.id === 'source_packet_id_format')?.outcome).toBe('FAIL');
+        expect(report.declaredSourcePacketReferenceSummary.referenceStatus).toBe(
+            'declared_reference_failed_existing_checks'
+        );
         expect(report.errors.join('\n')).toContain('source_packets.0.source_packet_id: blocked_escalation');
     });
 
@@ -758,6 +829,7 @@ describe('Event Readiness future runtime-output sample packets', () => {
             const report = validateEventReadinessRuntimeOutput(packet);
 
             expect(report.outcome).toBe('PASS');
+            expect(report.declaredSourcePacketReferenceSummary.mode).toBe('declared_metadata_only');
             expect(readFileSpy).not.toHaveBeenCalled();
         } finally {
             readFileSpy.mockRestore();

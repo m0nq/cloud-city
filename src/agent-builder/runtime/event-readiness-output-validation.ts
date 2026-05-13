@@ -166,6 +166,20 @@ export type EventReadinessRuntimeOutputValidationCheck = {
     details: string;
 };
 
+export type EventReadinessDeclaredSourcePacketReferenceSummary = {
+    mode: 'declared_metadata_only';
+    referencedSourcePacketId?: string;
+    referencedSourcePacketPath?: string;
+    referencedSourcePacketKind?: string;
+    referencedSourcePacketVersion?: string;
+    referenceStatus:
+        | 'declared_reference_passed_existing_checks'
+        | 'declared_reference_failed_existing_checks'
+        | 'unavailable_schema_invalid';
+    checksUsed: EventReadinessRuntimeOutputValidationCheckId[];
+    doesNotProve: string[];
+};
+
 export type EventReadinessRuntimeOutputValidationReport = {
     outcome: EventReadinessRuntimeOutputOutcome;
     reviewState: EventReadinessReviewState;
@@ -175,6 +189,7 @@ export type EventReadinessRuntimeOutputValidationReport = {
     humanReviewRequiredBeforeAction: true;
     approvedForOperationalUse: false;
     promotableToHumanReviewDraft: boolean;
+    declaredSourcePacketReferenceSummary: EventReadinessDeclaredSourcePacketReferenceSummary;
 };
 
 export const eventReadinessOutcomeToReviewState: Record<
@@ -198,6 +213,65 @@ const makeCheck = (
     outcome,
     details
 });
+
+const declaredSourcePacketReferenceSummaryCheckIds = [
+    'single_source_packet_only',
+    'source_packet_kind_allowed',
+    'redaction_status_allowed',
+    'source_packet_id_format',
+    'source_packet_id_version_consistency',
+    'source_packet_id_path_slug_consistency',
+    'content_hash_nullable_for_l1',
+    'source_packet_path_bounded_to_fixtures',
+    'source_packet_path_matches_legacy_reference',
+    'source_labels_present_canonical',
+    'source_domains_omitted_reasons_allowed',
+    'source_labels_present_and_omitted_do_not_overlap',
+    'sources_used_covered_by_source_packet'
+] as const satisfies readonly EventReadinessRuntimeOutputValidationCheckId[];
+
+const declaredSourcePacketReferenceSummaryCheckIdSet = new Set<EventReadinessRuntimeOutputValidationCheckId>(
+    declaredSourcePacketReferenceSummaryCheckIds
+);
+
+const declaredSourcePacketReferenceSummaryDoesNotProve = [
+    'source file existence',
+    'source truth',
+    'source completeness',
+    'source freshness',
+    'semantic support',
+    'human approval',
+    'operational approval',
+    'permission to act'
+] as const;
+
+const buildDeclaredSourcePacketReferenceSummary = (
+    packet: EventReadinessRuntimeOutputPacket | undefined,
+    checks: EventReadinessRuntimeOutputValidationCheck[]
+): EventReadinessDeclaredSourcePacketReferenceSummary => {
+    const sourcePacket = packet?.source_packets[0];
+    const relevantChecks = checks.filter(check =>
+        declaredSourcePacketReferenceSummaryCheckIdSet.has(check.id)
+    );
+
+    return {
+        mode: 'declared_metadata_only',
+        referencedSourcePacketId: sourcePacket?.source_packet_id,
+        referencedSourcePacketPath: sourcePacket?.source_packet_path,
+        referencedSourcePacketKind: sourcePacket?.source_packet_kind,
+        referencedSourcePacketVersion: sourcePacket?.source_packet_version,
+        referenceStatus: packet
+            ? relevantChecks.every(check => check.outcome === 'PASS')
+                ? 'declared_reference_passed_existing_checks'
+                : 'declared_reference_failed_existing_checks'
+            : 'unavailable_schema_invalid',
+        checksUsed:
+            relevantChecks.length > 0
+                ? relevantChecks.map(check => check.id)
+                : ['event_readiness_schema_validation'],
+        doesNotProve: [...declaredSourcePacketReferenceSummaryDoesNotProve]
+    };
+};
 
 const summarizeSchemaIssues = (error: ZodError): string[] =>
     error.issues.map(issue => `${issue.path.join('.') || 'packet'}: ${issue.message}`);
@@ -554,7 +628,8 @@ const buildReport = ({
     errors,
     humanReviewRequiredBeforeAction: true,
     approvedForOperationalUse: false,
-    promotableToHumanReviewDraft: outcome !== 'FAIL'
+    promotableToHumanReviewDraft: outcome !== 'FAIL',
+    declaredSourcePacketReferenceSummary: buildDeclaredSourcePacketReferenceSummary(packet, checks)
 });
 
 export const validateEventReadinessRuntimeOutput = (
