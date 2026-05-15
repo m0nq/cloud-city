@@ -47,8 +47,18 @@ That Venue / Vendor runtime remains:
 - stdout-only by default
 - validated with the shared Venue / Vendor review packet Zod schema
 
-Event Readiness has no runtime generation or runtime-output validation yet. Its current governed baseline is local spec,
-registry, and seven-case pre-runtime fixture/eval validation only.
+Event Readiness has no runtime generation or model-call approval. Its current governed baseline is local spec,
+registry, seven-case pre-runtime fixture/eval validation, and deterministic pre-runtime runtime-output validation.
+
+The Event Readiness validator is local and non-authoritative. The `declaredSourcePacketReferenceSummary` report field is
+report-facing and declared-metadata-only. It is derived from already-parsed runtime-output metadata and existing
+validation checks. It does not add new validation authority and does not prove source file existence, source truth,
+source completeness, source freshness, semantic support, human approval, operational approval, or permission to act.
+
+Stronger source-packet binding remains unimplemented and unapproved. Event Readiness remains pre-runtime and below L2:
+no runtime generation, model calls, prompts, routes, tools, integrations, Drive sync, Drive writes, UI, real/redacted
+data use, source reads, source file existence checks, YAML source-packet parsing, content hashing, semantic source
+verification, operational approval, or autonomous action is approved.
 
 The completed SDK spike found:
 
@@ -130,8 +140,8 @@ Re-evaluate SDK, runtime, and model choices:
 
 ## Next Architecture Step
 
-Define Event Readiness local draft-only test planning, starting with
-`docs/agent-builder/decision-records/event-readiness-local-draft-only-test-planning.v0.1.md`, and mature
-registry/export/log drafting conventions before considering Event Readiness runtime-output validation, read-only Drive
-sync, UI, tools, routes, or integrations. Runtime expansion remains approval-gated and out of scope for the current
-Event Readiness baseline.
+Keep Event Readiness paused at the current deterministic pre-runtime validation milestone and reconcile governance
+records before considering any expansion. Future planning may clarify CLI report presentation or source-packet binding
+boundaries, but runtime expansion, model calls, read-only Drive sync, UI, tools, routes, integrations, real/redacted
+data, source reads, file existence checks, content hashing, semantic source verification, and operational approval remain
+approval-gated and out of scope for the current Event Readiness baseline.

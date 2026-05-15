@@ -71,15 +71,23 @@ This should still be local-only and should not add routes, tools, OAuth, MCP, Dr
 
 Status: complete.
 
-Next safe engineering area:
+Subsequent status after `be3b9e7 test(agent-builder): add declared source packet reference summary`:
 
-- Define Event Readiness local draft-only test planning before any runtime-output validation or runtime generation work.
-  The planning gate is recorded in
-  `docs/agent-builder/decision-records/event-readiness-local-draft-only-test-planning.v0.1.md`.
-- Mature local registry/export/log drafting conventions for governed artifacts.
-- Expand fixtures/evals before considering Event Readiness runtime-output validation.
-- Keep read-only Drive sync planning, runtime expansion, UI, tools, routes, and integrations out of scope until a
-  separate approval-gated phase.
+- Event Readiness now has deterministic pre-runtime runtime-output validation for synthetic draft packets.
+- `declaredSourcePacketReferenceSummary` is report-facing, non-authoritative, and declared-metadata-only.
+- It is derived from already-parsed runtime-output metadata and existing validation checks.
+- It does not add new validation authority and does not prove source file existence, source truth, completeness,
+  freshness, semantic support, human approval, operational approval, or permission to act.
+- Stronger source-packet binding remains unimplemented and unapproved.
+- Event Readiness remains pre-runtime and below L2.
+
+Next safe governance area:
+
+- Reconcile repo and Drive governance records around the completed report-clarity milestone.
+- Mature local registry/export/log drafting conventions for governed artifacts only after a separate approval gate.
+- Keep runtime generation, model calls, prompts, read-only Drive sync, UI, tools, routes, integrations, real/redacted
+  data, source reads, file existence checks, content hashing, semantic source verification, operational approval, and
+  autonomous action out of scope until separately approved.
 
 ## SDK Lifecycle & Re-Evaluation Policy
 

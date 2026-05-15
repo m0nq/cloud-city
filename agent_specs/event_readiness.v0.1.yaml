@@ -503,7 +503,7 @@ cooperation_review:
     - "Do not invent dry bar, staffing, compliance, accessibility, safety, or budget facts."
 
 mvp_readiness_assessment:
-  current_status: "governed_spec_fixture_eval_registry_baseline"
+  current_status: "governed_spec_fixture_eval_registry_runtime_output_validation_baseline"
   supported_artifacts:
     - "docs/agent-builder/intakes/event-readiness.intake.v0.1.md"
     - "docs/agent-builder/source-packets/event-readiness.source-packet-plan.v0.1.md"
@@ -522,23 +522,45 @@ mvp_readiness_assessment:
     - "fixtures/event_readiness/on_track_with_review_needed.synthetic.yaml"
     - "evals/event_readiness.eval-suite.yaml"
     - "registry/agent-registry.yaml"
+    - "src/agent-builder/runtime/event-readiness-output-schema.ts"
+    - "src/agent-builder/runtime/event-readiness-output-validation.ts"
+    - "__tests__/agent-builder/event-readiness-runtime-output-samples.test.ts"
+  runtime_output_validation_status: >
+    Event Readiness has deterministic pre-runtime runtime-output validation for synthetic draft packets.
+    The declaredSourcePacketReferenceSummary is report-facing, non-authoritative, and declared-metadata-only.
+    It is derived from already-parsed runtime-output metadata and existing validation checks. It does not add
+    new validation authority and does not prove source file existence, source truth, completeness, freshness,
+    semantic support, human approval, operational approval, or permission to act. Stronger source-packet binding
+    remains unimplemented and unapproved. Event Readiness remains pre-runtime and below L2.
   not_yet_approved:
     - "runtime generation"
-    - "runtime-output validation"
+    - "runtime/model calls"
+    - "prompts"
     - "scaffold command"
     - "routes"
     - "integrations"
+    - "Drive sync or Drive writes"
+    - "UI"
+    - "real or redacted event data"
+    - "source reads"
+    - "source file existence checks"
+    - "YAML source-packet parsing"
+    - "content hashing"
+    - "semantic source verification"
     - "model or tool access"
     - "external action behavior"
+    - "operational approval"
 
 review_outcome:
   outcome: "ready_for_local_registry_fixture_eval_validation_only"
   rationale: >
     The spec is bounded to local, draft-only, source-grounded Event Readiness review and aligns with the existing
-    seven-case deterministic pre-runtime fixture/eval baseline and local read-only registry entry. It does not approve
-    runtime, scaffold, routes, integrations, model/tool access, Drive writes, or external action.
+    seven-case deterministic pre-runtime fixture/eval baseline, local read-only registry entry, and deterministic
+    pre-runtime runtime-output validation. It does not approve runtime generation, model calls, prompts, scaffold,
+    routes, integrations, Drive writes, UI, real/redacted data, source reads, file existence checks, content hashing,
+    semantic source verification, operational approval, or external action.
 
 future_cleanup:
-  - "Keep Event Readiness runtime-output validation out of scope until a separate governed implementation step is approved."
+  - "Keep Event Readiness runtime generation, model calls, source-packet binding, and semantic source verification out of scope until separate governed implementation steps are approved."
 
 next_action: "Validate this spec, fixture, eval suite, and registry locally before any runtime, scaffold, or integration work."

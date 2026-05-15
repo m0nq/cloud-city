@@ -21,10 +21,21 @@ The Agent Builder can:
 Current status:
 
 - Venue / Vendor spec, registry entry, fixture/eval suite, runtime prototype, and runtime-output validator merged
-- Event Readiness spec, registry entry, seven-case pre-runtime fixture/eval ladder, and domain-aware spec policy validation merged
+- Event Readiness spec, registry entry, seven-case pre-runtime fixture/eval ladder, deterministic pre-runtime
+  runtime-output validation, and domain-aware spec policy validation merged
 - Vercel runtime prototype merged
 - runtime-output validator merged
-- Event Readiness has no runtime generation or runtime-output validation approval
+- Event Readiness has no runtime generation or model-call approval
+- Event Readiness remains pre-runtime and below L2
+
+Event Readiness report clarity:
+
+- `declaredSourcePacketReferenceSummary` is report-facing, non-authoritative, and declared-metadata-only
+- it is derived from already-parsed runtime-output metadata and existing validation checks
+- it does not add new validation authority
+- it does not prove source file existence, source truth, completeness, freshness, semantic support, human approval,
+  operational approval, or permission to act
+- stronger source-packet binding remains unimplemented and unapproved
 
 ## Current Limits
 
@@ -75,13 +86,19 @@ pnpm agent-builder eval run evals/venue_vendor_research.eval-suite.yaml
 pnpm agent-builder eval run evals/event_readiness.eval-suite.yaml
 ```
 
-4. For Venue / Vendor only, generate a runtime packet when local runtime env vars are configured:
+4. For Event Readiness, use deterministic pre-runtime validation artifacts only.
+
+Event Readiness has no approved runtime generation, model calls, prompts, tools, routes, integrations, Drive sync, UI,
+source reads, file existence checks, content hashing, semantic source verification, real/redacted data use, operational
+approval, or autonomous action. `PASS` means pass for human review only. `approvedForOperationalUse` remains false.
+
+5. For Venue / Vendor only, generate a runtime packet when local runtime env vars are configured:
 
 ```sh
 pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
-5. For Venue / Vendor only, validate a saved runtime packet:
+6. For Venue / Vendor only, validate a saved runtime packet:
 
 ```sh
 pnpm agent-builder runtime validate-output --output <path> --fixture <fixture>
@@ -95,18 +112,19 @@ pnpm agent-builder runtime validate-output \
   --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
-6. Or generate and validate a Venue / Vendor packet through a pipe:
+7. Or generate and validate a Venue / Vendor packet through a pipe:
 
 ```sh
 pnpm --silent agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml \
   | pnpm --silent agent-builder runtime validate-output --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
-7. Complete human review before any action.
+8. Complete human review before any action.
 
 ## Interpreting Results
 
-`PASS` means the local deterministic checks passed. It does not mean the packet is approved for action.
+`PASS` means the local deterministic checks passed for human review only. It does not mean the packet is approved for
+action.
 
 `PARTIAL` means the output is schema-valid enough to inspect, but one or more review flags need human attention. Treat this as not approved.
 
@@ -282,8 +300,8 @@ Near-term:
 
 Later:
 
-- internal UI after runtime-output validation is established
-- Event Readiness runtime-output validation only after separate approval
+- internal UI after a separate UI planning and approval gate
+- Event Readiness CLI report presentation after separate planning, without changing validation authority
 - approval workflow design
 - governed runtime review for OpenAI Agents SDK JS
 - local/open-weight model feasibility spike if those models pass Cloud City eval gates

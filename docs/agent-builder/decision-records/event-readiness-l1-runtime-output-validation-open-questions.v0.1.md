@@ -1,11 +1,18 @@
 # Event Readiness L1 Runtime-Output Validation Open Questions v0.1
 
-Decision record status: proposed narrowing record.
+Decision record status: historical narrowing record.
 
-This is a docs-only decision record. It does not approve Event Readiness runtime implementation, runtime-output
+This is a docs-only decision record. It did not itself approve Event Readiness runtime implementation, runtime-output
 validation code, model calls, prompts, routes, tools, integrations, Drive sync, Drive writes, UI, source-of-truth
 updates, autonomous action, operational use, or changes to validators, schemas, runtime files, application code,
 fixtures, eval behavior, or test behavior.
+
+Supersession note after `be3b9e7`: deterministic pre-runtime runtime-output validation now exists for synthetic Event
+Readiness draft packets, including the report-facing, non-authoritative, declared-metadata-only
+`declaredSourcePacketReferenceSummary`. That summary is derived from already-parsed runtime-output metadata and existing
+validation checks. It does not add new validation authority and does not prove source file existence, source truth,
+completeness, freshness, semantic support, human approval, operational approval, or permission to act. Stronger
+source-packet binding remains unimplemented and unapproved. Event Readiness remains pre-runtime and below L2.
 
 All generated Event Readiness packets remain drafts. Humans approve. Humans execute.
 
@@ -39,8 +46,11 @@ governed defaults, explicit deferrals, and evidence requirements.
 
 Current baseline:
 
-- Event Readiness is L0 spec-only / pre-runtime.
-- Event Readiness has no approved runtime generation or runtime-output validation implementation.
+- Event Readiness is pre-runtime and below L2.
+- Event Readiness has deterministic pre-runtime runtime-output validation for synthetic draft packets.
+- Event Readiness has no approved runtime generation, model calls, prompts, source reads, file existence checks, content
+  hashing, semantic source verification, tools, routes, integrations, Drive sync, UI, real/redacted data use,
+  operational approval, or autonomous action.
 - The latest milestone is
   `73bd593 docs(agent-builder): add event readiness l1 validation planning`.
 - The Event Readiness v0.1 spec, registry entry, seven-case fixture ladder, and deterministic eval suite exist.

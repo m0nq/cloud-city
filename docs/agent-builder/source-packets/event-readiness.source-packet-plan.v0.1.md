@@ -1,9 +1,15 @@
 # Event Readiness Source Packet Plan v0.1
 
 Current-status note: this is the historical source-packet planning record for Event Readiness v0.1. The synthetic source
-packet, manual-test packet, output-contract review, six synthetic fixtures, eval suite, spec, and registry entry now
-exist as a validated pre-runtime baseline. This document still governs source-packet expectations for future local
-draft-only test planning; it does not approve runtime, routes, tools, integrations, Drive sync, Drive writes, or UI.
+packet, manual-test packet, output-contract review, seven synthetic fixtures, eval suite, spec, registry entry, and
+deterministic pre-runtime runtime-output validation now exist as a validated pre-runtime baseline.
+`declaredSourcePacketReferenceSummary` is report-facing, non-authoritative, and declared-metadata-only; it does not add
+new validation authority or prove source file existence, source truth, completeness, freshness, semantic support, human
+approval, operational approval, or permission to act. Stronger source-packet binding remains unimplemented and
+unapproved. This document still governs source-packet expectations for future local draft-only test planning; it does
+not approve runtime generation, model calls, routes, tools, integrations, Drive sync, Drive writes, UI, source reads,
+file existence checks, content hashing, semantic source verification, real/redacted data use, operational approval, or
+autonomous action.
 
 ## 1. Purpose
 

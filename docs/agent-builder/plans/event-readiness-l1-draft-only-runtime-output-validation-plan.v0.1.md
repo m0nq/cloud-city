@@ -1,10 +1,18 @@
 # Event Readiness L1 Draft-Only Runtime-Output Validation Plan v0.1
 
-Status: planning artifact only.
+Status: historical planning artifact.
 
-This document does not approve Event Readiness runtime implementation, runtime-output validation code, model calls,
-routes, tools, integrations, Drive sync, Drive writes, UI, source-of-truth updates, autonomous action, operational use,
-or changes to validators, schemas, runtime files, application code, fixtures, eval behavior, or test behavior.
+This document did not itself approve Event Readiness runtime implementation, runtime-output validation code, model
+calls, routes, tools, integrations, Drive sync, Drive writes, UI, source-of-truth updates, autonomous action,
+operational use, or changes to validators, schemas, runtime files, application code, fixtures, eval behavior, or test
+behavior.
+
+Supersession note after `be3b9e7`: deterministic pre-runtime runtime-output validation now exists for synthetic Event
+Readiness draft packets, including the report-facing, non-authoritative, declared-metadata-only
+`declaredSourcePacketReferenceSummary`. That summary is derived from already-parsed runtime-output metadata and
+existing validation checks. It does not add new validation authority and does not prove source file existence, source
+truth, completeness, freshness, semantic support, human approval, operational approval, or permission to act. Stronger
+source-packet binding remains unimplemented and unapproved. Event Readiness remains pre-runtime and below L2.
 
 All generated Event Readiness packets remain drafts. Humans approve. Humans execute.
 
@@ -42,7 +50,7 @@ mean the event is ready, approved, cleared, compliant, safe, or good to proceed.
 
 ## 3. Relationship To The L0 Seven-Case Pre-Runtime Baseline
 
-Current Event Readiness v0.1 remains L0 spec-only / pre-runtime.
+Current Event Readiness v0.1 remains pre-runtime and below L2.
 
 The current validated baseline includes:
 
@@ -50,6 +58,8 @@ The current validated baseline includes:
 - `registry/agent-registry.yaml`
 - seven synthetic Event Readiness fixtures under `fixtures/event_readiness/`
 - `evals/event_readiness.eval-suite.yaml`
+- `src/agent-builder/runtime/event-readiness-output-schema.ts`
+- `src/agent-builder/runtime/event-readiness-output-validation.ts`
 - `docs/agent-builder/plans/event-readiness-local-draft-only-test-plan.v0.1.md`
 - `docs/agent-builder/output-contracts/event-readiness.output-contract-review.v0.1.md`
 - `docs/agent-builder/decision-records/event-readiness-local-draft-only-test-planning.v0.1.md`

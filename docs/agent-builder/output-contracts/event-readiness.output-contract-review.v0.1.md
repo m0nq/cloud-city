@@ -6,12 +6,18 @@ This is not a schema, spec, fixture, eval, runtime artifact, registry approval, 
 
 Human review is required before fixture, eval, YAML spec, or runtime work.
 
-Current status: the Event Readiness v0.1 spec, registry entry, deterministic eval suite, and seven-case pre-runtime
-fixture ladder now exist. Runtime generation and runtime-output validation remain unapproved and out of scope.
+Current status: the Event Readiness v0.1 spec, registry entry, deterministic eval suite, seven-case pre-runtime fixture
+ladder, and deterministic pre-runtime runtime-output validation now exist. Runtime generation, model calls, prompts,
+tools, routes, integrations, Drive sync, UI, source reads, file existence checks, content hashing, semantic source
+verification, real/redacted data use, operational approval, and autonomous action remain unapproved and out of scope.
 
 Supersession note: sections that say "future schema/spec/fixture/eval work" preserve the historical planning path.
-For the current baseline, the spec, fixtures, registry entry, and deterministic eval suite are implemented. The next
-unapproved gate is local draft-only test planning before any Event Readiness runtime-output validation work.
+For the current baseline, the spec, fixtures, registry entry, deterministic eval suite, and deterministic pre-runtime
+runtime-output validator are implemented. `declaredSourcePacketReferenceSummary` is report-facing, non-authoritative,
+and declared-metadata-only. It is derived from already-parsed runtime-output metadata and existing validation checks. It
+does not add new validation authority and does not prove source file existence, source truth, completeness, freshness,
+semantic support, human approval, operational approval, or permission to act. Stronger source-packet binding remains
+unimplemented and unapproved. Event Readiness remains pre-runtime and below L2.
 
 ## 1. Review Purpose
 
@@ -59,8 +65,9 @@ robustness.
 
 ## 4. Required Structured Schema Fields
 
-These were proposed fields for schema/spec work and now align with the implemented Event Readiness v0.1 spec and
-fixture/eval baseline. They are still not a runtime-output schema implementation.
+These were proposed fields for schema/spec work and now align with the implemented Event Readiness v0.1 spec,
+fixture/eval baseline, and deterministic pre-runtime runtime-output schema. The schema supports synthetic draft packet
+validation only and does not approve runtime generation, model calls, or operational use.
 
 | Field name | Required? | Reason | Source from manual-test packet | Later eval implication |
 | --- | --- | --- | --- | --- |
@@ -222,5 +229,6 @@ Do not require these yet:
 Treat this as the historical output-contract planning record for the implemented Event Readiness v0.1 pre-runtime
 baseline.
 
-Next planning should define local draft-only Event Readiness test expectations before any runtime-output validation,
-runtime generation, routes, tools, integrations, Drive sync, Drive writes, or UI work.
+Next planning should reconcile governance records and clarify report interpretation before any runtime generation, model
+calls, prompts, routes, tools, integrations, Drive sync, Drive writes, UI, source reads, file existence checks, content
+hashing, semantic source verification, real/redacted data use, operational approval, or autonomous action.

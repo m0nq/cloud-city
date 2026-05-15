@@ -124,8 +124,14 @@ state and future blocked states obvious.
 | L4 | Bounded autonomous low-risk action | The agent may perform narrow low-risk actions within strict bounds and audit logs. | Not approved; requires future governance and proof. |
 | L5 | Prohibited or exceptional autonomy | The agent could make commitments, send external communications, spend money, update source-of-truth systems, or decide compliance/safety. | Prohibited unless an exceptional future governance decision explicitly allows a narrow case. |
 
-Event Readiness currently remains L0. It has no approved runtime generation, runtime-output validation, routes, tools,
-integrations, Drive sync, Drive writes, UI, model calls, or operational use.
+Event Readiness currently remains pre-runtime and below L2. It has deterministic pre-runtime runtime-output validation
+for synthetic draft packets, but no approved runtime generation, model calls, prompts, routes, tools, integrations,
+Drive sync, Drive writes, UI, source reads, file existence checks, content hashing, semantic source verification,
+real/redacted data use, operational approval, or autonomous action.
+
+`declaredSourcePacketReferenceSummary` is report-facing, non-authoritative, and declared-metadata-only. It does not add
+new validation authority and does not prove source file existence, source truth, completeness, freshness, semantic
+support, human approval, operational approval, or permission to act.
 
 ## 5. Future UI Surfaces
 
@@ -377,10 +383,12 @@ Event Readiness is the first conceptual example for this product experience.
 Current status:
 
 - Agent candidate: Event Readiness Assistant v0.1
-- Autonomy level: L0 spec-only
-- Current baseline: spec, registry entry, six synthetic fixtures, deterministic eval suite, and planning decision record
-- Not approved: runtime generation, runtime-output validation implementation, model calls, routes, tools, integrations,
-  Drive sync, Drive writes, UI, or operational use
+- Autonomy level: pre-runtime, below L2
+- Current baseline: spec, registry entry, seven synthetic fixtures, deterministic eval suite, deterministic pre-runtime
+  runtime-output validation, and report-facing declared source packet reference summary
+- Not approved: runtime generation, model calls, prompts, routes, tools, integrations, Drive sync, Drive writes, UI,
+  source reads, file existence checks, content hashing, semantic source verification, real/redacted data use,
+  operational approval, or autonomous action
 
 Creative Director mental model:
 "Teach Cloud City how to review whether an event packet is ready for human decision-making."
@@ -420,7 +428,8 @@ Future product walkthrough:
    scenarios as test oracles. Existing v0.1 fixtures now include the source-conflict pre-runtime slice.
 
 9. Approve agent status:
-   Event Readiness remains L0 until a separate planning gate and future runtime-output validation gate are approved.
+   Event Readiness remains pre-runtime and below L2 until separate planning gates approve any future runtime/model
+   experiment or source-binding work.
 
 10. Run draft-only agent:
     Not approved for Event Readiness v0.1.
