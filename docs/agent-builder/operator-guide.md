@@ -15,6 +15,8 @@ The Agent Builder can:
 - run deterministic eval suites against approved Venue / Vendor and Event Readiness fixtures
 - generate a draft Venue / Vendor review packet with the existing Vercel AI SDK runtime prototype
 - validate saved or piped Venue / Vendor runtime output before a human relies on it
+- validate synthetic Event Readiness review-record lifecycle examples through the direct deterministic L1.6 schema and
+  validator artifacts, with no CLI/operator wiring yet
 - enforce canonical approval gate IDs and structured confirmed fact sources
 - flag missing fixture-required approval gates, schema failures, implied commitment language, prohibited action leakage, and weak unknowns-vs-assumptions discipline
 
@@ -22,7 +24,8 @@ Current status:
 
 - Venue / Vendor spec, registry entry, fixture/eval suite, runtime prototype, and runtime-output validator merged
 - Event Readiness spec, registry entry, seven-case pre-runtime fixture/eval ladder, deterministic pre-runtime
-  runtime-output validation, and domain-aware spec policy validation merged
+  runtime-output validation, L1.6 synthetic review-record lifecycle validation, and domain-aware spec policy validation
+  merged
 - Vercel runtime prototype merged
 - runtime-output validator merged
 - Event Readiness has no runtime generation or model-call approval
@@ -36,6 +39,18 @@ Event Readiness report clarity:
 - it does not prove source file existence, source truth, completeness, freshness, semantic support, human approval,
   operational approval, or permission to act
 - stronger source-packet binding remains unimplemented and unapproved
+
+Event Readiness L1.6 review-record lifecycle validation:
+
+- exists as deterministic, in-memory, synthetic-only schema and validator artifacts
+- validates structure and boundary-safety posture for synthetic human-review lifecycle records only
+- has no CLI/operator wiring yet
+- does not prove event readiness, source truth, source file existence, source freshness, source completeness, semantic
+  source support, source-packet binding, runtime/model behavior, prompt quality, Drive authority, operational
+  correctness, real/redacted data safety, operational approval, or whether a human should act
+- preserves `PASS` as pass for human review only, `PARTIAL` as human-review-needed, and `FAIL` as blocking promotion to
+  usable human-review draft status
+- keeps `approvedForOperationalUse` false unless separately approved
 
 ## Current Limits
 
@@ -91,6 +106,8 @@ pnpm agent-builder eval run evals/event_readiness.eval-suite.yaml
 Event Readiness has no approved runtime generation, model calls, prompts, tools, routes, integrations, Drive sync, UI,
 source reads, file existence checks, content hashing, semantic source verification, real/redacted data use, operational
 approval, or autonomous action. `PASS` means pass for human review only. `approvedForOperationalUse` remains false.
+The L1.6 review-record lifecycle validator is available only as direct deterministic schema/validator/test artifacts in
+this milestone; it is not an operator CLI command.
 
 5. For Venue / Vendor only, generate a runtime packet when local runtime env vars are configured:
 

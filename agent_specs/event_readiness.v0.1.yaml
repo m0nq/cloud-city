@@ -503,7 +503,7 @@ cooperation_review:
     - "Do not invent dry bar, staffing, compliance, accessibility, safety, or budget facts."
 
 mvp_readiness_assessment:
-  current_status: "governed_spec_fixture_eval_registry_runtime_output_validation_baseline"
+  current_status: "governed_spec_fixture_eval_registry_runtime_output_review_record_lifecycle_validation_baseline"
   supported_artifacts:
     - "docs/agent-builder/intakes/event-readiness.intake.v0.1.md"
     - "docs/agent-builder/source-packets/event-readiness.source-packet-plan.v0.1.md"
@@ -525,6 +525,19 @@ mvp_readiness_assessment:
     - "src/agent-builder/runtime/event-readiness-output-schema.ts"
     - "src/agent-builder/runtime/event-readiness-output-validation.ts"
     - "__tests__/agent-builder/event-readiness-runtime-output-samples.test.ts"
+    - "src/agent-builder/review-record-lifecycle/schema.ts"
+    - "src/agent-builder/review-record-lifecycle/validation.ts"
+    - "__tests__/agent-builder/review-record-lifecycle.test.ts"
+    - "fixtures/agent-builder/review-record-lifecycle/valid_complete_pass_review_record.synthetic.json"
+    - "fixtures/agent-builder/review-record-lifecycle/valid_partial_blocked_pending_human_resolution.synthetic.json"
+    - "fixtures/agent-builder/review-record-lifecycle/valid_fail_rejected_for_validation_failure.synthetic.json"
+    - "fixtures/agent-builder/review-record-lifecycle/invalid_missing_required_field.synthetic.json"
+    - "fixtures/agent-builder/review-record-lifecycle/invalid_unsupported_lifecycle_state.synthetic.json"
+    - "fixtures/agent-builder/review-record-lifecycle/invalid_unsupported_human_review_disposition.synthetic.json"
+    - "fixtures/agent-builder/review-record-lifecycle/invalid_operational_approval_claim.synthetic.json"
+    - "fixtures/agent-builder/review-record-lifecycle/invalid_source_verification_claim.synthetic.json"
+    - "fixtures/agent-builder/review-record-lifecycle/invalid_real_or_redacted_data_claim.synthetic.json"
+    - "fixtures/agent-builder/review-record-lifecycle/invalid_agent_action_next_step.synthetic.json"
   runtime_output_validation_status: >
     Event Readiness has deterministic pre-runtime runtime-output validation for synthetic draft packets.
     The declaredSourcePacketReferenceSummary is report-facing, non-authoritative, and declared-metadata-only.
@@ -532,6 +545,15 @@ mvp_readiness_assessment:
     new validation authority and does not prove source file existence, source truth, completeness, freshness,
     semantic support, human approval, operational approval, or permission to act. Stronger source-packet binding
     remains unimplemented and unapproved. Event Readiness remains pre-runtime and below L2.
+  review_record_lifecycle_validation_status: >
+    Event Readiness has deterministic in-memory synthetic-only L1.6 review-record lifecycle validation for synthetic
+    human-review lifecycle examples. This slice validates structure and boundary-safety posture only. It does not
+    approve operational use, runtime/model calls, prompts, routes, tools, integrations, Drive sync, UI, source reads,
+    file existence checks, content hashing, semantic source verification, source-packet binding, real/redacted event
+    data, operational approval, autonomous action, or whether Cloud City should execute a real event decision.
+    PASS remains pass for human review only. PARTIAL remains human-review-needed. FAIL blocks promotion to usable
+    human-review draft status. approvedForOperationalUse remains false unless separately approved. Validation is not
+    approval.
   not_yet_approved:
     - "runtime generation"
     - "runtime/model calls"
@@ -547,6 +569,7 @@ mvp_readiness_assessment:
     - "YAML source-packet parsing"
     - "content hashing"
     - "semantic source verification"
+    - "review-record lifecycle CLI or operator wiring"
     - "model or tool access"
     - "external action behavior"
     - "operational approval"
@@ -556,9 +579,10 @@ review_outcome:
   rationale: >
     The spec is bounded to local, draft-only, source-grounded Event Readiness review and aligns with the existing
     seven-case deterministic pre-runtime fixture/eval baseline, local read-only registry entry, and deterministic
-    pre-runtime runtime-output validation. It does not approve runtime generation, model calls, prompts, scaffold,
-    routes, integrations, Drive writes, UI, real/redacted data, source reads, file existence checks, content hashing,
-    semantic source verification, operational approval, or external action.
+    pre-runtime runtime-output validation plus deterministic synthetic-only review-record lifecycle validation. It does
+    not approve runtime generation, model calls, prompts, scaffold, routes, integrations, Drive writes, UI,
+    real/redacted data, source reads, file existence checks, content hashing, semantic source verification,
+    source-packet binding, operational approval, or external action.
 
 future_cleanup:
   - "Keep Event Readiness runtime generation, model calls, source-packet binding, and semantic source verification out of scope until separate governed implementation steps are approved."

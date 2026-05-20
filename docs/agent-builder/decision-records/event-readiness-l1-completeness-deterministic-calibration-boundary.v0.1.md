@@ -2,6 +2,13 @@
 
 Decision record status: proposed L1 completeness boundary.
 
+Status note after `d67f493 test(agent-builder): add review record lifecycle validation`: this historical L1 boundary is
+superseded only for current status tracking by the L1.6 deterministic in-memory synthetic-only review-record lifecycle
+validation slice. That slice validates synthetic human-review lifecycle record structure and boundary-safety posture
+only. It does not approve CLI/operator wiring, runtime generation, model calls, prompts, routes, tools, integrations,
+Drive sync, UI, source reads, file existence checks, content hashing, semantic source verification, source-packet
+binding, real/redacted event data, operational approval, or autonomous action.
+
 This is a docs-only decision record. It does not approve Event Readiness runtime generation, model calls, prompts,
 CLI wiring, routes, tools, integrations, Drive sync, Drive writes by local agents, UI, real event data, operational use,
 source-packet binding implementation, semantic source verification, or changes to validators, schemas, runtime files,

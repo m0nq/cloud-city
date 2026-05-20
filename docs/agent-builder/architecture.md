@@ -48,7 +48,9 @@ That Venue / Vendor runtime remains:
 - validated with the shared Venue / Vendor review packet Zod schema
 
 Event Readiness has no runtime generation or model-call approval. Its current governed baseline is local spec,
-registry, seven-case pre-runtime fixture/eval validation, and deterministic pre-runtime runtime-output validation.
+registry, seven-case pre-runtime fixture/eval validation, deterministic pre-runtime runtime-output validation, and the
+L1.6 deterministic in-memory synthetic-only review-record lifecycle validation slice merged in
+`d67f493 test(agent-builder): add review record lifecycle validation`.
 
 The Event Readiness validator is local and non-authoritative. The `declaredSourcePacketReferenceSummary` report field is
 report-facing and declared-metadata-only. It is derived from already-parsed runtime-output metadata and existing
@@ -59,6 +61,14 @@ Stronger source-packet binding remains unimplemented and unapproved. Event Readi
 no runtime generation, model calls, prompts, routes, tools, integrations, Drive sync, Drive writes, UI, real/redacted
 data use, source reads, source file existence checks, YAML source-packet parsing, content hashing, semantic source
 verification, operational approval, or autonomous action is approved.
+
+The L1.6 review-record lifecycle validator is a separate deterministic validation surface for synthetic human-review
+lifecycle records. It checks structure and boundary-safety posture only. It has no CLI/operator wiring in this slice and
+does not validate event readiness, source truth, source file existence, source freshness, source completeness, semantic
+source support, source-packet binding, real/redacted data safety, runtime/model behavior, prompt quality, Drive
+authority, operational correctness, or whether a human should act. `PASS` remains pass for human review only,
+`PARTIAL` remains human-review-needed, `FAIL` blocks promotion to usable human-review draft status, and
+`approvedForOperationalUse` remains false unless separately approved.
 
 The completed SDK spike found:
 
@@ -140,8 +150,9 @@ Re-evaluate SDK, runtime, and model choices:
 
 ## Next Architecture Step
 
-Keep Event Readiness paused at the current deterministic pre-runtime validation milestone and reconcile governance
-records before considering any expansion. Future planning may clarify CLI report presentation or source-packet binding
-boundaries, but runtime expansion, model calls, read-only Drive sync, UI, tools, routes, integrations, real/redacted
-data, source reads, file existence checks, content hashing, semantic source verification, and operational approval remain
-approval-gated and out of scope for the current Event Readiness baseline.
+Keep Event Readiness paused at the current deterministic pre-runtime validation and L1.6 review-record lifecycle
+milestones before considering any expansion. Future planning may clarify CLI report presentation, lifecycle review
+record operator ergonomics, or source-packet binding boundaries, but runtime expansion, model calls, read-only Drive
+sync, UI, tools, routes, integrations, real/redacted data, source reads, file existence checks, content hashing,
+semantic source verification, source-packet binding, operational approval, and autonomous action remain approval-gated
+and out of scope for the current Event Readiness baseline.
