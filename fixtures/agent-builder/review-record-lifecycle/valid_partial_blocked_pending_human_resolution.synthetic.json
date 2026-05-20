@@ -1,0 +1,44 @@
+{
+  "review_record_id": "event_readiness.review_record.partial_blocked.synthetic.v0.1",
+  "review_date": "2026-05-19",
+  "reviewer_hats": ["Operations / Production Lead", "Governance / Risk reviewer"],
+  "packet_id_or_filename": "sparse_but_reviewable.partial.synthetic.json",
+  "synthetic_status": "synthetic_local_test_only",
+  "validation_command_or_evidence_source": "declared synthetic Event Readiness L1.6 validation report metadata",
+  "validation_outcome": "PARTIAL",
+  "lifecycle_state": "blocked_pending_human_resolution",
+  "human_review_disposition": "blocked_pending_human_resolution",
+  "approvedForOperationalUse": false,
+  "operational_approval_status": "not_granted",
+  "declared_source_summary_reviewed": {
+    "applicable": true,
+    "mode": "declared_metadata_only",
+    "referenced_source_packet_id": "event_readiness.source_packet.sparse_but_reviewable.synthetic.v0.1",
+    "referenced_source_packet_path": "fixtures/event_readiness/sparse_but_reviewable.synthetic.yaml",
+    "does_not_prove_boundary_reviewed": true
+  },
+  "does_not_prove": [
+    "source file existence",
+    "source truth",
+    "source freshness",
+    "source completeness",
+    "semantic source support",
+    "source-packet binding",
+    "event readiness",
+    "operational approval",
+    "permission to act"
+  ],
+  "source_metadata_referenced": true,
+  "source_grounded_clarification_reviewed": true,
+  "source_grounded_clarification": "Source-grounded at L1.6 means source-labeled and declared-metadata-aware only; it does not prove source truth, source file existence, source freshness, source completeness, semantic support, source-packet binding, human approval, operational approval, or permission to act.",
+  "data_boundary": {
+    "real_event_data_used": false,
+    "redacted_event_data_used": false,
+    "privacy_safety_for_real_or_redacted_data_claimed": false
+  },
+  "unresolved_human_owned_decisions": [
+    "Human reviewer must resolve omitted source-domain review questions before relying on the packet as a draft reference."
+  ],
+  "prohibited_actions_statement": "This review record does not authorize runtime, model calls, prompts, routes, tools, integrations, Drive sync, Drive writes, source reads, file existence checks, content hashing, semantic source verification, source-packet binding, operational approval, or autonomous action.",
+  "next_human_owned_step": "Operations / Production Lead decides what missing synthetic packet domains need human resolution."
+}

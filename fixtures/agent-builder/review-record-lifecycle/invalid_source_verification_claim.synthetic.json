@@ -1,0 +1,32 @@
+{
+  "review_record_id": "event_readiness.review_record.source_verification_claim.synthetic.v0.1",
+  "review_date": "2026-05-19",
+  "reviewer_hats": ["Governance / Risk reviewer"],
+  "packet_id_or_filename": "blocked_escalation.valid.synthetic.json",
+  "synthetic_status": "synthetic_local_test_only",
+  "validation_command_or_evidence_source": "declared synthetic Event Readiness L1.6 validation report metadata",
+  "validation_outcome": "FAIL",
+  "lifecycle_state": "rejected_for_scope_or_boundary_violation",
+  "human_review_disposition": "rejected_for_scope_or_boundary_violation",
+  "approvedForOperationalUse": false,
+  "operational_approval_status": "not_granted",
+  "declared_source_summary_reviewed": {
+    "applicable": true,
+    "mode": "verified_source",
+    "referenced_source_packet_id": "event_readiness.source_packet.blocked_escalation.synthetic.v0.1",
+    "referenced_source_packet_path": "fixtures/event_readiness/blocked_escalation.synthetic.yaml",
+    "does_not_prove_boundary_reviewed": false
+  },
+  "does_not_prove": ["operational approval", "permission to act"],
+  "source_metadata_referenced": true,
+  "source_grounded_clarification_reviewed": true,
+  "source_grounded_clarification": "The source packet was verified and semantically supports the packet.",
+  "data_boundary": {
+    "real_event_data_used": false,
+    "redacted_event_data_used": false,
+    "privacy_safety_for_real_or_redacted_data_claimed": false
+  },
+  "unresolved_human_owned_decisions": [],
+  "prohibited_actions_statement": "This record does not authorize operational approval or autonomous action.",
+  "next_human_owned_step": "Governance / Risk reviewer records the boundary violation."
+}
