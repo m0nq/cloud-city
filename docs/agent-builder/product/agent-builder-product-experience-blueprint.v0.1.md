@@ -125,9 +125,11 @@ state and future blocked states obvious.
 | L5 | Prohibited or exceptional autonomy | The agent could make commitments, send external communications, spend money, update source-of-truth systems, or decide compliance/safety. | Prohibited unless an exceptional future governance decision explicitly allows a narrow case. |
 
 Event Readiness currently remains pre-runtime and below L2. It has deterministic pre-runtime runtime-output validation
-for synthetic draft packets, but no approved runtime generation, model calls, prompts, routes, tools, integrations,
-Drive sync, Drive writes, UI, source reads, file existence checks, content hashing, semantic source verification,
-real/redacted data use, operational approval, or autonomous action.
+for synthetic draft packets and deterministic in-memory synthetic-only L1.6 review-record lifecycle validation. The
+L1.6 Operator-Readiness Review Charter defines operator-readiness as evidence-review readiness, not execution
+readiness. Event Readiness has no approved CLI/operator wiring, runtime generation, model calls, prompts, routes, tools,
+integrations, Drive sync, Drive writes, UI, source reads, file existence checks, content hashing, semantic source
+verification, source-packet binding, real/redacted data use, operational approval, or autonomous action.
 
 `declaredSourcePacketReferenceSummary` is report-facing, non-authoritative, and declared-metadata-only. It does not add
 new validation authority and does not prove source file existence, source truth, completeness, freshness, semantic
@@ -385,10 +387,13 @@ Current status:
 - Agent candidate: Event Readiness Assistant v0.1
 - Autonomy level: pre-runtime, below L2
 - Current baseline: spec, registry entry, seven synthetic fixtures, deterministic eval suite, deterministic pre-runtime
-  runtime-output validation, and report-facing declared source packet reference summary
-- Not approved: runtime generation, model calls, prompts, routes, tools, integrations, Drive sync, Drive writes, UI,
-  source reads, file existence checks, content hashing, semantic source verification, real/redacted data use,
-  operational approval, or autonomous action
+  runtime-output validation, report-facing declared source packet reference summary, deterministic in-memory
+  synthetic-only L1.6 review-record lifecycle validation, and the
+  `675777f docs(agent-builder): add L1.6 operator-readiness review charter` milestone
+- L1.6 operator-readiness: evidence-review readiness, not execution readiness
+- Not approved: CLI/operator wiring, runtime generation, model calls, prompts, routes, tools, integrations, Drive sync,
+  Drive writes, UI or reviewer cockpit implementation, source reads, file existence checks, content hashing, semantic
+  source verification, source-packet binding, real/redacted data use, operational approval, or autonomous action
 
 Creative Director mental model:
 "Teach Cloud City how to review whether an event packet is ready for human decision-making."
@@ -492,13 +497,21 @@ This artifact does not approve:
 - UI implementation
 - routes
 - components
+- CLI/operator wiring
 - runtime expansion
 - Event Readiness runtime generation
 - model calls
+- prompts
 - tools
 - integrations
 - Drive sync
 - Drive writes
+- source reads
+- file existence checks
+- content hashing
+- semantic source verification
+- source-packet binding
+- real or redacted event data
 - source-of-truth updates
 - operational use
 - autonomous action
