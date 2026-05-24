@@ -230,7 +230,7 @@ This roadmap does not recommend implementation.
 
 Capability expansion requires future decision records before planning can advance:
 
-- Source-boundary decision record
+- [Source-boundary approval authority decision record](./decision-records/agent-builder-source-boundary-approval-authority.v0.1.md)
 - Privacy/data-boundary decision record
 - CLI/operator planning decision record
 - Runtime/model-call decision record
