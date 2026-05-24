@@ -11,6 +11,22 @@ current-state planning. Roadmap v0.2 remains useful historical governance contex
 review-record lifecycle validation, the L1.6 operator-readiness review charter, and the product blueprint alignment
 through `c45b005`.
 
+Post-roadmap governance status note: after Roadmap v0.3 was added at
+`2d6997d docs(agent-builder): add production readiness roadmap v0.3 scope`,
+humans recorded the Drive governance/status artifact
+`Cloud City — Agent Builder Privacy/Data Boundary Review v0.2` with the status label
+`Paused / Privacy-Data Boundary v0.2 Recorded` in
+`02_Operating_System -> 06_AI_Draft_and_Log_Protocol`.
+
+That Drive governance/status artifact is the current privacy/data-boundary planning context for data classes, domain
+overlays, handling permissions, surface/location boundaries, promotion evidence, and explicit non-approvals. It preserves
+this Roadmap v0.3 as the current repo-facing production-readiness planning artifact and preserves
+`Cloud City — Agent Builder Data & Privacy Taxonomy v0.1` as prior draft context.
+
+This repo note is linkage only. It does not copy the Drive record into the repo and does not approve implementation,
+operational use, source reads, source verification, runtime/model behavior, CLI/operator wiring, UI/reviewer cockpit work,
+Drive automation, public/real/redacted/personal data use, external communication, or autonomous action.
+
 This roadmap does not approve implementation, operational use, CLI/operator wiring, runtime/model calls, prompts,
 routes, tools, integrations, Drive sync, Drive writes by local agents, UI/reviewer cockpit work, source reads, file
 existence checks, content hashing, semantic source verification, source-packet binding, real or redacted event data,
@@ -169,6 +185,11 @@ Repo and governance evidence supporting the current maturity state:
 - `__tests__/agent-builder/review-record-lifecycle.test.ts`
 - `fixtures/agent-builder/review-record-lifecycle/*.synthetic.json`
 - Drive governance/status alignment through `c45b005`, by human-updated governance records
+- Post-roadmap Drive governance/status record:
+  `Cloud City — Agent Builder Privacy/Data Boundary Review v0.2`, status label
+  `Paused / Privacy-Data Boundary v0.2 Recorded`, located in
+  `02_Operating_System -> 06_AI_Draft_and_Log_Protocol`; linkage only, not repo doctrine, source authority, operational
+  approval, or permission for local agents to read from or write to Drive.
 
 This inventory is evidence for planning status only. It does not authorize local agents to write Drive records or treat
 Drive as a runtime source of truth.
