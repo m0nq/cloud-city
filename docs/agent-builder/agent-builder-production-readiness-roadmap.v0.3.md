@@ -177,6 +177,10 @@ Repo and governance evidence supporting the current maturity state:
 - `docs/agent-builder/architecture.md`
 - `docs/agent-builder/governance-rules.md`
 - `docs/agent-builder/agent-creation-lifecycle.v0.1.md`
+- `docs/agent-builder/source-boundary-evidence-authority-review.v0.1.md` is the current repo planning artifact for
+  source-boundary terminology and evidence-authority clarification. This charter clarifies controlled vocabulary and
+  non-inference rules only; it does not authorize source reads, source-packet binding, semantic verification,
+  runtime/model behavior, Drive automation, UI work, real/redacted data use, or operational approval.
 - `agent_specs/event_readiness.v0.1.yaml`
 - `registry/agent-registry.yaml`
 - `docs/agent-builder/implementation-plan.md`
