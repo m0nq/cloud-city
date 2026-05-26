@@ -238,7 +238,7 @@ Capability expansion requires future decision records before planning can advanc
 - UI/reviewer cockpit decision record
 - Operational approval decision record
 - Release and rollback decision record for any later operator-facing capability
-- Audit log and records-retention decision record for any later review workflow
+- [Audit log and records-retention governance decision record](./decision-records/agent-builder-audit-log-records-retention-governance.v0.1.md) for any later review workflow
 
 Each decision record should state what is approved, what remains blocked, what evidence supports the decision, what
 tests or review gates are required, and what human role owns the decision.
