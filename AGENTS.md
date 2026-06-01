@@ -57,6 +57,7 @@ This guide gives Codex and other coding agents durable project-specific context 
 ## Review Expectations
 
 - Follow [code_review.md](./code_review.md) for reviews, pre-merge checks, and self-review before committing.
+- Small, low-risk docs-only governance edits may proceed directly on clean `main` when `HEAD` matches the human-confirmed expected milestone and the edit scope is explicitly approved. Review the targeted diff before committing, run an appropriate post-commit verification gate after committing, and pause for human approval before any push. Use a branch or separate worktree when isolation materially improves reversibility, including risky, experimental, implementation-facing, destructive, uncertain, or substantial multi-step changes.
 - Findings should prioritize correctness, regressions, security/privacy, data integrity, missing tests, maintainability, and framework conventions.
 - Do not post external PR comments, approve/request changes, merge, push, or perform destructive git actions without explicit human approval.
 
