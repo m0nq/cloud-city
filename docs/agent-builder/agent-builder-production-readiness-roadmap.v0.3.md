@@ -266,7 +266,7 @@ Pre-runtime governance foundation checkpoint through `fa5a6cb`:
 
 Remaining future decision records before capability expansion planning can advance:
 
-- CLI/operator planning decision record
+- [CLI/operator planning decision record](./decision-records/agent-builder-cli-operator-planning-governance.v0.1.md)
 - Runtime/model-call decision record
 - Drive behavior decision record
 - UI/reviewer cockpit decision record
