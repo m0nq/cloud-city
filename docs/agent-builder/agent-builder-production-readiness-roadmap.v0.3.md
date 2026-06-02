@@ -4,20 +4,21 @@
 
 This is a planning-only production-readiness roadmap for Cloud City Agent Builder.
 
-Current repo baseline: `fa5a6cb docs(agent-builder): add audit log records retention governance record`.
+Current repo baseline: `9f35be3 docs(agent-builder): add CLI operator planning governance record`.
 
 This roadmap supersedes the Drive artifact `Cloud City - Agent Builder Production Readiness Roadmap v0.2` for
 current-state planning. Roadmap v0.2 remains useful historical governance context, but it predates the L1.6
 review-record lifecycle validation, the L1.6 operator-readiness review charter, the source/privacy/audit governance
-foundation now stabilized in repo, and the roadmap/status reconciliation through `fa5a6cb`.
+foundation now stabilized in repo, and the roadmap/status reconciliation now includes the L1.9 CLI/operator
+planning-governance record through `9f35be3`.
 
 Post-roadmap governance status note: after Roadmap v0.3 was added at
-`2d6997d docs(agent-builder): add production readiness roadmap v0.3 scope`, humans continued to maintain Drive
-governance/status artifacts by human process. The current human-provided Drive governance/status context is
-`Cloud City — Agent Builder Privacy/Data Boundary Review v0.5`.
+`2d6997d docs(agent-builder): add production readiness roadmap v0.3 scope`, humans continued to maintain separate
+Drive governance/status records. Those records remain human-provided context only and do not alter repo-evidence,
+agent-authority, Drive-access, runtime, or operational-approval boundaries.
 
-That Drive governance/status context may reflect current human governance/status tracking for privacy/data-boundary
-planning, but it remains human-provided context only unless separately verified. It preserves this Roadmap v0.3 as the
+That Drive governance/status context may reflect current human governance/status tracking, but it remains human-provided
+context only unless separately verified. It preserves this Roadmap v0.3 as the
 current repo-facing production-readiness planning artifact and preserves `Cloud City — Agent Builder Data & Privacy
 Taxonomy v0.1` as prior draft context.
 
@@ -32,7 +33,7 @@ routes, tools, integrations, Drive sync, Drive writes by local agents, UI/review
 existence checks, content hashing, semantic source verification, source-packet binding, real or redacted event data,
 operational approval, or autonomous action.
 
-## 2. Current Baseline Through fa5a6cb
+## 2. Current Baseline Through 9f35be3
 
 Relevant milestone chain:
 
@@ -46,8 +47,9 @@ Relevant milestone chain:
 - `68c2498 docs(agent-builder): add source boundary approval authority record`
 - `2162cb4 docs(agent-builder): add privacy data boundary governance record`
 - `fa5a6cb docs(agent-builder): add audit log records retention governance record`
+- `9f35be3 docs(agent-builder): add CLI operator planning governance record`
 
-Complete through `fa5a6cb`:
+Complete through `9f35be3`:
 
 - Event Readiness has a governed local spec and local registry entry.
 - Event Readiness has seven synthetic fixture/eval cases for pre-runtime deterministic validation.
@@ -64,6 +66,11 @@ Complete through `fa5a6cb`:
 - Privacy/data-boundary taxonomy, blocked data classes, surface boundaries, and retention-boundary framing are defined.
 - Audit-log/records-retention artifact categories, default non-retention posture, traceability metadata, and
   cleanup/deletion boundaries are defined.
+- L1.9 CLI/operator planning governance is now documented as a planning-only control-model gate and does not approve
+  L2 workflow, CLI implementation, runtime/model behavior, Drive behavior, UI behavior, release/rollback, or
+  operational approval.
+- Completion of the L1.9 planning-governance gate does not authorize progression into L2 or select any unresolved
+  dependency record as the next required milestone.
 - Roadmap/status reconciliation now distinguishes current governance-foundation records from remaining future decision
   records.
 - Drive governance/status records have been updated by humans to reflect the current milestone chain, but current Drive
@@ -199,6 +206,7 @@ Repo and governance evidence supporting the current maturity state:
 - `docs/agent-builder/decision-records/agent-builder-source-boundary-approval-authority.v0.1.md`
 - `docs/agent-builder/decision-records/agent-builder-privacy-data-boundary-governance.v0.1.md`
 - `docs/agent-builder/decision-records/agent-builder-audit-log-records-retention-governance.v0.1.md`
+- `docs/agent-builder/decision-records/agent-builder-cli-operator-planning-governance.v0.1.md`
 - `agent_specs/event_readiness.v0.1.yaml`
 - `registry/agent-registry.yaml`
 - `docs/agent-builder/implementation-plan.md`
@@ -206,12 +214,11 @@ Repo and governance evidence supporting the current maturity state:
 - `src/agent-builder/review-record-lifecycle/validation.ts`
 - `__tests__/agent-builder/review-record-lifecycle.test.ts`
 - `fixtures/agent-builder/review-record-lifecycle/*.synthetic.json`
-- Governance milestone chain now reconciled through `fa5a6cb`
-- Drive governance/status alignment through `fa5a6cb`, by human-updated governance records
-- Post-roadmap Drive governance/status record:
-  `Cloud City — Agent Builder Privacy/Data Boundary Review v0.5`; human-provided context only, not Codex-verified repo
-  evidence, repo doctrine, source authority, operational approval, or permission for local agents to read from or write
-  to Drive.
+- Governance milestone chain now reconciled through `9f35be3`
+- Human-owned Drive governance/status records are maintained separately from repo evidence; they remain human-provided
+  context only, not Codex-verified repo evidence, repo doctrine, source authority, operational approval, agent-readable
+  authority, permission for local agents to read from or write to Drive, or permission to use Drive as a runtime source
+  of truth.
 
 This inventory is evidence for planning status only. It does not authorize local agents to write Drive records or treat
 Drive as a runtime source of truth.
@@ -227,17 +234,17 @@ Drive as a runtime source of truth.
 | Drive-write/local-agent confusion | Low-Medium | Drive governance records could be mistaken as writable by local agents. | The Drive governance record blocks sync/writes by local agents and keeps Drive references separate from machine authority. | Keep Drive behavior in non-approvals unless a future Drive behavior decision record is approved. |
 | Product/UI concept leakage into implementation | Medium | Conceptual UI surfaces could become implementation assumptions. | Product blueprint states future UI surfaces are conceptual only. | Keep UI/reviewer cockpit planning behind a separate UI decision record. |
 | Real/redacted data boundary risk | Medium | Synthetic validation does not prove privacy safety for real or redacted event data. | L1.6 remains synthetic-only and the privacy/data-boundary governance record keeps non-synthetic data blocked. | Preserve the blocked posture unless a separate later milestone explicitly expands data scope. |
-| Audit drift | Low-Medium | Repo docs, Drive status, and roadmap language can diverge. | Milestone chain is now anchored through `fa5a6cb` and linked governance records are present in repo. | Tie future governance status updates to explicit commit IDs and reviewed artifacts. |
-| Roadmap staleness | Medium | Historical v0.2 guidance can mislead future planning. | This v0.3 roadmap is reconciled through `fa5a6cb` for current-state planning. | Revisit this roadmap before CLI/operator planning or any new capability-boundary record. |
+| Audit drift | Low-Medium | Repo docs, Drive status, and roadmap language can diverge. | Milestone chain is now anchored through `9f35be3` and linked governance records are present in repo. | Tie future governance status updates to explicit commit IDs and reviewed artifacts. |
+| Roadmap staleness | Medium | Historical v0.2 guidance can mislead future planning. | This v0.3 roadmap is reconciled through `9f35be3` for current-state planning. | Revisit this roadmap before any new capability-boundary record or unresolved dependency record. |
 
 ## 10. Roadmap Branch Options
 
 | Option | Planning-only posture | Benefit | Risk | Recommendation |
 | --- | --- | --- | --- | --- |
 | Remain paused | No repo changes or capability expansion. | Safest way to prevent scope creep. | Roadmap clarity may decay over time. | Acceptable if no near-term planning is needed. |
-| Reconcile roadmap/status through `fa5a6cb` | Planning-only documentation. | Aligns current baseline, current governance foundation, and remaining future gates. | Could be misread as broader approval unless boundaries remain explicit. | Recommended current docs-only reconciliation. |
-| Review the pre-runtime governance foundation checkpoint | Planning-only governance summary. | Makes source/privacy/audit foundation completion visible before further planning. | Could be mistaken for implementation readiness if written loosely. | Recommended before any further decision-record sequencing. |
-| CLI/operator planning as a later approval-gated milestone | Planning-only artifact, no commands or flags. | Clarifies control model before implementation. | Strong gravity toward operator surface implementation. | Consider only after roadmap reconciliation and checkpoint review. |
+| Reconcile roadmap/status through `9f35be3` | Planning-only documentation. | Aligns current baseline, current governance foundation, and remaining future gates. | Could be misread as broader approval unless boundaries remain explicit. | Recommended current docs-only reconciliation. |
+| Pre-runtime governance foundation checkpoint reviewed | Planning-only governance summary. | Makes source/privacy/audit foundation completion visible before further planning. | Could be mistaken for implementation readiness if written loosely. | Treat as completed planning context; do not infer capability expansion. |
+| CLI/operator planning governance completed at L1.9 | Planning-only control-model gate; does not approve L2 workflow, CLI implementation, runtime/model behavior, Drive behavior, UI behavior, release/rollback, or operational approval. | Clarifies human-review control-model boundaries before any later dependency sequencing. | Could still be misread as broader operator readiness unless non-approvals stay explicit. | Treat as completed planning governance; do not infer approval of unresolved dependency records. |
 | Runtime/model planning later | Planning-only artifact. | Could define future model-call gates and eval requirements. | Too early for Event Readiness operational use. | Defer until source and data boundaries are clearer. |
 | Drive behavior planning later | Planning-only artifact. | Could define future bounded Drive behavior if separately approved. | Strong gravity toward agent-side access and storage behavior. | Defer unless a separate Drive access question becomes concrete. |
 | UI/reviewer cockpit planning later | Planning-only artifact. | Could clarify founder-friendly review surfaces. | Product concepts may leak into implementation. | Defer until governance information architecture is reviewed. |
@@ -251,22 +258,24 @@ Current repo-stabilized governance foundation records:
 - [Source-boundary approval authority decision record](./decision-records/agent-builder-source-boundary-approval-authority.v0.1.md)
 - [Privacy/data-boundary governance decision record](./decision-records/agent-builder-privacy-data-boundary-governance.v0.1.md)
 - [Audit log and records-retention governance decision record](./decision-records/agent-builder-audit-log-records-retention-governance.v0.1.md) for any later review workflow
+- [CLI/operator planning-governance decision record](./decision-records/agent-builder-cli-operator-planning-governance.v0.1.md)
 
 These records are complete for current planning clarity only. Their presence does not approve capability expansion,
 implementation, runtime behavior, Drive behavior, source handling, data use, UI, or operational approval.
 
-Pre-runtime governance foundation checkpoint through `fa5a6cb`:
+Pre-runtime governance foundation checkpoint through `9f35be3`:
 
 - source-boundary terminology and approval ownership are documented
 - privacy/data-boundary classes, blocked data categories, and retention-boundary framing are documented
 - audit-log/records-retention artifact categories, non-retention posture, and traceability boundaries are documented
+- CLI/operator planning governance is documented as a completed L1.9 planning-only control-model gate with no L2
+  workflow or implementation approval
 - Drive governance/status boundaries remain explicit and separate from source-of-truth or agent authority
 - all current governance artifacts remain planning-only, synthetic-only, pre-runtime, below L2, human-reviewed,
   approval-gated, and non-operational
 
 Remaining future decision records before capability expansion planning can advance:
 
-- [CLI/operator planning decision record](./decision-records/agent-builder-cli-operator-planning-governance.v0.1.md)
 - Runtime/model-call decision record
 - Drive behavior decision record
 - UI/reviewer cockpit decision record
@@ -329,10 +338,11 @@ This roadmap also does not create implementation tickets or authorize production
 
 Recommended next gate:
 
-1. Human review of Roadmap v0.3 reconciliation through `fa5a6cb`.
+1. Human review of Roadmap v0.3 reconciliation through `9f35be3`.
 2. No implementation.
-3. After review, decide whether to remain paused or review the pre-runtime governance foundation checkpoint.
-4. If further planning is needed after that checkpoint, treat CLI/operator planning as the next planning-only candidate.
+3. After review, decide whether to remain paused or clarify which unresolved dependency record should come next.
+4. Do not treat L1.9 completion as L2 workflow approval, CLI implementation readiness, runtime/model readiness, Drive
+   behavior approval, UI approval, release/rollback approval, or operational approval.
 5. Do not proceed to CLI/operator implementation, runtime/model planning, Drive behavior implementation, or UI
    implementation from this roadmap.
 
