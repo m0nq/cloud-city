@@ -95,6 +95,12 @@ The current `pnpm agent-builder fixture validate` command supports Venue / Vendo
 Event Readiness fixture validation now includes narrow dry-bar-out-of-scope, insufficient-source,
 sparse-but-reviewable, and on-track-with-review-needed conditional paths.
 
+Deterministic reporting clarification:
+When the Event Readiness eval suite reports `PASS`, that means contract conformance passed for the suite or case under
+test. The bounded review classification remains separate. A synthetic case classified as
+`blocked_pending_human_resolution` or `insufficient_source_information` can still pass its expected deterministic
+contract, and that does not imply operational readiness, approval, clearance, or authority to act.
+
 Fixture-validator plan:
 [event-readiness.fixture-validator-plan.v0.1.md](./event-readiness.fixture-validator-plan.v0.1.md) defines the next
 narrow implementation plan for Event Readiness fixture validation.

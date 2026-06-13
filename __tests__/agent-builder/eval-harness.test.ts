@@ -4,7 +4,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { validateEvalSuite, runEvalSuite, runEvalSuiteFile } from '../../src/agent-builder/eval-suite';
+import { formatEvalRunReport, validateEvalSuite, runEvalSuite, runEvalSuiteFile } from '../../src/agent-builder/eval-suite';
 import { validateFixture, validateVenueCandidateFixture } from '../../src/agent-builder/fixtures';
 import { loadYamlFile } from '../../src/agent-builder/validation';
 
@@ -790,6 +790,74 @@ describe('Agent Builder eval harness', () => {
                 'Cloud City Coherent Review Packet'
             ])
         );
+    });
+
+    it('preserves Event Readiness bounded review classification separately from contract conformance', () => {
+        const report = runEvalSuiteFile(eventReadinessSuitePath);
+        const formatted = formatEvalRunReport(report);
+        const blockedCase = report.cases.find(evalCase => evalCase.caseId === 'blocked_escalation_synthetic');
+        const insufficientCase = report.cases.find(evalCase => evalCase.caseId === 'insufficient_source_information_synthetic');
+        const onTrackCase = report.cases.find(evalCase => evalCase.caseId === 'on_track_with_review_needed_synthetic');
+
+        expect(blockedCase?.outcome).toBe('PASS');
+        expect(blockedCase?.boundedReviewClassification).toBe('blocked_pending_human_resolution');
+        expect(insufficientCase?.outcome).toBe('PASS');
+        expect(insufficientCase?.boundedReviewClassification).toBe('insufficient_source_information');
+        expect(onTrackCase?.outcome).toBe('PASS');
+        expect(onTrackCase?.boundedReviewClassification).toBe('on_track_with_review_needed');
+
+        expect(formatted).toContain(
+            'Contract conformance: PASS blocked_escalation_synthetic: Cloud City Twilight Gallery Session'
+        );
+        expect(formatted).toContain(
+            'Contract conformance: PASS insufficient_source_information_synthetic: Cloud City Source Gap Review'
+        );
+        expect(formatted).toContain(
+            'Contract conformance: PASS on_track_with_review_needed_synthetic: Cloud City Coherent Review Packet'
+        );
+        expect(formatted).toContain('Bounded review classification: blocked_pending_human_resolution');
+        expect(formatted).toContain('Bounded review classification: insufficient_source_information');
+        expect(formatted).toContain('Bounded review classification: on_track_with_review_needed');
+        expect(formatted).toContain('Suite contract conformance: PASS');
+    });
+
+    it('keeps Event Readiness classification mismatch visible without changing failure semantics', () => {
+        const suite = clone(loadYamlFile(eventReadinessSuitePath) as {
+            eval_suite: {
+                cases: Array<{ id: string; expected_readiness_label: string }>;
+            };
+        });
+        suite.eval_suite.cases[0].expected_readiness_label = 'on_track_with_review_needed';
+
+        const report = runEvalSuite(suite);
+        const formatted = formatEvalRunReport(report);
+        const blockedCase = report.cases.find(evalCase => evalCase.caseId === 'blocked_escalation_synthetic');
+
+        expect(report.outcome).toBe('PARTIAL');
+        expect(blockedCase?.outcome).toBe('FAIL');
+        expect(blockedCase?.boundedReviewClassification).toBe('blocked_pending_human_resolution');
+        expect(blockedCase?.checks.find(check => check.label === 'Expected readiness label')?.details).toContain(
+            'expected: on_track_with_review_needed; actual: blocked_pending_human_resolution'
+        );
+        expect(formatted).toContain(
+            'Contract conformance: FAIL blocked_escalation_synthetic: Cloud City Twilight Gallery Session'
+        );
+        expect(formatted).toContain('Bounded review classification: blocked_pending_human_resolution');
+        expect(formatted).toContain(
+            'FAIL Expected readiness label: expected: on_track_with_review_needed; actual: blocked_pending_human_resolution'
+        );
+        expect(formatted).toContain('Suite contract conformance: PARTIAL');
+    });
+
+    it('keeps non-Event-Readiness eval run formatting unchanged', () => {
+        const report = runEvalSuiteFile(suitePath);
+        const formatted = formatEvalRunReport(report);
+
+        expect(report.outcome).toBe('PASS');
+        expect(formatted).toContain('Contract conformance: PASS warehouse416_public: Warehouse416');
+        expect(formatted).toContain('Contract conformance: PASS oakstop_redacted: Oakstop');
+        expect(formatted).toContain('Suite contract conformance: PASS');
+        expect(formatted).not.toContain('Bounded review classification:');
     });
 
     it('uses explicit source-material labels for Event Readiness eval cases', () => {

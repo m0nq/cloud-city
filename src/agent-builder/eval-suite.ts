@@ -79,6 +79,7 @@ export type EvalCaseResult = {
     caseId: string;
     fixturePath: string;
     candidateName?: string;
+    boundedReviewClassification?: string;
     outcome: EvalOutcome;
     checks: EvalChecklistItem[];
 };
@@ -436,6 +437,7 @@ export const runEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalRunRe
                 caseId: evalCase.id,
                 fixturePath: evalCase.fixture_path,
                 candidateName: fixture.event_name,
+                boundedReviewClassification: fixture.expected_readiness_label,
                 outcome: caseOutcome(checks),
                 checks
             };
@@ -550,13 +552,18 @@ export const formatEvalRunReport = (report: EvalRunReport) => {
     ];
 
     for (const evalCase of report.cases) {
-        lines.push(`- ${evalCase.outcome} ${evalCase.caseId}: ${evalCase.candidateName || evalCase.fixturePath}`);
+        lines.push(
+            `- Contract conformance: ${evalCase.outcome} ${evalCase.caseId}: ${evalCase.candidateName || evalCase.fixturePath}`
+        );
+        if (evalCase.boundedReviewClassification) {
+            lines.push(`  - Bounded review classification: ${evalCase.boundedReviewClassification}`);
+        }
         for (const check of evalCase.checks) {
             lines.push(`  - ${check.passed ? 'PASS' : 'FAIL'} ${check.label}: ${check.details}`);
         }
     }
 
-    lines.push('', `Result: ${report.outcome}`);
+    lines.push('', `Suite contract conformance: ${report.outcome}`);
 
     return lines.join('\n');
 };
