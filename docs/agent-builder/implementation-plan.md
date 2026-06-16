@@ -81,7 +81,17 @@ Subsequent status after `be3b9e7 test(agent-builder): add declared source packet
 - Stronger source-packet binding remains unimplemented and unapproved.
 - Event Readiness remains pre-runtime and below L2.
 
-Next safe governance area:
+Current-state note after `db8c749` and `ad0dda3`:
+
+- [Agent Builder current-state reconciliation v0.1](./agent-builder-current-state-reconciliation.v0.1.md) is the
+  current repo-facing status anchor for this docs-only slice.
+- `db8c749` remains the current governance baseline for roadmap/L1.9 reconciliation.
+- `ad0dda3` clarifies deterministic Event Readiness report semantics only by separating contract conformance from
+  bounded review classification in the local synthetic eval/reporting layer.
+- Neither milestone approves Event Readiness runtime generation, model calls, Drive behavior, UI behavior, real/redacted
+  data use, operational approval, or autonomous action.
+
+Historical next safe governance area at the time of this plan:
 
 - Reconcile repo and Drive governance records around the completed report-clarity milestone.
 - Mature local registry/export/log drafting conventions for governed artifacts only after a separate approval gate.

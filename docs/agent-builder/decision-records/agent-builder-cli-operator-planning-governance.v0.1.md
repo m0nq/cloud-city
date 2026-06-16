@@ -8,10 +8,17 @@
 ## 1. Status
 
 - Proposed for Cloud City Agent Builder governance.
-- Current stabilized repo milestone for this draft: `c1f6f5a docs(repo): clarify main-first governance workflow`.
+- Historical stabilized repo milestone for this draft: `c1f6f5a docs(repo): clarify main-first governance workflow`.
 - Current posture remains synthetic-only, pre-runtime, below L2, human-reviewed, approval-gated, and non-operational.
 - This record keeps L1.9 strictly separate from any later L2 workflow decision.
 - This record does not approve CLI/operator use, CLI/operator wiring, CLI commands, CLI flags, command syntax, scripts, runtime/model calls or behavior, prompts, routes, tools, integrations, Drive behavior, UI/reviewer cockpit planning or implementation, source reads, business/source-data reads, file existence checks, content hashing, semantic verification, source-packet binding, real/redacted/public/personal/vendor/operational data use, runtime logging, automated record creation, release/rollback design, operational approval, external communication, or autonomous action.
+- Later repo-facing current-state reconciliation is tracked separately in
+  [Agent Builder current-state reconciliation v0.1](../agent-builder-current-state-reconciliation.v0.1.md), which
+  anchors the current governance baseline at `db8c749` and the later deterministic report-semantics refinement at
+  `ad0dda3`.
+- That later reconciliation does not change this record's original L1.9 planning-only meaning and does not imply L2
+  workflow approval, CLI implementation, runtime/model approval, Drive behavior approval, UI approval,
+  release/rollback approval, or operational approval.
 
 ## 2. Purpose
 
