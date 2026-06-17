@@ -295,7 +295,10 @@ Remaining future decision records before capability expansion planning can advan
 - Drive behavior decision record
 - UI/reviewer cockpit decision record
 - Operational approval decision record
-- Release and rollback decision record for any later operator-facing capability
+- [Release and rollback governance decision record](./decision-records/agent-builder-release-rollback-governance.v0.1.md)
+  as the current proposed docs-only planning slice for any later operator-facing capability, pending human review. This
+  remains planning-only and does not approve release/rollback automation, production readiness, or movement above the
+  current synthetic-only, pre-runtime, below-L2 posture.
 
 Each decision record should state what is approved, what remains blocked, what evidence supports the decision, what
 tests or review gates are required, and what human role owns the decision.
