@@ -302,10 +302,10 @@ Remaining future decision records before capability expansion planning can advan
   as a completed docs-only planning governance dependency. This remains planning-only and does not grant operational
   approval, production readiness, or movement above the current synthetic-only, pre-runtime, below-L2 posture.
 - [Source/data authority boundary governance decision record](./decision-records/agent-builder-source-data-boundary-governance.v0.1.md)
-  as the current proposed docs-only planning slice, pending human review. This remains planning-only and does not
-  approve source reads, Drive runtime behavior, source-packet binding, semantic verification, real/redacted/
-  non-synthetic data use, runtime logging, persistence, production readiness, or movement above the current
-  synthetic-only, pre-runtime, below-L2 posture.
+  as a completed docs-only planning governance dependency. This remains planning-only and does not approve source
+  reads, source authority, data-use authority, Drive runtime behavior, source-packet binding, semantic verification,
+  real/redacted/non-synthetic data use, runtime logging, persistence, production readiness, or movement above the
+  current synthetic-only, pre-runtime, below-L2 posture.
 
 Each decision record should state what is approved, what remains blocked, what evidence supports the decision, what
 tests or review gates are required, and what human role owns the decision.
