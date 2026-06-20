@@ -61,8 +61,8 @@ For future assistant sessions:
 - Treat proposals as hypotheses to test, not final truth.
 - State exact commands run and the relevant results.
 - Prefer read-only inspection first.
-- Treat Drive handoff or status context as human-provided context only unless separately verified.
-- Treat deterministic contract conformance as machine-checkable structure or policy fit only.
+- Drive handoff/status context is not runtime source authority.
+- Deterministic contract conformance is not operational approval.
 - Treat `PASS` as pass for human review only.
 - Do not treat bounded review classification as production readiness or operational approval.
 - Do not infer authority from filenames, labels, links, reconciled docs, or prior runtime code paths.
@@ -74,6 +74,19 @@ For future assistant sessions:
 - Docs-only file creation or editing only when explicitly approved for the current pass.
 - Local commit only when explicitly approved for the current pass.
 - No `push`, PR creation, or external actions unless separately and explicitly approved.
+
+## Approval-Gated Mutation Categories
+
+The following require explicit task-specific human approval every time:
+
+- branch creation
+- worktree creation
+- docs-only edits
+- cleanup execution
+- local commits
+- merge or reconciliation
+- push
+- PR creation
 
 ## Disallowed Behavior
 
@@ -136,6 +149,11 @@ git worktree list
 git branch --list
 git branch --merged main
 git branch --no-merged main
+```
+
+Optional only for cleanup planning or worktree-metadata assessment:
+
+```zsh
 git worktree prune --dry-run
 ```
 
@@ -152,7 +170,7 @@ Confirm:
 - active worktree inventory
 - local branch inventory
 - merged versus unmerged branch state
-- dry-run prune output only when appropriate
+- optional dry-run prune output only when the task explicitly concerns cleanup planning or worktree metadata assessment
 
 Do not continue if the expected state does not match the task assumptions.
 
@@ -163,7 +181,7 @@ Do not continue if the expected state does not match the task assumptions.
 - Scope boundary:
   Verify current repo state before any substantive action.
 - Allowed commands:
-  `pwd`, `git rev-parse`, `git status`, `git show`, `git worktree list`, `git branch --list`, `git worktree prune --dry-run`.
+  `pwd`, `git rev-parse`, `git status`, `git show`, `git worktree list`, `git branch --list`, and `git worktree prune --dry-run` only when the task explicitly includes cleanup planning or worktree-metadata assessment.
 - Disallowed commands:
   `git worktree prune`, cleanup commands, branch creation, commits, edits, tests, builds.
 - Required preflight:
@@ -292,7 +310,7 @@ Do not continue if the expected state does not match the task assumptions.
 - Final confirmation requirements:
   Report the changed files, whitespace check, branch, and whether the result matched the approved scope.
 - Non-operational status:
-  Verification confirms repo state only.
+  Verification confirms repo state only. Clean local verification does not authorize merge, reconciliation, push, PR creation, cleanup, or any other mutation.
 
 ### Final Confirmation
 
