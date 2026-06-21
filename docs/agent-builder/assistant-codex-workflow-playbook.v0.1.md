@@ -274,7 +274,7 @@ Do not continue if the expected state does not match the task assumptions.
 - Stop conditions:
   Need to change an existing file, unexpected unrelated diff, or wording that implies runtime, source, Drive, or approval authority.
 - Final confirmation requirements:
-  Confirm the exact file changed, summarize contents, and confirm no out-of-scope file changes.
+  Confirm the exact file changed, summarize contents, confirm no out-of-scope file changes, and check formatting/readability/accessibility acceptance criteria against `docs/agent-builder/documentation-formatting-standard.v0.1.md`.
 - Non-operational status:
   Drafting docs does not authorize implementation or maturity promotion.
 
