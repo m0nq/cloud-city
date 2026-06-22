@@ -12,6 +12,14 @@ Current repo-facing governance baseline after later docs-only reconciliation:
 Current repo `main` HEAD / latest deterministic implementation refinement at the time of this docs-only slice:
 `ad0dda3 feat(agent-builder): clarify Event Readiness report semantics`.
 
+Later pushed docs-only runtime/model-call governance milestone now present on `main`:
+`bd5c2df docs(agent-builder): add runtime model-call governance`.
+
+`bd5c2df` adds runtime/model-call governance as a planning-only boundary record. It does not approve runtime/model
+calls, prompt execution, routes, tools, integrations, MCP/connector-style execution surfaces, Drive runtime behavior,
+source reads, persistence, runtime logging, automation, operational approval, production readiness, or movement above
+the current synthetic-only, pre-runtime, below-L2 posture.
+
 `ad0dda3` clarifies deterministic Event Readiness report semantics only by separating contract conformance from bounded
 review classification in the local synthetic eval/reporting layer. It does not approve production readiness, Event
 Readiness runtime generation, model calls, prompts, routes, tools, integrations, Drive behavior, UI/reviewer cockpit
@@ -200,7 +208,7 @@ confidence and to make the remaining governance and implementation distance visi
 
 | Path | Current estimate | Rationale |
 | --- | --- | --- |
-| Without UI | 25-30% production-ready | The local governance, spec, registry, fixture/eval, pre-runtime validation, L1.6 lifecycle evidence, source-boundary approval authority, privacy/data-boundary governance, and audit-log/records-retention governance are meaningful. Production readiness still lacks approved Event Readiness operator workflow, runtime/model governance, Drive behavior governance for any future agent-side capability, operational approval model, release controls for real use, and any approved Event Readiness runtime path. |
+| Without UI | 25-30% production-ready | The local governance, spec, registry, fixture/eval, pre-runtime validation, L1.6 lifecycle evidence, source-boundary approval authority, privacy/data-boundary governance, audit-log/records-retention governance, and runtime/model-call governance boundary are meaningful. Production readiness still lacks approved Event Readiness operator workflow, Drive behavior governance for any future agent-side capability, operational approval model, release controls for real use, and any approved Event Readiness runtime path. |
 | With UI | 10-15% production-ready | Product clarity exists, but UI remains conceptual. There are no approved routes, components, reviewer cockpit, UI data flows, UI-specific safety tests, or operator workflow surfaces. |
 
 ## 8. Evidence Inventory
@@ -222,6 +230,7 @@ Repo and governance evidence supporting the current maturity state:
 - `docs/agent-builder/decision-records/agent-builder-privacy-data-boundary-governance.v0.1.md`
 - `docs/agent-builder/decision-records/agent-builder-audit-log-records-retention-governance.v0.1.md`
 - `docs/agent-builder/decision-records/agent-builder-cli-operator-planning-governance.v0.1.md`
+- `docs/agent-builder/decision-records/agent-builder-runtime-model-call-governance.v0.1.md`
 - `agent_specs/event_readiness.v0.1.yaml`
 - `registry/agent-registry.yaml`
 - `docs/agent-builder/implementation-plan.md`
@@ -249,7 +258,7 @@ Drive as a runtime source of truth.
 | Drive-write/local-agent confusion | Low-Medium | Drive governance records could be mistaken as writable by local agents. | The Drive governance record blocks sync/writes by local agents and keeps Drive references separate from machine authority. | Keep Drive behavior in non-approvals unless a future Drive behavior decision record is approved. |
 | Product/UI concept leakage into implementation | Medium | Conceptual UI surfaces could become implementation assumptions. | Product blueprint states future UI surfaces are conceptual only. | Keep UI/reviewer cockpit planning behind a separate UI decision record. |
 | Real/redacted data boundary risk | Medium | Synthetic validation does not prove privacy safety for real or redacted event data. | L1.6 remains synthetic-only and the privacy/data-boundary governance record keeps non-synthetic data blocked. | Preserve the blocked posture unless a separate later milestone explicitly expands data scope. |
-| Audit drift | Low-Medium | Repo docs, Drive status, and roadmap language can diverge. | Historical roadmap context remains anchored through `9f35be3`, and the current repo-facing reconciliation record anchors the governance baseline at `db8c749` and the later deterministic refinement at `ad0dda3`. | Tie future governance status updates to explicit commit IDs and reviewed artifacts. |
+| Audit drift | Low-Medium | Repo docs, Drive status, and roadmap language can diverge. | Historical roadmap context remains anchored through `9f35be3`, and the current repo-facing reconciliation record anchors the governance baseline at `db8c749`, the later deterministic refinement at `ad0dda3`, and the later runtime/model-call governance milestone at `bd5c2df`. | Tie future governance status updates to explicit commit IDs and reviewed artifacts. |
 | Roadmap staleness | Medium | Historical v0.2 guidance can mislead future planning. | This v0.3 roadmap remains useful historical planning context, while the current repo-facing state is clarified in [current-state reconciliation v0.1](./agent-builder-current-state-reconciliation.v0.1.md). | Revisit this roadmap before any new capability-boundary record or unresolved dependency record. |
 
 ## 10. Roadmap Branch Options
@@ -257,10 +266,10 @@ Drive as a runtime source of truth.
 | Option | Planning-only posture | Benefit | Risk | Recommendation |
 | --- | --- | --- | --- | --- |
 | Remain paused | No repo changes or capability expansion. | Safest way to prevent scope creep. | Roadmap clarity may decay over time. | Acceptable if no near-term planning is needed. |
-| Maintain repo-facing reconciliation after `db8c749` / `ad0dda3` | Planning-only documentation. | Keeps the historical roadmap baseline, the current governance foundation, and the later deterministic refinement visible without implying capability expansion. | Could be misread as broader approval unless boundaries remain explicit. | Recommended current docs-only posture. |
+| Maintain repo-facing reconciliation after `620ce41` / `bd5c2df` | Planning-only documentation. | Keeps the historical roadmap baseline, the current governance foundation, and the later pushed planning-only runtime/model-call boundary visible without implying capability expansion. | Could be misread as broader approval unless boundaries remain explicit. | Recommended current docs-only posture. |
 | Pre-runtime governance foundation checkpoint reviewed | Planning-only governance summary. | Makes source/privacy/audit foundation completion visible before further planning. | Could be mistaken for implementation readiness if written loosely. | Treat as completed planning context; do not infer capability expansion. |
 | CLI/operator planning governance completed at L1.9 | Planning-only control-model gate; does not approve L2 workflow, CLI implementation, runtime/model behavior, Drive behavior, UI behavior, release/rollback, or operational approval. | Clarifies human-review control-model boundaries before any later dependency sequencing. | Could still be misread as broader operator readiness unless non-approvals stay explicit. | Treat as completed planning governance; do not infer approval of unresolved dependency records. |
-| Runtime/model planning later | Planning-only artifact. | Could define future model-call gates and eval requirements. | Too early for Event Readiness operational use. | Defer until source and data boundaries are clearer. |
+| Runtime/model-call governance completed for planning clarity | Planning-only governance boundary. | Makes runtime/model-call non-approvals, future gate requirements, and adjacent boundary dependencies explicit without approving runtime behavior. | Could still be misread as runtime approval unless non-approvals stay explicit. | Treat as completed planning governance; do not infer runtime approval or capability expansion. |
 | Drive behavior planning later | Planning-only artifact. | Could define future bounded Drive behavior if separately approved. | Strong gravity toward agent-side access and storage behavior. | Defer unless a separate Drive access question becomes concrete. |
 | UI/reviewer cockpit planning later | Planning-only artifact. | Could clarify founder-friendly review surfaces. | Product concepts may leak into implementation. | Defer until governance information architecture is reviewed. |
 
@@ -274,6 +283,7 @@ Current repo-stabilized governance foundation records:
 - [Privacy/data-boundary governance decision record](./decision-records/agent-builder-privacy-data-boundary-governance.v0.1.md)
 - [Audit log and records-retention governance decision record](./decision-records/agent-builder-audit-log-records-retention-governance.v0.1.md) for any later review workflow
 - [CLI/operator planning-governance decision record](./decision-records/agent-builder-cli-operator-planning-governance.v0.1.md)
+- [Runtime/model-call governance decision record](./decision-records/agent-builder-runtime-model-call-governance.v0.1.md)
 
 These records are complete for current planning clarity only. Their presence does not approve capability expansion,
 implementation, runtime behavior, Drive behavior, source handling, data use, UI, or operational approval.
@@ -289,11 +299,13 @@ Historical pre-runtime governance foundation checkpoint through `9f35be3`:
 - all current governance artifacts remain planning-only, synthetic-only, pre-runtime, below L2, human-reviewed,
   approval-gated, and non-operational
 
-Remaining future decision records before capability expansion planning can advance:
+Completed planning governance dependencies:
 
-- Runtime/model-call decision record
-- Drive behavior decision record
-- UI/reviewer cockpit decision record
+- [Source/data authority boundary governance decision record](./decision-records/agent-builder-source-data-boundary-governance.v0.1.md)
+  as a completed docs-only planning governance dependency. This remains planning-only and does not approve source
+  reads, source authority, data-use authority, Drive runtime behavior, source-packet binding, semantic verification,
+  real/redacted/non-synthetic data use, runtime logging, persistence, production readiness, or movement above the
+  current synthetic-only, pre-runtime, below-L2 posture.
 - [Release and rollback governance decision record](./decision-records/agent-builder-release-rollback-governance.v0.1.md)
   as a completed docs-only planning governance dependency. This remains planning-only and does not approve
   release/rollback automation, production readiness, or movement above the current synthetic-only, pre-runtime,
@@ -301,11 +313,16 @@ Remaining future decision records before capability expansion planning can advan
 - [Operational approval governance decision record](./decision-records/agent-builder-operational-approval-governance.v0.1.md)
   as a completed docs-only planning governance dependency. This remains planning-only and does not grant operational
   approval, production readiness, or movement above the current synthetic-only, pre-runtime, below-L2 posture.
-- [Source/data authority boundary governance decision record](./decision-records/agent-builder-source-data-boundary-governance.v0.1.md)
-  as a completed docs-only planning governance dependency. This remains planning-only and does not approve source
-  reads, source authority, data-use authority, Drive runtime behavior, source-packet binding, semantic verification,
-  real/redacted/non-synthetic data use, runtime logging, persistence, production readiness, or movement above the
-  current synthetic-only, pre-runtime, below-L2 posture.
+- [Runtime/model-call governance decision record](./decision-records/agent-builder-runtime-model-call-governance.v0.1.md)
+  as a completed docs-only planning governance dependency. This remains planning-only and does not approve
+  runtime/model calls, prompt execution, routes, tools, integrations, MCP/connector-style execution surfaces, Drive
+  runtime behavior, source reads, persistence, runtime logging, automation, operational approval, production
+  readiness, or movement above the current synthetic-only, pre-runtime, below-L2 posture.
+
+Remaining future decision records before capability expansion planning can advance:
+
+- Drive behavior decision record
+- UI/reviewer cockpit decision record
 
 Each decision record should state what is approved, what remains blocked, what evidence supports the decision, what
 tests or review gates are required, and what human role owns the decision.
@@ -363,13 +380,18 @@ This roadmap also does not create implementation tickets or authorize production
 
 Recommended next gate:
 
-1. Human review of the repo-facing current-state reconciliation anchored to `db8c749` and `ad0dda3`.
-2. No implementation.
-3. After review, decide whether to remain paused or clarify which unresolved dependency record should come next.
-4. Do not treat L1.9 completion as L2 workflow approval, CLI implementation readiness, runtime/model readiness, Drive
-   behavior approval, UI approval, release/rollback approval, or operational approval.
-5. Do not proceed to CLI/operator implementation, runtime/model planning, Drive behavior implementation, or UI
-   implementation from this roadmap.
+1. Human review of the repo-facing current-state reconciliation and roadmap wording now aligned through
+   `bd5c2df docs(agent-builder): add runtime model-call governance`.
+2. No implementation and no capability expansion.
+3. After review, decide whether to remain paused or clarify whether Drive behavior governance or UI/reviewer cockpit
+   governance should be the next planning-only dependency.
+4. Do not treat this gate or `bd5c2df` as approval for runtime/model calls, prompt execution, routes, tools,
+   integrations, MCP/connector-style execution surfaces, Drive runtime behavior, source reads, persistence, runtime
+   logging, automation, operational approval, or production readiness.
+5. Do not proceed from this roadmap to runtime/model-call approval, prompt execution approval, route/tool/integration
+   approval, MCP/connector-style execution approval, Drive runtime behavior approval, source-read approval,
+   persistence/runtime logging/automation approval, operational approval, or production-readiness claims.
 
 If future work starts, it should begin with the smallest planning-only decision record that reduces governance ambiguity
-without expanding capability.
+without expanding capability. The unresolved future dependency areas remain Drive behavior governance and UI/reviewer
+cockpit governance.
