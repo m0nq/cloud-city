@@ -51,6 +51,30 @@
   - external communication
   - autonomous action
 
+## 2.1 DOCS-ONLY-0 / TECH-0 Read-Only Discovery Continuity Note
+
+- Continuity note date: `2026-06-26`
+- Classification: `docs_only_read_only_discovery_continuity_note`
+- Human owner: Founder / human project owner
+- Scope: repo-facing continuity note for the DOCS-ONLY-0 / TECH-0 read-only discovery pass only
+- Approved worktree path inspected by Codex: `/Users/archimedes/Projects/cloud-city/main`
+- Local baseline reported by Codex: `a0aba8a`
+- Remote freshness: not verified; no `git fetch`, `git pull`, or network command was run
+- Files changed during discovery: none
+- Validation run during discovery: none
+
+This note records that a human-approved, read-only Codex discovery pass was completed for the limited purpose of identifying the smallest safe docs-only governance continuity patch candidate for City Center / Agent Builder.
+
+The discovery report identified this file, `docs/agent-builder/agent-builder-current-state-reconciliation.v0.1.md`, as the smallest safe target if the human owner wants repo-facing continuity for the TECH-0 / DOCS-ONLY-0 planning sequence.
+
+This note is additive continuity metadata only. It does not roll the current-state anchor forward as a new capability milestone. It does not rewrite prior milestone meaning. It does not convert Drive planning artifacts, conversation artifacts, Codex reports, or human handoff notes into runtime source authority, source-of-truth proof, implementation authority, operational approval, or production-readiness evidence.
+
+This note does not approve implementation, repo edits beyond this separately approved docs-only note, capability expansion, runtime/model behavior, prompt execution, routes, tools, integrations, Drive runtime behavior, Drive reads/writes/sync, source reads, file existence checks, content hashing, semantic source verification, source-packet binding, real/redacted data use, persistence, runtime logging, automation, Linear changes, UI-3 local read-only reviewer cockpit prototypes, UI-4 operator workflow planning, UI-5 implementation, release execution, rollback execution, operational approval, production readiness, external communication, or autonomous action.
+
+Codex output remains a report for human review only. It is not verified truth, source authority, implementation approval, operational approval, production readiness, or permission to act.
+
+Humans approve. Humans execute.
+
 ## 3. Purpose
 
 Create one clear repo-facing current-state anchor after the current governance baseline, the latest deterministic
