@@ -142,6 +142,9 @@ const buildReport = ({
         checks.filter(check => check.outcome === 'FAIL').map(check => `${check.id}: ${check.details}`);
     const hasFailedCheck = checks.some(check => check.outcome === 'FAIL');
     const outcome = hasFailedCheck || !record ? 'FAIL' : record.validation_outcome;
+    const promotableToHumanReviewDraft =
+        outcome === 'PASS' &&
+        record?.human_review_disposition === 'accepted_for_next_human_review_step';
 
     return {
         outcome,
@@ -149,11 +152,7 @@ const buildReport = ({
         checks,
         errors,
         approvedForOperationalUse: false,
-        promotableToHumanReviewDraft:
-            Boolean(record) &&
-            !hasFailedCheck &&
-            record.validation_outcome === 'PASS' &&
-            record.human_review_disposition === 'accepted_for_next_human_review_step'
+        promotableToHumanReviewDraft
     };
 };
 
