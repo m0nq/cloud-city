@@ -111,6 +111,7 @@ describe("import-luma dry-run parser", () => {
         const result = await executeImportLuma({
             argv: ["node", "scripts/import-luma.ts", "sample.csv"],
             env: {
+                NODE_ENV: "test",
                 CC_EMAIL_API_KEY: "test-api-key",
             },
             parseFile: async () => ({
@@ -150,6 +151,7 @@ describe("import-luma dry-run parser", () => {
         const result = await executeImportLuma({
             argv: ["node", "scripts/import-luma.ts", "sample.csv"],
             env: {
+                NODE_ENV: "test",
                 CC_EMAIL_API_KEY: "test-api-key",
             },
             parseFile: async () => ({

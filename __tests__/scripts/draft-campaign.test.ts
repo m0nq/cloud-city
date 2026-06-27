@@ -23,8 +23,8 @@ describe("draft-campaign script", () => {
     });
 
     it("throws when required email env vars are missing", () => {
-        expect(() => resolveDraftCampaignEnv({})).toThrow("CC_EMAIL_API_KEY or CC_API_KEY is missing");
-        expect(() => resolveDraftCampaignEnv({ CC_API_KEY: "abc" })).toThrow(
+        expect(() => resolveDraftCampaignEnv({ NODE_ENV: "test" })).toThrow("CC_EMAIL_API_KEY or CC_API_KEY is missing");
+        expect(() => resolveDraftCampaignEnv({ NODE_ENV: "test", CC_API_KEY: "abc" })).toThrow(
             "CC_EMAIL_FROM_EMAIL or MAILERLITE_FROM_EMAIL is missing",
         );
     });
@@ -44,6 +44,7 @@ describe("draft-campaign script", () => {
         const result = await executeDraftCampaign({
             argv: ["node", "scripts/draft-campaign.ts", "Oakstop Subject"],
             env: {
+                NODE_ENV: "test",
                 CC_EMAIL_PROVIDER: "mailerlite",
                 CC_EMAIL_API_KEY: "test-api-key",
                 CC_EMAIL_FROM_EMAIL: "sender@example.com",
@@ -84,6 +85,7 @@ describe("draft-campaign script", () => {
             runDraftCampaignCli({
                 argv: ["node", "scripts/draft-campaign.ts", "Oakstop Subject"],
                 env: {
+                    NODE_ENV: "test",
                     CC_EMAIL_API_KEY: "test-api-key",
                     CC_EMAIL_FROM_EMAIL: "sender@example.com",
                 },

@@ -11,6 +11,7 @@ import {
 describe("email-platform", () => {
     it("uses the default provider with backward-compatible MailerLite env fallbacks", () => {
         const result = resolveEmailPlatformEnv({
+            NODE_ENV: "test",
             CC_API_KEY: "legacy-api-key",
             MAILERLITE_FROM_EMAIL: "legacy@example.com",
             MAILERLITE_FROM_NAME: "Legacy Sender",
@@ -27,6 +28,7 @@ describe("email-platform", () => {
 
     it("prefers generic email env vars when they are present", () => {
         const result = resolveEmailPlatformEnv({
+            NODE_ENV: "test",
             CC_EMAIL_PROVIDER: "mailerlite",
             CC_EMAIL_API_KEY: "generic-api-key",
             CC_EMAIL_MASTER_GROUP_ID: "group-789",
@@ -45,6 +47,7 @@ describe("email-platform", () => {
 
     it("throws when an unsupported provider is configured", () => {
         expect(() => resolveEmailPlatformEnv({
+            NODE_ENV: "test",
             CC_EMAIL_PROVIDER: "brevo",
             CC_EMAIL_API_KEY: "brevo-key",
         })).toThrow("Unsupported email provider: brevo");

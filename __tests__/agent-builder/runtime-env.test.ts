@@ -12,7 +12,9 @@ describe('Agent Builder runtime env loading', () => {
     it('loads .env.local values for local CLI runs', () => {
         const cwd = makeTempDir();
         fs.writeFileSync(path.join(cwd, '.env.local'), 'OPENAI_API_KEY=local-key\nCC_AGENT_BUILDER_MODEL=gpt-test\n');
-        const env: NodeJS.ProcessEnv = {};
+        const env: NodeJS.ProcessEnv = {
+            NODE_ENV: 'test'
+        };
 
         const result = loadAgentBuilderRuntimeEnv({ cwd, env });
 
@@ -25,7 +27,9 @@ describe('Agent Builder runtime env loading', () => {
         const cwd = makeTempDir();
         fs.writeFileSync(path.join(cwd, '.env'), 'CC_AGENT_BUILDER_MODEL=gpt-from-env\n');
         fs.writeFileSync(path.join(cwd, '.env.local'), 'CC_AGENT_BUILDER_MODEL=gpt-from-local\n');
-        const env: NodeJS.ProcessEnv = {};
+        const env: NodeJS.ProcessEnv = {
+            NODE_ENV: 'test'
+        };
 
         const result = loadAgentBuilderRuntimeEnv({ cwd, env });
 
@@ -37,6 +41,7 @@ describe('Agent Builder runtime env loading', () => {
         const cwd = makeTempDir();
         fs.writeFileSync(path.join(cwd, '.env.local'), 'CC_AGENT_BUILDER_MODEL=gpt-from-local\n');
         const env: NodeJS.ProcessEnv = {
+            NODE_ENV: 'test',
             CC_AGENT_BUILDER_MODEL: 'gpt-from-shell'
         };
 
