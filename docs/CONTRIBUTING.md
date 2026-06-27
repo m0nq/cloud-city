@@ -12,6 +12,7 @@ Please note we have a code of conduct, please follow it in all your interactions
 - Before opening a pull request, run:
   ```sh
   pnpm lint
+  pnpm typecheck
   pnpm test:runInBand
   pnpm build
   ```

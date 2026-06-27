@@ -63,6 +63,9 @@ jobs:
       - name: Run linter
         run: pnpm lint
 
+      - name: Run typecheck
+        run: pnpm typecheck
+
       - name: Build with Next.js
         env:
           CC_API_KEY: ${{ secrets.CC_API_KEY }}

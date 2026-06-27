@@ -12,6 +12,7 @@
         "start": "next start",
         "serve": "npx serve@latest out",
         "lint": "eslint .",
+        "typecheck": "tsc --noEmit --pretty false",
         "format": "prettier . --write",
         "agent-builder": "tsx scripts/agent-builder/index.ts",
         "compare:outputs": "tsx spikes/agent-builder-sdk/compare-outputs.ts",
