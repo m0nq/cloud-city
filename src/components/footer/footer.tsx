@@ -5,13 +5,12 @@ import { FaFacebookF } from 'react-icons/fa';
 import { FaInstagram } from 'react-icons/fa';
 
 import styles from './footer.module.css';
-import logo from '@public/cc-logo-blue-gradient-transparent.png';
 
 export const Footer = () => {
     return (
         <footer className={styles.footer}>
             <div className={styles.logoSection}>
-                <Image src={logo}
+                <Image src="/cc-logo-blue-gradient-transparent.png"
                     alt="Pink and purple clouds at sunset"
                     sizes="100vw"
                     className="background-clouds"
