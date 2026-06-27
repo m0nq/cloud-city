@@ -65,10 +65,10 @@ export type Post = {
         }[];
     };
     eventsFields?: {
-        address: string;
-        eventDateTime: string;
-        ticketLink: string;
-    }
+        address?: string;
+        eventDateTime?: string | null;
+        ticketLink?: string;
+    };
 };
 
 // export interface Props {

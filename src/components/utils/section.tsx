@@ -1,22 +1,17 @@
-import { DetailedHTMLProps } from 'react';
-import { HTMLAttributes } from 'react';
-import { ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
+
+type SectionProps = Omit<ComponentPropsWithoutRef<'section'>, 'children' | 'style'> & {
+    styles?: CSSProperties;
+    children: ReactNode;
+};
 
 export const Section = ({
     styles = {},
     className = '',
     children,
     ...props
-}: {
-    styles?: DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
-    className?: string;
-    children: ReactNode;
-}) => {
-    return (
-        <>
-            <section style={styles} className={className} {...props}>
-                {children}
-            </section>
-        </>
-    );
-};
+}: SectionProps) => (
+    <section style={styles} className={className} {...props}>
+        {children}
+    </section>
+);

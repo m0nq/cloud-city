@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 
-const decorativeRingsMock = jest.fn(() => <div data-testid="decorative-rings" />);
+const decorativeRingsMock = jest.fn((props: { rotations: number[] }) => <div data-testid="decorative-rings" />);
 
 jest.mock("@/components/decorations/decorative-rings", () => ({
     DecorativeRings: (props: { rotations: number[] }) => decorativeRingsMock(props),

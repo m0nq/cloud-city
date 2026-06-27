@@ -175,9 +175,10 @@ describe("wp-actions", () => {
 
         const { getPosts } = await import("@/utils/api/wp-actions");
         const result = await getPosts();
+        const [firstPost] = result.posts;
 
-        // Verify the suffix was removed
-        expect(result.posts[0].post.eventsFields.eventDateTime).toBe(expectedCleanDate);
+        expect(result.posts).toHaveLength(1);
+        expect(firstPost?.post.eventsFields?.eventDateTime).toBe(expectedCleanDate);
     });
 
     it("getPosts gracefully handles null eventDateTime values without crashing", async () => {
@@ -203,9 +204,10 @@ describe("wp-actions", () => {
 
         const { getPosts } = await import("@/utils/api/wp-actions");
         const result = await getPosts();
+        const [firstPost] = result.posts;
 
-        // Verify it passes through the null safely
-        expect(result.posts[0].post.eventsFields.eventDateTime).toBeNull();
+        expect(result.posts).toHaveLength(1);
+        expect(firstPost?.post.eventsFields?.eventDateTime).toBeNull();
     });
 
     it("getPost sanitizes eventDateTime by stripping the '+00:00' suffix to enforce local time", async () => {
@@ -229,7 +231,6 @@ describe("wp-actions", () => {
         const { getPost } = await import("@/utils/api/wp-actions");
         const result = await getPost("/cloud-city");
 
-        // Verify the suffix was removed
-        expect(result.eventsFields.eventDateTime).toBe(expectedCleanDate);
+        expect(result.eventsFields?.eventDateTime).toBe(expectedCleanDate);
     });
 });
