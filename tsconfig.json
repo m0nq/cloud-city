@@ -48,6 +48,7 @@
     ],
     "exclude": [
         "node_modules",
-        "spikes/agent-builder-sdk"
+        "spikes/agent-builder-sdk",
+        "cypress.config.ts"
     ]
 }
