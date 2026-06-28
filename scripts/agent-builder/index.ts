@@ -143,6 +143,8 @@ export const resolveAgentBuilderCliArgs = (argv: string[] = process.argv): Agent
     throw new Error(AGENT_BUILDER_USAGE);
 };
 
+const commandRequiresRuntimeEnv = (command: AgentBuilderCommand) => command.action === 'runtime-vercel-review';
+
 export const runAgentBuilderCli = async ({
     argv = process.argv,
     logger = console,
@@ -159,8 +161,11 @@ export const runAgentBuilderCli = async ({
     generateReview?: typeof generateVercelVenueVendorReview;
 } = {}) => {
     try {
-        loadAgentBuilderRuntimeEnv();
         const command = resolveAgentBuilderCliArgs(argv);
+
+        if (commandRequiresRuntimeEnv(command)) {
+            loadAgentBuilderRuntimeEnv();
+        }
 
         if (command.action === 'validate') {
             const report = validateAgentSpecFile(command.specPath);
