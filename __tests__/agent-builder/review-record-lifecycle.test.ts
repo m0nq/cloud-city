@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 import {
+    formatEventReadinessReviewRecordLifecycleValidationReport,
     validateEventReadinessReviewRecordLifecycle,
     type EventReadinessReviewRecordLifecycleValidationOutcome
 } from '../../src/agent-builder/review-record-lifecycle/validation';
@@ -66,6 +67,26 @@ describe('Event Readiness L1.6 review record lifecycle validation', () => {
         expect(report.errors).toEqual([]);
     });
 
+    it('formats a PASS lifecycle report with explicit human-review-only boundaries', () => {
+        const report = expectOutcome('valid_complete_pass_review_record.synthetic.json', 'PASS');
+        const formatted = formatEventReadinessReviewRecordLifecycleValidationReport(report);
+
+        expect(formatted).toContain('Event Readiness Review Record Lifecycle Validation Report');
+        expect(formatted).toContain('Validation outcome: PASS');
+        expect(formatted).toContain('Promotable to human-review draft: PASS');
+        expect(formatted).toContain('Approved for operational use: false');
+        expect(formatted).toContain('PASS means pass for human review only.');
+        expect(formatted).toContain('PARTIAL means needs human review.');
+        expect(formatted).toContain('FAIL blocks promotion to usable human-review draft status.');
+        expect(formatted).toContain('Deterministic contract conformance is not operational approval.');
+        expect(formatted).toContain('Human review disposition: accepted_for_next_human_review_step');
+        expect(formatted).toContain(
+            'Next human-owned step: Founder / Strategic Owner reviews the synthetic draft packet and decides whether another human review step is needed.'
+        );
+        expect(formatted).toContain('Humans approve. Humans execute.');
+        expect(formatted).toContain('Result: PASS');
+    });
+
     it('maps a valid FAIL lifecycle record to validation rejection and blocks usable draft promotion', () => {
         const report = expectOutcome('valid_fail_rejected_for_validation_failure.synthetic.json', 'FAIL');
 
@@ -81,6 +102,17 @@ describe('Event Readiness L1.6 review record lifecycle validation', () => {
         expect(report.checks.find(check => check.id === 'review_record_schema')?.outcome).toBe('FAIL');
         expect(report.errors.join('\n')).toContain('review_date');
         expect(report.promotableToHumanReviewDraft).toBe(false);
+    });
+
+    it('formats schema failures as blocking human-review draft promotion', () => {
+        const report = expectOutcome('invalid_missing_required_field.synthetic.json', 'FAIL');
+        const formatted = formatEventReadinessReviewRecordLifecycleValidationReport(report);
+
+        expect(formatted).toContain('Validation outcome: FAIL');
+        expect(formatted).toContain('Promotable to human-review draft: FAIL');
+        expect(formatted).toContain('Failures:');
+        expect(formatted).toContain('review_date');
+        expect(formatted).toContain('Result: FAIL');
     });
 
     it('fails when lifecycle state is unsupported', () => {

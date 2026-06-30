@@ -156,6 +156,8 @@ const buildReport = ({
     };
 };
 
+const formatPassFail = (value: boolean) => (value ? 'PASS' : 'FAIL');
+
 export const validateEventReadinessReviewRecordLifecycle = (
     input: unknown
 ): EventReadinessReviewRecordLifecycleValidationReport => {
@@ -254,4 +256,66 @@ export const validateEventReadinessReviewRecordLifecycle = (
     ];
 
     return buildReport({ record, checks });
+};
+
+export const formatEventReadinessReviewRecordLifecycleValidationReport = (
+    report: EventReadinessReviewRecordLifecycleValidationReport
+) => {
+    const lines = [
+        'Event Readiness Review Record Lifecycle Validation Report',
+        '',
+        `Validation outcome: ${report.outcome}`,
+        `Promotable to human-review draft: ${formatPassFail(report.promotableToHumanReviewDraft)}`,
+        'Approved for operational use: false',
+        'PASS means pass for human review only.',
+        'PARTIAL means needs human review.',
+        'FAIL blocks promotion to usable human-review draft status.',
+        'Deterministic contract conformance is not operational approval.'
+    ];
+
+    if (report.record) {
+        lines.push(
+            '',
+            'Record:',
+            `- Review record ID: ${report.record.review_record_id}`,
+            `- Packet: ${report.record.packet_id_or_filename}`,
+            `- Lifecycle state: ${report.record.lifecycle_state}`,
+            `- Human review disposition: ${report.record.human_review_disposition}`,
+            `- Validation evidence: ${report.record.validation_command_or_evidence_source}`,
+            `- Reviewer hats: ${report.record.reviewer_hats.join(', ')}`,
+            `- Next human-owned step: ${report.record.next_human_owned_step}`
+        );
+
+        if (report.record.unresolved_human_owned_decisions.length > 0) {
+            lines.push(
+                `- Unresolved human-owned decisions: ${report.record.unresolved_human_owned_decisions.join('; ')}`
+            );
+        }
+    }
+
+    if (report.checks.length > 0) {
+        lines.push('', 'Checks:');
+        for (const check of report.checks) {
+            lines.push(`- ${check.outcome} ${check.id}: ${check.label} (${check.details})`);
+        }
+    }
+
+    if (report.errors.length > 0) {
+        lines.push('', 'Failures:');
+        for (const error of report.errors) {
+            lines.push(`- ${error}`);
+        }
+    }
+
+    lines.push(
+        '',
+        'Boundary:',
+        '- Draft-only deterministic lifecycle validation for synthetic human-review records.',
+        '- Does not prove event readiness, source truth, source file existence, source freshness, source completeness, semantic source support, source-packet binding, operational correctness, operational approval, or whether a human should act.',
+        '- Humans approve. Humans execute.',
+        '',
+        `Result: ${report.outcome}`
+    );
+
+    return lines.join('\n');
 };
