@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 3
+    groups:
+      dev-dependency-patch-minor:
+        dependency-type: "development"
+        update-types:
+          - "patch"
+          - "minor"
