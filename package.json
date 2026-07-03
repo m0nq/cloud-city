@@ -37,7 +37,7 @@
         "ai": "^6.0.168",
         "clsx": "^2.1.1",
         "formik": "^2.4.9",
-        "graphql": "^16.13.2",
+        "graphql": "^16.14.2",
         "graphql-request": "^7.4.0",
         "moment": "^2.30.1",
         "moment-timezone": "^0.6.2",
