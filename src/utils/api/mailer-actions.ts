@@ -1,30 +1,17 @@
 // src/utils/api/mailer-actions.ts
-"use server";
-import MailerLite from "@mailerlite/mailerlite-nodejs";
-import { CreateOrUpdateSubscriberParams } from "@mailerlite/mailerlite-nodejs";
+'use server';
 
-import { FormValues } from "@data-types/types";
+import { FormValues } from '@data-types/types';
+import { createMailerLiteNewsletterSignupProvider } from '@utils/api/newsletter-signup-provider';
 
-const mailerlite = new MailerLite({
-    api_key: process.env.CC_API_KEY || "",
-});
+const newsletterSignupProvider = createMailerLiteNewsletterSignupProvider();
 
-export const subscribeMember = async ({ firstName, lastName, email }: FormValues) => {
-    const params = {
-        email: email.trim(),
-        fields: {
-            name: firstName.trim(),
-            last_name: lastName.trim(),
-        },
-        groups: ["125237533318579422"],
-        status: "unconfirmed", // possible statuses: active, unsubscribed, unconfirmed, bounced, or junk.
-    } as CreateOrUpdateSubscriberParams;
-
+export const subscribeMember = async (values: FormValues) => {
     try {
-        await mailerlite.subscribers.createOrUpdate(params);
+        await newsletterSignupProvider.subscribe(values);
         return { ok: true };
     } catch (error: any) {
-        console.log("Error ->", error.message);
+        console.log('Error ->', error.message);
         return { ok: false };
     }
 };
