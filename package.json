@@ -4,7 +4,7 @@
     "version": "0.1.0",
     "author": "Monk Wellington <monk.wellington@gmail.com>",
     "license": "MIT",
-    "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319",
+    "packageManager": "pnpm@11.9.0+sha512.bd682d5d03fe525ef7c9fd6780c6884d1e756ac4c9c9fe00c538782824310dcf90e3ddc4f53835f06dfaebd5085e41855e0bcbb3b60de2ac5bbab89e5036f03b",
     "scripts": {
         "dev": "next dev",
         "build": "next build",
@@ -31,6 +31,7 @@
         "@next/bundle-analyzer": "16.2.4",
         "@next/third-parties": "16.2.4",
         "@tailwindcss/typography": "^0.5.20",
+        "@tsparticles/engine": "3.9.1",
         "@tsparticles/react": "^3.0.0",
         "@tsparticles/slim": "^3.9.1",
         "@types/sanitize-html": "^2.16.1",
@@ -76,23 +77,6 @@
         "tsx": "^4.22.4",
         "typescript": "^5.9.3",
         "undici": "^7.24.6"
-    },
-    "pnpm": {
-        "overrides": {
-            "@mailerlite/mailerlite-nodejs>axios": "^1.15.0",
-            "axios>follow-redirects": "^1.16.0",
-            "formik>lodash": "^4.18.0",
-            "formik>lodash-es": "^4.18.0",
-            "cypress>lodash": "^4.18.0",
-            "minimatch@3.1.5>brace-expansion": "1.1.13",
-            "minimatch@9.0.9>brace-expansion": "2.0.3"
-        },
-        "onlyBuiltDependencies": [
-            "@tsparticles/engine",
-            "cypress",
-            "sharp",
-            "unrs-resolver"
-        ]
     },
     "peerDependencies": {
         "styled-jsx": "^5.1.2"

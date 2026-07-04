@@ -1,111 +1,121 @@
-import { render, screen } from "@testing-library/react";
+// __tests__/app/blog/blog-article-page.test.tsx
+import { render, screen } from '@testing-library/react';
+import BlogArticlePage, { generateStaticParams } from '@/app/blog/[article]/page';
+import { getPost, getPosts } from '@/utils/api/wp-actions';
 
-jest.mock("@/utils/api/wp-actions", () => ({
+jest.mock('@/utils/api/wp-actions', () => ({
     getPosts: jest.fn(),
-    getPost: jest.fn(),
+    getPost: jest.fn()
 }));
-
-import BlogArticlePage, { generateStaticParams } from "@/app/blog/[article]/page";
-import { getPost, getPosts } from "@/utils/api/wp-actions";
 
 const mockGetPosts = getPosts as jest.Mock;
 const mockGetPost = getPost as jest.Mock;
 
-describe("blog/[article]/page", () => {
+describe('blog/[article]/page', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it("generateStaticParams extracts article slug from post URI", async () => {
+    it('generateStaticParams extracts article slug from post URI', async () => {
         mockGetPosts.mockResolvedValueOnce({
             posts: [
-                { post: { uri: "/blog/testing-best-practices/" } },
-                { post: { uri: "blog/incident-review" } },
-                { post: { uri: "/" } },
-            ],
+                { post: { uri: '/blog/testing-best-practices/' } },
+                { post: { uri: 'blog/incident-review' } },
+                { post: { uri: '/' } }
+            ]
         });
 
         const params = await generateStaticParams();
 
-        expect(mockGetPosts).toHaveBeenCalledWith({ category: "Blog", tag: "Cloud City" }, 100);
+        expect(mockGetPosts).toHaveBeenCalledWith({ category: 'Blog', tag: 'Cloud City' }, 100);
         expect(params).toEqual([
-            { article: "testing-best-practices" },
-            { article: "incident-review" },
-            { article: "" },
+            { article: 'testing-best-practices' },
+            { article: 'incident-review' },
+            { article: '' }
         ]);
     });
 
-    it("generateStaticParams returns empty array when post lookup fails", async () => {
-        const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => undefined);
-        mockGetPosts.mockRejectedValueOnce(new Error("wp-timeout"));
+    it('generateStaticParams returns empty array when post lookup fails', async () => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+        mockGetPosts.mockRejectedValueOnce(new Error('wp-timeout'));
 
         try {
             const params = await generateStaticParams();
             expect(params).toEqual([]);
             expect(consoleErrorSpy).toHaveBeenCalledWith(
-                "[blog/[article]] Failed to generate static params:",
-                expect.any(Error),
+                '[blog/[article]] Failed to generate static params:',
+                expect.any(Error)
             );
         } finally {
             consoleErrorSpy.mockRestore();
         }
     });
 
-    it("renders not-found UI when getPost returns an empty object", async () => {
+    it('renders not-found UI when getPost returns an empty object', async () => {
         mockGetPost.mockResolvedValueOnce({});
 
-        const node = await BlogArticlePage({ params: Promise.resolve({ article: "missing-article" }) });
+        const node = await BlogArticlePage({ params: Promise.resolve({ article: 'missing-article' }) });
         render(<>{node}</>);
 
-        expect(mockGetPost).toHaveBeenCalledWith("/missing-article");
-        expect(screen.getByText("Article not found")).toBeInTheDocument();
+        expect(mockGetPost).toHaveBeenCalledWith('/missing-article');
+        expect(screen.getByText('Article not found')).toBeInTheDocument();
     });
 
-    it("renders article content and metadata on happy path", async () => {
+    it('renders article content, metadata, and decorative featured image on happy path', async () => {
         mockGetPost.mockResolvedValueOnce({
-            title: "Testing Best Practices",
-            date: "2026-01-10T00:00:00Z",
-            content: "<p>Ship with confidence.</p>",
+            title: 'Testing Best Practices',
+            date: '2026-01-10T00:00:00Z',
+            content: '<p>Ship with confidence.</p>',
             featuredImage: {
                 node: {
-                    sourceUrl: "https://cdn.example.com/blog-banner.jpg",
-                },
-            },
+                    sourceUrl: 'https://cdn.example.com/blog-banner.jpg'
+                }
+            }
         });
 
-        const node = await BlogArticlePage({ params: Promise.resolve({ article: "testing-best-practices" }) });
-        render(<>{node}</>);
+        const node = await BlogArticlePage({ params: Promise.resolve({ article: 'testing-best-practices' }) });
+        const { container } = render(<>{node}</>);
 
-        expect(mockGetPost).toHaveBeenCalledWith("/testing-best-practices");
-        expect(screen.getByRole("heading", { name: "Testing Best Practices" })).toBeInTheDocument();
-        expect(screen.getByText("Ship with confidence.")).toBeInTheDocument();
-        expect(screen.getByRole("img", { name: "https://cdn.example.com/blog-banner.jpg" })).toBeInTheDocument();
+        expect(mockGetPost).toHaveBeenCalledWith('/testing-best-practices');
+        expect(screen.getByRole('heading', { name: 'Testing Best Practices' })).toBeInTheDocument();
+        expect(screen.getByText('Ship with confidence.')).toBeInTheDocument();
         expect(screen.getByText(/Posted on/i)).toBeInTheDocument();
+
+        expect(container.querySelector('.featuredImageWrapper')).toBeInTheDocument();
+
+        const featuredImage = container.querySelector('img.featuredImage');
+
+        expect(featuredImage).toBeInTheDocument();
+        expect(featuredImage).toHaveAttribute('src', 'https://cdn.example.com/blog-banner.jpg');
+        expect(featuredImage).toHaveAttribute('alt', '');
+        expect(featuredImage).toHaveAttribute('loading', 'eager');
+        expect(featuredImage).toHaveAttribute('sizes', '(max-width: 768px) 100vw, 896px');
+        expect(screen.queryByRole('img', { name: 'https://cdn.example.com/blog-banner.jpg' })).not.toBeInTheDocument();
     });
 
-    it("renders without optional image/date metadata when missing", async () => {
+    it('renders without optional image/date metadata when missing', async () => {
         mockGetPost.mockResolvedValueOnce({
-            title: "No Media Article",
-            content: "<p>Text-only content.</p>",
+            title: 'No Media Article',
+            content: '<p>Text-only content.</p>'
         });
 
-        const node = await BlogArticlePage({ params: Promise.resolve({ article: "no-media-article" }) });
+        const node = await BlogArticlePage({ params: Promise.resolve({ article: 'no-media-article' }) });
         render(<>{node}</>);
 
-        expect(screen.getByRole("heading", { name: "No Media Article" })).toBeInTheDocument();
-        expect(screen.getByText("Text-only content.")).toBeInTheDocument();
-        expect(screen.queryByRole("img")).not.toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'No Media Article' })).toBeInTheDocument();
+        expect(screen.getByText('Text-only content.')).toBeInTheDocument();
+        expect(screen.queryByRole('img')).not.toBeInTheDocument();
         expect(screen.queryByText(/Posted on/i)).not.toBeInTheDocument();
     });
 
-    it("renders with empty content fallback when content is undefined", async () => {
+    it('renders with empty content fallback when content is undefined', async () => {
         mockGetPost.mockResolvedValueOnce({
-            title: "Untitled Draft",
+            title: 'Untitled Draft'
         });
 
-        const node = await BlogArticlePage({ params: Promise.resolve({ article: "untitled-draft" }) });
+        const node = await BlogArticlePage({ params: Promise.resolve({ article: 'untitled-draft' }) });
         render(<>{node}</>);
 
-        expect(screen.getByRole("heading", { name: "Untitled Draft" })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Untitled Draft' })).toBeInTheDocument();
     });
 });

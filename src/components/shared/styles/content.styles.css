@@ -9,8 +9,12 @@
     sm:text-5xl;
 }
 
+.featuredImageWrapper {
+    @apply relative w-full h-[280px] overflow-hidden rounded-xl;
+}
+
 .featuredImage {
-    @apply w-full h-auto max-h-[280px] object-cover rounded-xl;
+    @apply object-cover;
 }
 
 .posted-on {

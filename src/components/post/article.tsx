@@ -1,3 +1,4 @@
+// src/components/post/article.tsx
 import { ReactNode } from 'react';
 import { ReactElement } from 'react';
 import Image from 'next/image';
@@ -20,16 +21,19 @@ export const Article = ({
         <article className="post">
             <h1 className="post-title">{title}</h1>
             {featuredImage && (
-                <Image src={featuredImage}
-                    alt={featuredImage}
-                    width={1920}
-                    height={280}
-                    className="featuredImage" />
+                <div className="featuredImageWrapper">
+                    <Image
+                        src={featuredImage}
+                        alt=""
+                        fill
+                        sizes="(max-width: 768px) 100vw, 896px"
+                        className="featuredImage"
+                        loading="eager"
+                    />
+                </div>
             )}
             {date && <div className="posted-on">Posted on {moment(date).format('MMMM Do, YYYY')}</div>}
-            <div className="post-content">
-                {children}
-            </div>
+            <div className="post-content">{children}</div>
         </article>
     );
 };
