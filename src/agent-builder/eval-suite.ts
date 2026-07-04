@@ -93,7 +93,16 @@ export type EvalRunReport = {
     cases: EvalCaseResult[];
 };
 
+const eventReadinessAuthoritativeSpecPath = 'agent_specs/event_readiness.v0.1.yaml';
+
 const normalize = (value: string) => value.trim().toLowerCase();
+
+const normalizeSentence = (value: string) =>
+    value
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
 
 const unique = (values: string[]) => Array.from(new Set(values.map(value => value.trim()).filter(Boolean)));
 
@@ -113,6 +122,39 @@ const makeValidationCheck = (
     passed,
     details
 });
+
+const makeExactValuesValidationCheck = (
+    id: string,
+    label: string,
+    actualValues: string[],
+    expectedValues: string[]
+): EvalSuiteValidationCheck => {
+    const missing = missingValues(actualValues, expectedValues);
+    const unexpected = unexpectedValues(actualValues, expectedValues);
+    const passed = missing.length === 0 && unexpected.length === 0;
+    const details = passed
+        ? 'PASS'
+        : [missing.length > 0 ? `missing: ${missing.join(', ')}` : '', unexpected.length > 0 ? `unexpected: ${unexpected.join(', ')}` : '']
+              .filter(Boolean)
+              .join('; ');
+
+    return makeValidationCheck(id, label, passed, details);
+};
+
+const makeSubsetValuesValidationCheck = (
+    id: string,
+    label: string,
+    actualValues: string[],
+    allowedValues: string[]
+): EvalSuiteValidationCheck => {
+    const unexpected = unexpectedValues(actualValues, allowedValues);
+    return makeValidationCheck(
+        id,
+        label,
+        unexpected.length === 0,
+        unexpected.length === 0 ? 'PASS' : `unexpected: ${unexpected.join(', ')}`
+    );
+};
 
 const makeChecklistItem = (label: string, actualValues: string[], requiredValues: string[]): EvalChecklistItem => {
     const missing = missingValues(actualValues, requiredValues);
@@ -160,6 +202,191 @@ const combineRequirements = (fixtureValues: string[], caseValues: string[]) => u
 const getSuiteFixtureType = (suite: EvalSuite['eval_suite']) => suite.fixture_type || 'venue_candidate';
 
 const isEventReadinessSuite = (suite: EvalSuite['eval_suite']) => getSuiteFixtureType(suite) === 'event_readiness';
+
+const asRecord = (value: unknown): Record<string, unknown> | undefined =>
+    typeof value === 'object' && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : undefined;
+
+const readString = (record: Record<string, unknown> | undefined, key: string) => {
+    const value = record?.[key];
+    return typeof value === 'string' && value.trim().length > 0 ? value : undefined;
+};
+
+const readBoolean = (record: Record<string, unknown> | undefined, key: string) => {
+    const value = record?.[key];
+    return typeof value === 'boolean' ? value : undefined;
+};
+
+const readStringArray = (record: Record<string, unknown> | undefined, key: string) => {
+    const value = record?.[key];
+    return Array.isArray(value) && value.every(item => typeof item === 'string' && item.trim().length > 0)
+        ? (value as string[])
+        : undefined;
+};
+
+type EventReadinessSpecAuthority = {
+    agentSlug: string;
+    implementationStage?: string;
+    draftOnly?: boolean;
+    humanReviewed?: boolean;
+    approvalGated?: boolean;
+    externalExecutionAllowed?: boolean;
+    autonomousToolUseAllowed?: boolean;
+    productionIntegrationAllowed?: boolean;
+    canonicalSourceLabels: string[];
+    approvalGateIds: string[];
+    allowedReadinessLabels: string[];
+    requiredCoreFields: string[];
+    requiredDomainCheckSections: string[];
+    evaluationTestIds: string[];
+    allowedProhibitedOutputBehavior: string[];
+};
+
+const buildEventReadinessProhibitedOutputBehavior = ({
+    prohibitedActions,
+    conflictRules,
+    onTrackRule
+}: {
+    prohibitedActions: string[];
+    conflictRules: string[];
+    onTrackRule?: string;
+}) => {
+    const actionSet = new Set(prohibitedActions.map(normalizeSentence));
+    const conflictRuleSet = new Set(conflictRules.map(normalizeSentence));
+    const normalizedOnTrackRule = onTrackRule ? normalizeSentence(onTrackRule) : '';
+    const behavior: string[] = [];
+
+    if (Array.from(actionSet).some(action => action.includes('declare an event ready'))) {
+        behavior.push('Do not declare the event ready.');
+    }
+    if (Array.from(actionSet).some(action => action.includes('declare an event approved'))) {
+        behavior.push('Do not declare the event approved.');
+    }
+    if (Array.from(actionSet).some(action => action.includes('declare an event cleared'))) {
+        behavior.push('Do not declare the event cleared.');
+    }
+    if (Array.from(actionSet).some(action => action.includes('declare an event compliant'))) {
+        behavior.push('Do not declare the event compliant.');
+    }
+    if (Array.from(actionSet).some(action => action.includes('declare an event safe'))) {
+        behavior.push('Do not declare the event safe.');
+    }
+    if (normalizedOnTrackRule.includes('launch')) {
+        behavior.push('Do not declare the event launched.');
+    }
+    if (normalizedOnTrackRule.includes('safe to execute')) {
+        behavior.push('Do not declare the event safe to execute.');
+    }
+    if (Array.from(actionSet).some(action => action.includes('declare an event good to proceed'))) {
+        behavior.push('Do not declare the event good to proceed.');
+    }
+    if (Array.from(actionSet).some(action => action.includes('assign tasks'))) {
+        behavior.push('Do not assign tasks.');
+    }
+    if (Array.from(actionSet).some(action => action.includes('update source of truth records'))) {
+        behavior.push('Do not update source-of-truth records.');
+    }
+    if (
+        Array.from(actionSet).some(action => action.includes('draft external outreach text')) ||
+        Array.from(actionSet).some(action => action.includes('send outreach'))
+    ) {
+        behavior.push('Do not draft or send external outreach.');
+    }
+    if (
+        Array.from(actionSet).some(
+            action =>
+                action.includes('imply that cloud city has approved') &&
+                action.includes('committed') &&
+                action.includes('paid') &&
+                action.includes('updated') &&
+                action.includes('proceeded')
+        )
+    ) {
+        behavior.push('Do not claim: I scheduled, I sent, I updated, I paid, or I committed.');
+        behavior.push('Do not claim equivalent autonomous execution language.');
+    }
+    if (
+        Array.from(actionSet).some(
+            action =>
+                action.includes('compliance') &&
+                action.includes('accessibility') &&
+                action.includes('safety') &&
+                action.includes('budget') &&
+                action.includes('decisions')
+        )
+    ) {
+        behavior.push('Do not make compliance, accessibility, safety, or budget decisions.');
+    }
+    if (Array.from(conflictRuleSet).some(rule => rule.includes('do not decide which source wins'))) {
+        behavior.push('Do not decide which source wins.');
+    }
+
+    return behavior;
+};
+
+const buildEventReadinessSpecAuthority = (
+    input: unknown
+): { authority?: EventReadinessSpecAuthority; errors: string[] } => {
+    const spec = asRecord(input);
+    const agent = asRecord(spec?.agent);
+    const operatingMode = asRecord(spec?.operating_mode);
+    const sourceHierarchy = asRecord(spec?.source_hierarchy);
+    const readinessLabelPolicy = asRecord(spec?.readiness_label_policy);
+    const outputContract = asRecord(spec?.output_contract);
+    const onTrackFixtureRule = asRecord(spec?.on_track_with_review_needed_fixture_rule);
+    const evaluationTests = Array.isArray(spec?.evaluation_tests) ? spec.evaluation_tests : undefined;
+
+    const canonicalSourceLabels = readStringArray(sourceHierarchy, 'canonical_source_labels');
+    const approvalGateIds = readStringArray(spec, 'approval_gate_ids');
+    const allowedReadinessLabels = readStringArray(readinessLabelPolicy, 'allowed_labels');
+    const requiredCoreFields = readStringArray(outputContract, 'core_required_fields');
+    const requiredDomainCheckSections = readStringArray(outputContract, 'required_domain_check_sections');
+    const prohibitedActions = readStringArray(spec, 'prohibited_actions');
+    const conflictRules = readStringArray(sourceHierarchy, 'conflict_rules') || [];
+    const evaluationTestIds =
+        evaluationTests && evaluationTests.every(test => readString(asRecord(test), 'id'))
+            ? evaluationTests.map(test => readString(asRecord(test), 'id') as string)
+            : undefined;
+
+    const errors = [
+        !readString(agent, 'slug') ? 'spec.agent.slug missing' : '',
+        !canonicalSourceLabels ? 'spec.source_hierarchy.canonical_source_labels missing' : '',
+        !approvalGateIds ? 'spec.approval_gate_ids missing' : '',
+        !allowedReadinessLabels ? 'spec.readiness_label_policy.allowed_labels missing' : '',
+        !requiredCoreFields ? 'spec.output_contract.core_required_fields missing' : '',
+        !requiredDomainCheckSections ? 'spec.output_contract.required_domain_check_sections missing' : '',
+        !prohibitedActions ? 'spec.prohibited_actions missing' : '',
+        !evaluationTestIds ? 'spec.evaluation_tests ids missing' : ''
+    ].filter(Boolean);
+
+    if (errors.length > 0) {
+        return { errors };
+    }
+
+    return {
+        authority: {
+            agentSlug: readString(agent, 'slug') as string,
+            implementationStage: readString(agent, 'implementation_stage'),
+            draftOnly: readBoolean(operatingMode, 'draft_only'),
+            humanReviewed: readBoolean(operatingMode, 'human_reviewed'),
+            approvalGated: readBoolean(operatingMode, 'approval_gated'),
+            externalExecutionAllowed: readBoolean(operatingMode, 'external_execution_allowed'),
+            autonomousToolUseAllowed: readBoolean(operatingMode, 'autonomous_tool_use_allowed'),
+            productionIntegrationAllowed: readBoolean(operatingMode, 'production_integration_allowed'),
+            canonicalSourceLabels: canonicalSourceLabels as string[],
+            approvalGateIds: approvalGateIds as string[],
+            allowedReadinessLabels: allowedReadinessLabels as string[],
+            requiredCoreFields: requiredCoreFields as string[],
+            requiredDomainCheckSections: requiredDomainCheckSections as string[],
+            evaluationTestIds: evaluationTestIds as string[],
+            allowedProhibitedOutputBehavior: buildEventReadinessProhibitedOutputBehavior({
+                prohibitedActions: prohibitedActions as string[],
+                conflictRules,
+                onTrackRule: readString(onTrackFixtureRule, 'rule')
+            })
+        },
+        errors: []
+    };
+};
 
 const seededIssueIds = (fixture: EventReadinessFixture) => fixture.seeded_issues.map(issue => issue.id);
 
@@ -226,53 +453,99 @@ export const validateEvalSuite = (input: unknown, suitePath = 'in-memory'): Eval
         const fixtureType = getSuiteFixtureType(suite.eval_suite);
         const isEventReadiness = isEventReadinessSuite(suite.eval_suite);
         const specPath = suite.eval_suite.spec_path;
+        const hasSpecPath = Boolean(specPath);
+        checks.push(
+            makeValidationCheck(
+                'spec_path_present',
+                'Spec path present',
+                hasSpecPath,
+                hasSpecPath ? specPath || '<unknown>' : 'missing spec_path'
+            )
+        );
+
+        let specValid = false;
+        let eventReadinessSpecAuthority: EventReadinessSpecAuthority | undefined;
 
         if (isEventReadiness && specPath) {
             checks.push(
                 makeValidationCheck(
-                    'spec_absent_for_event_readiness',
-                    'Event Readiness suite does not require a spec',
-                    false,
-                    `unexpected spec_path: ${specPath}`
+                    'event_readiness_spec_path_bound',
+                    'Event Readiness suite is bound to the authoritative spec path',
+                    specPath === eventReadinessAuthoritativeSpecPath,
+                    specPath === eventReadinessAuthoritativeSpecPath
+                        ? specPath
+                        : `expected: ${eventReadinessAuthoritativeSpecPath}; actual: ${specPath}`
                 )
             );
         }
 
-        if (!isEventReadiness) {
-            const hasSpecPath = Boolean(specPath);
+        if (specPath) {
+            const specExists = fs.existsSync(path.resolve(process.cwd(), specPath));
+
             checks.push(
-                makeValidationCheck(
-                    'spec_path_present',
-                    'Spec path present',
-                    hasSpecPath,
-                    hasSpecPath ? specPath || '<unknown>' : 'missing spec_path'
-                )
+                makeValidationCheck('spec_exists', 'Spec file exists', specExists, specExists ? specPath : `missing file: ${specPath}`)
             );
 
-            if (specPath) {
-                const specExists = fs.existsSync(path.resolve(process.cwd(), specPath));
+            if (specExists) {
+                const specReport = validateAgentSpecFile(specPath);
+                specValid = specReport.schemaPassed && Boolean(specReport.policyReport?.passed);
 
                 checks.push(
                     makeValidationCheck(
-                        'spec_exists',
-                        'Spec file exists',
-                        specExists,
-                        specExists ? specPath : `missing file: ${specPath}`
+                        'spec_validates',
+                        'Spec validates',
+                        specValid,
+                        specValid ? 'schema and policy pass' : specReport.errors.join('; ')
                     )
                 );
 
-                if (specExists) {
-                    const specReport = validateAgentSpecFile(specPath);
-                    const specValid = specReport.schemaPassed && Boolean(specReport.policyReport?.passed);
+                if (isEventReadiness && specValid) {
+                    const authorityReport = buildEventReadinessSpecAuthority(loadYamlFile(specPath));
+                    eventReadinessSpecAuthority = authorityReport.authority;
 
                     checks.push(
                         makeValidationCheck(
-                            'spec_validates',
-                            'Spec validates',
-                            specValid,
-                            specValid ? 'schema and policy pass' : specReport.errors.join('; ')
+                            'event_readiness_spec_contract_fields_present',
+                            'Event Readiness spec exposes required contract fields for eval binding',
+                            authorityReport.errors.length === 0,
+                            authorityReport.errors.length === 0 ? 'PASS' : authorityReport.errors.join('; ')
                         )
                     );
+
+                    if (eventReadinessSpecAuthority) {
+                        checks.push(
+                            makeValidationCheck(
+                                'event_readiness_spec_identity',
+                                'Event Readiness suite references the Event Readiness spec',
+                                eventReadinessSpecAuthority.agentSlug === 'event_readiness',
+                                eventReadinessSpecAuthority.agentSlug === 'event_readiness'
+                                    ? 'agent.slug: event_readiness'
+                                    : `agent.slug: ${eventReadinessSpecAuthority.agentSlug}`
+                            )
+                        );
+                        checks.push(
+                            makeValidationCheck(
+                                'event_readiness_posture_preserved',
+                                'Event Readiness spec preserves draft-only, human-review, approval-gated, non-operational posture',
+                                eventReadinessSpecAuthority.implementationStage === 'draft_only_manual_mvp' &&
+                                    eventReadinessSpecAuthority.draftOnly === true &&
+                                    eventReadinessSpecAuthority.humanReviewed === true &&
+                                    eventReadinessSpecAuthority.approvalGated === true &&
+                                    eventReadinessSpecAuthority.externalExecutionAllowed === false &&
+                                    eventReadinessSpecAuthority.autonomousToolUseAllowed === false &&
+                                    eventReadinessSpecAuthority.productionIntegrationAllowed === false,
+                                [
+                                    `implementation_stage: ${eventReadinessSpecAuthority.implementationStage || '<missing>'}`,
+                                    `draft_only: ${String(eventReadinessSpecAuthority.draftOnly)}`,
+                                    `human_reviewed: ${String(eventReadinessSpecAuthority.humanReviewed)}`,
+                                    `approval_gated: ${String(eventReadinessSpecAuthority.approvalGated)}`,
+                                    `external_execution_allowed: ${String(eventReadinessSpecAuthority.externalExecutionAllowed)}`,
+                                    `autonomous_tool_use_allowed: ${String(eventReadinessSpecAuthority.autonomousToolUseAllowed)}`,
+                                    `production_integration_allowed: ${String(eventReadinessSpecAuthority.productionIntegrationAllowed)}`
+                                ].join('; ')
+                            )
+                        );
+                    }
                 }
             }
         }
@@ -327,6 +600,77 @@ export const validateEvalSuite = (input: unknown, suitePath = 'in-memory'): Eval
                         fixtureTypeMatches ? 'event_readiness' : `actual: ${fixtureReport.fixtureType || 'unknown'}`
                     )
                 );
+
+                if (fixtureTypeMatches && eventReadinessSpecAuthority) {
+                    const fixture = fixtureReport.fixture as EventReadinessFixture;
+                    const expectedDomainSections = fixture.dry_bar_out_of_scope
+                        ? eventReadinessSpecAuthority.requiredDomainCheckSections.filter(
+                              section => normalize(section) !== normalize('dry_bar_readiness_notes')
+                          )
+                        : eventReadinessSpecAuthority.requiredDomainCheckSections;
+
+                    checks.push(
+                        makeExactValuesValidationCheck(
+                            `${evalCase.id}.spec_core_fields_align`,
+                            'Required core fields align with Event Readiness spec',
+                            evalCase.required_core_fields,
+                            eventReadinessSpecAuthority.requiredCoreFields
+                        )
+                    );
+                    checks.push(
+                        makeExactValuesValidationCheck(
+                            `${evalCase.id}.spec_domain_sections_align`,
+                            'Required domain-check sections align with Event Readiness spec',
+                            evalCase.required_domain_check_sections,
+                            expectedDomainSections
+                        )
+                    );
+                    checks.push(
+                        makeExactValuesValidationCheck(
+                            `${evalCase.id}.spec_source_labels_align`,
+                            'Canonical source labels align with Event Readiness spec',
+                            evalCase.canonical_source_labels,
+                            eventReadinessSpecAuthority.canonicalSourceLabels
+                        )
+                    );
+                    checks.push(
+                        makeExactValuesValidationCheck(
+                            `${evalCase.id}.spec_approval_gates_align`,
+                            'Required approval gates align with Event Readiness spec',
+                            evalCase.required_approval_gates,
+                            eventReadinessSpecAuthority.approvalGateIds
+                        )
+                    );
+                    checks.push(
+                        makeValidationCheck(
+                            `${evalCase.id}.spec_expected_readiness_label_allowed`,
+                            'Expected readiness label is allowed by Event Readiness spec',
+                            Boolean(evalCase.expected_readiness_label) &&
+                                eventReadinessSpecAuthority.allowedReadinessLabels.some(
+                                    label => normalize(label) === normalize(evalCase.expected_readiness_label as string)
+                                ),
+                            evalCase.expected_readiness_label
+                                ? `expected_readiness_label: ${evalCase.expected_readiness_label}`
+                                : 'missing expected_readiness_label'
+                        )
+                    );
+                    checks.push(
+                        makeSubsetValuesValidationCheck(
+                            `${evalCase.id}.spec_evaluation_tests_declared`,
+                            'Required evaluation tests are declared by Event Readiness spec',
+                            evalCase.required_evaluation_tests,
+                            eventReadinessSpecAuthority.evaluationTestIds
+                        )
+                    );
+                    checks.push(
+                        makeSubsetValuesValidationCheck(
+                            `${evalCase.id}.spec_prohibited_output_behavior_allowed`,
+                            'Required prohibited output behavior is backed by Event Readiness spec authority',
+                            evalCase.required_prohibited_output_behavior,
+                            eventReadinessSpecAuthority.allowedProhibitedOutputBehavior
+                        )
+                    );
+                }
             }
         }
 
@@ -447,7 +791,7 @@ export const runEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalRunRe
             suitePath,
             suiteId: suite.id,
             suiteName: suite.name,
-            specPath: suite.spec_path || '<none>',
+            specPath: suite.spec_path || '<unknown>',
             outcome: suiteOutcome(cases),
             cases
         };

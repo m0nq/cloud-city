@@ -3,6 +3,7 @@ eval_suite:
   name: "Event Readiness Deterministic Eval Suite"
   version: "0.1"
   fixture_type: "event_readiness"
+  spec_path: "agent_specs/event_readiness.v0.1.yaml"
   cases:
     - id: "blocked_escalation_synthetic"
       fixture_path: "fixtures/event_readiness/blocked_escalation.synthetic.yaml"

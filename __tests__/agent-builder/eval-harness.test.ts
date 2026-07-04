@@ -18,6 +18,7 @@ const eventReadinessSparseReviewableFixturePath = 'fixtures/event_readiness/spar
 const eventReadinessOnTrackFixturePath = 'fixtures/event_readiness/on_track_with_review_needed.synthetic.yaml';
 const suitePath = 'evals/venue_vendor_research.eval-suite.yaml';
 const eventReadinessSuitePath = 'evals/event_readiness.eval-suite.yaml';
+const eventReadinessSpecPath = 'agent_specs/event_readiness.v0.1.yaml';
 
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 
@@ -766,6 +767,51 @@ describe('Agent Builder eval harness', () => {
         expect(report.errors.join('\n')).toContain('agent_specs/missing.yaml');
     });
 
+    it('passes validation for a valid Event Readiness eval suite with explicit spec binding', () => {
+        const report = validateEvalSuite(loadYamlFile(eventReadinessSuitePath), eventReadinessSuitePath);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors).toEqual([]);
+        expect(report.suite?.eval_suite.spec_path).toBe(eventReadinessSpecPath);
+    });
+
+    it('fails validation when an Event Readiness eval suite omits its spec path', () => {
+        const suite = clone(loadYamlFile(eventReadinessSuitePath) as { eval_suite: { spec_path?: string } });
+        delete suite.eval_suite.spec_path;
+
+        const report = validateEvalSuite(suite);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors.join('\n')).toContain('spec_path_present');
+        expect(report.errors.join('\n')).toContain('missing spec_path');
+    });
+
+    it('fails validation when an Event Readiness eval suite points at the wrong spec authority path', () => {
+        const suite = clone(loadYamlFile(eventReadinessSuitePath) as { eval_suite: { spec_path: string } });
+        suite.eval_suite.spec_path = 'agent_specs/venue_vendor_research.v0.1b.yaml';
+
+        const report = validateEvalSuite(suite);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors.join('\n')).toContain('event_readiness_spec_path_bound');
+        expect(report.errors.join('\n')).toContain(eventReadinessSpecPath);
+    });
+
+    it('fails validation when Event Readiness suite source labels drift from spec authority', () => {
+        const suite = clone(loadYamlFile(eventReadinessSuitePath) as {
+            eval_suite: { cases: Array<{ canonical_source_labels: string[] }> };
+        });
+        suite.eval_suite.cases[0].canonical_source_labels = suite.eval_suite.cases[0].canonical_source_labels.filter(
+            label => label !== 'OPEN_QUESTIONS'
+        );
+
+        const report = validateEvalSuite(suite);
+
+        expect(report.schemaPassed).toBe(true);
+        expect(report.errors.join('\n')).toContain('spec_source_labels_align');
+        expect(report.errors.join('\n')).toContain('OPEN_QUESTIONS');
+    });
+
     it('runs the eval suite and reports PASS when every deterministic check passes', () => {
         const report = runEvalSuiteFile(suitePath);
 
@@ -777,7 +823,7 @@ describe('Agent Builder eval harness', () => {
         const report = runEvalSuiteFile(eventReadinessSuitePath);
 
         expect(report.outcome).toBe('PASS');
-        expect(report.specPath).toBe('<none>');
+        expect(report.specPath).toBe(eventReadinessSpecPath);
         expect(report.cases).toHaveLength(7);
         expect(report.cases.map(evalCase => evalCase.candidateName)).toEqual(
             expect.arrayContaining([
