@@ -129,8 +129,9 @@ pnpm agent-builder eval run evals/event_readiness.eval-suite.yaml
 ```
 
 The eval runner remains local-only and deterministic. Venue / Vendor suites validate the referenced spec before checking
-fixture/case requirements. Event Readiness suites validate fixture/eval design without requiring a spec path. Neither
-path calls a model or executes tools.
+fixture/case requirements. Event Readiness suites require an explicit `spec_path` and are explicitly bound to
+`agent_specs/event_readiness.v0.1.yaml`. Deterministic `PASS` remains contract conformance for human review only, not
+production readiness or operational approval. Neither path calls a model or executes tools.
 
 ## SDK Lifecycle & Re-Evaluation Policy
 
