@@ -1,177 +1,247 @@
 name: CI/CD Pipeline
 env:
-  PNPM_CACHE_DEPENDENCY_PATH: pnpm-lock.yaml
-  VERCEL_CLI_VERSION: 51.8.0
+    PNPM_CACHE_DEPENDENCY_PATH: pnpm-lock.yaml
+    VERCEL_CLI_VERSION: 51.8.0
 
 on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ['main']
+    # Runs on pushes targeting the default branch
+    push:
+        branches: [ 'main' ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    # Allows you to run this workflow manually from the Actions tab
+    workflow_dispatch:
 
 # Grant the workflow the minimum token scope it needs.
 permissions:
-  contents: read
+    contents: read
 
 # Allow only one concurrent deployment, skipping runs queued between the run in progress and latest queued.
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: production-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+    group: production-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: false
 
 # Default to bash
 defaults:
-  run:
-    shell: bash
+    run:
+        shell: bash
 
 jobs:
-  # Build job
-  build:
-    name: Build Site 🛠️
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    classify_changes:
+        name: Classify Deploy Scope 🔎
+        runs-on: ubuntu-latest
+        outputs:
+            deploy_required: ${{ steps.classify.outputs.deploy_required }}
+            deploy_reason: ${{ steps.classify.outputs.deploy_reason }}
+        steps:
+            -   name: Checkout 🛎️
+                uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+                with:
+                    fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version-file: .nvmrc
-          package-manager-cache: false
+            -   name: Classify changed paths
+                id: classify
+                env:
+                    EVENT_NAME: ${{ github.event_name }}
+                    BEFORE_SHA: ${{ github.event.before }}
+                    HEAD_SHA: ${{ github.sha }}
+                run: |
+                    set -euo pipefail
+                    
+                    if [ "${EVENT_NAME}" = "workflow_dispatch" ]; then
+                      echo "deploy_required=true" >> "${GITHUB_OUTPUT}"
+                      echo "deploy_reason=manual_dispatch" >> "${GITHUB_OUTPUT}"
+                      echo "Manual workflow_dispatch run; deploy remains enabled."
+                      exit 0
+                    fi
+                    
+                    zero_sha="0000000000000000000000000000000000000000"
+                    if [ -z "${BEFORE_SHA}" ] || [ "${BEFORE_SHA}" = "${zero_sha}" ]; then
+                      echo "deploy_required=true" >> "${GITHUB_OUTPUT}"
+                      echo "deploy_reason=missing_before_sha" >> "${GITHUB_OUTPUT}"
+                      echo "Missing previous push SHA; deploy remains enabled."
+                      exit 0
+                    fi
+                    
+                    mapfile -t changed_files < <(git diff --name-only --no-renames "${BEFORE_SHA}" "${HEAD_SHA}")
+                    
+                    if [ "${#changed_files[@]}" -eq 0 ]; then
+                      echo "deploy_required=true" >> "${GITHUB_OUTPUT}"
+                      echo "deploy_reason=no_changed_files_detected" >> "${GITHUB_OUTPUT}"
+                      echo "No changed files detected; deploy remains enabled."
+                      exit 0
+                    fi
+                    
+                    deploy_required=false
+                    deploy_reason="non_runtime_changes_only"
+                    
+                    for file in "${changed_files[@]}"; do
+                      case "${file}" in
+                        docs/**|AGENTS.md|AGENTS.md.template|README.md|code_review.md|src/agent-builder/**|scripts/agent-builder/**|__tests__/agent-builder/**|agent_specs/**|evals/**|fixtures/**|registry/**)
+                          ;;
+                        *)
+                          deploy_required=true
+                          deploy_reason="runtime_or_ambiguous_change"
+                          echo "Deploy-required path: ${file}"
+                          break
+                          ;;
+                      esac
+                    done
+                    
+                    printf 'Changed files:\n'
+                    printf ' - %s\n' "${changed_files[@]}"
+                    
+                    echo "deploy_required=${deploy_required}" >> "${GITHUB_OUTPUT}"
+                    echo "deploy_reason=${deploy_reason}" >> "${GITHUB_OUTPUT}"
+                    echo "deploy_required=${deploy_required}"
+                    echo "deploy_reason=${deploy_reason}"
 
-      - name: Enable pnpm via Corepack
-        run: |
-          corepack enable
-          pnpm config set store-dir ~/.pnpm-store
-          pnpm --version
+    # Build job
+    build:
+        name: Build Site 🛠️
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout 🛎️
+                uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Cache pnpm store
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.pnpm-store
-          key:
-            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-${{ hashFiles(env.PNPM_CACHE_DEPENDENCY_PATH) }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-
-            ${{ runner.os }}-pnpm-store-
+            -   name: Setup Node.js
+                uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+                with:
+                    node-version-file: .nvmrc
+                    package-manager-cache: false
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+            -   name: Enable pnpm via Corepack
+                run: |
+                    corepack enable
+                    pnpm config set store-dir ~/.pnpm-store
+                    pnpm --version
 
-      - name: Run linter
-        run: pnpm lint
+            -   name: Cache pnpm store
+                uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+                with:
+                    path: ~/.pnpm-store
+                    key:
+                        ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-${{ hashFiles(env.PNPM_CACHE_DEPENDENCY_PATH) }}
+                    restore-keys: |
+                        ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-
+                        ${{ runner.os }}-pnpm-store-
 
-      - name: Run typecheck
-        run: pnpm typecheck
+            -   name: Install dependencies
+                run: pnpm install --frozen-lockfile
 
-      - name: Build with Next.js
+            -   name: Run linter
+                run: pnpm lint
+
+            -   name: Run typecheck
+                run: pnpm typecheck
+
+            -   name: Build with Next.js
+                env:
+                    CC_API_KEY: ${{ secrets.CC_API_KEY }}
+                    WORDPRESS_API_URL: ${{ secrets.WORDPRESS_API_URL }}
+                    GA4_MEASUREMENT_ID: ${{ secrets.GA4_MEASUREMENT_ID }}
+                run: pnpm build
+
+    test:
+        name: Unit Tests 🧪
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+            -   name: Setup Node.js
+                uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+                with:
+                    node-version-file: .nvmrc
+                    package-manager-cache: false
+
+            -   name: Enable pnpm via Corepack
+                run: |
+                    corepack enable
+                    pnpm config set store-dir ~/.pnpm-store
+                    pnpm --version
+
+            -   name: Cache pnpm store
+                uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+                with:
+                    path: ~/.pnpm-store
+                    key:
+                        ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-${{ hashFiles(env.PNPM_CACHE_DEPENDENCY_PATH) }}
+                    restore-keys: |
+                        ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-
+                        ${{ runner.os }}-pnpm-store-
+
+            -   name: Install dependencies
+                run: pnpm install --frozen-lockfile
+
+            -   name: Run unit tests with coverage
+                run: pnpm test:coverage
+
+    # Deployment job
+    deploy:
+        name: Deploy 🚀
+        if: needs.classify_changes.outputs.deploy_required == 'true'
+        needs: [ classify_changes, build, test ]
+        runs-on: ubuntu-latest
         env:
-          CC_API_KEY: ${{ secrets.CC_API_KEY }}
-          WORDPRESS_API_URL: ${{ secrets.WORDPRESS_API_URL }}
-          GA4_MEASUREMENT_ID: ${{ secrets.GA4_MEASUREMENT_ID }}
-        run: pnpm build
+            VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+            VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        steps:
+            -   uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-  test:
-    name: Unit Tests 🧪
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+            -   name: Setup Node.js
+                uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+                with:
+                    node-version-file: .nvmrc
+                    package-manager-cache: false
 
-      - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version-file: .nvmrc
-          package-manager-cache: false
+            -   name: Enable pnpm via Corepack
+                run: |
+                    corepack enable
+                    pnpm config set store-dir ~/.pnpm-store
+                    pnpm --version
 
-      - name: Enable pnpm via Corepack
-        run: |
-          corepack enable
-          pnpm config set store-dir ~/.pnpm-store
-          pnpm --version
+            -   name: Cache pnpm store
+                uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+                with:
+                    path: ~/.pnpm-store
+                    key:
+                        ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-${{ hashFiles(env.PNPM_CACHE_DEPENDENCY_PATH) }}
+                    restore-keys: |
+                        ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-
+                        ${{ runner.os }}-pnpm-store-
 
-      - name: Cache pnpm store
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.pnpm-store
-          key:
-            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-${{ hashFiles(env.PNPM_CACHE_DEPENDENCY_PATH) }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-
-            ${{ runner.os }}-pnpm-store-
+            -   name: Pull Vercel Environment Information
+                env:
+                    CC_VERCEL_TOKEN: ${{ secrets.CC_VERCEL_TOKEN }}
+                run:
+                    pnpm dlx vercel@${VERCEL_CLI_VERSION} pull --yes --non-interactive --environment=production
+                    --token=${CC_VERCEL_TOKEN}
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+            -   name: Build Project Artifacts
+                env:
+                    CC_VERCEL_TOKEN: ${{ secrets.CC_VERCEL_TOKEN }}
+                run: pnpm dlx vercel@${VERCEL_CLI_VERSION} build --prod --token=${CC_VERCEL_TOKEN}
 
-      - name: Run unit tests with coverage
-        run: pnpm test:coverage
+            -   name: Deploy Project Artifacts to Vercel
+                id: deploy
+                env:
+                    CC_VERCEL_TOKEN: ${{ secrets.CC_VERCEL_TOKEN }}
+                run: |
+                    deploy_json="$(mktemp)"
+                    pnpm dlx vercel@${VERCEL_CLI_VERSION} deploy --prebuilt --prod --token=${CC_VERCEL_TOKEN} --format json > "${deploy_json}"
+                    deployment_url="$(node -e 'const fs=require("fs");const deployment=JSON.parse(fs.readFileSync(process.argv[1], "utf8"));const url=deployment.url; if (!url) process.exit(1); process.stdout.write(url.startsWith("http") ? url : `https://${url}`);' "${deploy_json}")"
+                    echo "deployment_url=${deployment_url}" >> "${GITHUB_OUTPUT}"
+                    echo "Production deployment: ${deployment_url}"
 
-  # Deployment job
-  deploy:
-    name: Deploy 🚀
-    needs: [build, test]
-    runs-on: ubuntu-latest
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version-file: .nvmrc
-          package-manager-cache: false
-
-      - name: Enable pnpm via Corepack
-        run: |
-          corepack enable
-          pnpm config set store-dir ~/.pnpm-store
-          pnpm --version
-
-      - name: Cache pnpm store
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
-        with:
-          path: ~/.pnpm-store
-          key:
-            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-${{ hashFiles(env.PNPM_CACHE_DEPENDENCY_PATH) }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ hashFiles('.nvmrc') }}-pnpm-store-
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Pull Vercel Environment Information
-        env:
-          CC_VERCEL_TOKEN: ${{ secrets.CC_VERCEL_TOKEN }}
-        run:
-          pnpm dlx vercel@${VERCEL_CLI_VERSION} pull --yes --non-interactive --environment=production
-          --token=${CC_VERCEL_TOKEN}
-
-      - name: Build Project Artifacts
-        env:
-          CC_VERCEL_TOKEN: ${{ secrets.CC_VERCEL_TOKEN }}
-        run: pnpm dlx vercel@${VERCEL_CLI_VERSION} build --prod --token=${CC_VERCEL_TOKEN}
-
-      - name: Deploy Project Artifacts to Vercel
-        id: deploy
-        env:
-          CC_VERCEL_TOKEN: ${{ secrets.CC_VERCEL_TOKEN }}
-        run: |
-          deploy_json="$(mktemp)"
-          pnpm dlx vercel@${VERCEL_CLI_VERSION} deploy --prebuilt --prod --token=${CC_VERCEL_TOKEN} --format json > "${deploy_json}"
-          deployment_url="$(node -e 'const fs=require("fs");const deployment=JSON.parse(fs.readFileSync(process.argv[1], "utf8"));const url=deployment.url; if (!url) process.exit(1); process.stdout.write(url.startsWith("http") ? url : `https://${url}`);' "${deploy_json}")"
-          echo "deployment_url=${deployment_url}" >> "${GITHUB_OUTPUT}"
-          echo "Production deployment: ${deployment_url}"
-
-      - name: Smoke test deployed production routes
-        env:
-          CC_VERCEL_TOKEN: ${{ secrets.CC_VERCEL_TOKEN }}
-          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
-        run: |
-          for path in / /blog /privacy-policy; do
-            status="$(pnpm dlx vercel@${VERCEL_CLI_VERSION} curl "${path}" --deployment "${DEPLOYMENT_URL}" --token=${CC_VERCEL_TOKEN} -- --location --silent --show-error --output /dev/null --write-out '%{http_code}')"
-            echo "${path} -> ${status}"
-            if [ "${status}" != "200" ]; then
-              exit 1
-            fi
-          done
+            -   name: Smoke test deployed production routes
+                env:
+                    CC_VERCEL_TOKEN: ${{ secrets.CC_VERCEL_TOKEN }}
+                    DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment_url }}
+                run: |
+                    for path in / /blog /privacy-policy; do
+                      status="$(pnpm dlx vercel@${VERCEL_CLI_VERSION} curl "${path}" --deployment "${DEPLOYMENT_URL}" --token=${CC_VERCEL_TOKEN} -- --location --silent --show-error --output /dev/null --write-out '%{http_code}')"
+                      echo "${path} -> ${status}"
+                      if [ "${status}" != "200" ]; then
+                        exit 1
+                      fi
+                    done
