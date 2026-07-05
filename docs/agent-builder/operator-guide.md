@@ -24,8 +24,8 @@ Current status:
 
 - Venue / Vendor spec, registry entry, fixture/eval suite, runtime prototype, and runtime-output validator merged
 - Event Readiness spec, registry entry, seven-case pre-runtime fixture/eval ladder, deterministic pre-runtime
-  runtime-output validation, L1.6 synthetic review-record lifecycle validation, and domain-aware spec policy validation
-  merged
+  runtime-output validation, explicit eval-to-spec binding against `agent_specs/event_readiness.v0.1.yaml`, L1.6
+  synthetic review-record lifecycle validation, and domain-aware spec policy validation merged
 - Vercel runtime prototype merged
 - runtime-output validator merged
 - Event Readiness has no runtime generation or model-call approval
@@ -74,6 +74,8 @@ All generated packets are drafts. Humans approve. Humans execute.
 
 Run these from the app root.
 
+Use the repo-pinned pnpm 11 baseline through Corepack for repo-facing commands.
+
 Runtime generation requires local environment variables:
 
 - `OPENAI_API_KEY`
@@ -84,59 +86,67 @@ The CLI loads `.env.local` and `.env` from the app root if present. Already-expo
 1. Validate the spec:
 
 ```sh
-pnpm agent-builder validate agent_specs/venue_vendor_research.v0.1b.yaml
-pnpm agent-builder validate agent_specs/event_readiness.v0.1.yaml
+corepack pnpm agent-builder validate agent_specs/venue_vendor_research.v0.1b.yaml
+corepack pnpm agent-builder validate agent_specs/event_readiness.v0.1.yaml
 ```
 
 2. Validate the registry:
 
 ```sh
-pnpm agent-builder registry validate registry/agent-registry.yaml
+corepack pnpm agent-builder registry validate registry/agent-registry.yaml
 ```
 
-3. Run the eval suite:
+3. Validate the eval suites:
 
 ```sh
-pnpm agent-builder eval run evals/venue_vendor_research.eval-suite.yaml
-pnpm agent-builder eval run evals/event_readiness.eval-suite.yaml
+corepack pnpm agent-builder eval validate evals/venue_vendor_research.eval-suite.yaml
+corepack pnpm agent-builder eval validate evals/event_readiness.eval-suite.yaml
 ```
 
-4. For Event Readiness, use deterministic pre-runtime validation artifacts only.
+4. Run the eval suites:
+
+```sh
+corepack pnpm agent-builder eval run evals/venue_vendor_research.eval-suite.yaml
+corepack pnpm agent-builder eval run evals/event_readiness.eval-suite.yaml
+```
+
+5. For Event Readiness, use deterministic pre-runtime validation artifacts only.
 
 Event Readiness has no approved runtime generation, model calls, prompts, tools, routes, integrations, Drive sync, UI,
 source reads, file existence checks, content hashing, semantic source verification, real/redacted data use, operational
 approval, or autonomous action. `PASS` means pass for human review only. `approvedForOperationalUse` remains false.
 The L1.6 review-record lifecycle validator is available only as direct deterministic schema/validator/test artifacts in
-this milestone; it is not an operator CLI command.
+this milestone; it is not an operator CLI command. The Event Readiness eval suite is explicitly bound to
+`agent_specs/event_readiness.v0.1.yaml`; treat spec-path or spec-authority drift as blocking until human review resolves it.
 
-5. For Venue / Vendor only, generate a runtime packet when local runtime env vars are configured:
+6. For Venue / Vendor only, generate a runtime packet when local runtime env vars are configured:
 
 ```sh
-pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml
+corepack pnpm agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
-6. For Venue / Vendor only, validate a saved runtime packet:
+7. For Venue / Vendor only, validate a saved runtime packet:
 
 ```sh
-pnpm agent-builder runtime validate-output --output <path> --fixture <fixture>
+corepack pnpm agent-builder runtime validate-output --output <path> --fixture <fixture>
 ```
 
 Example:
 
 ```sh
-pnpm agent-builder runtime validate-output \
+corepack pnpm agent-builder runtime validate-output \
   --output .tmp/agent-builder-runtime/warehouse416.public.json \
   --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
-7. Or generate and validate a Venue / Vendor packet through a pipe:
+8. Or generate and validate a Venue / Vendor packet through a pipe:
 
 ```sh
-pnpm --silent agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml \
-  | pnpm --silent agent-builder runtime validate-output --fixture fixtures/venue_candidates/warehouse416.public.yaml
+corepack pnpm --silent agent-builder runtime vercel review --fixture fixtures/venue_candidates/warehouse416.public.yaml \
+  | corepack pnpm --silent agent-builder runtime validate-output --fixture fixtures/venue_candidates/warehouse416.public.yaml
 ```
 
-8. Complete human review before any action.
+9. Complete human review before any action.
 
 ## Interpreting Results
 

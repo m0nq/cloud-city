@@ -8,15 +8,21 @@
 - Non-operational, synthetic-only, approval-gated context preserved.
 - Not a Drive governance/status record, runtime artifact, or source-authority artifact.
 - This record does not approve implementation, capability expansion, or operational use.
-- This current-state reconciliation records repo-facing status through the UI-2 static mockup governance milestone:
-  `9ee7696 docs(agent-builder): add UI-2 static mockup governance`.
+- This current-state reconciliation records repo-facing status through the repo package-manager baseline refresh:
+  `c0ad5b5 chore: update repo package manager to pnpm 11`
+  and the later Event Readiness eval-to-spec binding refinement:
+  `76606a3 test(agent-builder): bind Event Readiness eval to spec`.
 
 ## 2. Traceability Metadata
 
-- Reconciliation date: `2026-06-23`
+- Reconciliation date: `2026-07-04`
 - Artifact classification: `repo_governance_artifact` and `traceability_record`
 - Human owner: Founder / human project owner
 - Scope: repo-facing current-state reconciliation for Agent Builder governance/status drift only
+- Current repo package-manager baseline at refresh:
+  `c0ad5b5 chore: update repo package manager to pnpm 11`
+- Pre-refresh deterministic implementation anchor inspected for this docs slice:
+  `76606a3 test(agent-builder): bind Event Readiness eval to spec`
 - Prior repo-facing reconciliation anchor:
   `cbb7b88 docs(agent-builder): reconcile current state through operational approval governance`
 - Related commits:
@@ -29,6 +35,8 @@
   - `e0ea9f9 docs(agent-builder): add Drive behavior governance record`
   - `41cbe7f docs(agent-builder): add UI reviewer cockpit governance`
   - `9ee7696 docs(agent-builder): add UI-2 static mockup governance`
+  - `c0ad5b5 chore: update repo package manager to pnpm 11`
+  - `76606a3 test(agent-builder): bind Event Readiness eval to spec`
 - Explicit non-approvals preserved:
   - production readiness
   - Event Readiness runtime generation
@@ -78,12 +86,13 @@ Humans approve. Humans execute.
 ## 3. Purpose
 
 Create one clear repo-facing current-state anchor after the current governance baseline, the latest deterministic
-implementation refinement, the later docs-only/planning-only release/rollback governance landing, and the later
-docs-only/planning-only operational approval governance landing, and the later docs-only/planning-only source/data
-authority boundary governance landing, and the later docs-only/planning-only runtime/model-call governance landing,
-and the later docs-only/planning-only Drive behavior governance landing, and the later docs-only/planning-only
-UI/reviewer cockpit governance landing, and the later docs-only/planning-only UI-2 static mockup governance landing
-without rewriting older planning artifacts as if their earlier status anchors were wrong at the time.
+implementation refinement, the later docs-only/planning-only release/rollback governance landing, the later
+docs-only/planning-only operational approval governance landing, the later docs-only/planning-only source/data
+authority boundary governance landing, the later docs-only/planning-only runtime/model-call governance landing, the
+later docs-only/planning-only Drive behavior governance landing, the later docs-only/planning-only UI/reviewer cockpit
+governance landing, the later docs-only/planning-only UI-2 static mockup governance landing, the later repo
+package-manager baseline refresh, and the later deterministic Event Readiness eval-to-spec binding refinement without
+rewriting older planning artifacts as if their earlier status anchors were wrong at the time.
 
 ## 4. Verified Repo Anchors
 
@@ -92,7 +101,7 @@ without rewriting older planning artifacts as if their earlier status anchors we
 - Prior release/rollback current-state reconciliation remains:
   `cf42f5e docs(agent-builder): reconcile current state through release rollback governance`
 - Current governance baseline: `db8c749 docs(agent-builder): reconcile roadmap through L1.9 planning governance`
-- Latest deterministic implementation refinement remains:
+- Earlier deterministic report-semantics refinement:
   `ad0dda3 feat(agent-builder): clarify Event Readiness report semantics`
 - Prior source/data authority boundary governance milestone reconciled by the earlier docs-only update:
   `620ce41 docs(agent-builder): add source data authority boundary governance`
@@ -104,10 +113,14 @@ without rewriting older planning artifacts as if their earlier status anchors we
   `41cbe7f docs(agent-builder): add UI reviewer cockpit governance`
 - UI-2 static mockup governance milestone reconciled by this docs-only update:
   `9ee7696 docs(agent-builder): add UI-2 static mockup governance`
+- Current repo package-manager baseline:
+  `c0ad5b5 chore: update repo package manager to pnpm 11`
+- Latest deterministic implementation anchor before this docs refresh:
+  `76606a3 test(agent-builder): bind Event Readiness eval to spec`
 - `cbb7b88` is the prior repo-facing reconciliation through operational approval governance on `main`
 - `cf42f5e` remains the prior release/rollback reconciliation on `main`
 - `db8c749` is present in the current milestone chain on `main`
-- `ad0dda3` remains the latest deterministic implementation refinement on `main`
+- `ad0dda3` remains the earlier deterministic report-semantics refinement on `main`
 - `af8246c` remains the release/rollback governance milestone on `main`
 - `901874a` remains the operational approval governance milestone on `main`
 - `620ce41` adds docs-only/planning-only source/data authority boundary governance on `main`
@@ -115,6 +128,8 @@ without rewriting older planning artifacts as if their earlier status anchors we
 - `e0ea9f9` adds docs-only/planning-only Drive behavior governance on `main`
 - `41cbe7f` adds docs-only/planning-only UI/reviewer cockpit governance on `main`
 - `9ee7696` adds docs-only/planning-only UI-2 static mockup governance on `main`
+- `c0ad5b5` updates the repo package-manager posture to pnpm 11 on `main`
+- `76606a3` is the pre-refresh deterministic implementation anchor for this docs slice on `main`
 
 ## 5. What The Anchor Commits Mean
 
@@ -225,12 +240,35 @@ AI/external design-tool use, UI-3 local read-only reviewer cockpit prototypes, U
 implementation, runtime/model behavior, Drive runtime behavior, source reads, persistence, runtime logging,
 automation, operational approval, production readiness, or capability expansion.
 
+### `c0ad5b5`
+
+`c0ad5b5` is a later repo package-manager baseline refresh.
+
+It updates the repo package-manager posture to pnpm 11 and keeps repo-facing command guidance aligned to the
+repo-pinned pnpm version through Corepack. It does not approve capability expansion, runtime/model behavior, Drive
+behavior, UI behavior, source reads, operational approval, or production readiness.
+
+### `76606a3`
+
+`76606a3` is a later deterministic implementation refinement.
+
+It binds deterministic Event Readiness eval execution to `agent_specs/event_readiness.v0.1.yaml` by requiring an
+explicit eval-suite `spec_path`, validating that the suite remains bound to the authoritative Event Readiness spec
+path, and checking Event Readiness eval authority surfaces against spec-backed contract expectations. It does not
+approve Event Readiness runtime generation, model calls, prompts, routes, tools, integrations, source reads,
+persistence, runtime logging, operational approval, or production readiness.
+
 ## 6. Current Repo-Facing State
 
 - Event Readiness has a governed local spec and registry entry.
-- Event Readiness has synthetic fixtures and deterministic eval-suite coverage.
+- Event Readiness has synthetic fixtures and deterministic eval-suite coverage explicitly bound to
+  `agent_specs/event_readiness.v0.1.yaml`.
 - Event Readiness has deterministic pre-runtime runtime-output validation for synthetic draft packets.
 - Event Readiness has deterministic, in-memory, synthetic-only review-record lifecycle validation.
+- Event Readiness eval-suite validation now requires explicit spec-path binding and detects Event Readiness spec
+  authority drift before deterministic eval execution proceeds.
+- Repo package-manager posture is now pinned to pnpm 11 through `package.json` `packageManager`; repo-facing command
+  guidance should use `corepack pnpm ...`.
 - Release/rollback governance now exists in repo as a docs-only/planning-only governance record for future maturity
   changes.
 - Operational approval governance now exists in repo as a docs-only/planning-only governance record for future maturity
@@ -284,7 +322,14 @@ automation, operational approval, production readiness, or capability expansion.
 - The earlier reconciliation anchor at `f7816df` remains historically correct for the earlier slice, `cf42f5e`
   remains historically correct for the later release/rollback governance slice, and `cbb7b88` remains historically
   correct for the later operational approval governance slice. This reconciliation now records repo-facing status
-  through the later UI-2 static mockup governance milestone at `9ee7696`.
+  through the later repo package-manager baseline refresh at `c0ad5b5` and the later Event Readiness eval-to-spec
+  binding refinement at `76606a3`.
+- Older decision records may retain then-current `current repo-facing reconciliation` wording scoped to their original
+  landing context. Those phrases remain historically accurate for their earlier slices and do not override this later
+  reconciliation.
+- After this docs-only refresh is committed, the resulting CLO-39 docs commit becomes the current repo-facing
+  reconciliation anchor. `c0ad5b5` and `76606a3` remain the pre-refresh repo-facing state anchors covered by this
+  record.
 - The CLI/operator planning-governance record remains historically anchored to its original L1.9 draft context and does
   not need to be reinterpreted as a later approval.
 - Release/rollback governance is no longer unresolved in the same way. It has landed as a docs-only/planning-only
@@ -313,6 +358,10 @@ automation, operational approval, production readiness, or capability expansion.
   read-only reviewer cockpit prototypes, UI-4 operator workflow planning, UI-5 implementation, runtime/model
   behavior, Drive runtime behavior, source reads, persistence, runtime logging, automation, operational approval,
   production readiness, or capability expansion.
+- Repo command posture is no longer implicitly pre-pnpm-11. The repo now pins pnpm 11 through `package.json`
+  `packageManager`, and repo-facing command guidance should use `corepack pnpm ...`.
+- Event Readiness deterministic eval execution is no longer described as generic eval coverage only. It is now
+  explicitly bound to the authoritative spec path `agent_specs/event_readiness.v0.1.yaml`.
 - The implementation plan's earlier "next safe governance area" is now historical planning context rather than the
   latest repo-facing status anchor.
 - The L1.6 charter remains the evidence-review authority for L1.6 semantics, but it is not the current-state anchor

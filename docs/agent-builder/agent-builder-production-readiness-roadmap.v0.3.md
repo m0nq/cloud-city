@@ -9,8 +9,18 @@ Historical repo baseline for this roadmap artifact: `9f35be3 docs(agent-builder)
 Current repo-facing governance baseline after later docs-only reconciliation:
 `db8c749 docs(agent-builder): reconcile roadmap through L1.9 planning governance`.
 
-Current repo `main` HEAD / latest deterministic implementation refinement at the time of this docs-only slice:
-`ad0dda3 feat(agent-builder): clarify Event Readiness report semantics`.
+Current repo package-manager baseline now present on `main`:
+`c0ad5b5 chore: update repo package manager to pnpm 11`.
+
+Latest deterministic Event Readiness eval-authority refinement before this docs-only refresh:
+`76606a3 test(agent-builder): bind Event Readiness eval to spec`.
+
+`c0ad5b5` updates repo command posture to the repo-pinned pnpm 11 baseline through Corepack. It does not approve
+implementation, capability expansion, runtime/model behavior, operational approval, or production readiness.
+
+`76606a3` binds deterministic Event Readiness eval execution to `agent_specs/event_readiness.v0.1.yaml` and keeps
+that suite synthetic-only, pre-runtime, and approval-gated. It does not approve runtime/model generation, production
+readiness, operational approval, or permission to act.
 
 Later pushed docs-only runtime/model-call governance milestone now present on `main`:
 `bd5c2df docs(agent-builder): add runtime model-call governance`.
@@ -49,8 +59,9 @@ prototypes, UI-4 operator workflow planning, UI-5 implementation, runtime/model 
 source reads, persistence, runtime logging, automation, operational approval, production readiness, or capability
 expansion.
 
-`ad0dda3` clarifies deterministic Event Readiness report semantics only by separating contract conformance from bounded
-review classification in the local synthetic eval/reporting layer. It does not approve production readiness, Event
+Earlier deterministic report-semantics refinement `ad0dda3` clarifies Event Readiness report semantics only by
+separating contract conformance from bounded review classification in the local synthetic eval/reporting layer. It does
+not approve production readiness, Event
 Readiness runtime generation, model calls, prompts, routes, tools, integrations, Drive behavior, UI/reviewer cockpit
 behavior, source reads, file existence checks, content hashing, semantic source verification, source-packet binding,
 real/redacted data use, operational approval, or autonomous action.
@@ -307,7 +318,7 @@ Drive as a runtime source of truth.
 | Drive-write/local-agent confusion | Low-Medium | Drive governance records could be mistaken as writable by local agents. | The Drive governance record blocks sync/writes by local agents and keeps Drive references separate from machine authority. | Keep Drive behavior in non-approvals unless a future Drive behavior decision record is approved. |
 | Product/UI concept leakage into implementation | Medium | Conceptual UI surfaces could become implementation assumptions. | Product blueprint states future UI surfaces are conceptual only, and the UI/reviewer cockpit governance record limits current scope to UI-1 information architecture only. | Keep any later UI-2/UI-3/UI-4/UI-5 work behind separate explicit later artifacts. |
 | Real/redacted data boundary risk | Medium | Synthetic validation does not prove privacy safety for real or redacted event data. | L1.6 remains synthetic-only and the privacy/data-boundary governance record keeps non-synthetic data blocked. | Preserve the blocked posture unless a separate later milestone explicitly expands data scope. |
-| Audit drift | Low-Medium | Repo docs, Drive status, and roadmap language can diverge. | Historical roadmap context remains anchored through `9f35be3`, and the current repo-facing reconciliation record anchors the governance baseline at `db8c749`, the later deterministic refinement at `ad0dda3`, the later runtime/model-call governance milestone at `bd5c2df`, the later Drive behavior governance milestone at `e0ea9f9`, the later UI/reviewer cockpit governance milestone at `41cbe7f`, and the later UI-2 static mockup governance milestone at `9ee7696`. | Tie future governance status updates to explicit commit IDs and reviewed artifacts. |
+| Audit drift | Low-Medium | Repo docs, Drive status, and roadmap language can diverge. | Historical roadmap context remains anchored through `9f35be3`, and the current repo-facing reconciliation record now covers the governance baseline at `db8c749`, the earlier deterministic refinement at `ad0dda3`, the later runtime/model-call governance milestone at `bd5c2df`, the later Drive behavior governance milestone at `e0ea9f9`, the later UI/reviewer cockpit governance milestone at `41cbe7f`, the later UI-2 static mockup governance milestone at `9ee7696`, the repo package-manager baseline refresh at `c0ad5b5`, and the later deterministic eval-to-spec refinement at `76606a3`. | Tie future governance status updates to explicit commit IDs and reviewed artifacts. |
 | Roadmap staleness | Medium | Historical v0.2 guidance can mislead future planning. | This v0.3 roadmap remains useful historical planning context, while the current repo-facing state is clarified in [current-state reconciliation v0.1](./agent-builder-current-state-reconciliation.v0.1.md). | Revisit this roadmap before any new capability-boundary record or unresolved dependency record. |
 
 ## 10. Roadmap Branch Options
@@ -315,7 +326,7 @@ Drive as a runtime source of truth.
 | Option | Planning-only posture | Benefit | Risk | Recommendation |
 | --- | --- | --- | --- | --- |
 | Remain paused | No repo changes or capability expansion. | Safest way to prevent scope creep. | Roadmap clarity may decay over time. | Acceptable if no near-term planning is needed. |
-| Maintain repo-facing reconciliation after `620ce41` / `bd5c2df` / `e0ea9f9` / `41cbe7f` / `9ee7696` | Planning-only documentation. | Keeps the historical roadmap baseline, the current governance foundation, and the later pushed planning-only runtime/model-call, Drive behavior, UI/reviewer cockpit, and UI-2 static mockup governance boundaries visible without implying capability expansion. | Could be misread as broader approval unless boundaries remain explicit. | Recommended current docs-only posture. |
+| Maintain repo-facing reconciliation after later docs-only governance milestones plus `c0ad5b5` / `76606a3` | Planning-only documentation. | Keeps the historical roadmap baseline, the current governance foundation, the later planning-only governance boundaries, the pnpm 11 repo command context, and the Event Readiness spec-bound eval posture visible without implying capability expansion. | Could be misread as broader approval unless boundaries remain explicit. | Recommended current docs-only posture. |
 | Pre-runtime governance foundation checkpoint reviewed | Planning-only governance summary. | Makes source/privacy/audit foundation completion visible before further planning. | Could be mistaken for implementation readiness if written loosely. | Treat as completed planning context; do not infer capability expansion. |
 | CLI/operator planning governance completed at L1.9 | Planning-only control-model gate; does not approve L2 workflow, CLI implementation, runtime/model behavior, Drive behavior, UI behavior, release/rollback, or operational approval. | Clarifies human-review control-model boundaries before any later dependency sequencing. | Could still be misread as broader operator readiness unless non-approvals stay explicit. | Treat as completed planning governance; do not infer approval of unresolved dependency records. |
 | Runtime/model-call governance completed for planning clarity | Planning-only governance boundary. | Makes runtime/model-call non-approvals, future gate requirements, and adjacent boundary dependencies explicit without approving runtime behavior. | Could still be misread as runtime approval unless non-approvals stay explicit. | Treat as completed planning governance; do not infer runtime approval or capability expansion. |
@@ -459,12 +470,13 @@ This roadmap also does not create implementation tickets or authorize production
 
 Recommended next gate:
 
-1. Human review of the repo-facing current-state reconciliation and roadmap wording now aligned through
-   `9ee7696 docs(agent-builder): add UI-2 static mockup governance`.
+1. Human review of the repo-facing current-state reconciliation, operator guide command posture, and roadmap wording now
+   aligned through `c0ad5b5 chore: update repo package manager to pnpm 11` and
+   `76606a3 test(agent-builder): bind Event Readiness eval to spec`.
 2. No implementation and no capability expansion.
 3. After review, decide whether to remain paused or later choose the next explicitly gated proposal artifact. Do not
    infer UI-2/UI-3/UI-4/UI-5 work from this gate.
-4. Do not treat this gate or `9ee7696` as approval for mockup creation, Figma use, Stitch use, ChatGPT UI/mockup
+4. Do not treat this gate, `c0ad5b5`, or `76606a3` as approval for mockup creation, Figma use, Stitch use, ChatGPT UI/mockup
    generation, MCP use, AI/external design-tool use, UI-3 local read-only reviewer cockpit prototypes, UI-4 operator
    workflow planning, UI-5 implementation, Drive runtime behavior, runtime/model calls, prompt execution, routes,
    tools, integrations, source reads, source-packet binding, semantic source verification, persistence, runtime
