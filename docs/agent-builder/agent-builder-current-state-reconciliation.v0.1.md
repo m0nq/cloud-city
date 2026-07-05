@@ -327,9 +327,8 @@ persistence, runtime logging, operational approval, or production readiness.
 - Older decision records may retain then-current `current repo-facing reconciliation` wording scoped to their original
   landing context. Those phrases remain historically accurate for their earlier slices and do not override this later
   reconciliation.
-- After this docs-only refresh is committed, the resulting CLO-39 docs commit becomes the current repo-facing
-  reconciliation anchor. `c0ad5b5` and `76606a3` remain the pre-refresh repo-facing state anchors covered by this
-  record.
+- As of `f356a5a`, this current-state refresh is recorded in repo history as a docs-only governance update.
+  `c0ad5b5` and `76606a3` remain the pre-refresh repo-facing state anchors covered by this record.
 - The CLI/operator planning-governance record remains historically anchored to its original L1.9 draft context and does
   not need to be reinterpreted as a later approval.
 - Release/rollback governance is no longer unresolved in the same way. It has landed as a docs-only/planning-only
