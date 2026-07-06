@@ -5,7 +5,12 @@ import os from 'os';
 import path from 'path';
 
 import { formatEvalRunReport, validateEvalSuite, runEvalSuite, runEvalSuiteFile } from '../../src/agent-builder/eval-suite';
-import { validateFixture, validateVenueCandidateFixture } from '../../src/agent-builder/fixtures';
+import {
+    validateEventReadinessFixtureFile,
+    validateFixture,
+    validateVenueCandidateFixture,
+    type EventReadinessFixture
+} from '../../src/agent-builder/fixtures';
 import { loadYamlFile } from '../../src/agent-builder/validation';
 
 const fixturePath = 'fixtures/venue_candidates/warehouse416.public.yaml';
@@ -29,23 +34,22 @@ const writeTempYaml = (contents: string) => {
     return filePath;
 };
 
-type EventReadinessTestFixture = {
-    fixture_scenario?: string;
-    dry_bar_out_of_scope: boolean;
-    expected_readiness_label: string;
-    canonical_source_labels: string[];
-    source_materials: Record<string, unknown>;
-    seeded_issues: Array<{ id: string; expected_detection?: string }>;
-    required_approval_gates: string[];
-    required_domain_check_sections: string[];
-    required_evaluation_tests: string[];
-    prohibited_output_behavior: string[];
+const loadEventReadinessFixture = (
+    fixturePath: string = eventReadinessFixturePath
+): EventReadinessFixture => {
+    const report = validateEventReadinessFixtureFile(fixturePath);
+
+    if (!report.fixture || !report.schemaPassed) {
+        throw new Error(`Fixture must pass validation before test use: ${report.errors.join('; ')}`);
+    }
+
+    return clone(report.fixture);
 };
 
 const removeValue = (values: string[], valueToRemove: string) => values.filter(value => value !== valueToRemove);
 
 const makeDryBarOutOfScopeFixture = () => {
-    const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+    const fixture = loadEventReadinessFixture();
     fixture.dry_bar_out_of_scope = true;
     delete fixture.source_materials.DRY_BAR_NOTES;
     fixture.required_domain_check_sections = removeValue(
@@ -61,7 +65,7 @@ const makeDryBarOutOfScopeFixture = () => {
 };
 
 const makeInsufficientSourceFixture = () => {
-    const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+    const fixture = loadEventReadinessFixture();
     fixture.fixture_scenario = 'insufficient_source_information';
     fixture.expected_readiness_label = 'insufficient_source_information';
     fixture.source_materials = {
@@ -103,7 +107,7 @@ const makeInsufficientSourceFixture = () => {
 };
 
 const makeSparseReviewableFixture = () => {
-    const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+    const fixture = loadEventReadinessFixture();
     fixture.fixture_scenario = 'sparse_but_reviewable';
     fixture.expected_readiness_label = 'needs_attention';
     fixture.source_materials = {
@@ -143,7 +147,7 @@ const makeSparseReviewableFixture = () => {
 };
 
 const makeOnTrackFixture = () => {
-    const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+    const fixture = loadEventReadinessFixture();
     fixture.fixture_scenario = 'on_track_with_review_needed';
     fixture.expected_readiness_label = 'on_track_with_review_needed';
     fixture.seeded_issues = [
@@ -274,7 +278,7 @@ describe('Agent Builder eval harness', () => {
     });
 
     it('fails clearly for an unknown fixture type', () => {
-        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as Record<string, unknown>);
+        const fixture: Record<string, unknown> = loadEventReadinessFixture();
         fixture.fixture_type = 'unknown_fixture_type';
 
         const report = validateFixture(fixture);
@@ -284,7 +288,7 @@ describe('Agent Builder eval harness', () => {
     });
 
     it('fails when an Event Readiness fixture omits the budget-impacting approval gate', () => {
-        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as { required_approval_gates: string[] });
+        const fixture = loadEventReadinessFixture();
         fixture.required_approval_gates = fixture.required_approval_gates.filter(
             gate => gate !== 'budget_impacting_commitment'
         );
@@ -296,7 +300,7 @@ describe('Agent Builder eval harness', () => {
     });
 
     it('requires DRY_BAR_NOTES source material when dry bar is in scope', () => {
-        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        const fixture = loadEventReadinessFixture();
         delete fixture.source_materials.DRY_BAR_NOTES;
 
         const report = validateFixture(fixture);
@@ -306,12 +310,7 @@ describe('Agent Builder eval harness', () => {
     });
 
     it('requires dry_bar_readiness_notes when dry bar is in scope', () => {
-        const fixture = clone(
-            loadYamlFile(eventReadinessFixturePath) as {
-                dry_bar_out_of_scope: boolean;
-                required_domain_check_sections: string[];
-            }
-        );
+        const fixture = loadEventReadinessFixture();
         fixture.required_domain_check_sections = fixture.required_domain_check_sections.filter(
             section => section !== 'dry_bar_readiness_notes'
         );
@@ -323,7 +322,7 @@ describe('Agent Builder eval harness', () => {
     });
 
     it('requires dry_bar_readiness_blockers when dry bar is in scope', () => {
-        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        const fixture = loadEventReadinessFixture();
         fixture.seeded_issues = fixture.seeded_issues.filter(issue => issue.id !== 'dry_bar_readiness_blockers');
 
         const report = validateFixture(fixture);
@@ -333,7 +332,7 @@ describe('Agent Builder eval harness', () => {
     });
 
     it('requires dry_bar_readiness_blockers_detected when dry bar is in scope', () => {
-        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        const fixture = loadEventReadinessFixture();
         fixture.required_evaluation_tests = removeValue(
             fixture.required_evaluation_tests,
             'dry_bar_readiness_blockers_detected'
@@ -357,7 +356,7 @@ describe('Agent Builder eval harness', () => {
 
     it('reports noncanonical Event Readiness source-material labels during eval runs', () => {
         const suite = clone(loadYamlFile(eventReadinessSuitePath) as { eval_suite: { cases: Array<{ fixture_path: string }> } });
-        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        const fixture = loadEventReadinessFixture();
         fixture.source_materials.NONCANONICAL_SOURCE = {
             note: 'This key should not be accepted as an Event Readiness source label.'
         };
@@ -421,7 +420,7 @@ describe('Agent Builder eval harness', () => {
     });
 
     it('does not relax Event Readiness fixture requirements based on expected_readiness_label alone', () => {
-        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        const fixture = loadEventReadinessFixture();
         fixture.expected_readiness_label = 'insufficient_source_information';
         fixture.source_materials = makeInsufficientSourceFixture().source_materials;
 
@@ -432,7 +431,7 @@ describe('Agent Builder eval harness', () => {
     });
 
     it('does not relax Event Readiness fixture requirements based on needs_attention alone', () => {
-        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as EventReadinessTestFixture);
+        const fixture = loadEventReadinessFixture();
         fixture.expected_readiness_label = 'needs_attention';
         fixture.source_materials = makeSparseReviewableFixture().source_materials;
 
@@ -957,7 +956,7 @@ describe('Agent Builder eval harness', () => {
 
     it('fails validation when an Event Readiness fixture omits budget_impacting_commitment', () => {
         const suite = clone(loadYamlFile(eventReadinessSuitePath) as { eval_suite: { cases: Array<{ fixture_path: string }> } });
-        const fixture = clone(loadYamlFile(eventReadinessFixturePath) as { required_approval_gates: string[] });
+        const fixture = loadEventReadinessFixture();
         fixture.required_approval_gates = fixture.required_approval_gates.filter(
             gate => gate !== 'budget_impacting_commitment'
         );

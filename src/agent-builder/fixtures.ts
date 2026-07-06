@@ -517,6 +517,39 @@ export const validateEventReadinessFixture = (
     }
 };
 
+export const validateEventReadinessFixtureFile = (fixturePath: string) => {
+    const report = validateFixture(loadYamlFile(fixturePath), fixturePath);
+
+    if (!report.schemaPassed || !report.fixture) {
+        return {
+            fixturePath: report.fixturePath,
+            schemaPassed: report.schemaPassed,
+            fixtureType: report.fixtureType,
+            fixtureName: report.fixtureName,
+            errors: report.errors
+        };
+    }
+
+    if (report.fixtureType !== 'event_readiness') {
+        return {
+            fixturePath: report.fixturePath,
+            schemaPassed: false,
+            fixtureType: report.fixtureType,
+            fixtureName: report.fixtureName,
+            errors: [`Fixture must be event_readiness for this eval suite: ${fixturePath}`]
+        };
+    }
+
+    return {
+        fixturePath: report.fixturePath,
+        schemaPassed: report.schemaPassed,
+        fixture: report.fixture as EventReadinessFixture,
+        fixtureType: report.fixtureType,
+        fixtureName: report.fixtureName,
+        errors: report.errors
+    };
+};
+
 export const validateFixture = (input: unknown, fixturePath = 'in-memory'): FixtureValidationReport => {
     const fixtureType =
         typeof input === 'object' && input !== null && 'fixture_type' in input

@@ -5,7 +5,7 @@ import { ZodError, z } from 'zod';
 import type { AgentSpec } from './schema';
 import {
     getEventReadinessFixtureRequirements,
-    validateFixtureFile,
+    validateEventReadinessFixtureFile,
     validateVenueCandidateFixtureFile,
     type EventReadinessFixture,
     type VenueCandidateFixture
@@ -433,17 +433,17 @@ const loadValidFixture = (fixturePath: string): VenueCandidateFixture => {
 };
 
 const loadValidEventReadinessFixture = (fixturePath: string): EventReadinessFixture => {
-    const fixtureReport = validateFixtureFile(fixturePath);
+    const fixtureReport = validateEventReadinessFixtureFile(fixturePath);
+
+    if (fixtureReport.fixtureType === 'venue_candidate') {
+        throw new Error(`Fixture must be event_readiness for this eval suite: ${fixturePath}`);
+    }
 
     if (!fixtureReport.fixture || !fixtureReport.schemaPassed) {
         throw new Error(`Fixture must pass validation before eval: ${fixtureReport.errors.join('; ')}`);
     }
 
-    if (fixtureReport.fixtureType !== 'event_readiness') {
-        throw new Error(`Fixture must be event_readiness for this eval suite: ${fixturePath}`);
-    }
-
-    return fixtureReport.fixture as EventReadinessFixture;
+    return fixtureReport.fixture;
 };
 
 export const validateEvalSuite = (input: unknown, suitePath = 'in-memory'): EvalSuiteValidationReport => {
@@ -577,101 +577,114 @@ export const validateEvalSuite = (input: unknown, suitePath = 'in-memory'): Eval
                 continue;
             }
 
-            const fixtureReport = isEventReadiness
-                ? validateFixtureFile(evalCase.fixture_path)
-                : validateVenueCandidateFixtureFile(evalCase.fixture_path);
-            const fixtureTypeMatches = isEventReadiness ? fixtureReport.fixtureType === 'event_readiness' : true;
+            if (isEventReadiness) {
+                const fixtureReport = validateEventReadinessFixtureFile(evalCase.fixture_path);
+                const fixtureTypeMatches = fixtureReport.fixtureType === 'event_readiness';
+
+                checks.push(
+                    makeValidationCheck(
+                        `${evalCase.id}.fixture_validates`,
+                        'Fixture validates',
+                        fixtureReport.schemaPassed && fixtureTypeMatches,
+                        fixtureReport.schemaPassed ? 'schema passes' : fixtureReport.errors.join('; ')
+                    )
+                );
+
+                if (fixtureReport.schemaPassed || fixtureReport.fixtureType === 'venue_candidate') {
+                    checks.push(
+                        makeValidationCheck(
+                            `${evalCase.id}.fixture_type_matches`,
+                            'Fixture type matches suite',
+                            fixtureTypeMatches,
+                            fixtureTypeMatches ? 'event_readiness' : `actual: ${fixtureReport.fixtureType || 'unknown'}`
+                        )
+                    );
+
+                    if (fixtureReport.schemaPassed && fixtureTypeMatches && eventReadinessSpecAuthority && fixtureReport.fixture) {
+                        const fixture = fixtureReport.fixture;
+                        const expectedDomainSections = fixture.dry_bar_out_of_scope
+                            ? eventReadinessSpecAuthority.requiredDomainCheckSections.filter(
+                                  section => normalize(section) !== normalize('dry_bar_readiness_notes')
+                              )
+                            : eventReadinessSpecAuthority.requiredDomainCheckSections;
+
+                        checks.push(
+                            makeExactValuesValidationCheck(
+                                `${evalCase.id}.spec_core_fields_align`,
+                                'Required core fields align with Event Readiness spec',
+                                evalCase.required_core_fields,
+                                eventReadinessSpecAuthority.requiredCoreFields
+                            )
+                        );
+                        checks.push(
+                            makeExactValuesValidationCheck(
+                                `${evalCase.id}.spec_domain_sections_align`,
+                                'Required domain-check sections align with Event Readiness spec',
+                                evalCase.required_domain_check_sections,
+                                expectedDomainSections
+                            )
+                        );
+                        checks.push(
+                            makeExactValuesValidationCheck(
+                                `${evalCase.id}.spec_source_labels_align`,
+                                'Canonical source labels align with Event Readiness spec',
+                                evalCase.canonical_source_labels,
+                                eventReadinessSpecAuthority.canonicalSourceLabels
+                            )
+                        );
+                        checks.push(
+                            makeExactValuesValidationCheck(
+                                `${evalCase.id}.spec_approval_gates_align`,
+                                'Required approval gates align with Event Readiness spec',
+                                evalCase.required_approval_gates,
+                                eventReadinessSpecAuthority.approvalGateIds
+                            )
+                        );
+                        checks.push(
+                            makeValidationCheck(
+                                `${evalCase.id}.spec_expected_readiness_label_allowed`,
+                                'Expected readiness label is allowed by Event Readiness spec',
+                                Boolean(evalCase.expected_readiness_label) &&
+                                    eventReadinessSpecAuthority.allowedReadinessLabels.some(
+                                        label => normalize(label) === normalize(evalCase.expected_readiness_label as string)
+                                    ),
+                                evalCase.expected_readiness_label
+                                    ? `expected_readiness_label: ${evalCase.expected_readiness_label}`
+                                    : 'missing expected_readiness_label'
+                            )
+                        );
+                        checks.push(
+                            makeSubsetValuesValidationCheck(
+                                `${evalCase.id}.spec_evaluation_tests_declared`,
+                                'Required evaluation tests are declared by Event Readiness spec',
+                                evalCase.required_evaluation_tests,
+                                eventReadinessSpecAuthority.evaluationTestIds
+                            )
+                        );
+                        checks.push(
+                            makeSubsetValuesValidationCheck(
+                                `${evalCase.id}.spec_prohibited_output_behavior_allowed`,
+                                'Required prohibited output behavior is backed by Event Readiness spec authority',
+                                evalCase.required_prohibited_output_behavior,
+                                eventReadinessSpecAuthority.allowedProhibitedOutputBehavior
+                            )
+                        );
+                    }
+                }
+
+                continue;
+            }
+
+            const fixtureReport = validateVenueCandidateFixtureFile(evalCase.fixture_path);
 
             checks.push(
                 makeValidationCheck(
                     `${evalCase.id}.fixture_validates`,
                     'Fixture validates',
-                    fixtureReport.schemaPassed && fixtureTypeMatches,
+                    fixtureReport.schemaPassed,
                     fixtureReport.schemaPassed ? 'schema passes' : fixtureReport.errors.join('; ')
                 )
             );
-
-            if (isEventReadiness && fixtureReport.schemaPassed) {
-                checks.push(
-                    makeValidationCheck(
-                        `${evalCase.id}.fixture_type_matches`,
-                        'Fixture type matches suite',
-                        fixtureTypeMatches,
-                        fixtureTypeMatches ? 'event_readiness' : `actual: ${fixtureReport.fixtureType || 'unknown'}`
-                    )
-                );
-
-                if (fixtureTypeMatches && eventReadinessSpecAuthority) {
-                    const fixture = fixtureReport.fixture as EventReadinessFixture;
-                    const expectedDomainSections = fixture.dry_bar_out_of_scope
-                        ? eventReadinessSpecAuthority.requiredDomainCheckSections.filter(
-                              section => normalize(section) !== normalize('dry_bar_readiness_notes')
-                          )
-                        : eventReadinessSpecAuthority.requiredDomainCheckSections;
-
-                    checks.push(
-                        makeExactValuesValidationCheck(
-                            `${evalCase.id}.spec_core_fields_align`,
-                            'Required core fields align with Event Readiness spec',
-                            evalCase.required_core_fields,
-                            eventReadinessSpecAuthority.requiredCoreFields
-                        )
-                    );
-                    checks.push(
-                        makeExactValuesValidationCheck(
-                            `${evalCase.id}.spec_domain_sections_align`,
-                            'Required domain-check sections align with Event Readiness spec',
-                            evalCase.required_domain_check_sections,
-                            expectedDomainSections
-                        )
-                    );
-                    checks.push(
-                        makeExactValuesValidationCheck(
-                            `${evalCase.id}.spec_source_labels_align`,
-                            'Canonical source labels align with Event Readiness spec',
-                            evalCase.canonical_source_labels,
-                            eventReadinessSpecAuthority.canonicalSourceLabels
-                        )
-                    );
-                    checks.push(
-                        makeExactValuesValidationCheck(
-                            `${evalCase.id}.spec_approval_gates_align`,
-                            'Required approval gates align with Event Readiness spec',
-                            evalCase.required_approval_gates,
-                            eventReadinessSpecAuthority.approvalGateIds
-                        )
-                    );
-                    checks.push(
-                        makeValidationCheck(
-                            `${evalCase.id}.spec_expected_readiness_label_allowed`,
-                            'Expected readiness label is allowed by Event Readiness spec',
-                            Boolean(evalCase.expected_readiness_label) &&
-                                eventReadinessSpecAuthority.allowedReadinessLabels.some(
-                                    label => normalize(label) === normalize(evalCase.expected_readiness_label as string)
-                                ),
-                            evalCase.expected_readiness_label
-                                ? `expected_readiness_label: ${evalCase.expected_readiness_label}`
-                                : 'missing expected_readiness_label'
-                        )
-                    );
-                    checks.push(
-                        makeSubsetValuesValidationCheck(
-                            `${evalCase.id}.spec_evaluation_tests_declared`,
-                            'Required evaluation tests are declared by Event Readiness spec',
-                            evalCase.required_evaluation_tests,
-                            eventReadinessSpecAuthority.evaluationTestIds
-                        )
-                    );
-                    checks.push(
-                        makeSubsetValuesValidationCheck(
-                            `${evalCase.id}.spec_prohibited_output_behavior_allowed`,
-                            'Required prohibited output behavior is backed by Event Readiness spec authority',
-                            evalCase.required_prohibited_output_behavior,
-                            eventReadinessSpecAuthority.allowedProhibitedOutputBehavior
-                        )
-                    );
-                }
-            }
         }
 
         return {
