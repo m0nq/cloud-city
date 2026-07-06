@@ -8,24 +8,29 @@
 - Non-operational, synthetic-only, approval-gated context preserved.
 - Not a Drive governance/status record, runtime artifact, or source-authority artifact.
 - This record does not approve implementation, capability expansion, or operational use.
-- This current-state reconciliation records repo-facing status through the repo package-manager baseline refresh:
-  `c0ad5b5 chore: update repo package manager to pnpm 11`
-  and the later Event Readiness eval-to-spec binding refinement:
-  `76606a3 test(agent-builder): bind Event Readiness eval to spec`.
+- This current-state reconciliation records repo-facing status through the repo package-manager baseline refresh
+  `c0ad5b5 chore: update repo package manager to pnpm 11`, the Event Readiness eval-to-spec binding refinement
+  `76606a3 test(agent-builder): bind Event Readiness eval to spec`, the non-runtime-change deploy-gating refinement
+  `041ad1e ci: gate production deploy for docs and agent-builder changes`, the City Center SDLC loop-governance
+  record `e3e61c4 docs(agent-builder): define loop-engineering governance`, and the Event Readiness fixture-typing
+  cleanup `978ba58 test(agent-builder): tighten event readiness fixture typing`.
 
 ## 2. Traceability Metadata
 
-- Reconciliation date: `2026-07-04`
+- Reconciliation date: `2026-07-06`
 - Artifact classification: `repo_governance_artifact` and `traceability_record`
 - Human owner: Founder / human project owner
 - Scope: repo-facing current-state reconciliation for Agent Builder governance/status drift only
+- Current repo-facing baseline at refresh:
+  `978ba58 test(agent-builder): tighten event readiness fixture typing`
 - Current repo package-manager baseline at refresh:
   `c0ad5b5 chore: update repo package manager to pnpm 11`
-- Pre-refresh deterministic implementation anchor inspected for this docs slice:
+- Earlier deterministic implementation anchor inspected for this docs slice:
   `76606a3 test(agent-builder): bind Event Readiness eval to spec`
 - Prior repo-facing reconciliation anchor:
   `cbb7b88 docs(agent-builder): reconcile current state through operational approval governance`
 - Related commits:
+  - `f356a5a docs(agent-builder): refresh current state after eval spec binding`
   - `db8c749 docs(agent-builder): reconcile roadmap through L1.9 planning governance`
   - `ad0dda3 feat(agent-builder): clarify Event Readiness report semantics`
   - `af8246c docs(agent-builder): add release rollback governance record`
@@ -35,8 +40,11 @@
   - `e0ea9f9 docs(agent-builder): add Drive behavior governance record`
   - `41cbe7f docs(agent-builder): add UI reviewer cockpit governance`
   - `9ee7696 docs(agent-builder): add UI-2 static mockup governance`
+  - `041ad1e ci: gate production deploy for docs and agent-builder changes`
+  - `e3e61c4 docs(agent-builder): define loop-engineering governance`
   - `c0ad5b5 chore: update repo package manager to pnpm 11`
   - `76606a3 test(agent-builder): bind Event Readiness eval to spec`
+  - `978ba58 test(agent-builder): tighten event readiness fixture typing`
 - Explicit non-approvals preserved:
   - production readiness
   - Event Readiness runtime generation
@@ -91,8 +99,10 @@ docs-only/planning-only operational approval governance landing, the later docs-
 authority boundary governance landing, the later docs-only/planning-only runtime/model-call governance landing, the
 later docs-only/planning-only Drive behavior governance landing, the later docs-only/planning-only UI/reviewer cockpit
 governance landing, the later docs-only/planning-only UI-2 static mockup governance landing, the later repo
-package-manager baseline refresh, and the later deterministic Event Readiness eval-to-spec binding refinement without
-rewriting older planning artifacts as if their earlier status anchors were wrong at the time.
+package-manager baseline refresh, the later deterministic Event Readiness eval-to-spec binding refinement, the later
+non-runtime-change deploy-gating refinement, the later City Center SDLC loop-governance record, and the later Event
+Readiness fixture-typing cleanup without rewriting older planning artifacts as if their earlier status anchors were
+wrong at the time.
 
 ## 4. Verified Repo Anchors
 
@@ -117,6 +127,12 @@ rewriting older planning artifacts as if their earlier status anchors were wrong
   `c0ad5b5 chore: update repo package manager to pnpm 11`
 - Latest deterministic implementation anchor before this docs refresh:
   `76606a3 test(agent-builder): bind Event Readiness eval to spec`
+- Non-runtime-change deploy-gating refinement reconciled by this docs-only update:
+  `041ad1e ci: gate production deploy for docs and agent-builder changes`
+- City Center SDLC loop-governance record reconciled by this docs-only update:
+  `e3e61c4 docs(agent-builder): define loop-engineering governance`
+- Current repo-facing baseline for this reconciliation:
+  `978ba58 test(agent-builder): tighten event readiness fixture typing`
 - `cbb7b88` is the prior repo-facing reconciliation through operational approval governance on `main`
 - `cf42f5e` remains the prior release/rollback reconciliation on `main`
 - `db8c749` is present in the current milestone chain on `main`
@@ -130,6 +146,9 @@ rewriting older planning artifacts as if their earlier status anchors were wrong
 - `9ee7696` adds docs-only/planning-only UI-2 static mockup governance on `main`
 - `c0ad5b5` updates the repo package-manager posture to pnpm 11 on `main`
 - `76606a3` is the pre-refresh deterministic implementation anchor for this docs slice on `main`
+- `041ad1e` reduces direct production-deploy coupling for docs-only and Agent Builder-only changes on `main`
+- `e3e61c4` adds docs-only/planning-only City Center SDLC loop-governance on `main`
+- `978ba58` is the current repo-facing baseline for this reconciliation on `main`
 
 ## 5. What The Anchor Commits Mean
 
@@ -258,6 +277,32 @@ path, and checking Event Readiness eval authority surfaces against spec-backed c
 approve Event Readiness runtime generation, model calls, prompts, routes, tools, integrations, source reads,
 persistence, runtime logging, operational approval, or production readiness.
 
+### `041ad1e`
+
+`041ad1e` is a later CI/workflow refinement in the shared repo rail.
+
+It updates `.github/workflows/gh-actions.yml` to classify docs-only and Agent Builder-only changes as
+`non_runtime_changes_only`, reducing direct production-deploy coupling for those changes on `main`. It does not create
+a separate repository, a separate CI/build/test rail, release approval, rollback approval, operational approval, or
+production readiness.
+
+### `e3e61c4`
+
+`e3e61c4` is a later docs-only/planning-only governance milestone.
+
+It adds City Center SDLC loop-governance as a human-reviewed planning control record for future AI-assisted workflow
+changes. It does not approve `/city-center` implementation, runtime/model behavior, prompts, auth, routes, UI,
+source reads, Drive behavior, operational approval, or production readiness.
+
+### `978ba58`
+
+`978ba58` is the current repo-facing baseline for this reconciliation.
+
+It tightens Event Readiness fixture typing in current local eval/test harness paths by replacing repeated raw casts and
+duplicated local fixture-shape assumptions with canonical validated Event Readiness fixture loading. It does not change
+runtime behavior, auth, routes, UI, source binding, persistence, logging, operational approval, or production
+readiness.
+
 ## 6. Current Repo-Facing State
 
 - Event Readiness has a governed local spec and registry entry.
@@ -267,8 +312,17 @@ persistence, runtime logging, operational approval, or production readiness.
 - Event Readiness has deterministic, in-memory, synthetic-only review-record lifecycle validation.
 - Event Readiness eval-suite validation now requires explicit spec-path binding and detects Event Readiness spec
   authority drift before deterministic eval execution proceeds.
+- Event Readiness fixture loading in the current eval-suite and eval-harness paths now uses canonical validated Event
+  Readiness fixture loading, reducing repeated raw casts and duplicated local fixture-shape assumptions without
+  changing runtime behavior.
 - Repo package-manager posture is now pinned to pnpm 11 through `package.json` `packageManager`; repo-facing command
   guidance should use `corepack pnpm ...`.
+- Direct release-path coupling is reduced, not eliminated. `.github/workflows/gh-actions.yml` now classifies docs,
+  Agent Builder code, specs, evals, fixtures, registry, and related test changes as `non_runtime_changes_only`, which
+  can keep production deploy skipped for those diffs, but build/test still run on the shared main-repo rail.
+- City Center SDLC loop-governance is now present in repo at `e3e61c4` as a docs-only/planning-only governance record
+  for future AI-assisted SDLC changes. It does not approve `/city-center` implementation, runtime/model behavior,
+  auth, routes, UI, source reads, operational approval, or production readiness.
 - Release/rollback governance now exists in repo as a docs-only/planning-only governance record for future maturity
   changes.
 - Operational approval governance now exists in repo as a docs-only/planning-only governance record for future maturity
@@ -300,14 +354,16 @@ persistence, runtime logging, operational approval, or production readiness.
 - PASS means pass for human review only.
 - Bounded review classification is a draft review-state label only. It is not production readiness, operational
   approval, or permission to proceed.
+- Local developer CLI entrypoints exist in repo, but there is still no approved Event Readiness operator surface.
+  CLI/operator/runtime use remains separately approval-gated and non-operational.
 - Operational approval has not been granted.
 - Production readiness has not been granted.
 - Existing runtime/model prototype code paths remain scoped to Venue / Vendor. They do not imply Event Readiness
   runtime approval.
 - Drive governance/status context remains human-provided governance context only. It is not runtime source authority,
   source-of-truth proof, or permission for local agents to read from or write to Drive.
-- Current Drive continuity surface may be maintained separately by humans as `Current Agent Builder State Snapshot v10
-  — 2026-06-23`. It remains human-provided continuity context only and does not alter repo evidence, runtime source
+- Current Drive continuity surface may be maintained separately by humans as `Current Agent Builder State Snapshot v23
+  — 2026-07-06`. It remains human-provided continuity context only and does not alter repo evidence, runtime source
   authority, source authority, implementation authority, or operational approval.
 - Any future runtime/model behavior, Drive behavior, UI-2 static mockups/prototypes, UI-3 local read-only reviewer
   cockpit prototypes, UI-4 operator workflow planning, UI-5 implementation, operational execution, external
@@ -322,15 +378,22 @@ persistence, runtime logging, operational approval, or production readiness.
 - The earlier reconciliation anchor at `f7816df` remains historically correct for the earlier slice, `cf42f5e`
   remains historically correct for the later release/rollback governance slice, and `cbb7b88` remains historically
   correct for the later operational approval governance slice. This reconciliation now records repo-facing status
-  through the later repo package-manager baseline refresh at `c0ad5b5` and the later Event Readiness eval-to-spec
-  binding refinement at `76606a3`.
+  through the later repo package-manager baseline refresh at `c0ad5b5`, the later Event Readiness eval-to-spec
+  binding refinement at `76606a3`, the later non-runtime-change deploy-gating refinement at `041ad1e`, the later City
+  Center SDLC loop-governance record at `e3e61c4`, and the later Event Readiness fixture-typing cleanup at `978ba58`.
 - Older decision records may retain then-current `current repo-facing reconciliation` wording scoped to their original
   landing context. Those phrases remain historically accurate for their earlier slices and do not override this later
   reconciliation.
-- As of `f356a5a`, this current-state refresh is recorded in repo history as a docs-only governance update.
-  `c0ad5b5` and `76606a3` remain the pre-refresh repo-facing state anchors covered by this record.
+- As of `f356a5a`, this current-state refresh was recorded in repo history as the prior docs-only governance update.
+  `978ba58` is now the current repo-facing baseline covered by this reconciliation, while `c0ad5b5`, `76606a3`,
+  `041ad1e`, and `e3e61c4` remain included as earlier resolved context.
 - The CLI/operator planning-governance record remains historically anchored to its original L1.9 draft context and does
   not need to be reinterpreted as a later approval.
+- Release-path coupling is no longer unresolved in the same way. `041ad1e` reduces direct production-deploy coupling
+  for docs-only and Agent Builder-only changes by classifying them as `non_runtime_changes_only`; it does not create a
+  separate repository or a separate CI/build/test rail.
+- City Center SDLC loop-governance is no longer unresolved in the same way. It has landed as a docs-only/planning-only
+  governance record at `e3e61c4`.
 - Release/rollback governance is no longer unresolved in the same way. It has landed as a docs-only/planning-only
   governance record at `af8246c`.
 - Operational approval governance is no longer unresolved in the same way. It has landed as a docs-only/planning-only
@@ -361,6 +424,11 @@ persistence, runtime logging, operational approval, or production readiness.
   `packageManager`, and repo-facing command guidance should use `corepack pnpm ...`.
 - Event Readiness deterministic eval execution is no longer described as generic eval coverage only. It is now
   explicitly bound to the authoritative spec path `agent_specs/event_readiness.v0.1.yaml`.
+- Event Readiness fixture typing is no longer described as repeated local casts or duplicated local test shapes.
+  `978ba58` now keeps the current eval-suite and eval-harness paths on canonical validated Event Readiness fixture
+  loading without changing runtime behavior.
+- Local developer CLI code in repo does not change the operator-surface boundary. Event Readiness still has no
+  approved operator surface.
 - The implementation plan's earlier "next safe governance area" is now historical planning context rather than the
   latest repo-facing status anchor.
 - The L1.6 charter remains the evidence-review authority for L1.6 semantics, but it is not the current-state anchor
@@ -373,6 +441,7 @@ persistence, runtime logging, operational approval, or production readiness.
 - Bounded review classification is not production readiness.
 - Drive handoff/status context is not runtime source authority.
 - Existing prototype/runtime code paths do not imply Event Readiness runtime approval.
+- Local developer CLI code does not imply an approved operator surface.
 - Runtime/model-call governance does not grant runtime/model-call approval, prompt execution approval, route approval,
   tool/integration approval, MCP/connector-style execution approval, Drive runtime behavior approval, source-read
   approval, persistence approval, runtime logging approval, or automation approval.

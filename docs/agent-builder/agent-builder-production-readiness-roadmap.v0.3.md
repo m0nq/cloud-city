@@ -15,12 +15,29 @@ Current repo package-manager baseline now present on `main`:
 Latest deterministic Event Readiness eval-authority refinement before this docs-only refresh:
 `76606a3 test(agent-builder): bind Event Readiness eval to spec`.
 
+Later repo-facing reconciliation context now also present on `main`:
+`041ad1e ci: gate production deploy for docs and agent-builder changes`,
+`e3e61c4 docs(agent-builder): define loop-engineering governance`, and
+`978ba58 test(agent-builder): tighten event readiness fixture typing`.
+
 `c0ad5b5` updates repo command posture to the repo-pinned pnpm 11 baseline through Corepack. It does not approve
 implementation, capability expansion, runtime/model behavior, operational approval, or production readiness.
 
 `76606a3` binds deterministic Event Readiness eval execution to `agent_specs/event_readiness.v0.1.yaml` and keeps
 that suite synthetic-only, pre-runtime, and approval-gated. It does not approve runtime/model generation, production
 readiness, operational approval, or permission to act.
+
+`041ad1e` reduces direct production-deploy coupling for docs-only and Agent Builder-only changes by classifying those
+diffs as `non_runtime_changes_only` in `.github/workflows/gh-actions.yml`, but it does not create a separate
+CI/build/test rail, release approval, rollback approval, operational approval, or production readiness.
+
+`e3e61c4` adds City Center SDLC loop-governance as a docs-only/planning-only governance record for future AI-assisted
+workflow changes. It does not approve `/city-center` implementation, runtime/model behavior, prompts, auth, routes,
+UI, source reads, operational approval, or production readiness.
+
+`978ba58` tightens Event Readiness fixture typing in local eval/test harness paths by using canonical validated Event
+Readiness fixture loading instead of repeated raw casts or duplicated local fixture-shape assumptions. It does not
+change runtime behavior or approve operational use.
 
 Later pushed docs-only runtime/model-call governance milestone now present on `main`:
 `bd5c2df docs(agent-builder): add runtime model-call governance`.
@@ -74,6 +91,7 @@ Required boundary reminders for this roadmap slice:
 - `Drive handoff/status context is not runtime source authority.`
 - `Deterministic contract conformance is not operational approval.`
 - `PASS means pass for human review only.`
+- `Local developer CLI code is not an approved operator surface.`
 - `Humans approve. Humans execute.`
 
 This roadmap supersedes the Drive artifact `Cloud City - Agent Builder Production Readiness Roadmap v0.2` for
@@ -88,7 +106,7 @@ Drive governance/status records. Those records remain human-provided context onl
 agent-authority, Drive-access, runtime, or operational-approval boundaries.
 
 That Drive governance/status context may reflect current human governance/status tracking, including `Current Agent
-Builder State Snapshot v10 — 2026-06-23`, but it remains human-provided context only unless separately verified. It
+Builder State Snapshot v23 — 2026-07-06`, but it remains human-provided context only unless separately verified. It
 preserves this Roadmap v0.3 as the
 current repo-facing production-readiness planning artifact and preserves `Cloud City — Agent Builder Data & Privacy
 Taxonomy v0.1` as prior draft context.
@@ -96,7 +114,7 @@ Taxonomy v0.1` as prior draft context.
 This repo note is linkage only. It does not copy the Drive record into the repo and does not approve implementation,
 operational use, source reads, source verification, runtime/model behavior, CLI/operator wiring, UI/reviewer cockpit work,
 Drive automation, public/real/redacted/personal data use, external communication, or autonomous action. `Current Agent
-Builder State Snapshot v10 — 2026-06-23` is not Codex-verified repo evidence and must not be treated as repo
+Builder State Snapshot v23 — 2026-07-06` is not Codex-verified repo evidence and must not be treated as repo
 doctrine, source authority, operational approval, or permission for local agents to read from or write to Drive.
 
 This roadmap does not approve implementation, operational use, CLI/operator wiring, runtime/model calls, prompts,
@@ -265,7 +283,7 @@ confidence and to make the remaining governance and implementation distance visi
 
 | Path | Current estimate | Rationale |
 | --- | --- | --- |
-| Without UI | 25-30% planning-readiness estimate only; no production readiness or operational approval implied | The local governance, spec, registry, fixture/eval, pre-runtime validation, L1.6 lifecycle evidence, source-boundary approval authority, privacy/data-boundary governance, audit-log/records-retention governance, runtime/model-call governance boundary, Drive behavior governance boundary, UI/reviewer cockpit governance UI-1 boundary, and UI-2 static mockup governance boundary are meaningful. UI-2 static mockup governance now exists in repo as a docs-only, planning-only, proposed-for-human-review boundary record. Production readiness still lacks approved Event Readiness operator workflow, operational approval model, release controls for real use, any approved Event Readiness runtime path, and any approved UI-2 mockup pass or UI-3/UI-4/UI-5 path. |
+| Without UI | 25-30% planning-readiness estimate only; no production readiness or operational approval implied | The local governance, spec, registry, fixture/eval, pre-runtime validation, L1.6 lifecycle evidence, source-boundary approval authority, privacy/data-boundary governance, audit-log/records-retention governance, runtime/model-call governance boundary, Drive behavior governance boundary, UI/reviewer cockpit governance UI-1 boundary, UI-2 static mockup governance boundary, City Center loop-governance, and Event Readiness fixture-typing cleanup are meaningful. UI-2 static mockup governance now exists in repo as a docs-only, planning-only, proposed-for-human-review boundary record. Production readiness still lacks an approved Event Readiness operator surface or operator workflow, an operational approval model, release controls for real use, any approved Event Readiness runtime path, and any approved UI-2 mockup pass or UI-3/UI-4/UI-5 path. |
 | With UI | 10-15% planning-readiness estimate only; no UI implementation, production readiness, or operational approval implied | Product clarity exists and UI-1 and UI-2 governance boundaries are now documented, but UI remains conceptual beyond governance. There are no approved mockup passes, routes, components, reviewer cockpit implementations, UI data flows, UI-specific safety tests, or operator workflow surfaces. |
 
 ## 8. Evidence Inventory
@@ -291,15 +309,22 @@ Repo and governance evidence supporting the current maturity state:
 - `docs/agent-builder/decision-records/agent-builder-drive-behavior-governance.v0.1.md`
 - `docs/agent-builder/decision-records/agent-builder-ui-reviewer-cockpit-governance.v0.1.md`
 - `docs/agent-builder/decision-records/agent-builder-ui2-static-mockup-governance.v0.1.md`
+- `docs/agent-builder/decision-records/agent-builder-bounded-codex-loop-governance.v0.1.md`
+- `docs/agent-builder/decision-records/agent-builder-city-center-sdlc-loop-governance.v0.1.md`
 - `agent_specs/event_readiness.v0.1.yaml`
 - `registry/agent-registry.yaml`
 - `docs/agent-builder/implementation-plan.md`
+- `scripts/agent-builder/index.ts`
+- `src/agent-builder/eval-suite.ts`
+- `src/agent-builder/fixtures.ts`
+- `__tests__/agent-builder/eval-harness.test.ts`
 - `src/agent-builder/review-record-lifecycle/schema.ts`
 - `src/agent-builder/review-record-lifecycle/validation.ts`
 - `__tests__/agent-builder/review-record-lifecycle.test.ts`
 - `fixtures/agent-builder/review-record-lifecycle/*.synthetic.json`
+- `.github/workflows/gh-actions.yml`
 - Historical governance milestone chain in this roadmap is reconciled through `9f35be3`
-- Human-owned Drive governance/status records, including `Current Agent Builder State Snapshot v10 — 2026-06-23`, are
+- Human-owned Drive governance/status records, including `Current Agent Builder State Snapshot v23 — 2026-07-06`, are
   maintained separately from repo evidence; they remain human-provided context only, not Codex-verified repo
   evidence, repo doctrine, source authority, operational approval, agent-readable authority, permission for local
   agents to read from or write to Drive, or permission to use Drive as a runtime source of truth.
@@ -311,14 +336,14 @@ Drive as a runtime source of truth.
 
 | Risk | Severity | Why it matters | Current control | Next control |
 | --- | --- | --- | --- | --- |
-| Premature CLI/operator gravity | Medium | L1.6 evidence could be mistaken for readiness to expose commands or operator workflows. | Charter and product blueprint state no CLI/operator wiring. | Keep any operator-surface work behind a separate planning-only decision record. |
+| Premature CLI/operator gravity | Medium | L1.6 evidence could be mistaken for readiness to expose commands or operator workflows. | Governance docs keep CLI/operator wiring and any approved operator surface blocked even though local developer CLI code exists in repo. | Keep any operator-surface work behind a separate planning-only decision record. |
 | Over-reading synthetic validation | Medium | Synthetic cases can create false confidence about real events. | Docs state L1.6 is synthetic-only and non-operational. | Keep a visible "what this proves / does not prove" section in future status updates. |
 | Treating operator-readiness as execution readiness | Medium | Human evidence review could be confused with permission to run or act. | Charter defines operator-readiness as evidence-review readiness only. | Require this definition in any future roadmap or operator planning artifact. |
 | Source-boundary confusion | Medium | Declared metadata could be mistaken for verified source evidence. | The source-boundary charter and approval-authority record keep evidence authority and approval boundaries explicit. | Keep source behavior blocked unless a separate later milestone explicitly expands source scope. |
 | Drive-write/local-agent confusion | Low-Medium | Drive governance records could be mistaken as writable by local agents. | The Drive governance record blocks sync/writes by local agents and keeps Drive references separate from machine authority. | Keep Drive behavior in non-approvals unless a future Drive behavior decision record is approved. |
 | Product/UI concept leakage into implementation | Medium | Conceptual UI surfaces could become implementation assumptions. | Product blueprint states future UI surfaces are conceptual only, and the UI/reviewer cockpit governance record limits current scope to UI-1 information architecture only. | Keep any later UI-2/UI-3/UI-4/UI-5 work behind separate explicit later artifacts. |
 | Real/redacted data boundary risk | Medium | Synthetic validation does not prove privacy safety for real or redacted event data. | L1.6 remains synthetic-only and the privacy/data-boundary governance record keeps non-synthetic data blocked. | Preserve the blocked posture unless a separate later milestone explicitly expands data scope. |
-| Audit drift | Low-Medium | Repo docs, Drive status, and roadmap language can diverge. | Historical roadmap context remains anchored through `9f35be3`, and the current repo-facing reconciliation record now covers the governance baseline at `db8c749`, the earlier deterministic refinement at `ad0dda3`, the later runtime/model-call governance milestone at `bd5c2df`, the later Drive behavior governance milestone at `e0ea9f9`, the later UI/reviewer cockpit governance milestone at `41cbe7f`, the later UI-2 static mockup governance milestone at `9ee7696`, the repo package-manager baseline refresh at `c0ad5b5`, and the later deterministic eval-to-spec refinement at `76606a3`. | Tie future governance status updates to explicit commit IDs and reviewed artifacts. |
+| Audit drift | Low-Medium | Repo docs, Drive status, and roadmap language can diverge. | Historical roadmap context remains anchored through `9f35be3`, and the current repo-facing reconciliation record now covers the governance baseline at `db8c749`, the earlier deterministic refinement at `ad0dda3`, the later runtime/model-call governance milestone at `bd5c2df`, the later Drive behavior governance milestone at `e0ea9f9`, the later UI/reviewer cockpit governance milestone at `41cbe7f`, the later UI-2 static mockup governance milestone at `9ee7696`, the repo package-manager baseline refresh at `c0ad5b5`, the later deterministic eval-to-spec refinement at `76606a3`, the non-runtime-change deploy-gating refinement at `041ad1e`, the City Center SDLC loop-governance record at `e3e61c4`, and the fixture-typing cleanup at `978ba58`. | Tie future governance status updates to explicit commit IDs and reviewed artifacts. |
 | Roadmap staleness | Medium | Historical v0.2 guidance can mislead future planning. | This v0.3 roadmap remains useful historical planning context, while the current repo-facing state is clarified in [current-state reconciliation v0.1](./agent-builder-current-state-reconciliation.v0.1.md). | Revisit this roadmap before any new capability-boundary record or unresolved dependency record. |
 
 ## 10. Roadmap Branch Options
@@ -326,7 +351,7 @@ Drive as a runtime source of truth.
 | Option | Planning-only posture | Benefit | Risk | Recommendation |
 | --- | --- | --- | --- | --- |
 | Remain paused | No repo changes or capability expansion. | Safest way to prevent scope creep. | Roadmap clarity may decay over time. | Acceptable if no near-term planning is needed. |
-| Maintain repo-facing reconciliation after later docs-only governance milestones plus `c0ad5b5` / `76606a3` | Planning-only documentation. | Keeps the historical roadmap baseline, the current governance foundation, the later planning-only governance boundaries, the pnpm 11 repo command context, and the Event Readiness spec-bound eval posture visible without implying capability expansion. | Could be misread as broader approval unless boundaries remain explicit. | Recommended current docs-only posture. |
+| Maintain repo-facing reconciliation after later docs-only governance milestones plus `c0ad5b5`, `76606a3`, `041ad1e`, `e3e61c4`, and `978ba58` | Planning-only documentation. | Keeps the historical roadmap baseline, the current governance foundation, the later planning-only governance boundaries, the pnpm 11 repo command context, the Event Readiness spec-bound eval posture, the reduced release-path coupling note, the City Center loop-governance posture, and the fixture-typing cleanup visible without implying capability expansion. | Could be misread as broader approval unless boundaries remain explicit. | Recommended current docs-only posture. |
 | Pre-runtime governance foundation checkpoint reviewed | Planning-only governance summary. | Makes source/privacy/audit foundation completion visible before further planning. | Could be mistaken for implementation readiness if written loosely. | Treat as completed planning context; do not infer capability expansion. |
 | CLI/operator planning governance completed at L1.9 | Planning-only control-model gate; does not approve L2 workflow, CLI implementation, runtime/model behavior, Drive behavior, UI behavior, release/rollback, or operational approval. | Clarifies human-review control-model boundaries before any later dependency sequencing. | Could still be misread as broader operator readiness unless non-approvals stay explicit. | Treat as completed planning governance; do not infer approval of unresolved dependency records. |
 | Runtime/model-call governance completed for planning clarity | Planning-only governance boundary. | Makes runtime/model-call non-approvals, future gate requirements, and adjacent boundary dependencies explicit without approving runtime behavior. | Could still be misread as runtime approval unless non-approvals stay explicit. | Treat as completed planning governance; do not infer runtime approval or capability expansion. |
@@ -471,16 +496,20 @@ This roadmap also does not create implementation tickets or authorize production
 Recommended next gate:
 
 1. Human review of the repo-facing current-state reconciliation, operator guide command posture, and roadmap wording now
-   aligned through `c0ad5b5 chore: update repo package manager to pnpm 11` and
-   `76606a3 test(agent-builder): bind Event Readiness eval to spec`.
+   aligned through `978ba58 test(agent-builder): tighten event readiness fixture typing`, with
+   `c0ad5b5 chore: update repo package manager to pnpm 11`,
+   `76606a3 test(agent-builder): bind Event Readiness eval to spec`,
+   `041ad1e ci: gate production deploy for docs and agent-builder changes`, and
+   `e3e61c4 docs(agent-builder): define loop-engineering governance` reflected as current context.
 2. No implementation and no capability expansion.
 3. After review, decide whether to remain paused or later choose the next explicitly gated proposal artifact. Do not
    infer UI-2/UI-3/UI-4/UI-5 work from this gate.
-4. Do not treat this gate, `c0ad5b5`, or `76606a3` as approval for mockup creation, Figma use, Stitch use, ChatGPT UI/mockup
-   generation, MCP use, AI/external design-tool use, UI-3 local read-only reviewer cockpit prototypes, UI-4 operator
-   workflow planning, UI-5 implementation, Drive runtime behavior, runtime/model calls, prompt execution, routes,
-   tools, integrations, source reads, source-packet binding, semantic source verification, persistence, runtime
-   logging, automated records, automation, operational approval, production readiness, or capability expansion.
+4. Do not treat this gate, `c0ad5b5`, `76606a3`, `041ad1e`, `e3e61c4`, or `978ba58` as approval for mockup creation,
+   Figma use, Stitch use, ChatGPT UI/mockup generation, MCP use, AI/external design-tool use, UI-3 local read-only
+   reviewer cockpit prototypes, UI-4 operator workflow planning, UI-5 implementation, Drive runtime behavior,
+   runtime/model calls, prompt execution, routes, tools, integrations, source reads, source-packet binding,
+   semantic source verification, persistence, runtime logging, automated records, automation, operational approval,
+   production readiness, or capability expansion.
 5. Do not proceed from this roadmap to UI-2/UI-3/UI-4/UI-5 approval, Drive runtime approval, runtime/model-call
    approval, prompt execution approval, route/tool/integration approval, source-read approval,
    persistence/runtime logging/automation approval, operational approval, or production-readiness claims.
