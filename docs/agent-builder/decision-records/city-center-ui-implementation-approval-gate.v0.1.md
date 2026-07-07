@@ -23,7 +23,7 @@ Define the human approval gate required before future UI implementation begins f
 
 This record exists to prevent planning language, design-review language, mockups, standards documents, templates, tests, screenshots, validation results, or merged documentation from being mistaken for implementation approval.
 
-The gate should make the transition from planning to implementation explicit, reviewable, reversible, and human-owned.
+The gate should make the transition from planning to implementation explicit, reviewable, reversible, lightweight for small scopes, and human-owned.
 
 ## 3. Covered Surfaces
 
@@ -66,11 +66,12 @@ For this record, UI implementation includes any change that adds, modifies, wire
 - auth or access-control behavior
 - source, Drive, runtime, model, tool, or integration behavior surfaced in UI
 - persistence, logging, records, audit traces, or retained review artifacts
-- tests or browser automation that assert UI behavior
-- visual regression, screenshots, Storybook, Cypress, Playwright, axe, or other UI validation tooling
-- package, dependency, or CI/CD changes required to support UI behavior
+- tests, browser automation, visual-regression configuration, Storybook/Cypress/Playwright/axe setup, or other tooling that asserts, configures, or enforces implemented UI behavior
+- package, dependency, or CI/CD changes required to support implemented UI behavior
 
-Naming a concept, reviewing a static design, writing a template, or documenting a cadence is not UI implementation by itself, but those artifacts also do not approve implementation.
+Naming a concept, reviewing a static design, writing a template, documenting a cadence, capturing static screenshots, or exporting static mockup images is not UI implementation by itself. Those artifacts may be review evidence only, and they do not approve implementation.
+
+Static screenshots, static mockup exports, and manually captured review images remain outside UI implementation unless they are tied to implemented UI behavior, automated assertions, retained test artifacts, approved tooling configuration, or a separately approved implementation/tooling scope.
 
 ## 6. Approval Authority
 
@@ -98,7 +99,9 @@ Humans approve. Humans execute.
 
 ## 7. Required Evidence Before UI Implementation May Begin
 
-A future implementation proposal must include the following evidence before UI implementation work begins:
+A future implementation proposal must include a lightweight core gate before UI implementation work begins.
+
+### Core Gate Required For Every UI Implementation Proposal
 
 - `ui_scope_statement`: the exact surface, route, component family, or artifact under implementation review.
 - `ui_out_of_scope_statement`: what remains blocked and not approved.
@@ -106,25 +109,38 @@ A future implementation proposal must include the following evidence before UI i
 - `human_approval_record`: explicit human approval to begin the named implementation scope.
 - `related_linear_issue`: the issue that owns the implementation proposal.
 - `related_governance_records`: governing records that apply to the proposed surface.
-- `source_material_inventory`: brand, UI/UX, accessibility, governance, and product materials reviewed.
 - `implementation_boundaries`: exact files, directories, routes, packages, or configs expected to be in scope.
-- `data_classification_statement`: data classes used or displayed, and classes explicitly blocked.
-- `source_drive_runtime_statement`: whether source, Drive, runtime, model, or tool behavior is involved; if not, say so explicitly.
-- `persistence_logging_statement`: whether anything is stored, logged, retained, or audited; if not, say so explicitly.
-- `auth_access_statement`: whether authentication or access-control behavior is involved; if not, say so explicitly.
-- `accessibility_review_plan`: planned review for keyboard, focus, semantics, labels, contrast, non-color-only meaning, reduced motion, screen-reader considerations, mobile, and reflow.
-- `manual_qa_plan`: how a human will verify visible behavior and copy/state clarity.
 - `validation_plan`: targeted validation commands or review steps appropriate to the scope.
+- `manual_qa_plan`: how a human will verify visible behavior and copy/state clarity.
 - `rollback_or_reversal_plan`: how the implementation can be paused, reverted, disabled, or narrowed.
-- `known_risks`: risks, ambiguities, and adjacent capability-drift concerns.
+- `stop_conditions`: what requires pausing or re-scoping.
 - `what_this_proves`: what the proposal, implementation, or validation can prove.
 - `what_this_does_not_prove`: what remains unproven or separately gated.
 
+### Conditional Extended Gate
+
+Add the following only when relevant to the proposed scope:
+
+- `source_material_inventory`: required when brand, UI/UX, accessibility, governance, or product source materials drive the proposal.
+- `data_classification_statement`: required when any data class may be used, displayed, retained, derived, or implied.
+- `source_drive_runtime_statement`: required when source, Drive, runtime, model, or tool behavior may be involved.
+- `persistence_logging_statement`: required when anything may be stored, logged, retained, audited, or used as a record.
+- `auth_access_statement`: required when authentication, authorization, private surfaces, or access-control behavior may be involved.
+- `accessibility_review_plan`: required for implemented interactive UI and any surface where keyboard, focus, semantics, labels, contrast, non-color-only meaning, reduced motion, screen-reader considerations, mobile, or reflow behavior may be affected.
+- `package_dependency_ci_statement`: required when packages, dependencies, scripts, browser tooling, or CI/CD behavior may change.
+- `tooling_statement`: required when Playwright, Storybook, Cypress, axe, visual regression, browser automation, screenshots-as-test-artifacts, or related tooling may be proposed.
+- `release_rollback_statement`: required when a release, rollout, rollback, deployment, or promotion interpretation may be implicated.
+- `known_risks`: required when there are ambiguity, adjacent capability-drift, or governance-boundary risks beyond ordinary UI work.
+
 Minimum evidence presence is required for review only. It is not approval by itself.
+
+If the conditional gate is unclear, the safe default is to pause and clarify rather than fill boilerplate.
 
 ## 8. Required Implementation Proposal Contents
 
-Before work starts, the Linear issue, repo planning doc, or PR description for a UI implementation proposal should include:
+Before work starts, the Linear issue, repo planning doc, or PR description for a UI implementation proposal should include a concise implementation proposal.
+
+### Core Proposal Contents
 
 1. Goal.
 2. User or reviewer problem being solved.
@@ -133,32 +149,52 @@ Before work starts, the Linear issue, repo planning doc, or PR description for a
 5. Explicit out of scope.
 6. Human approval authority and approval record.
 7. Files or directories expected to change.
-8. Required source materials.
-9. Accessibility expectations.
-10. Brand/product-fit expectations.
-11. Validation plan.
-12. Manual QA plan.
-13. Release and rollback considerations.
-14. Stop conditions.
-15. What this proves.
-16. What this does not prove.
+8. Validation plan.
+9. Manual QA plan.
+10. Stop conditions.
+11. What this proves.
+12. What this does not prove.
 
-If any of these are materially unclear, the implementation should remain blocked until clarified.
+### Conditional Proposal Contents
+
+Add conditional sections only when relevant:
+
+- Required source materials.
+- Accessibility expectations.
+- Brand/product-fit expectations.
+- Data classification and blocked data classes.
+- Source, Drive, runtime, model, or tool boundaries.
+- Auth or access-control boundaries.
+- Persistence, logging, records, or retention boundaries.
+- Package, dependency, script, browser tooling, or CI/CD implications.
+- Release, rollout, rollback, or deployment interpretation.
+
+If any core item is materially unclear, the implementation should remain blocked until clarified.
 
 ## 9. Required Human Review Checkpoints
 
-A future UI implementation proposal should pass these human-owned checkpoints before implementation begins:
+A future UI implementation proposal should pass a small set of human-owned checkpoints before implementation begins.
+
+### Core Checkpoints
 
 - `scope_confirmation_checkpoint`
 - `authority_confirmation_checkpoint`
 - `governance_boundary_checkpoint`
+- `validation_plan_checkpoint`
+- `implementation_start_approval_checkpoint`
+
+### Conditional Checkpoints
+
+Add conditional checkpoints only when relevant:
+
 - `data_classification_checkpoint`
 - `source_drive_runtime_checkpoint`
+- `auth_access_checkpoint`
 - `accessibility_expectation_checkpoint`
 - `brand_product_fit_checkpoint`
-- `validation_plan_checkpoint`
+- `tooling_boundary_checkpoint`
+- `release_rollback_checkpoint`
 - `rollback_or_reversal_checkpoint`
-- `implementation_start_approval_checkpoint`
 
 These checkpoints are governance checkpoints only. They do not define workflow automation, UI behavior, runtime behavior, or operational behavior.
 
@@ -166,18 +202,17 @@ These checkpoints are governance checkpoints only. They do not define workflow a
 
 The approval gate should require a validation plan appropriate to the proposed implementation scope.
 
-Possible validation lanes include:
+This record intentionally does not redefine the full evidence-lane model. Detailed evidence-lane semantics should be read from:
 
-| Validation lane | Useful for | Cannot prove on its own |
-| --- | --- | --- |
-| Static or design review | Brand fit, hierarchy, layout, copy direction, state coverage, obvious UX gaps | Keyboard behavior, focus behavior, screen-reader behavior, implementation quality, production readiness |
-| Implementation review | Semantic structure, labels, states, code-to-UI alignment, obvious regression risk | Full accessibility, real-world task success, operational approval |
-| Manual QA | Visible interaction behavior, mobile behavior, flow clarity, state transitions | Exhaustive coverage, long-term regression safety, design-system authority |
-| Automated accessibility tooling | Common detectable accessibility defects and regressions when separately approved | Complete accessibility, usability quality, design quality |
-| Component checks | Isolated state rendering and local behavior when tooling exists | Full route flow quality, cross-surface integration, production readiness |
-| E2E flow tests | Critical route and task flows when separately approved | Visual excellence, broad accessibility sufficiency, operational approval |
-| Visual screenshots or visual regression | Unintended visual changes and layout drift when separately approved | Interaction quality, accessibility quality, design intent, production readiness |
-| Human design review | Aesthetic judgment, brand fit, restraint, product communication quality | Implementation safety, accessibility proof, runtime authority |
+- `docs/templates/cloud-city-ui-ux-review.template.md`
+- `docs/design/cloud-city-ui-ux-standards-cadence.md`
+- `docs/decision-records/e2e-tooling-playwright-direction.md`
+
+At gate level, the implementation proposal should state which validation lanes are relevant and what each lane can and cannot prove.
+
+Common validation lanes may include static/design review, implementation review, manual QA, automated accessibility tooling, component checks, E2E flow tests, visual screenshots or visual regression, and human design review.
+
+Static screenshots, visual comparisons, automated accessibility checks, E2E tests, and green CI results are evidence signals only. They do not prove accessibility sufficiency, visual quality, implementation approval, production readiness, operational approval, or authority to act.
 
 Tooling lanes are future-only unless separately approved. This record does not approve installing, configuring, or running Playwright, Storybook, Cypress, axe, visual regression, or browser automation.
 
@@ -288,6 +323,7 @@ Stop and report before implementation if any of the following appears:
 - Work would modify routes, components, styles, tests, packages, dependencies, CI/CD, auth, runtime behavior, model/tool behavior, source behavior, Drive behavior, persistence, logging, release, rollback, or operational behavior beyond the approved scope.
 - Work would introduce or rely on non-synthetic, real, redacted, public, personal, vendor, or operational data without separate approval.
 - Work would add or activate Playwright, Storybook, Cypress, visual regression, accessibility tooling, or browser automation without separate approval.
+- Static screenshots, mockup exports, or review images start being treated as implementation proof, accessibility proof, source authority, or approval authority.
 - Work would make production-readiness, launch, release, operational approval, or authority-to-act claims.
 - Work would blur UI-1, UI-2, UI-3, UI-4, or UI-5 boundaries.
 - Evidence is missing, stale, conflicting, or materially unclear.
@@ -297,7 +333,7 @@ Stop and report before implementation if any of the following appears:
 
 This record can prove that Cloud City has a defined governance gate for deciding when future City Center / Agent Builder UI implementation may begin.
 
-It can also prove that required evidence, approval authority, proposal contents, validation expectations, and stop conditions are defined at a planning level.
+It can also prove that core evidence, conditional evidence, approval authority, proposal contents, validation expectations, and stop conditions are defined at a planning level.
 
 ## 16. What This Record Does Not Prove
 
@@ -324,10 +360,11 @@ This record is sufficient if it:
 - defines what counts as UI implementation
 - identifies covered City Center / Agent Builder surfaces
 - defines the approval authority for beginning UI implementation
-- defines required evidence before implementation begins
+- defines lightweight core evidence before implementation begins
+- defines conditional extended evidence for higher-risk scope
 - defines required implementation proposal contents
 - defines human review checkpoints
-- defines planning-level validation expectations
+- defines planning-level validation expectations without replacing standing evidence-lane artifacts
 - preserves UI-level separation
 - preserves synthetic-only, pre-runtime, human-reviewed, approval-gated, non-operational posture
 - states what this record proves and does not prove
