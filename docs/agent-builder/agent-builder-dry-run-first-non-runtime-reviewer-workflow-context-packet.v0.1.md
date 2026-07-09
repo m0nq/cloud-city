@@ -70,10 +70,10 @@ Packet summary:
 - Evidence location: repo planning artifact
 - Stop condition: ambiguity or implied authority
 
-Outcome: `pass-for-review`  
-Underlying classification label: `later bounded L2 candidate`  
-Confidence: High  
-Finding: Packet fields are sufficient and clearly bounded.  
+Outcome: `pass-for-review`
+Underlying classification label: `later bounded L2 candidate`
+Confidence: High
+Finding: Packet fields are sufficient and clearly bounded.
 Friction: None.
 
 ### CPD-02 — Governed metadata planning packet
@@ -88,10 +88,10 @@ Packet summary:
 - Evidence location: approved Linear comment or repo artifact
 - Stop condition: any request for raw source content
 
-Outcome: `pass-for-review`  
-Underlying classification label: `first implicated CLO-52 lane dependency card`  
-Confidence: High  
-Finding: Packet allows safe planning reference without treating metadata as runtime source authority.  
+Outcome: `pass-for-review`
+Underlying classification label: `first implicated CLO-52 lane dependency card`
+Confidence: High
+Finding: Packet allows safe planning reference without treating metadata as runtime source authority.
 Friction: Evidence location should preferably be repo-first, with Linear comments used only for concise progress or completion evidence.
 
 ### CPD-03 — Packet requesting automatic Drive folder read
@@ -106,10 +106,10 @@ Packet summary:
 - Evidence location: persistent table
 - Stop condition: not specified
 
-Outcome: `hold / clarify`  
-Underlying classification label: `hold / clarify`  
-Confidence: High  
-Finding: The packet implies source automation, unapproved Drive runtime behavior, persistence, and missing stop conditions.  
+Outcome: `hold / clarify`
+Underlying classification label: `hold / clarify`
+Confidence: High
+Finding: The packet implies source automation, unapproved Drive runtime behavior, persistence, and missing stop conditions.
 Friction: The CLO-72 packet shape makes the failure obvious.
 
 ### CPD-04 — Packet with UI approval action
@@ -124,10 +124,10 @@ Packet summary:
 - Evidence location: UI approval state
 - Stop condition: unclear
 
-Outcome: `hold / clarify`  
-Underlying classification label: `hold / clarify`  
-Confidence: High  
-Finding: The packet crosses into UI behavior and approval-state implications.  
+Outcome: `hold / clarify`
+Underlying classification label: `hold / clarify`
+Confidence: High
+Finding: The packet crosses into UI behavior and approval-state implications.
 Friction: A non-runtime UI prototype may be appropriate later, but not as an approval action or persisted UI state.
 
 ### CPD-05 — Non-runtime UI sketch planning packet
@@ -142,10 +142,10 @@ Packet summary:
 - Evidence location: repo planning artifact
 - Stop condition: any implementation or authority implication
 
-Outcome: `pass-for-review`  
-Underlying classification label: `later bounded L2 candidate`  
-Confidence: Medium  
-Finding: A non-runtime UI sketch can be planned safely if it is framed as an information architecture exercise, not implementation.  
+Outcome: `pass-for-review`
+Underlying classification label: `later bounded L2 candidate`
+Confidence: Medium
+Finding: A non-runtime UI sketch can be planned safely if it is framed as an information architecture exercise, not implementation.
 Friction: Requires strong wording so wireframe planning is not mistaken for UI approval.
 
 ### CPD-06 — Packet with external recommendation language
@@ -160,10 +160,10 @@ Packet summary:
 - Evidence location: approved external message
 - Stop condition: not specified
 
-Outcome: `hold / clarify`  
-Underlying classification label: `hold / clarify`  
-Confidence: High  
-Finding: The packet implies external communication and authority to act.  
+Outcome: `hold / clarify`
+Underlying classification label: `hold / clarify`
+Confidence: High
+Finding: The packet implies external communication and authority to act.
 Friction: None; the packet boundary catches this cleanly.
 
 ## 6. Findings
