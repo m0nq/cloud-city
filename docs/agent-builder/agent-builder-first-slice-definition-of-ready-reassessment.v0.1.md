@@ -246,11 +246,11 @@ The Stage 1 implementation contract must identify the exact app root, route or i
 - Exact repository-supported commands.
 - Exact expected result for each final fixture.
 - Exact coverage thresholds based on actual code risk.
-- Exact manual-QA and accessibility evidence matrix.
+- Exact manual visual-QA and accessibility evidence matrix.
 
 #### Blocking
 
-The Stage 1 implementation contract must inspect the nearest `package.json` and relevant configuration, then name exact targeted validation commands, test boundaries, expected results, and evidence requirements.
+The Stage 1 implementation contract must inspect the nearest `package.json` and relevant configuration, then name exact targeted validation commands, test boundaries, expected results, manual visual-QA coverage, and accessibility evidence requirements.
 
 ### Environment, Disable, Release, And Rollback
 
@@ -282,6 +282,41 @@ Before Stage 1 implementation begins, the authorization packet must identify:
 
 Stage 2 and Stage 3 remain blocked regardless of Stage 1 progress.
 
+### Delivery, Review, And Change Control
+
+#### Resolved For Planning
+
+- Non-trivial UI implementation requires reviewable local evidence and remote CI evidence.
+- A push alone is not remote validation.
+- Manual visual and accessibility QA cannot be replaced by author assertion.
+- Merge or release authority remains human-held.
+
+#### Bounded But Unselected
+
+- Exact sibling worktree and semantic branch name.
+- Exact draft-PR and review sequence.
+- Exact targeted local-validation order.
+- Exact manual visual-QA viewport set.
+- Exact post-merge main-branch and deployment-observation gates.
+- Exact revert commit, feature removal, or equivalent rollback path.
+
+#### Blocking
+
+The Stage 1 implementation contract must define a worktree-first delivery plan covering:
+
+- repository and worktree preflight;
+- semantic branch and bounded file scope;
+- targeted validation before broad validation;
+- draft PR and changed-file review;
+- manual visual, keyboard, screen-reader, and responsive QA;
+- observed remote CI jobs;
+- Founder approval before merge;
+- post-merge main-branch verification;
+- deployment observation only if a later scope separately approves deployment;
+- rollback or removal verification.
+
+Direct-to-main runtime or UI implementation is not approved by this record.
+
 ## Updated Readiness Matrix
 
 ### Resolved For Planning
@@ -299,14 +334,16 @@ Stage 2 and Stage 3 remain blocked regardless of Stage 1 progress.
 - test and governance-eval layers;
 - environment-stage separation;
 - CI, deployment, release, and operational evidence separation;
-- release, disable, and rollback requirements.
+- release, disable, and rollback requirements;
+- worktree-first, PR-reviewed delivery expectation for later UI implementation.
 
 ### Bounded But Unselected
 
 - exact fixture contract and location;
 - exact app root, route, component, and state mechanism;
 - exact evidence-transfer mechanism;
-- exact tests, commands, expected results, and evidence matrix;
+- exact tests, commands, expected results, visual-QA, and accessibility evidence matrix;
+- exact worktree, branch, PR, merge, and post-merge sequence;
 - exact Stage 1 disable/removal/revert mechanism;
 - exact reusable approval-record path.
 
@@ -325,9 +362,10 @@ These are not prerequisites for a strictly local, isolated Stage 1 proposal, but
 1. Repository inspection and exact app/surface/file scope.
 2. Exact synthetic fixture contract, location, and eval set.
 3. Exact temporary-state and manual-transfer implementation boundary.
-4. Exact test files, repository-supported validation commands, expected results, and accessibility evidence matrix.
-5. Exact Stage 1 disable/removal/revert path.
-6. Repo-first Founder implementation-authorization record adopting the goal, acceptance criteria, scope, non-approvals, validation plan, and stop conditions.
+4. Exact test files, repository-supported validation commands, expected results, visual-QA, and accessibility evidence matrix.
+5. Exact worktree, branch, PR, review, merge, and post-merge validation plan.
+6. Exact Stage 1 disable/removal/revert path.
+7. Repo-first Founder implementation-authorization record adopting the goal, acceptance criteria, scope, non-approvals, validation plan, and stop conditions.
 
 ## Reassessment Outcome
 
@@ -347,22 +385,33 @@ The planning boundaries are mature enough for repository inspection and exact co
 
 CLO-82 should remain docs-only and planning-only while inspecting the repository to identify:
 
+- verified repository/worktree location, branch, status, and baseline;
 - actual app root and nearest `package.json`;
-- existing route, component, state, styling, testing, accessibility, and authentication boundaries;
+- existing route, component, state, styling, testing, accessibility, authentication, and deployment boundaries;
 - exact proposed files and surfaces;
 - exact fixture contract and location;
 - exact state and manual-transfer mechanism;
-- exact test files, commands, expected results, and evidence matrix;
+- exact test files, commands, expected results, visual-QA, and accessibility evidence matrix;
+- exact worktree, branch, draft-PR, review, merge, and post-merge validation sequence;
 - exact disable/removal/revert path;
 - explicit scope-expansion stop conditions.
 
-CLO-82 must not implement code, add dependencies, change packages, create a route, or modify runtime behavior.
+CLO-82 must not implement code, add dependencies, change packages, create a route, modify runtime behavior, create a worktree or branch, open a PR, deploy, or make external writes beyond the approved docs-only artifact.
+
+CLO-82 must stop and report rather than infer when inspection reveals:
+
+- package installation or dependency changes;
+- out-of-scope files or architecture expansion;
+- authentication or authorization implications;
+- runtime, source, model, prompt, tool, persistence, logging, analytics, or records implications;
+- deployment or external-write requirements;
+- validation commands that cannot be established from repository evidence.
 
 ### Later CLO-83 — Founder implementation authorization decision
 
 Only after CLO-82 is reviewed and validated should a separate repo-first decision record ask the Founder to approve, reject, narrow, or hold the exact Stage 1 implementation proposal.
 
-CLO-83 must distinguish implementation authorization from release or operational approval.
+CLO-83 must distinguish implementation authorization from merge, release, deployment, production-readiness, or operational approval.
 
 ## Acceptance Criteria
 
@@ -374,6 +423,7 @@ CLO-81 passes for human review when:
 - Stage 1, Stage 2, and Stage 3 requirements are not conflated;
 - authentication is not invented for a local-only slice and is not waived for shared exposure;
 - the exact remaining implementation blockers are explicit;
+- the later worktree/PR/manual-QA/remote-CI delivery gate is explicit;
 - the outcome remains not ready for implementation;
 - the next docs-only repository-inspection card is explicit;
 - no implementation or authority expansion is implied.
@@ -385,18 +435,18 @@ Stop and return to governed planning if future work attempts to use this reasses
 - begin code or test implementation;
 - choose files or architecture without repository inspection;
 - add dependencies or mutate package files;
-- create a route, screen, component, API, state mechanism, fixture loader, or clipboard behavior;
+- create a worktree, branch, PR, route, screen, component, API, state mechanism, fixture loader, or clipboard behavior;
 - modify authentication or authorization;
 - expose a shared environment;
 - use real or redacted data;
 - retrieve source content;
-- add persistence, logging, analytics, or retained records;
-- deploy, release, or claim production readiness;
+- add model, prompt, tool, persistence, logging, analytics, or retained-record behavior;
+- deploy, release, merge, or claim production readiness;
 - authorize external communication, autonomous action, or authority to act.
 
 ## Explicit Non-Approvals
 
-This artifact does not approve implementation, executable tests, routes, screens, components, prompts, tools, model behavior, state handling, fixtures, source reads, persistence, logging, authentication changes, shared access, deployment, release, rollback execution, production readiness, external communication, autonomous action, or authority to act.
+This artifact does not approve implementation, executable tests, worktrees, branches, PRs, routes, screens, components, prompts, tools, model behavior, state handling, fixtures, source reads, persistence, logging, authentication changes, shared access, deployment, merge, release, rollback execution, production readiness, external communication, autonomous action, or authority to act.
 
 ## Suggested Validation
 
