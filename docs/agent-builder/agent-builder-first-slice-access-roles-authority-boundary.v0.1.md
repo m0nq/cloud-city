@@ -166,6 +166,37 @@ Explicit Founder approval is required before:
 
 A passing document review, local build, test suite, or CI run does not satisfy these approval checkpoints.
 
+## Approval Record Contract
+
+Every authority-bearing approval must be recorded repo-first in a human-reviewed governance decision record before the approved work begins.
+
+The minimum approval record must identify:
+
+- related CLO issue;
+- approving role;
+- repository baseline;
+- approved goal and bounded scope;
+- approved files, surfaces, environment, or access stage;
+- named or bounded participants;
+- acceptance criteria and validation plan;
+- explicit non-approvals;
+- stop, expiration, revocation, or reassessment conditions;
+- date of approval.
+
+Linear may contain concise supporting approval evidence or a link to the repo record, but a Linear comment alone is not the durable authority source.
+
+This approval record is governance evidence. It is not product audit logging, retained reviewer history, analytics, or runtime authority.
+
+## Multi-Hat Role Separation
+
+One person may hold more than one project role, including Founder, developer, reviewer, or project owner.
+
+Authority does not transfer automatically between those roles.
+
+Authoring, implementing, testing, reviewing, or accepting evidence does not itself constitute Founder approval.
+
+When the same person performs both delivery and approval responsibilities, the authority-bearing transition must still be made as a separate explicit approval decision and recorded under the approving role.
+
 ## Authority Separation
 
 Review is not approval.
@@ -203,11 +234,16 @@ Stop and route to hold / clarify when:
 7. Anonymous, public, and production access are prohibited.
 8. Shared non-production access requires a separate approved authentication and authorization design.
 9. Every authority expansion requires explicit human approval.
+10. Authority-bearing approvals require a repo-first human-reviewed approval record.
+11. Holding multiple roles does not collapse approval boundaries.
 
 ## Remaining Readiness Gaps
 
 Still unresolved:
 
+- authentication mechanism and authorization enforcement;
+- access-grant, access-removal, expiration, and revocation lifecycle;
+- approval-record location and reusable template;
 - test and evaluation plan;
 - accessibility and IA/UX state acceptance;
 - environment and feature-disable plan;
@@ -223,6 +259,8 @@ CLO-78 passes for human review when:
 - current access posture is explicit;
 - roles and permitted decisions are explicit;
 - Founder-held approval checkpoints are explicit;
+- the minimum approval-record contract is explicit;
+- multi-hat role separation is explicit;
 - anonymous and public access are prohibited;
 - agent/system authority is explicitly bounded;
 - review, implementation, release, and operational approval remain distinct;
