@@ -8,91 +8,95 @@
 - Read-only repository inspection completed for CLO-82.
 - Baseline: `04bdfa3 docs(agent-builder): clarify first slice delivery prerequisites`.
 
-This contract does not approve implementation, executable tests, a worktree, branch, pull request, route, component, CLI change, fixture loader, server, state mechanism, package change, authentication change, shared access, deployment, merge, release, production readiness, external communication, autonomous action, or authority to act.
+This record does not approve implementation, executable tests, fixtures, CLI behavior, a local server, a worktree, branch, commit, push, pull request, route, component, package change, authentication change, shared access, deployment, merge, release, production readiness, external communication, autonomous action, or authority to act.
 
 ## Candidate Slice
 
 `Human reviewer inspects a synthetic context packet, chooses one governed planning classification or hold / clarify, and prepares repo-first planning evidence for manual human placement.`
 
-Current readiness remains:
+Current result:
 
 `Not ready for implementation.`
 
-More precise status:
+More precise result:
 
 `Exact Stage 1 local implementation contract prepared for a separate Founder authorization decision.`
 
 ## Purpose
 
-This record converts the bounded-but-unselected items from CLO-81 into an exact, reviewable Stage 1 proposal grounded in the current repository.
+This record converts the bounded-but-unselected items from CLO-81 into an exact Stage 1 proposal grounded in the current repository.
 
 It defines:
 
-- repository and environment scope;
-- proposed files and prohibited files;
-- synthetic fixture contract and executable eval matrix;
-- temporary-state and evidence-transfer behavior;
-- loopback-only local reviewer surface;
-- test and validation commands;
+- the selected local surface;
+- exact proposed and prohibited files;
+- fixture and eval contracts;
+- browser-memory-only state and manual evidence transfer;
+- local exposure and security controls;
+- repository-supported automated validation;
 - manual visual and accessibility evidence;
-- worktree, branch, pull-request, merge, and post-merge gates;
+- delivery, review, merge, and post-merge gates;
 - disable, removal, and revert behavior;
-- stop conditions and explicit non-approvals.
+- explicit stop conditions.
 
-It is an implementation proposal for human review only. CLO-83 must separately approve, reject, narrow, or hold it before any implementation work begins.
+CLO-83 must separately approve, reject, narrow, or hold this contract before implementation begins.
 
 ## Verified Repository Evidence
 
-### Application And Tooling Root
+### Root Tooling
 
-The repository has one root `package.json` at the Cloud City worktree root.
+The Cloud City worktree uses one root `package.json`.
 
-Verified tooling:
+Verified repository tooling:
 
-- package manager: pnpm 11.9.0;
-- Node version: 24.14.1 from `.nvmrc`;
+- pnpm 11.9.0;
+- Node 24.14.1 from `.nvmrc`;
 - Next.js 16.2.4;
 - React 19.2.x;
-- TypeScript 5.9.x with strict mode;
+- TypeScript 5.9.x in strict mode;
 - Zod 4.4.x;
-- Jest 30 with Next Jest, jsdom, Testing Library, and user-event;
-- Cypress is installed for E2E, but its current configuration is not needed or changed by this proposal;
-- root scripts include `agent-builder`, `lint`, `typecheck`, `build`, `test:runInBand`, and `test:coverage`.
+- Jest 30 with Next Jest and jsdom;
+- Testing Library and user-event;
+- Cypress installed for E2E;
+- root scripts for Agent Builder, lint, typecheck, build, run-in-band tests, and coverage.
 
-No dependency or package-file change is required by this contract.
+No dependency, package, lockfile, test-configuration, or build-configuration change is required by this proposal.
 
-### Current Next Application Boundary
+### Production Application Boundary
 
-The production App Router root is `src/app/`.
+The production App Router lives under `src/app/`.
 
-`src/app/layout.tsx` applies the public Navbar, Footer, global styling, and Google Analytics to routed pages.
+The root layout applies:
 
-A new `src/app` reviewer route would therefore:
+- public Navbar;
+- public Footer;
+- global application styling;
+- Google Analytics.
 
-- enter the production application boundary;
-- inherit public navigation and analytics behavior;
-- be classified as deploy-required by CI;
-- create route and exposure implications beyond Stage 1.
+A reviewer route under `src/app` would enter the public application boundary, inherit analytics behavior, and be classified as deploy-required.
 
 Decision:
 
-`No src/app route, src/components UI, middleware, public asset, or production application change is proposed for Stage 1.`
+`Stage 1 must not add a Next route, React application component, middleware, public asset, or global layout change.`
 
 ### Existing Agent Builder Boundary
 
-The repository already contains:
+The repository already provides:
 
-- pure validation and policy modules under `src/agent-builder/`;
-- a pnpm-runnable CLI at `scripts/agent-builder/index.ts`;
+- pure deterministic modules under `src/agent-builder/`;
+- a local CLI at `scripts/agent-builder/index.ts`;
+- strict Zod schemas and validation patterns;
 - synthetic fixtures under `fixtures/`;
 - deterministic tests under `__tests__/agent-builder/`;
-- existing Zod schemas, strict-object validation, fixture-driven evals, and injected CLI test seams.
+- dependency-injection seams in CLI tests.
 
-Existing Agent Builder architecture remains local, non-authoritative, human-reviewed, and without public routes or production tools.
+The existing architecture remains local, non-authoritative, human-reviewed, and without public routes or production tools.
 
 ### CI And Deployment Boundary
 
-The main CI workflow treats these paths as non-runtime for deployment classification:
+The main GitHub Actions workflow runs on pushes to `main`, not on pull requests.
+
+It classifies the following as non-deploy paths:
 
 - `docs/**`;
 - `src/agent-builder/**`;
@@ -103,102 +107,106 @@ The main CI workflow treats these paths as non-runtime for deployment classifica
 - `agent_specs/**`;
 - `registry/**`.
 
-Changes confined to those paths still run lint, typecheck, build, and unit tests, but deployment is expected to be skipped.
+Changes confined to those paths still run lint, typecheck, build, and unit tests on the main-branch push, while deployment is expected to be skipped.
 
-Any implementation diff outside the approved path set is a stop condition requiring renewed review.
+Consequences:
+
+- the future PR is a review surface, not a source of this workflow's remote CI evidence;
+- pre-merge evidence must be local automated validation plus manual QA and diff review;
+- remote CI evidence is observed after the approved merge to `main`;
+- if the main workflow fails or requests deployment, stop and repair or revert under human direction.
 
 ## Stage 1 Architecture Decision
 
 ### Selected Surface
 
-The proposed Stage 1 surface is:
+The selected proposal is:
 
-`A loopback-only local HTML reviewer surface served by the existing Agent Builder CLI.`
+`A loopback-only native HTML reviewer surface served by the existing Agent Builder CLI.`
 
 Proposed command:
 
 ```sh
-pnpm agent-builder reviewer local --fixture fixtures/agent-builder/first-slice-reviewer/valid_later_bounded_l2_candidate.synthetic.json --port 4317
+pnpm agent-builder reviewer local \
+  --fixture fixtures/agent-builder/first-slice-reviewer/valid_later_bounded_l2_candidate.synthetic.json \
+  --port 4317
 ```
 
 The command:
 
-- validates one approved repository fixture before rendering it;
+- validates one approved repository fixture;
 - binds only to `127.0.0.1`;
-- prints the local URL and non-approval reminder;
-- does not open a browser automatically;
+- prints only the local URL and non-approval reminder;
+- does not open a browser;
 - serves one self-contained HTML document;
-- makes no model call;
-- retrieves no source content;
-- uses no external service or asset;
-- writes no file or record;
+- makes no model, tool, source, or external-service call;
 - creates no shared URL;
-- stops when the local process is terminated.
+- writes no file or record;
+- stops when the local process terminates.
 
-### Why A Loopback Surface Instead Of A Next Route
+### Native HTML And DOM Decision
 
-This option is selected because it:
+Stage 1 intentionally uses native semantic HTML and DOM APIs rather than React.
 
-- preserves an actual browser task flow for keyboard, focus, responsive, and screen-reader review;
-- avoids the production App Router and global analytics;
-- stays inside the CI non-deploy path allowlist;
-- requires no package or dependency change;
-- can operate with browser-memory-only state;
-- can be removed or reverted atomically;
-- does not imply a future production UI architecture.
+Rationale:
 
-This is a bounded Stage 1 validation surface, not the approved design for any shared or production reviewer product.
+- React hydration outside the Next application would require an additional bundling or application boundary;
+- a Next route would enter production routing, analytics, and deployment scope;
+- a new standalone bundler would require package and configuration changes;
+- native controls provide a small, testable browser surface for keyboard, focus, screen-reader, responsive, and state validation;
+- this does not select the architecture for any future shared or production UI.
+
+The browser initializer must be authored as a TypeScript-exported, self-contained function. The renderer may embed its transpiled function body in the nonce-protected document. It must not depend on unembedded closures or untyped handwritten script duplication.
 
 ## Exact Proposed File Scope
 
 ### New Source Files
 
 1. `src/agent-builder/first-slice-reviewer/schema.ts`
-   - strict Zod fixture and classification schemas;
-   - exported TypeScript types;
+   - strict Zod fixture, classification, and reviewer-input schemas;
+   - safe synthetic identifier rules;
    - no file, network, runtime, model, tool, UI, or persistence imports.
 
 2. `src/agent-builder/first-slice-reviewer/validation.ts`
-   - deterministic fixture validation;
-   - deterministic reviewer-input validation;
+   - deterministic fixture and reviewer-input validation;
    - governance-boundary checks;
-   - safe field-path error summaries without rejected values.
+   - safe field-path error summaries that exclude rejected values.
 
 3. `src/agent-builder/first-slice-reviewer/evidence.ts`
    - pure plain-text evidence-preview builder;
-   - includes only approved planning fields;
-   - derives a suggested repo-first evidence path;
-   - performs no clipboard, file, Linear, Drive, or GitHub write.
+   - approved planning fields only;
+   - safe derived repo path;
+   - no clipboard, file, Drive, Linear, GitHub, or other write.
 
 4. `src/agent-builder/first-slice-reviewer/surface.ts`
    - semantic HTML renderer;
-   - inline styles and a nonce-protected, type-checked browser initializer;
+   - nonce-protected inline style and browser initializer;
    - browser-memory-only task state;
-   - no fetch, XHR, WebSocket, cookies, storage APIs, service worker, clipboard API, analytics, or external assets.
+   - safe escaping and DOM text insertion;
+   - no external asset, network, storage, clipboard, analytics, or telemetry API.
 
 5. `src/agent-builder/first-slice-reviewer/server.ts`
    - Node built-in HTTP server;
-   - loopback binding fixed to `127.0.0.1`;
-   - fixture path confinement and validation;
-   - GET/HEAD-only document serving;
-   - safe blocked page for invalid approved-directory fixtures;
-   - no request-content logging or retained session state.
+   - fixed loopback binding;
+   - fixture path and size confinement;
+   - GET/HEAD-only behavior;
+   - safe blocked and error documents;
+   - no request logging or retained review state.
 
 ### Modified Source File
 
 6. `scripts/agent-builder/index.ts`
-   - adds only `reviewer local` argument parsing and dispatch;
-   - optional `--port` value with bounded numeric validation;
-   - no `--host`, public binding, model, runtime-env, source, write, or browser-open behavior;
-   - injects the server-start function for deterministic CLI tests.
+   - adds only `reviewer local` parsing and dispatch;
+   - supports required `--fixture` and optional `--port`;
+   - exposes no host flag;
+   - initializes no runtime env, model, prompt, provider, source, write, or browser-open behavior;
+   - injects the server starter for deterministic CLI tests.
 
-### New Synthetic Fixtures
-
-Directory:
+### New Fixture Directory
 
 `fixtures/agent-builder/first-slice-reviewer/`
 
-Exact fixture set:
+Exact fixtures:
 
 1. `valid_later_bounded_l2_candidate.synthetic.json`
 2. `valid_clo52_lane_dependency.synthetic.json`
@@ -213,52 +221,50 @@ Exact fixture set:
 11. `invalid_evidence_field_overreach.synthetic.json`
 12. `valid_reset_reload_verification.synthetic.json`
 
-All fixture content must be invented. No real or redacted Cloud City event, customer, attendee, vendor, partner, staff, financial, legal, or operational data is allowed.
+All content must be invented. No real or redacted Cloud City data is allowed.
 
 ### New Test Files
 
 7. `__tests__/agent-builder/first-slice-reviewer-schema.test.ts`
-   - exact fixture/eval matrix;
-   - strict schema behavior;
-   - allowed and rejected fields;
-   - classification and governance checks;
-   - safe errors without fixture-value disclosure.
+   - exact 12-case eval matrix;
+   - strict schema and governance failures;
+   - safe errors without rejected values.
 
 8. `__tests__/agent-builder/first-slice-reviewer-surface.test.ts`
-   - semantic structure and state transitions in jsdom;
-   - keyboard-operable controls;
-   - error association and focus movement;
+   - semantic structure;
+   - browser state transitions;
+   - keyboard and focus behavior;
+   - error association;
    - preview, revision, completion, hold, reset, and reload behavior;
-   - no browser persistence, network, clipboard, or automatic-write APIs.
+   - status announcements;
+   - no persistence, network, clipboard, or automatic writes.
 
 9. `__tests__/agent-builder/first-slice-reviewer-server.test.ts`
-   - loopback-only binding;
-   - approved fixture-directory confinement;
-   - host validation;
-   - GET/HEAD-only behavior;
-   - security and no-store headers;
-   - nonce-bearing CSP;
-   - blocked rendering for invalid fixtures;
-   - no request or review-state retention.
+   - loopback binding;
+   - path, symlink, extension, and size confinement;
+   - host and method validation;
+   - security headers and CSP nonce;
+   - safe blocked/error output;
+   - no retained server state.
 
 10. `__tests__/agent-builder/first-slice-reviewer-cli.test.ts`
     - exact CLI grammar;
     - default and explicit port behavior;
-    - invalid port and unsupported flag rejection;
-    - server dependency injection;
+    - invalid port and flag rejection;
+    - dependency injection;
     - no runtime-env or model initialization;
-    - safe startup messaging without review content.
+    - safe startup output.
 
-### Documentation Update In The Later Implementation Change
+### Documentation Update In The Later Implementation
 
 11. `docs/agent-builder/architecture.md`
-    - document the loopback-only Stage 1 reviewer surface;
-    - preserve no-public-route, no-shared-access, no-persistence, and no-operational-authority boundaries;
-    - state that the surface is not the approved production UI architecture.
+    - document the bounded loopback-only surface;
+    - preserve no-public-route, no-shared-access, no-persistence, and no-authority boundaries;
+    - state that this is not the production UI architecture.
 
-### Explicitly Prohibited Files
+### Prohibited Files
 
-The Stage 1 implementation must not modify:
+The implementation must not modify:
 
 - `package.json`;
 - `pnpm-lock.yaml`;
@@ -273,77 +279,96 @@ The Stage 1 implementation must not modify:
 - `src/hooks/**`;
 - `src/utils/api/**`;
 - `public/**`;
-- existing runtime/model/prompt/provider modules;
-- authentication, analytics, persistence, source, or integration code.
+- existing runtime, model, prompt, provider, auth, analytics, persistence, source, or integration modules.
 
-A need to modify any prohibited file stops the implementation loop and returns the proposal to governance review.
+A need to modify any prohibited file stops the implementation loop.
 
-## Exact Synthetic Fixture Contract
+## Exact Fixture Contract
 
-Each valid fixture must contain only:
+### Allowed Fields
+
+A valid fixture contains only:
 
 ```text
-fixture_id: non-empty synthetic identifier
-planning_reference: non-empty synthetic planning reference
-workflow_title: invented non-empty title
-context_category: synthetic
-planning_purpose: non-empty bounded purpose
-reviewer_role: human reviewer
-allowed_references: non-empty list of synthetic/repo-planning labels
-forbidden_uses: non-empty list of prohibited interpretations/actions
-expected_reviewer_decision: later bounded L2 candidate | first implicated CLO-52 lane dependency card | hold / clarify
-evidence_guidance: repo-first human placement
-stop_condition: non-empty hold/stop instruction
-non_approval_reminder: exact governed reminder
+fixture_id
+planning_reference
+workflow_title
+context_category
+planning_purpose
+reviewer_role
+allowed_references
+forbidden_uses
+permitted_decisions
+evidence_guidance
+stop_condition
+non_approval_reminder
 ```
 
-The Zod object must be strict. Unknown fields fail validation.
+Required rules:
 
-Required exact reminder:
+- `fixture_id`: `^SFR-[A-Z0-9]+(?:-[A-Z0-9]+)*$`;
+- `planning_reference`: non-empty synthetic planning label without URL syntax;
+- `workflow_title`: invented, non-empty, maximum 120 characters;
+- `context_category`: exact literal `synthetic`;
+- `planning_purpose`: invented, non-empty, maximum 500 characters;
+- `reviewer_role`: exact literal `human reviewer`;
+- `allowed_references`: 1–12 non-empty labels, each maximum 120 characters;
+- `forbidden_uses`: 1–12 non-empty labels, each maximum 160 characters;
+- `permitted_decisions`: exact unique tuple containing all three governed classifications;
+- `evidence_guidance`: exact literal `repo-first human placement`;
+- `stop_condition`: non-empty, maximum 500 characters;
+- `non_approval_reminder`: exact governed reminder.
+
+Governed classifications:
+
+1. `later bounded L2 candidate`
+2. `first implicated CLO-52 lane dependency card`
+3. `hold / clarify`
+
+Required reminder:
 
 `Planning classification only; no implementation, release, operational approval, external action, or authority to act.`
 
-The fixture must not contain:
+The strict schema rejects unknown fields.
 
-- URLs or source-system locations;
-- customer, attendee, vendor, partner, staff, or account identifiers;
-- real or redacted data claims;
-- file-read or source-retrieval instructions;
-- persistence, logging, analytics, or history fields;
-- implementation, release, operational, or production-approval fields;
-- external communication instructions;
-- autonomous or agent-execution instructions;
-- evidence fields outside the approved preview contract.
+The fixture must not contain URL-like values, source locations, real/redacted-data claims, personal or operational identifiers, retrieval instructions, persistence/logging/history fields, approval fields, external communication instructions, autonomous-action instructions, or evidence fields beyond the contract.
 
-### Fixture Path Confinement
+### Eval Oracle Separation
 
-The CLI/server must:
+The expected classification for a synthetic eval case belongs only in the executable test matrix.
 
-1. resolve the repository fixture directory with `realpath`;
-2. resolve the requested fixture with `realpath`;
-3. require the resolved file to remain beneath `fixtures/agent-builder/first-slice-reviewer/`;
-4. require the suffix `.synthetic.json`;
-5. reject symlink or traversal escape;
-6. read the file once before serving;
-7. never watch or reload the file automatically.
+It must not be included in the fixture rendered to the reviewer. The local surface shows permitted choices, not the test oracle.
+
+### Fixture Path And Size Confinement
+
+The loader must:
+
+1. resolve the approved directory with `realpath`;
+2. resolve the requested file with `realpath`;
+3. require the resolved file to remain beneath the approved directory;
+4. reject symlink or traversal escape;
+5. require `.synthetic.json`;
+6. require a regular file no larger than 64 KiB;
+7. read it once before serving;
+8. never watch or automatically reload it.
 
 ## Executable Fixture And Eval Matrix
 
-Expected schema outcomes:
+Expected validation results:
 
 - fixtures 1, 2, 3, and 12: valid;
-- fixtures 4 through 11: blocked by strict schema or governance validation.
+- fixtures 4 through 11: blocked by a named schema or governance check.
 
-Expected reviewer outcomes for valid fixtures:
+Test-only expected reviewer outcomes:
 
-- fixture 1 supports `later bounded L2 candidate`;
-- fixture 2 supports `first implicated CLO-52 lane dependency card`;
-- fixture 3 supports `hold / clarify`;
-- fixture 12 supports reset/reload state-clearing verification.
+- fixture 1: `later bounded L2 candidate`;
+- fixture 2: `first implicated CLO-52 lane dependency card`;
+- fixture 3: `hold / clarify`;
+- fixture 12: reset/reload state-clearing verification.
 
-The executable eval matrix lives in `first-slice-reviewer-schema.test.ts`. Each case must name the expected result and the specific failing check where applicable.
+The exact matrix lives in `first-slice-reviewer-schema.test.ts`. Each case names the expected result and failing check.
 
-No eval result implies implementation, release, production readiness, operational approval, source truth, or permission to act.
+No eval result implies source truth, implementation approval, release, production readiness, operational approval, or permission to act.
 
 ## Reviewer Input And Evidence Contract
 
@@ -352,169 +377,158 @@ No eval result implies implementation, release, production readiness, operationa
 Only:
 
 - one governed classification;
-- one concise rationale, or one concise hold / clarify reason;
+- one rationale or hold reason;
 - one explicit boundary acknowledgement.
 
-The rationale or hold reason must:
+The rationale/hold reason must be trimmed, non-empty, and at most 1,000 characters.
 
-- be non-empty after trimming;
-- be limited to 1,000 characters;
-- remain in browser memory only;
-- never be sent to the server;
-- never be logged, persisted, stored, or analyzed.
+It exists only in browser memory. It is never sent to the server, logged, stored, analyzed, or written.
 
 ### Evidence Preview Fields
 
 Only:
 
-- synthetic fixture ID;
+- fixture ID;
 - synthetic planning reference;
 - selected planning classification;
-- concise rationale or hold / clarify reason;
+- rationale or hold reason;
 - boundary acknowledgement;
-- derived suggested repo evidence path;
+- derived suggested repo path;
 - non-approval reminder.
 
-Derived path format:
+Derived path:
 
 `docs/agent-builder/review-evidence/<fixture_id>.md`
 
-The preview is selectable plain text only. Stage 1 includes no clipboard button or Clipboard API.
+Because `fixture_id` is restricted to the safe pattern, it cannot introduce traversal or separators.
 
-A human may manually copy reviewed text and separately decide whether to create a repo artifact. The local surface performs no write.
+Stage 1 provides selectable plain text only. It includes no copy button or Clipboard API.
 
 ## Temporary-State Contract
 
-State exists only in the loaded browser document's JavaScript memory.
+State exists only in the loaded document's JavaScript memory.
 
-Prohibited browser APIs:
+Prohibited APIs:
 
-- `localStorage`;
-- `sessionStorage`;
+- localStorage;
+- sessionStorage;
 - IndexedDB;
 - Cache API;
 - cookies;
 - service workers;
-- History API state;
-- clipboard writes;
-- fetch, XHR, WebSocket, EventSource, or beacon APIs.
+- History state;
+- Clipboard API;
+- fetch, XHR, WebSocket, EventSource, or beacon.
 
 Required clearing behavior:
 
 - reset confirmation clears all input;
-- page reload starts from initial state;
-- closing the tab clears all input;
-- closing the server clears all server process state;
-- browser Back leaves the local surface rather than restoring an application record.
+- reload returns to initial state;
+- tab close clears all input;
+- process termination disables the surface;
+- the server holds no review session, token, classification, rationale, acknowledgement, preview, or history.
 
-The server holds no review session map, review token, rationale, classification, evidence preview, or history.
+## Rendering And Injection Safety
+
+The implementation must:
+
+- serialize embedded fixture JSON with `<`, `>`, `&`, U+2028, and U+2029 safely escaped;
+- escape all server-rendered text;
+- use `textContent`, form values, and explicit DOM property assignment for fixture and reviewer text;
+- never place fixture or reviewer text into `innerHTML`, `outerHTML`, `insertAdjacentHTML`, or executable code;
+- never interpolate fixture or reviewer values into CSS, URLs, attributes with navigation meaning, or the CSP;
+- render validation failures using field paths and safe messages only, never rejected values;
+- render unexpected errors without stack traces, filesystem paths, or fixture contents.
+
+Tests must include markup/script injection strings and prove they remain inert text.
 
 ## Surface And Interaction Contract
 
-### Server-Rendered Document
+The document includes:
 
-The local server serves one HTML document with:
-
-- a unique title;
-- one `main` landmark;
-- one primary heading;
-- visible planning-only and non-approval reminders before controls;
+- unique document title;
+- one `main` landmark and primary heading;
+- visible posture/reminder before controls;
 - fixture identity and bounded context;
-- a `fieldset` and `legend` for classification choices;
-- persistent labels for rationale/hold input;
-- an explicit acknowledgement checkbox that is not preselected;
-- error summary and field-associated messages;
+- `fieldset` and `legend` for classifications;
+- persistent rationale/hold label;
+- unchecked acknowledgement checkbox;
+- error summary and associated field errors;
 - selectable evidence preview;
 - completion-for-manual-transfer language;
-- reset and return controls;
-- no external images, fonts, styles, scripts, links, or telemetry.
+- return and reset controls;
+- no external asset or telemetry.
 
-### State Transitions
+### Required States
 
-Required states:
-
-- initial / ready;
+- ready;
 - decision in progress;
 - rationale required;
 - evidence preview ready;
 - completed for manual transfer;
 - hold / clarify;
 - blocked fixture;
-- error;
+- safe technical error;
 - reset confirmation.
 
-Required transitions:
+### Required State Changes
 
-- ready to decision;
-- decision to validation error or preview;
-- preview to revision;
-- preview to completion;
-- any mutable state to reset confirmation;
-- reset confirmation to initial or previous state;
-- invalid fixture to blocked state.
+- ready → decision;
+- decision → validation error or preview;
+- preview → revision;
+- preview → completion;
+- mutable state → reset confirmation;
+- reset cancel → previous state;
+- reset confirm → initial state;
+- invalid fixture → blocked document.
 
-Disallowed transitions:
+Disallowed outcomes include automatic save/write, implementation approval, release approval, operational approval, external communication, or autonomous action.
 
-- automatic save;
-- automatic repository or Linear write;
-- implementation approved;
-- release approved;
-- operationally approved;
-- external communication sent;
-- autonomous action executed.
-
-### Keyboard And Focus
+### Keyboard, Focus, And Announcements
 
 The implementation must:
 
-- support the entire flow with keyboard alone;
-- use native radio, textarea, checkbox, and button behavior;
-- provide visible, unobscured focus;
-- have no keyboard trap or drag-only control;
-- focus the error summary or first invalid field after attempted progression;
-- focus the preview heading after successful preview creation;
-- restore focus to the initiating/relevant control on return;
-- focus the reset-confirmation heading when opened;
-- restore focus on reset cancellation;
-- focus the initial heading after confirmed reset;
-- focus the completion heading after completion.
+- support the complete flow with keyboard alone;
+- use native radio, textarea, checkbox, and button semantics;
+- provide visible unobscured focus and no trap;
+- use no drag-only control;
+- focus the error summary or first invalid field after failed progression;
+- focus the preview heading after preview creation;
+- restore focus when returning to edit;
+- focus the reset confirmation when opened and restore focus on cancel;
+- focus the initial heading after reset;
+- focus the completion heading after completion;
+- expose concise `role="alert"` errors;
+- expose meaningful preview, reset, hold, and completion updates through an appropriately scoped `role="status"` or `aria-live` region;
+- avoid announcing the full packet repeatedly.
 
 ### Language
 
-Use:
+Use `planning classification`, `evidence preview`, `complete for manual transfer`, and `hold / clarify`.
 
-- `planning classification`;
-- `evidence preview`;
-- `complete for manual transfer`;
-- `hold / clarify`.
+Do not use `approved`, `submitted`, `saved`, `published`, or `released` for reviewer outcomes.
 
-Do not use:
+## Local Server Contract
 
-- `approved` for the reviewer classification;
-- `submitted`;
-- `saved`;
-- `published`;
-- `released`;
-- celebratory language implying authority.
-
-## Local Server Security And Exposure Contract
+### Binding And Requests
 
 The server must:
 
 - bind only to `127.0.0.1`;
-- expose no host-binding option;
+- expose no host option;
 - default to port 4317;
-- permit an explicit unprivileged port from 1024 through 65535;
-- permit port 0 only through direct test injection;
-- accept only loopback `Host` values matching the active port;
-- serve only GET and HEAD;
+- accept explicit ports 1024–65535;
+- accept port 0 only by direct test injection;
+- accept only `127.0.0.1:<port>` or `localhost:<port>` Host values;
+- serve the document only at `/`;
+- support GET and HEAD;
+- return 404 for other paths;
 - return 405 for other methods;
-- serve no directory listing or file path;
+- serve no files or directories;
 - make no outbound request;
-- include no request logger;
-- avoid printing fixture fields, rationale, classification, or evidence.
+- log no request or review content.
 
-Required response headers:
+### Required Headers
 
 - `Cache-Control: no-store, max-age=0`;
 - `Pragma: no-cache`;
@@ -522,79 +536,88 @@ Required response headers:
 - `Referrer-Policy: no-referrer`;
 - `X-Content-Type-Options: nosniff`;
 - `X-Frame-Options: DENY`;
-- nonce-based Content Security Policy with no external origins;
-- `Permissions-Policy` disabling camera, microphone, geolocation, payment, USB, and other unnecessary capabilities.
+- `Cross-Origin-Resource-Policy: same-origin`;
+- `Cross-Origin-Opener-Policy: same-origin`;
+- nonce-based Content Security Policy;
+- explicit Permissions Policy disabling unused capabilities.
 
-Minimum CSP posture:
+Minimum CSP:
 
 ```text
 default-src 'none';
-script-src 'nonce-<per-response nonce>';
-style-src 'nonce-<per-response nonce>';
+script-src 'nonce-<per-response-nonce>';
+style-src 'nonce-<per-response-nonce>';
 img-src 'none';
 font-src 'none';
 connect-src 'none';
 form-action 'none';
 frame-ancestors 'none';
 base-uri 'none';
+object-src 'none';
 ```
 
-The browser initializer must prevent native form submission. If JavaScript fails, the form must not send review content to the server because `form-action 'none'` and the server rejects POST.
+Minimum Permissions Policy disables:
 
-## Authentication And Access Decision
+```text
+accelerometer, autoplay, camera, display-capture, encrypted-media,
+fullscreen, geolocation, gyroscope, magnetometer, microphone, payment,
+picture-in-picture, publickey-credentials-get, screen-wake-lock, usb
+```
 
-No new authentication or authorization is required or approved for this strict Stage 1 surface because:
+The initializer prevents native form submission. If JavaScript fails, CSP blocks form submission and the server rejects POST.
 
-- it binds only to local loopback;
-- it creates no shared URL;
-- it is launched manually by a named development participant;
-- it does not modify an existing authentication boundary;
-- it is not deployed.
+### No Server-Side Review Input
 
-If inspection or implementation reveals any shared binding, remote tunnel, preview URL, deployed route, existing-auth intersection, or non-local participant need, stop and return to governance planning.
+The page makes no POST or client network request.
 
-## Logging, Analytics, And Observability
+Classification, rationale, acknowledgement, and preview never reach the server. Server tests must prove only document GET/HEAD requests occur.
 
-Allowed:
+## Authentication And Access
 
-- one startup message containing only the loopback URL;
-- one planning-only/non-approval reminder;
-- process-level errors that do not include fixture values or review input.
+No authentication change is required or approved because this exact surface:
+
+- binds only to local loopback;
+- creates no shared URL;
+- is launched manually by a named participant;
+- does not touch existing auth;
+- is not deployed.
+
+Any remote tunnel, shared binding, preview URL, deployed route, auth intersection, or non-local participant need stops the proposal.
+
+## Logging And Analytics
+
+Allowed output:
+
+- startup loopback URL;
+- planning-only reminder;
+- safe process errors without fixture/reviewer values.
 
 Prohibited:
 
-- request logging;
-- page-view analytics;
-- fixture-content logging;
-- classification or rationale logging;
-- evidence logging;
-- telemetry, tracing, or monitoring;
-- retained reviewer history.
+- request logs;
+- analytics or page views;
+- fixture, classification, rationale, acknowledgement, or preview logs;
+- tracing, monitoring, or reviewer history.
 
-No technical-diagnostics expansion is approved by this contract.
+## TDD Order
 
-## TDD And Implementation Order
+A later authorized implementation follows:
 
-A later authorized implementation must use this order:
+1. fixtures and failing schema/eval tests;
+2. strict schemas and validation;
+3. failing evidence tests and pure formatter;
+4. failing surface semantics/state/focus/security tests;
+5. renderer and self-contained initializer;
+6. failing server confinement/header tests;
+7. loopback server;
+8. failing CLI tests;
+9. CLI extension;
+10. architecture documentation;
+11. targeted validation, review, manual QA, then broad validation.
 
-1. Add the exact synthetic fixtures and failing schema/eval tests.
-2. Implement strict schemas and deterministic validation.
-3. Add failing evidence-preview tests.
-4. Implement pure evidence formatting.
-5. Add failing surface semantics, state, focus, reset, and no-storage/no-network tests.
-6. Implement the local document renderer and browser initializer.
-7. Add failing server security and exposure tests.
-8. Implement the loopback server.
-9. Add failing CLI grammar and dispatch tests.
-10. Extend the existing Agent Builder CLI.
-11. Update `architecture.md`.
-12. Run targeted validation, self-review, manual QA, and broader validation.
+Maximum autonomous repair budget: three bounded passes.
 
-Maximum autonomous repair budget after implementation begins: three bounded passes. Stop rather than expand scope.
-
-## Exact Automated Validation Plan
-
-Run from the confirmed app root after inspecting the active implementation worktree:
+## Automated Validation Plan
 
 ```sh
 corepack pnpm test:runInBand -- \
@@ -620,18 +643,17 @@ git diff --check
 
 Validation must confirm:
 
-- no package or lockfile change;
-- no app, component, auth, analytics, source, model, tool, persistence, logging, workflow, or deployment change;
-- all 12 synthetic fixture cases behave as specified;
-- browser review input never reaches the server;
-- no storage/network/clipboard API is used;
-- CI classifies the change as non-runtime and skips deployment.
-
-A failing global coverage threshold is blocking. Coverage exclusions or threshold reductions are not approved.
+- exact files only;
+- no package/config/app/auth/analytics/runtime/source/model/tool/persistence/logging/workflow change;
+- all 12 eval cases match expectations;
+- injected text remains inert;
+- review input never reaches the server;
+- no persistence/network/clipboard API is used;
+- global coverage thresholds pass without reduction.
 
 ## Manual Visual And Accessibility QA
 
-Launch only from the authorized local worktree:
+Launch from the authorized implementation worktree only:
 
 ```sh
 corepack pnpm agent-builder reviewer local \
@@ -639,167 +661,169 @@ corepack pnpm agent-builder reviewer local \
   --port 4317
 ```
 
-Review at `http://127.0.0.1:4317`.
+Review `http://127.0.0.1:4317`.
 
-Required manual passes:
+Required passes:
 
-1. Keyboard-only completion for each of the three classifications.
-2. Validation-error focus and input preservation.
-3. Preview, return/revise, completion, reset-cancel, and reset-confirm behavior.
-4. Reload clears classification, rationale, acknowledgement, and preview.
-5. Selectable evidence preview without Clipboard API.
-6. VoiceOver with Safari on macOS for title, headings, landmark, group name, labels, required/invalid state, errors, preview, and completion.
+1. Keyboard-only completion for all three classifications.
+2. Error focus and preservation of valid input.
+3. Preview, edit, completion, reset-cancel, and reset-confirm behavior.
+4. Reload clears all temporary state.
+5. Selectable preview without Clipboard API.
+6. VoiceOver with Safari on macOS.
 7. Chrome accessibility-tree inspection.
-8. Viewports:
-   - 320 × 568;
-   - 768 × 1024;
-   - 1440 × 900.
-9. Browser zoom/reflow through 400 percent without horizontal scrolling for ordinary content or lost actions.
-10. Text-spacing override without content loss.
-11. Forced-colors/high-contrast emulation without lost meaning or focus.
-12. Confirm no animation, timeout, auto-refresh, external request, page-view analytics, or retained state.
-13. Run one invalid fixture and verify a safe blocked page with no rejected fixture values.
-14. Confirm stopping the process immediately disables the surface.
+8. Viewports 320×568, 768×1024, and 1440×900.
+9. Zoom/reflow through 400 percent without lost actions or ordinary-content horizontal scrolling.
+10. Text-spacing override.
+11. Forced-colors/high-contrast emulation.
+12. No animation, timeout, refresh, external request, analytics, or retained state.
+13. Safe blocked document for an invalid fixture without rejected values.
+14. Injection fixture text remains inert.
+15. Process termination immediately disables the surface.
 
-Manual QA findings remain open until evidence is recorded. Automated tests do not substitute for VoiceOver, visual, responsive, or focus review.
+Automated tests do not substitute for manual visual, focus, responsive, or screen-reader evidence.
 
-## Worktree, Branch, PR, And Merge Plan
+## Delivery And Review Plan
 
-Only after CLO-83 records Founder implementation authorization:
+Only after CLO-83 grants exact implementation authorization:
 
-1. Verify repository/worktree preflight from `/Users/archimedes/Projects/cloud-city/main`.
-2. Confirm `main` is clean and aligned to the authorized baseline.
-3. Create one sibling worktree only when explicitly authorized.
-4. Use semantic branch format:
-   - `mw/<implementation-issue>-first-slice-local-reviewer`.
-5. Restrict changes to the exact approved files.
-6. Follow the TDD order and three-pass repair budget.
-7. Run targeted validation before broad validation.
-8. Commit only when explicitly authorized.
-9. Push only when explicitly authorized.
-10. Open a draft PR for the non-trivial interactive implementation.
-11. Review changed files, automated evidence, manual visual/accessibility evidence, and CI jobs.
-12. Require Founder approval before marking ready or merging.
-13. Merge only under the separately approved strategy.
-14. Observe the resulting main-branch workflow by run ID and job conclusion.
-15. Verify deploy classification remains `non_runtime_changes_only` and Deploy is skipped.
-16. Stop if CI requests or performs deployment.
+1. Verify `/main` preflight and authorized baseline.
+2. Create an explicitly approved sibling worktree.
+3. Use `mw/<implementation-issue>-first-slice-local-reviewer`.
+4. Restrict changes to the exact approved files.
+5. Follow the TDD order and three-pass repair budget.
+6. Run targeted then broad local validation.
+7. Perform and record manual QA.
+8. Commit and push only when authorized.
+9. Open a draft PR for diff review and evidence review.
+10. Do not claim PR CI from the current main-push-only workflow.
+11. Require Founder approval before merge.
+12. Merge only under the separately approved strategy.
+13. Observe the resulting main push workflow by run ID and job conclusion.
+14. Verify build, tests, and deploy-scope classification succeed.
+15. Verify deploy reason is `non_runtime_changes_only` and Deploy is skipped.
+16. If main CI fails or deployment is requested/performed, stop and repair or revert under human approval.
 
-A successful PR or CI run is not release or operational approval.
+Implementation authorization is not merge authorization. Merge is not release or operational approval.
 
-## Disable, Removal, And Revert Plan
+## Disable, Removal, And Revert
 
 ### Immediate Disable
 
-- terminate the local CLI process;
-- confirm `127.0.0.1:4317` no longer responds;
+- terminate the CLI process;
+- confirm the loopback URL no longer responds;
 - close the browser tab;
 - no retained review data requires cleanup.
 
-### Removal
+### Removal Scope
 
 Remove only:
 
 - `src/agent-builder/first-slice-reviewer/**`;
-- the four new reviewer test files;
+- the four reviewer test files;
 - `fixtures/agent-builder/first-slice-reviewer/**`;
-- the added `reviewer local` CLI branch;
-- the corresponding architecture documentation section.
+- the `reviewer local` CLI branch;
+- the corresponding architecture section.
 
-Then rerun the full approved validation plan.
+Rerun the full validation plan.
 
 ### Git Revert
 
-If the implementation was merged and needs reversal:
+If merged, use a reviewed revert of the implementation commit or merge commit, rerun validation, observe main CI, and verify deployment remains skipped.
 
-- revert the exact implementation commit or merge commit through a reviewed change;
-- rerun targeted and broad validation;
-- observe main CI;
-- verify Deploy remains skipped.
+No database, migration, remote environment, or user-data rollback exists.
 
-No database, migration, retained record, remote environment, or user-data rollback exists for this Stage 1 proposal.
+## Stop Conditions
 
-## Implementation Stop Conditions
+Stop and report if implementation requires or reveals:
 
-Stop and report if implementation reveals or requires:
-
-- a dependency or package-file change;
-- modification outside the exact approved file list;
-- a Next route, component, middleware, public asset, or global layout change;
-- a shared URL, tunnel, non-loopback host, preview environment, or deployment;
+- dependency, package, lockfile, config, or workflow changes;
+- any file outside the exact approved list;
+- Next route/component/middleware/public/global-layout work;
+- shared URL, tunnel, non-loopback host, preview exposure, or deployment;
 - authentication or authorization changes;
-- source reads beyond the approved repository fixture;
-- real or redacted data;
+- source reads beyond the one approved fixture;
+- real/redacted data;
 - model, prompt, provider, tool, or runtime integration;
-- persistence, cookies, browser storage, session maps, logging, analytics, tracing, or records;
-- server receipt of reviewer classification, rationale, acknowledgement, or evidence;
-- Clipboard API or automatic evidence transfer;
-- a CI deploy-required classification;
-- validation commands unsupported by repository evidence;
-- a need to reduce coverage or weaken governance tests;
-- inability to meet WCAG 2.2 AA acceptance for the approved surface;
-- uncertainty about Founder authorization, merge authority, or scope.
+- persistence, cookie, browser storage, session map, logging, analytics, tracing, or record behavior;
+- reviewer input reaching the server;
+- Clipboard API or automatic transfer;
+- deploy-required CI classification;
+- unsupported validation assumptions;
+- coverage reduction or governance-test weakening;
+- inability to meet the WCAG 2.2 AA acceptance plan;
+- unclear authorization, merge authority, or scope.
 
-## Success Criteria For The Later Stage 1 Implementation
+## Acceptance For The Later Implementation
 
-A future implementation may pass for human review only when:
+### Before Merge
 
-- all exact files and no prohibited files changed;
-- all 12 synthetic fixture/eval cases pass as expected;
-- all three classifications complete through the bounded local surface;
-- ambiguous and invalid cases route to hold or blocked behavior;
-- evidence preview contains only approved fields;
-- reload, reset, close, and process termination clear temporary state;
-- no review input reaches the server;
+The implementation may be recommended for Founder merge review only when:
+
+- exact files only changed;
+- all automated local validation passes;
+- all 12 eval cases pass as expected;
+- all three reviewer outcomes work;
+- invalid/ambiguous cases hold or block safely;
+- preview contains approved fields only;
+- reload/reset/close/process termination clear state;
+- no reviewer input reaches the server;
 - no external request, persistence, logging, analytics, or automatic write occurs;
-- automated validation passes without threshold reduction;
-- manual keyboard, focus, VoiceOver, responsive, zoom/reflow, text-spacing, and forced-colors evidence passes;
-- PR and remote CI evidence are observed;
-- deploy classification is non-runtime and deployment is skipped;
-- Founder separately approves merge after reviewing evidence.
+- manual keyboard, focus, VoiceOver, responsive, zoom/reflow, text-spacing, forced-colors, and injection evidence passes;
+- PR diff and evidence review are complete.
 
-PASS remains pass for human review only. It does not authorize release, shared exposure, production readiness, operational use, external communication, or authority to act.
+### After Approved Merge
 
-## CLO-82 Decision
+The implementation is not remotely validated until:
 
-1. The production Next application is not the Stage 1 surface.
-2. The Stage 1 proposal is a loopback-only local HTML surface served by the Agent Builder CLI.
-3. No new dependency, package change, auth change, public route, analytics, deployment, or persistence is required.
+- the main push workflow is observed by run ID;
+- build and unit-test jobs succeed;
+- deploy-scope classification succeeds;
+- deployment is skipped for non-runtime-only paths;
+- any failure is repaired or reverted under human direction.
+
+PASS means pass for human review only. It does not authorize shared access, deployment, release, production readiness, operational use, external communication, or authority to act.
+
+## CLO-82 Decisions
+
+1. Stage 1 does not use the production Next application.
+2. Stage 1 uses a native HTML, loopback-only local surface served by the Agent Builder CLI.
+3. No dependency, package, auth, public route, analytics, deployment, or persistence change is required.
 4. Browser state is memory-only and never sent to the server.
-5. The server is GET/HEAD-only, loopback-bound, and security-header constrained.
-6. The exact fixture schema, 12-case eval matrix, files, tests, validation commands, manual QA, delivery workflow, and revert path are defined.
-7. Implementation remains unapproved until a separate Founder decision record is completed.
+5. Fixture identifiers and paths are strictly constrained.
+6. The eval oracle is test-only and not displayed to reviewers.
+7. Rendering, CSP, headers, inert text, and safe-error behavior are explicit.
+8. The current workflow provides remote evidence only after a main-branch push, not on PRs.
+9. Exact files, tests, QA, delivery, removal, and revert paths are defined.
+10. Implementation remains unapproved pending CLO-83.
 
 ## Recommended Next Branch
 
 `CLO-83 — Founder decision on first-slice Stage 1 local implementation authorization`
 
-CLO-83 should:
+CLO-83 should adopt, narrow, reject, or hold this exact contract; name the baseline and file scope; record acceptance, validation, non-approvals, and stop conditions; and decide whether a later implementation issue may create a worktree, branch, code, tests, and PR.
 
-- adopt, narrow, reject, or hold this exact contract;
-- name the authorized baseline and file scope;
-- record acceptance criteria, validation, non-approvals, and stop conditions;
-- decide whether a later implementation issue may create a worktree, branch, code, tests, and PR;
-- remain distinct from merge, deployment, release, production-readiness, and operational approval.
+CLO-83 must remain distinct from merge, deployment, release, production-readiness, and operational approval.
 
 ## Acceptance Criteria For CLO-82
 
 CLO-82 passes for human review when:
 
-- repository evidence is explicit;
-- the selected local surface avoids the production app and deployment;
-- exact files and prohibited files are named;
-- fixture, state, evidence, server, security, and CLI contracts are exact;
-- test commands and expected evidence are repository-supported;
-- manual visual and accessibility QA is exact;
-- worktree, PR, merge, post-merge, and deploy-skip gates are explicit;
-- removal and revert are atomic and testable;
-- implementation stop conditions are explicit;
+- repository evidence and workflow limitations are explicit;
+- the selected surface avoids production routing, analytics, and deployment;
+- native HTML/DOM is an explicit bounded Stage 1 choice;
+- exact proposed and prohibited files are named;
+- fixture, eval-oracle, state, evidence, injection-safety, server, header, and CLI contracts are exact;
+- automated commands are repository-supported;
+- manual visual/accessibility evidence is exact;
+- PR review and post-merge remote CI are not conflated;
+- removal and revert are atomic;
+- stop conditions are explicit;
 - no implementation authorization is implied.
 
 ## Explicit Non-Approvals
 
-This artifact does not approve implementation, executable tests, fixtures, a local server, CLI behavior, worktrees, branches, commits, pushes, PRs, routes, components, package changes, authentication changes, source reads, model or tool behavior, persistence, logging, analytics, shared access, deployment, merge, release, rollback execution, production readiness, external communication, autonomous action, or authority to act.
+This artifact does not approve implementation, executable tests, fixtures, a local server, native DOM behavior, CLI behavior, worktrees, branches, commits, pushes, PRs, routes, components, package changes, authentication changes, source reads, model/tool/runtime behavior, persistence, logging, analytics, shared access, deployment, merge, release, rollback execution, production readiness, external communication, autonomous action, or authority to act.
 
 ## Suggested Validation For This Docs-Only Artifact
 
