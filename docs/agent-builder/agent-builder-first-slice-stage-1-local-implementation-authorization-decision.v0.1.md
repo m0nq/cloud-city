@@ -7,11 +7,13 @@
 - Created for CLO-83.
 - Contract baseline: `bae0d3b docs(agent-builder): finalize first slice local contract`.
 - Decision state: **proposed for Founder review; not effective**.
-- Recommended outcome: **approve with the conditions in this record**.
+- Recommended outcome: **approve as written, subject to every condition in this record**.
 - Approving role: Founder / Governance Approver.
 - Decision date: pending explicit Founder decision.
 
 This proposal creates no implementation authority until the Founder explicitly adopts, narrows, rejects, or holds it and the final decision record is validated.
+
+CLO-83 remains open while the decision state is proposed.
 
 ## Decision Under Review
 
@@ -48,13 +50,30 @@ The decision should authorize only:
 - creation of the approved implementation issue;
 - creation of one approved sibling worktree and semantic branch;
 - implementation and tests in the exact file scope;
-- local automated validation and manual visual/accessibility QA;
-- one or more bounded repair passes within the approved budget;
+- local automated validation and human-performed visual/accessibility QA;
+- bounded repair passes within the approved total-pass budget;
 - intentional commits on the approved branch after required gates pass;
-- branch push and a draft PR after local validation and manual QA pass;
+- branch push and one draft PR after local automated validation and required manual QA pass;
 - review and evidence collection in the draft PR.
 
 It should not authorize merge, deployment, shared access, release, production readiness, operational use, external communication, autonomous action, or authority to act.
+
+## Recommendation Rationale
+
+Approval as written is recommended because:
+
+- CLO-82 identified an exact implementation surface rather than an open-ended UI initiative;
+- the surface remains loopback-only and outside the production Next.js application;
+- no dependency, package, framework, authentication, analytics, or workflow change is required;
+- every source, fixture, test, and documentation file is named;
+- data, source, state, persistence, logging, and authority boundaries remain synthetic-only and non-operational;
+- security, injection, browser-lifecycle, accessibility, validation, disable, removal, and revert requirements are explicit;
+- deployment is expected to remain skipped for the exact path set;
+- merge remains a separate human decision after PR and evidence review.
+
+A hold would be warranted only if the Founder does not accept the exact file scope, local-server shape, native HTML/DOM choice, conditional Git authority, manual-QA burden, or expiration terms.
+
+A rejection would be warranted if even a local loopback reviewer surface is considered premature or unnecessary.
 
 ## Effectiveness Rule
 
@@ -70,6 +89,8 @@ Implementation authority begins only when all of the following are true:
 6. the implementation worktree is created from the final validated CLO-83 commit.
 
 A conversation statement, Linear comment, document review, local test, CI pass, or draft PR cannot substitute for the final effective repo-first decision record.
+
+A Founder conversation statement may initiate the repo update, but authority becomes effective only after the updated record and its final commit satisfy all conditions above.
 
 ## Approving Role And Bounded Participants
 
@@ -91,7 +112,9 @@ The implementer may not expand scope, modify prohibited files, merge, deploy, re
 
 ### QA / Accessibility Reviewer
 
-A human QA or accessibility reviewer may perform and record manual evidence.
+A human QA or accessibility reviewer must perform or directly observe the required manual visual, keyboard, responsive, and screen-reader checks.
+
+An assistant may prepare the checklist, guide execution, and organize evidence, but may not replace human observation with an assertion.
 
 QA evidence does not create merge, release, production-readiness, or operational authority.
 
@@ -101,6 +124,16 @@ No agent or system receives independent approval authority.
 
 The implemented reviewer surface may present approved synthetic fixtures and accept temporary local reviewer input only. It may not choose the decision for the human, retain review history, retrieve source content, communicate externally, or act autonomously.
 
+### Multi-Hat Role Separation
+
+One person may hold Founder, implementer, project-owner, or reviewer roles.
+
+Authority does not transfer automatically between those roles.
+
+Authoring, implementing, testing, reviewing, committing, pushing, or accepting evidence does not itself constitute Founder approval.
+
+When the same person performs delivery and approval responsibilities, implementation authorization and later merge authorization must still be recorded as separate explicit decisions under the approving role.
+
 ## Authorized Implementation Issue
 
 If the Founder approves this record, create:
@@ -109,7 +142,7 @@ If the Founder approves this record, create:
 
 CLO-84 must link to CLO-82 and the final effective CLO-83 decision commit.
 
-No implementation action may begin before CLO-84 exists and its description reproduces the exact goal, file scope, acceptance criteria, validation plan, non-approvals, repair budget, and stop conditions.
+No implementation action may begin before CLO-84 exists and its description reproduces the exact goal, file scope, acceptance criteria, validation plan, non-approvals, total-pass budget, and stop conditions.
 
 Creating CLO-84 is not merge or release approval.
 
@@ -136,6 +169,8 @@ Authorized Git shape:
 - do not create additional branches or worktrees;
 - do not rebase, merge, normalize branches, or modify unrelated worktrees;
 - stop if the starting baseline is not the final validated CLO-83 commit.
+
+No direct-to-main implementation is authorized.
 
 ## Authorized Goal
 
@@ -268,9 +303,11 @@ The authorized implementation sequence is:
 10. update architecture documentation;
 11. run targeted checks, self-review, manual QA, and broad validation.
 
-Maximum repair budget: **three bounded implementation/validation passes** after the initial implementation pass.
+Maximum autonomous budget: **three total bounded implementation/validation passes**, including the initial implementation pass and at most two repair passes.
 
-Each repair pass must remain inside the exact files and acceptance criteria.
+Each pass must remain inside the exact files and acceptance criteria.
+
+Any additional repair pass requires explicit human approval.
 
 Stop and report instead of continuing if the budget is exhausted or the failure requires scope expansion.
 
@@ -321,7 +358,7 @@ corepack pnpm agent-builder reviewer local \
   --port 4317
 ```
 
-Review `http://127.0.0.1:4317` for:
+A human QA/accessibility reviewer must perform or directly observe the following at `http://127.0.0.1:4317`:
 
 1. keyboard-only completion for all three classifications;
 2. error focus and valid-input preservation;
@@ -340,21 +377,62 @@ Review `http://127.0.0.1:4317` for:
 15. inert markup and script-injection strings;
 16. immediate disablement when the CLI process terminates.
 
-Manual evidence must be recorded for human review. Automated checks cannot replace visual, focus, responsive, or screen-reader evidence.
+Manual evidence must name the reviewer, date, browser, assistive technology or emulation, viewport, result, and any hold.
+
+Automated checks cannot replace visual, focus, responsive, or screen-reader evidence.
+
+## Adopted Implementation Acceptance Gate
+
+The implementation may be recommended for draft-PR review only when:
+
+- the diff contains only authorized files;
+- all required automated commands pass;
+- all twelve fixture/eval cases match their expected outcomes;
+- all three permitted reviewer classifications work;
+- ambiguous and invalid cases hold or block safely;
+- the evidence preview contains only approved fields;
+- fixture and reviewer strings remain inert;
+- review input never reaches the server;
+- no external request, browser storage, persistence, logging, analytics, Clipboard API, or automatic write occurs;
+- reset, reload, pagehide, persisted pageshow, navigate-away/back, tab close, and process termination clear temporary state;
+- all required manual keyboard, focus, VoiceOver, responsive, zoom/reflow, text-spacing, forced-colors, lifecycle, blocked-state, injection, and disablement checks pass;
+- no stop condition was triggered;
+- the required evidence package is complete.
+
+Passing this gate permits only commit, branch push, and draft-PR review under the conditions below. It does not authorize merge or release.
+
+## Required Evidence Package
+
+Before commit and branch push, record:
+
+- repository/worktree preflight output and starting SHA;
+- exact changed-file list and diff stat;
+- targeted test output;
+- targeted lint output;
+- typecheck output;
+- Agent Builder test output;
+- coverage result and unchanged thresholds;
+- build result;
+- `git diff --check` result;
+- twelve-case eval summary;
+- security-boundary evidence for loopback binding, CSP/headers, inert rendering, no server review input, and no prohibited APIs;
+- manual QA matrix naming reviewer, date, browser/assistive technology, viewport, result, and holds;
+- remaining risks, open questions, or stop-condition assessment;
+- proposed commit message.
+
+After commit and push, add:
+
+- implementation commit SHA;
+- pushed branch name;
+- draft PR URL;
+- PR changed-file confirmation;
+- explicit statement that the current workflow provides no PR-triggered CI evidence.
+
+The evidence package is for human review. It does not create merge or release authority.
 
 ## Commit, Push, And Draft-PR Authority
 
-If the decision becomes effective, the implementer may commit only after:
-
-- targeted tests pass;
-- targeted lint passes;
-- typecheck passes;
-- Agent Builder tests pass;
-- coverage passes;
-- build passes;
-- `git diff --check` passes;
-- changed-file review confirms exact scope;
-- required manual visual/accessibility QA passes or any remaining manual evidence is explicitly held for Founder review without claiming completion.
+If the decision becomes effective, the implementer may commit only after the adopted implementation acceptance gate and required pre-commit evidence package pass in full.
 
 Recommended commit message:
 
@@ -362,13 +440,16 @@ Recommended commit message:
 
 After those gates, the implementer may:
 
+- create the intentional implementation commit on the approved branch;
 - push only the approved branch;
 - open one draft PR;
-- include local validation and manual-QA evidence;
-- perform up to the remaining repair passes within scope;
+- attach the required evidence package;
+- perform only the remaining authorized repair pass, if any, inside exact scope;
 - push scoped repair commits to the same branch.
 
 The current GitHub workflow runs on pushes to `main`, not pull requests. The draft PR provides diff and evidence review, not remote PR-CI evidence.
+
+The PR must remain draft until all required evidence is complete and no hold remains.
 
 ## Merge And Post-Merge Boundary
 
@@ -437,7 +518,7 @@ Stop immediately and report if implementation requires or reveals:
 - inability to meet WCAG 2.2 Level AA acceptance;
 - an out-of-scope file or architecture dependency;
 - unclear implementation, commit, push, PR, merge, or release authority;
-- validation failure outside the repair budget.
+- validation failure outside the total-pass budget.
 
 ## Expiration, Revocation, And Reassessment
 
@@ -447,9 +528,11 @@ If approved, the authorization expires at the earliest of:
 - any relevant change to the approved contract, file paths, package/tooling, CI classifier, or governance boundaries before worktree creation;
 - any change to `main` that touches an authorized or prohibited file before worktree creation;
 - creation of the worktree from a baseline other than the final validated CLO-83 commit;
-- exhaustion of the repair budget;
+- exhaustion of the total-pass budget;
 - a stop condition;
 - explicit Founder revocation.
+
+The 30-day limit reduces the risk that repository or governance drift silently invalidates the approval basis.
 
 The Founder may revoke the authorization at any time.
 
@@ -508,6 +591,10 @@ Current state:
 
 `PENDING EXPLICIT FOUNDER DECISION — NO IMPLEMENTATION AUTHORITY`
 
+Team recommendation:
+
+`APPROVE AS WRITTEN`
+
 Available outcomes:
 
 1. `APPROVE AS WRITTEN`
@@ -531,13 +618,13 @@ CLO-83 passes for human decision review when:
 
 - the exact CLO-82 contract is adopted or intentionally narrowed;
 - the decision state and effectiveness rule are explicit;
-- approving role and bounded participants are explicit;
+- approving role, bounded participants, and multi-hat separation are explicit;
 - implementation issue and baseline rules are explicit;
 - exact files and prohibited files are explicit;
 - worktree, branch, commit, push, and draft-PR authority are explicit;
 - merge remains separately approval-gated;
-- TDD, validation, QA, repair budget, disable, removal, and revert are explicit;
-- expiration, revocation, and reassessment are explicit;
+- TDD, validation, QA, total-pass budget, evidence package, disable, removal, and revert are explicit;
+- implementation acceptance, expiration, revocation, and reassessment are explicit;
 - non-approvals and stop conditions are explicit;
 - no authority exists while the record remains proposed.
 
