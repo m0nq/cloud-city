@@ -44,6 +44,20 @@ CLO-80 narrows that IA to the current candidate slice and adds planning-only sta
 
 CLO-74's earlier prohibition on a UI state model prevented premature UI design at that phase. This record does not backpatch or invalidate CLO-74. It permits only a non-executable planning model now that data, authority, validation, release, and rollback boundaries are explicit.
 
+## Accessibility Conformance Target
+
+Any future approved first-slice surface must target **WCAG 2.2 Level AA** for the approved surface and task flow.
+
+This target:
+
+- is a minimum acceptance baseline, not a claim that the wider product conforms;
+- does not itself prove legal compliance, release readiness, or production readiness;
+- does not waive governance, security, privacy, data, or authority boundaries;
+- requires both automated and manual evidence;
+- may be exceeded where a higher-accessibility pattern is practical without expanding scope.
+
+Exact tools, browsers, assistive technologies, viewport samples, and evidence formats remain implementation-plan decisions after the app root and relevant product constraints are inspected.
+
 ## Primary Reviewer Goal
 
 The reviewer must be able to:
@@ -54,7 +68,7 @@ The reviewer must be able to:
 4. choose one permitted planning classification or hold / clarify;
 5. enter a concise rationale when required;
 6. verify the temporary evidence summary;
-7. copy or otherwise manually transfer approved evidence to the repo-first human workflow;
+7. manually transfer reviewed evidence to the repo-first human workflow;
 8. leave the review without creating retained product state or operational approval.
 
 ## Information Hierarchy
@@ -89,7 +103,7 @@ A future bounded surface should present information in this order:
    - boundary acknowledgement;
    - suggested repo evidence path.
 7. **Completion and next step**
-   - manual-copy guidance;
+   - manual-transfer guidance;
    - no automatic write reminder;
    - next planning recommendation.
 
@@ -256,6 +270,22 @@ If a later approved implementation has an internal loading transition, it must:
 - preserve the planning-only posture;
 - provide a bounded failure path.
 
+## Manual Transfer And Clipboard Acceptance
+
+A future implementation may expose selectable plain text or a user-initiated copy control only if separately approved.
+
+If a copy control is approved, it must:
+
+- require an explicit user action;
+- have a clear accessible name describing what will be copied;
+- copy only the visible approved evidence preview;
+- provide a concise status message that the text was copied to the clipboard;
+- avoid claiming that evidence was saved, submitted, approved, or placed in the repository;
+- provide selectable-text fallback when clipboard access fails or is unavailable;
+- never write to the clipboard automatically on classification, preview, or completion.
+
+Clipboard success is not repo evidence and is not an authority-bearing event.
+
 ## Language And Non-Approval Acceptance
 
 Required language principles:
@@ -281,7 +311,8 @@ Acceptance expectations:
 - radio-group or equivalent classification behavior follows the adopted semantic pattern;
 - focus indicators are visible and not obscured;
 - no keyboard trap exists;
-- reset, return, hold, preview, and completion actions are keyboard operable;
+- reset, return, hold, preview, copy when approved, and completion actions are keyboard operable;
+- no drag-only interaction is required;
 - escape behavior is defined only when a modal or equivalent pattern is separately approved;
 - keyboard shortcuts are not required for the first slice.
 
@@ -299,19 +330,22 @@ Expected focus behavior:
 - hold / clarify places focus on the hold-state heading or summary;
 - focus is never used to imply approval.
 
-## Screen-Reader Semantics Acceptance
+## Screen-Reader And Structural Semantics Acceptance
 
 A future approved implementation must provide:
 
-- one clear primary heading naming the review purpose;
+- a unique page or document title naming the review purpose;
+- one clear primary heading;
+- a `main` landmark for the reviewer task;
+- a bypass mechanism when repeated application navigation precedes the task;
 - semantic section headings matching the information hierarchy;
 - programmatic labels and descriptions for every input;
 - a grouped accessible name for the classification choices;
 - required-state and invalid-state semantics;
 - error messages programmatically associated with fields;
-- concise status announcements for preview readiness, hold, reset, and manual-transfer completion;
+- concise status announcements for preview readiness, copy when approved, hold, reset, and manual-transfer completion;
 - boundary reminders available in the normal reading order;
-- no essential information conveyed only through icons, position, or color;
+- no essential information conveyed only through icons, position, shape, sound, or color;
 - evidence preview exposed as readable text, not an inaccessible visual-only region.
 
 Announcements must be limited to meaningful state changes and must not repeat large packet content unnecessarily.
@@ -320,10 +354,12 @@ Announcements must be limited to meaningful state changes and must not repeat la
 
 A future visual design must:
 
-- meet the adopted contrast requirements for text, controls, focus indicators, and meaningful graphics;
-- preserve readable zoom and text reflow;
+- satisfy WCAG 2.2 Level AA contrast requirements for text, controls, focus indicators, and meaningful graphics;
+- preserve content and functionality at supported zoom and text-reflow conditions;
+- tolerate user text-spacing overrides without loss of content or operation;
 - use persistent labels rather than placeholder-only instructions;
 - avoid color-only classification or error meaning;
+- remain understandable in forced-colors or high-contrast modes;
 - keep boundary language concise, plain, and consistently located;
 - separate packet facts, forbidden uses, reviewer choices, and evidence preview visually and semantically;
 - avoid dense multi-column layouts that disrupt reading order;
@@ -333,6 +369,19 @@ A future visual design must:
 - provide adequate target sizing and spacing when touch interaction is later approved.
 
 No exact color, spacing, typography, or component-token decision is approved by this record.
+
+## Timing, Interruption, And Session Acceptance
+
+The first slice should impose no time limit on review completion by default.
+
+If a later approved environment requires expiration or timeout behavior, it must:
+
+- warn the reviewer before temporary input is cleared;
+- explain the consequence in text;
+- provide an accessible extension or continuation option when governance and security allow it;
+- avoid automatic refresh or context change without notice;
+- preserve the rule that no review content becomes retained product state;
+- route unavoidable loss of temporary input to a clear recovery or hold state.
 
 ## Responsive Acceptance
 
@@ -373,21 +422,24 @@ Disallowed transitions:
 
 ## Accessibility Validation Boundary
 
-A future implementation plan should define evidence for:
+A future implementation plan must define evidence for:
 
-- semantic structure inspection;
-- keyboard-only completion;
-- focus order and focus recovery;
-- error identification and recovery;
-- screen-reader name, role, state, and announcement checks;
-- zoom, reflow, and responsive behavior;
-- contrast and non-color meaning;
+- WCAG 2.2 Level AA acceptance across the approved surface and task flow;
+- page title, landmarks, heading hierarchy, and repeated-content bypass;
+- keyboard-only completion and absence of drag-only requirements;
+- focus order, visible focus, focus recovery, and no obscured focus;
+- error identification, association, preservation, and recovery;
+- screen-reader name, role, state, description, and status-announcement checks;
+- zoom, reflow, text spacing, and responsive behavior;
+- contrast, forced-colors behavior, and non-color meaning;
 - reduced-motion behavior if applicable;
+- timing and interruption behavior if applicable;
+- manual transfer or clipboard behavior if separately approved;
 - manual review of non-approval language and authority separation.
 
-The exact tools, browsers, assistive technologies, viewport set, and conformance target must be selected in a later implementation plan after repository and product constraints are inspected.
+The exact test tools, browsers, assistive technologies, viewport set, and evidence format must be selected in a later implementation plan after repository and product constraints are inspected.
 
-Automated accessibility checks supplement manual testing and do not prove full accessibility or release readiness.
+Automated accessibility checks supplement manual testing and do not prove full accessibility, legal compliance, release readiness, or production readiness.
 
 ## Failure And Hold Conditions
 
@@ -396,11 +448,13 @@ Stop and route to hold / clarify when:
 - a classification or control implies authority beyond planning;
 - boundary reminders are missing, hidden, or contradictory;
 - the task cannot be completed by keyboard;
-- focus becomes trapped, lost, or unpredictable;
-- required semantics or labels are absent;
+- focus becomes trapped, obscured, lost, or unpredictable;
+- required semantics, labels, landmarks, or structure are absent;
 - an error destroys valid reviewer input without warning;
 - responsive layout changes task order or meaning;
-- completion language implies an automatic write or approval;
+- forced-colors, zoom, reflow, or text spacing removes content or operation;
+- a time limit clears input without adequate warning or recovery;
+- completion or clipboard language implies an automatic write or approval;
 - accessibility evidence is missing or contradictory;
 - the proposed design requires real data, source retrieval, persistence, logging, shared access, or external action.
 
@@ -409,14 +463,16 @@ Accessibility failures are blocking for any future exposure and cannot be waived
 ## Decisions
 
 1. CLO-74 remains the conceptual IA foundation.
-2. The first-slice task flow is now explicit for planning review.
-3. Initial, ready, in-progress, validation, preview, completion, hold, blocked, error, reset/exit, and bounded loading states are defined.
-4. Boundary reminders must appear before decisions and at evidence/completion.
-5. Completion means complete for manual transfer only.
-6. Keyboard, focus, screen-reader, responsive, visual, and cognitive acceptance are required.
-7. Accessibility failures block future exposure.
-8. Exact components, tokens, breakpoints, tools, and implementation mechanisms remain unapproved.
-9. The slice remains not ready for implementation.
+2. WCAG 2.2 Level AA is the minimum future accessibility target for the approved first-slice surface.
+3. The first-slice task flow is explicit for planning review.
+4. Initial, ready, in-progress, validation, preview, completion, hold, blocked, error, reset/exit, and bounded loading states are defined.
+5. Boundary reminders must appear before decisions and at evidence/completion.
+6. Completion means complete for manual transfer only.
+7. Any future clipboard action must be explicit, bounded, and must not imply a saved record.
+8. Keyboard, focus, structural semantics, screen-reader, responsive, visual, cognitive, timing, and interruption acceptance are required.
+9. Accessibility failures block future exposure.
+10. Exact components, tokens, breakpoints, tools, and implementation mechanisms remain unapproved.
+11. The slice remains not ready for implementation.
 
 ## Remaining Readiness Gaps
 
@@ -426,7 +482,7 @@ Still unresolved:
 - approved app root, route, component, and state boundary;
 - exact UI component and semantic patterns after repository inspection;
 - exact authentication and authorization design for any shared exposure;
-- selected accessibility conformance target, test tools, assistive technologies, browsers, and viewport set;
+- selected accessibility test tools, assistive technologies, browsers, viewport samples, and evidence format;
 - selected disable and rollback mechanisms;
 - reusable approval-record template and location;
 - consolidated Definition-of-Ready reassessment;
@@ -439,10 +495,12 @@ CLO-80 passes for human review when:
 - the reviewer goal and task flow are explicit;
 - information hierarchy preserves visible boundaries;
 - all required interaction states and transitions are defined;
+- WCAG 2.2 Level AA is the minimum future accessibility target;
 - non-approval language avoids authority ambiguity;
-- keyboard and focus expectations are explicit;
-- screen-reader semantics and status announcements are explicit;
-- responsive, visual, and cognitive acceptance are explicit;
+- keyboard, focus, timing, and interruption expectations are explicit;
+- structural and screen-reader semantics and status announcements are explicit;
+- responsive, forced-colors, visual, and cognitive acceptance are explicit;
+- manual-transfer and any future clipboard behavior remain bounded;
 - accessibility failures remain exposure-blocking;
 - implementation-specific choices remain deferred;
 - the slice remains honestly classified as not ready for implementation.
