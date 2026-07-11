@@ -2,66 +2,73 @@
 
 ## Status
 
-- Docs-only governance decision proposal.
+- Docs-only governance decision record.
 - Synthetic-first.
 - Created for CLO-83.
 - Contract baseline: `bae0d3b docs(agent-builder): finalize first slice local contract`.
-- Decision state: **proposed for Founder review; not effective**.
-- Team recommendation: **APPROVE AS WRITTEN**.
+- Founder outcome: **APPROVE AS WRITTEN**.
 - Approving role: Founder / Governance Approver.
-- Decision date: pending.
+- Approval date: `2026-07-10`.
+- Decision state: **Founder approved; effectiveness pending the final validation gates in this record**.
 
-No implementation authority exists until the Founder selects an outcome, this repo record is updated, the final decision commit passes docs-only validation and observed main CI, CLO-84 exists, and its worktree begins from that final validated commit.
+The Founder explicitly approves the exact CLO-82 bounded Stage 1 proposal as written.
 
-CLO-83 remains open while this record is proposed.
+This approval does not become implementation authority until the final decision commit passes local docs validation and observed main-branch CI with Deploy skipped, CLO-84 exists and cites that commit, and its worktree starts from that final validated commit.
 
-## Decision Under Review
+## Approved Decision
 
 Authorize one bounded Stage 1 implementation attempt for:
 
 `Human reviewer inspects a synthetic context packet, chooses one governed planning classification or hold / clarify, and prepares repo-first planning evidence for manual human placement.`
 
-Exact proposed surface:
+Approved surface:
 
 `A loopback-only native HTML reviewer surface served by the existing Agent Builder CLI.`
 
-## Evidence And Recommendation
+The approval is local-only, reversible, exact-file scoped, dependency-free, synthetic-only, non-persistent, human-reviewed, accessibility-tested, and separately merge-gated.
 
-Evidence considered: CLO-76 through CLO-82, repo `main@bae0d3b`, and successful docs-only CI run `29111177063` with deployment skipped.
+## Evidence Considered
 
-Recommendation: approve the exact CLO-82 contract because it is local-only, reversible, dependency-free, outside the production Next.js route/analytics boundary, exact-file scoped, synthetic-only, non-persistent, security-bounded, accessibility-tested, and separately merge-gated.
+- CLO-76 through CLO-82.
+- Repository `main@bae0d3b`.
+- Successful docs-only CI run `29111177063` with deployment skipped.
+- Validated CLO-83 proposal at `main@e0ed7ad`.
+- Successful proposal CI run `29114172477` with deployment skipped.
 
-Choose `HOLD` if the Founder does not accept the exact scope, native HTML/DOM choice, loopback server, QA burden, conditional Git authority, or expiration terms. Choose `REJECT` if any local reviewer surface is premature.
+These artifacts support the bounded implementation authorization recorded here. They do not prove that implementation, tests, QA, a PR, merge, deployment, release, production readiness, operational approval, external communication, autonomous action, or authority to act has occurred.
 
 ## Effectiveness Rule
 
-This proposal is not effective.
+The Founder outcome is final: `APPROVE AS WRITTEN`.
 
-Authority begins only after:
+Implementation authority becomes effective only after all of the following are true:
 
-1. the Founder selects `APPROVE AS WRITTEN`, `APPROVE WITH NARROWING PATCH`, `HOLD`, or `REJECT`;
-2. this repo record reflects that outcome;
-3. the final decision artifact passes local docs validation;
-4. the final decision commit passes observed main CI with Deploy skipped;
-5. `CLO-84 — Implement first-slice loopback local reviewer surface` exists and cites that commit;
-6. the approved worktree starts from that commit.
+1. this approval is recorded in the repo-first decision artifact;
+2. the final decision artifact passes local docs validation;
+3. the final decision commit passes observed main-branch CI with Deploy skipped;
+4. `CLO-84 — Implement first-slice loopback local reviewer surface` exists and cites the final validated CLO-83 commit;
+5. the approved CLO-84 worktree starts from that commit.
 
-A conversation statement may initiate the repo update, but cannot replace the final repo-first record. Linear, local tests, CI, or a PR cannot independently create authority.
+A conversation statement initiated this repo update but does not replace the final repo-first record. Linear, local tests, CI, or a PR cannot independently expand authority.
 
 ## Roles And Separation
 
-- **Founder / Governance Approver:** may approve, narrow, hold, reject, revoke, or require reassessment. This does not include merge, deployment, release, or operational approval.
-- **Implementer:** one user-designated developer or assistant inside the approved worktree. May inspect, patch, test, review, validate, repair, commit, push, and open one draft PR only under this record. May not expand scope, merge, deploy, or release.
+- **Founder / Governance Approver:** approved this bounded implementation attempt and may revoke or require reassessment. This approval does not include merge, deployment, release, production readiness, operational approval, external communication, autonomous action, or authority to act.
+- **Implementer:** one user-designated developer or assistant inside the approved worktree. May inspect, patch, test, self-review, validate, repair, commit, push, and open one draft PR only within this record. May not expand scope, merge, deploy, release, or create operational authority.
 - **QA / Accessibility Reviewer:** a human must perform or directly observe manual visual, keyboard, responsive, and screen-reader checks. An assistant may guide and organize evidence, not replace human observation.
-- **Agent / System:** receives no independent authority and may not decide for the reviewer, retain history, retrieve sources, communicate externally, or act autonomously.
+- **Agent / System:** receives no independent approval authority and may not decide for the reviewer, retain history, retrieve sources, communicate externally, or act autonomously.
 
-One person may hold multiple roles, but role authority does not transfer automatically. Implementing, testing, reviewing, committing, or pushing is not Founder approval. Implementation authorization and merge authorization remain separate explicit decisions.
+One person may hold multiple roles, but role authority does not transfer automatically. Implementing, testing, reviewing, committing, or pushing is not merge approval. Implementation authorization and merge authorization remain separate explicit decisions.
 
 ## CLO-84 And Git Authorization
 
-If approved, create CLO-84 and copy this goal, scope, acceptance gate, validation plan, non-approvals, three-pass budget, and stop conditions into it.
+Create:
 
-No implementation action begins before CLO-84 exists.
+`CLO-84 — Implement first-slice loopback local reviewer surface`
+
+CLO-84 must cite CLO-82 and the final validated CLO-83 commit and reproduce this goal, scope, acceptance gate, validation plan, non-approvals, three-pass budget, and stop conditions.
+
+No implementation action begins before CLO-84 exists and the effectiveness gates are satisfied.
 
 Required `/main` preflight:
 
@@ -76,21 +83,31 @@ git rev-parse --short HEAD
 
 Authorized Git shape:
 
-- keep `/main` unchanged;
+- keep `/main` unchanged during implementation;
 - create one sibling worktree from the final validated CLO-83 commit;
-- branch `mw/clo-84-first-slice-local-reviewer`;
-- no additional branch/worktree, rebase, merge, or unrelated-worktree change;
-- no direct-to-main implementation.
+- use branch `mw/clo-84-first-slice-local-reviewer`;
+- do not create additional branches or worktrees;
+- do not rebase, merge, normalize branches, or modify unrelated worktrees;
+- do not implement directly on `main`.
 
 ## Authorized Goal
 
-A named human reviewer can launch one approved synthetic fixture, inspect bounded context, choose one governed classification or hold / clarify, enter one concise reason, acknowledge the planning-only boundary, inspect a plain-text evidence preview, complete for manual transfer only, and leave/reset/reload/back/close/terminate without retained product review state.
+A named human reviewer can:
+
+1. launch one approved synthetic fixture through the Agent Builder CLI;
+2. inspect bounded synthetic context and non-approval language;
+3. choose one governed planning classification or `hold / clarify`;
+4. enter one concise rationale or hold reason;
+5. acknowledge the planning-only boundary;
+6. inspect a plain-text evidence preview;
+7. complete the interaction for manual human transfer only;
+8. reset, reload, navigate away/back, close the tab, or terminate the process without retained product review state.
 
 PASS remains pass for human review only.
 
-## Exact File Scope
+## Exact Authorized File Scope
 
-New source files:
+### New source files
 
 - `src/agent-builder/first-slice-reviewer/schema.ts`
 - `src/agent-builder/first-slice-reviewer/validation.ts`
@@ -98,11 +115,19 @@ New source files:
 - `src/agent-builder/first-slice-reviewer/surface.ts`
 - `src/agent-builder/first-slice-reviewer/server.ts`
 
-Modified source:
+### Modified source file
 
-- `scripts/agent-builder/index.ts` — only `reviewer local`, required `--fixture`, bounded optional `--port`, injected server starter, and safe startup output.
+- `scripts/agent-builder/index.ts`
 
-New fixtures under `fixtures/agent-builder/first-slice-reviewer/`:
+The CLI modification is limited to `reviewer local`, required `--fixture`, bounded optional `--port`, injected server startup for tests, and safe startup output.
+
+### New fixtures
+
+Directory:
+
+`fixtures/agent-builder/first-slice-reviewer/`
+
+Authorized files:
 
 1. `valid_later_bounded_l2_candidate.synthetic.json`
 2. `valid_clo52_lane_dependency.synthetic.json`
@@ -117,55 +142,66 @@ New fixtures under `fixtures/agent-builder/first-slice-reviewer/`:
 11. `invalid_evidence_field_overreach.synthetic.json`
 12. `valid_reset_reload_verification.synthetic.json`
 
-New tests:
+All fixture content must be invented and synthetic.
+
+### New tests
 
 - `__tests__/agent-builder/first-slice-reviewer-schema.test.ts`
 - `__tests__/agent-builder/first-slice-reviewer-surface.test.ts`
 - `__tests__/agent-builder/first-slice-reviewer-server.test.ts`
 - `__tests__/agent-builder/first-slice-reviewer-cli.test.ts`
 
-Modified docs:
+### Modified documentation
 
-- `docs/agent-builder/architecture.md` — only the bounded local surface and its non-public, non-shared, non-persistent, non-operational posture.
+- `docs/agent-builder/architecture.md`
+
+The documentation change is limited to the bounded local surface and its non-public, non-shared, non-persistent, non-operational posture.
 
 No other file is authorized.
 
 ## Prohibited Changes
 
-No package, lockfile, Next/TypeScript/Jest/Cypress/workflow config, `src/app/**`, `src/components/**`, contexts, hooks, API utilities, public assets, auth, analytics, persistence, source, integration, prompt, provider, tool, model, or existing model-runtime module changes.
+No package, lockfile, Next/TypeScript/Jest/Cypress/workflow configuration, `src/app/**`, `src/components/**`, contexts, hooks, API utilities, public assets, auth, analytics, persistence, source, integration, prompt, provider, tool, model, or existing model-runtime module changes.
 
-No dependency installation.
+No dependency installation is authorized.
 
 ## Technical Contract
 
-Use only existing TypeScript, Zod, Node built-ins, native semantic HTML/DOM, Jest/jsdom, Testing Library/user-event, and existing CLI seams.
+Use only existing TypeScript, Zod, Node built-ins, native semantic HTML/DOM, Jest/jsdom, Testing Library/user-event, and existing Agent Builder CLI seams.
 
 Loopback server:
 
-- bind only `127.0.0.1`;
-- no host option/shared URL/browser auto-open;
-- default port `4317`; explicit `1024–65535`; port `0` only in direct tests;
-- Host only `127.0.0.1:<port>` or `localhost:<port>`;
+- bind only to `127.0.0.1`;
+- expose no host option, shared URL, or browser auto-open;
+- default port `4317`; explicit ports `1024–65535`; port `0` only in direct tests;
+- accept Host only as `127.0.0.1:<port>` or `localhost:<port>`;
 - serve one self-contained document at `/`;
-- GET/HEAD only; safe 404/405;
-- no outbound request or request/review-content logging.
+- support GET and HEAD only, with safe 404 and 405 responses;
+- make no outbound request and log no request or review content.
 
 Fixture reads:
 
 - interactive runtime reads exactly one selected approved fixture at startup;
 - tests may read the twelve approved fixtures;
-- no other source read;
-- realpath approved directory/file, prevent traversal/symlink escape, require regular `.synthetic.json`, maximum 64 KiB, read once, no watch/reload;
-- path/type/size failure serves nothing;
-- schema-invalid approved-directory content may show only safe field paths/messages, never rejected values.
+- no other source read is allowed;
+- realpath the approved directory and requested file;
+- prevent traversal and symlink escape;
+- require a regular `.synthetic.json` file no larger than 64 KiB;
+- read once with no watch or automatic reload;
+- path, type, or size failure serves nothing;
+- schema-invalid content inside the approved directory may show only safe field paths and messages, never rejected values.
 
-The surface must make no model-backed runtime, existing runtime prototype, prompt, provider, tool, or integration call; write no file/record/cookie/storage/log/analytics/trace/history; send no reviewer input to the server; use no Clipboard API; enforce restrictive CSP/Permissions Policy/no-store/inert rendering/safe errors; and clear state on reset, reload, pagehide, persisted pageshow, back navigation, close, and process termination.
+The surface must make no model-backed runtime, existing runtime prototype, prompt, provider, tool, or integration call; write no file, record, cookie, storage, log, analytic event, trace, or history; send no reviewer input to the server; use no Clipboard API; enforce restrictive CSP, Permissions Policy, no-store headers, inert rendering, and safe errors; and clear temporary state on reset, reload, pagehide, persisted pageshow, back navigation, tab close, and process termination.
 
 ## TDD And Pass Budget
 
-Sequence: fixtures/tests → schemas/validation → evidence formatter → surface/state/focus/lifecycle/injection tests → renderer → server tests/server → CLI tests/CLI → architecture docs → targeted validation → self-review → human QA → broad validation.
+Sequence:
 
-Maximum autonomous budget: **three total bounded implementation/validation passes**, including the initial pass and at most two repairs. Extra passes require explicit human approval. Stop on budget exhaustion or scope expansion.
+fixtures and failing tests → schemas and validation → evidence formatter → surface/state/focus/lifecycle/injection tests → renderer → server tests and server → CLI tests and CLI → architecture docs → targeted validation → self-review → human QA → broad validation.
+
+Maximum autonomous budget: **three total bounded implementation/validation passes**, including the initial pass and at most two repair passes.
+
+Extra passes require explicit human approval. Stop on budget exhaustion or scope expansion.
 
 ## Automated Validation
 
@@ -191,11 +227,11 @@ corepack pnpm build
 git diff --check
 ```
 
-Confirm exact files, twelve expected outcomes, inert text, no server reviewer input, no prohibited APIs, lifecycle clearing, unchanged coverage thresholds, and valid build without package/config changes.
+Confirm exact files, twelve expected outcomes, inert text, no server reviewer input, no prohibited APIs, lifecycle clearing, unchanged coverage thresholds, and a valid build without package or configuration changes.
 
 ## Human Visual And Accessibility QA
 
-Launch from the approved worktree only:
+Launch only from the approved worktree:
 
 ```zsh
 corepack pnpm agent-builder reviewer local \
@@ -206,47 +242,48 @@ corepack pnpm agent-builder reviewer local \
 A human must perform or directly observe:
 
 - keyboard completion for all classifications;
-- error focus/input preservation;
-- preview/edit/completion/reset behavior;
+- error focus and valid-input preservation;
+- preview, edit, completion, and reset behavior;
 - reload and back-navigation clearing;
 - selectable preview without Clipboard API;
-- VoiceOver/Safari and Chrome accessibility-tree checks;
-- 320×568, 768×1024, 1440×900;
-- 400% zoom/reflow, text spacing, forced colors/high contrast;
-- no animation, timeout, refresh, external request, analytics, or retained state;
+- VoiceOver with Safari and Chrome accessibility-tree checks;
+- viewports `320×568`, `768×1024`, and `1440×900`;
+- 400% zoom/reflow, text spacing, and forced-colors/high-contrast behavior;
+- absence of animation, timeout, refresh, external request, analytics, and retained state;
 - safe blocked output, inert injection strings, and process-termination disablement.
 
-Record reviewer, date, browser/AT, viewport, result, and holds. Automated checks do not replace human visual/screen-reader evidence.
+Record reviewer, date, browser/assistive technology, viewport, result, and holds. Automated checks do not replace human visual or screen-reader evidence.
 
 ## Acceptance And Evidence Gate
 
-Before commit/push/draft PR:
+Before commit, push, or draft PR:
 
 - exact files only;
-- all automated commands pass;
-- twelve cases match expected outcomes;
-- three classifications work; ambiguous/invalid cases hold or block safely;
-- preview fields are bounded; text remains inert; no reviewer input reaches server;
-- no request/storage/persistence/logging/analytics/clipboard/automatic write;
+- every automated command passes;
+- all twelve cases match expected outcomes;
+- all three classifications work and ambiguous or invalid cases hold or block safely;
+- preview fields are bounded and text remains inert;
+- no reviewer input reaches the server;
+- no request, storage, persistence, logging, analytics, Clipboard API, or automatic write occurs;
 - lifecycle clearing passes;
-- all human QA passes;
-- no stop condition;
-- evidence package complete.
+- all required human QA passes;
+- no stop condition is triggered;
+- the evidence package is complete.
 
 Evidence package:
 
 - preflight and starting SHA;
-- changed files/diff stat;
-- test/lint/typecheck/coverage/build/diff-check results;
+- changed files and diff stat;
+- test, lint, typecheck, coverage, build, and diff-check results;
 - twelve-case summary;
-- loopback/Host/path/CSP/inert/no-server-input/no-prohibited-API evidence;
+- loopback, Host, path, CSP, inert-rendering, no-server-input, and no-prohibited-API evidence;
 - human QA matrix;
-- risks/holds/stop-condition assessment;
+- risks, holds, and stop-condition assessment;
 - proposed commit message.
 
-After push add implementation SHA, branch, draft PR URL, PR file confirmation, and explicit note that current CI has no PR trigger.
+After push, add the implementation SHA, branch, draft PR URL, PR file confirmation, and an explicit note that the current workflow has no pull-request trigger.
 
-Passing this gate permits commit, approved-branch push, and draft PR only.
+Passing this gate permits commit, approved-branch push, and one draft PR only.
 
 ## Commit, Push, PR, And Merge
 
@@ -256,71 +293,128 @@ Recommended commit:
 
 After the gate passes, the implementer may commit, push only the approved branch, open one draft PR, attach evidence, and use only a remaining authorized repair pass.
 
-The PR stays draft until evidence is complete and no hold remains. Current workflow runs on `main` pushes, so PR review is diff/evidence review, not remote PR CI.
+The PR remains draft until evidence is complete and no hold remains. Current CI runs on `main` pushes, so PR review is diff and evidence review, not remote PR-CI evidence.
 
-**Merge is not authorized.** A separate Founder merge decision requires PR diff/file/test/coverage/human-QA/security/governance review and confirmation that no stop condition fired.
+**Merge is not authorized.** A separate Founder merge decision requires PR diff, exact-file, test, coverage, human-QA, security, and governance review and confirmation that no stop condition fired.
 
-After approved merge, observe main CI by run ID. Expected: classifier/build/unit tests succeed, deploy reason `non_runtime_changes_only`, Deploy skipped. Any deployment or failure triggers human-approved repair/revert.
+After an approved merge, observe main CI by run ID. Expected: deploy-scope classification, build, and unit tests succeed; deploy reason is `non_runtime_changes_only`; Deploy is skipped. Any deployment or failure triggers a human-approved repair or revert decision.
 
-## Disable, Removal, Revert
+## Disable, Removal, And Revert
 
-Immediate disable: terminate CLI, verify URL unavailable, close tab; no retained data cleanup.
+Immediate disablement:
 
-Removal is limited to the five new source files, four tests, fixture directory, CLI branch, and architecture section.
+- terminate the CLI;
+- verify the loopback URL is unavailable;
+- close the browser tab;
+- no retained data requires cleanup.
 
-Merged rollback requires reviewed revert, full validation, observed main CI, and Deploy skipped. No database, migration, remote environment, or user-data rollback exists.
+Removal is limited to the five new source files, four new test files, the reviewer fixture directory, the `reviewer local` CLI branch, and the corresponding architecture section.
+
+Merged rollback requires a reviewed revert, full validation, observed main CI, and verification that Deploy was skipped. No database, migration, remote environment, or user-data rollback exists.
 
 ## Stop Conditions
 
-Stop/report on dependency/package/config/workflow change; out-of-scope file; Next/React/public/shared/deployed surface; auth change; source read outside approved runtime/test fixture rules; real/redacted data; model-backed runtime/prompt/provider/tool/integration behavior; persistence/storage/logging/analytics/tracing/records; reviewer input reaching server; Clipboard/automatic transfer; deploy-required classification; unsupported validation; coverage/governance weakening; WCAG failure; unclear Git/PR/merge/release authority; or failure beyond the total-pass budget.
+Stop and report on:
+
+- dependency, package, lockfile, configuration, or workflow change;
+- any file outside the exact authorized list;
+- Next/React/public/shared/deployed surface work;
+- auth change;
+- source reads outside the approved runtime/test fixture rules;
+- real or redacted data;
+- model-backed runtime, prompt, provider, tool, or integration behavior;
+- persistence, storage, logging, analytics, tracing, or retained records;
+- reviewer input reaching the server;
+- Clipboard API or automatic transfer;
+- deploy-required classification;
+- unsupported validation assumptions;
+- coverage reduction or governance-test weakening;
+- inability to meet WCAG 2.2 Level AA acceptance;
+- unclear Git, PR, merge, release, or operational authority;
+- failure beyond the total-pass budget.
 
 ## Expiration And Revocation
 
-If approved, authorization expires at the earliest of:
+This authorization expires at the earliest of:
 
-- 30 days after approval if implementation has not begun;
-- relevant contract/path/tooling/CI/governance drift before worktree creation;
-- `main` touching an authorized/prohibited file before worktree creation;
-- wrong worktree baseline;
+- 30 calendar days after `2026-07-10` if implementation has not begun;
+- relevant contract, path, tooling, CI, or governance drift before worktree creation;
+- `main` touching an authorized or prohibited file before worktree creation;
+- creation of the worktree from a baseline other than the final validated CLO-83 commit;
 - pass-budget exhaustion;
-- stop condition;
-- Founder revocation.
+- a stop condition;
+- explicit Founder revocation.
 
-The 30-day limit reduces silent drift. On expiry/revocation: stop, push nothing further, preserve diff/evidence, remove worktree/branch only under explicit instruction, and return to planning.
+The Founder may revoke this authorization at any time.
+
+On expiration or revocation: stop work, push nothing further, preserve the current diff and evidence, remove the worktree or branch only under explicit human instruction, and return to governed planning.
 
 ## Explicit Non-Approvals
 
-While proposed, no implementation is approved. This record never approves out-of-scope files, dependency/config changes, production Next/React UI, auth/shared access, unapproved sources or real data, model/tool/runtime expansion, persistence/logging/analytics, automatic writes, merge, deployment, release, rollback execution, production readiness, operational approval, external communication, autonomous action, or authority to act.
+This authorization does not approve:
+
+- implementation before the effectiveness gates are satisfied;
+- any file outside the exact scope;
+- dependency or configuration changes;
+- production Next.js or React UI work;
+- authentication or shared/public access;
+- unapproved sources or real/redacted data;
+- model, prompt, tool, provider, integration, or existing model-runtime expansion;
+- persistence, logging, analytics, tracing, or retained history;
+- automatic repository, Linear, Drive, or clipboard writes;
+- merge;
+- deployment;
+- release;
+- rollback execution;
+- production readiness;
+- operational approval;
+- external communication;
+- autonomous action;
+- authority to act.
 
 ## Founder Decision Block
 
-Current state:
-
-`PENDING EXPLICIT FOUNDER DECISION — NO IMPLEMENTATION AUTHORITY`
-
-Team recommendation:
+Outcome:
 
 `APPROVE AS WRITTEN`
 
-Outcomes:
+Approving role:
 
-1. `APPROVE AS WRITTEN`
-2. `APPROVE WITH NARROWING PATCH`
-3. `HOLD`
-4. `REJECT`
+`Founder / Governance Approver`
 
-After selection, update this block with outcome, approving role, date, final validated decision-commit rule, any narrowing, expiration/reassessment terms, and explicit continued non-approval of merge, deployment, release, production readiness, operational use, external communication, autonomous action, and authority to act.
+Approval date:
+
+`2026-07-10`
+
+Scope:
+
+`The exact CLO-82 Stage 1 local implementation contract, without narrowing.`
+
+Effective-commit rule:
+
+`The authorization becomes effective only after this approval commit passes local docs validation and observed main CI with Deploy skipped, CLO-84 exists and cites that commit, and its worktree starts from that commit.`
+
+Continued non-approval:
+
+`Merge, deployment, shared access, release, production readiness, operational use, external communication, autonomous action, and authority to act remain unapproved.`
 
 ## CLO-83 Acceptance
 
-Ready for human decision when decision/effectiveness, roles/multi-hat separation, CLO-84/baseline, exact/prohibited files, Git/PR authority, separate merge gate, local-server versus prohibited model-runtime boundary, runtime/test fixture reads, TDD/three-pass budget, validation, human QA, evidence, disable/revert, expiration/revocation, non-approvals, and stop conditions are explicit—and no authority exists while proposed.
+CLO-83 may close after:
+
+- the Founder outcome is recorded;
+- the final decision commit passes local docs validation;
+- observed main CI succeeds with Deploy skipped;
+- CLO-84 is created and cites the final validated commit;
+- Snapshot v53 and the Source-of-Truth Index are updated.
 
 ## Suggested Docs Validation
 
 ```zsh
 cd /Users/archimedes/Projects/cloud-city/main
 
+git pull --ff-only
 git status --short --branch
-git diff -- docs/agent-builder/agent-builder-first-slice-stage-1-local-implementation-authorization-decision.v0.1.md
-git diff --check
+git show --stat --oneline HEAD
+git diff --check HEAD~1..HEAD
 ```
