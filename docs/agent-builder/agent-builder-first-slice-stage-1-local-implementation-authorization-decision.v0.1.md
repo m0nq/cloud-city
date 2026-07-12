@@ -193,6 +193,44 @@ Fixture reads:
 
 The surface must make no model-backed runtime, existing runtime prototype, prompt, provider, tool, or integration call; write no file, record, cookie, storage, log, analytic event, trace, or history; send no reviewer input to the server; use no Clipboard API; enforce restrictive CSP, Permissions Policy, no-store headers, inert rendering, and safe errors; and clear temporary state on reset, reload, pagehide, persisted pageshow, back navigation, tab close, and process termination.
 
+## CLO-85 Clarification Amendment — Process Termination And Already-Loaded Documents
+
+This amendment cites
+`docs/agent-builder/agent-builder-first-slice-process-termination-loaded-document-semantics-clarification.v0.1.md`.
+It is a non-scope-expanding interpretation of this Founder-approved decision, not a new implementation authorization or
+approval of a new technical mechanism.
+
+The CLO-85 clarification document and this amendment are separately authorized docs-only governance artifacts. They do
+not add to or alter CLO-84's exact implementation file scope.
+
+For this decision record, the controlling interpretation is that CLI termination immediately disables the loopback
+server and makes its URL unavailable for future requests and loads. It leaves no server-side reviewer state, session,
+history, record, log, or retained data. It does not and cannot synchronously erase JavaScript memory from a
+self-contained document already loaded by the browser without adding a prohibited client/server liveness channel.
+
+An already-loaded document remains limited to browser-memory-only, non-persistent, non-transmitting, local state until
+explicit reset, reload, initial document reinitialization, `pagehide`, persisted `pageshow` / bfcache reinitialization,
+navigation away and browser Back restoration, tab close, or browser document disposal clears or discards it. This
+supersedes any reading of this record that CLI termination remotely clears or disables an already-loaded page.
+
+The stale-loaded-document human-handling rule defined in
+`docs/agent-builder/agent-builder-first-slice-process-termination-loaded-document-semantics-clarification.v0.1.md`
+is controlling for this narrow ambiguity. After CLI termination or confirmed loopback unavailability, the human must
+stop using the already-loaded reviewer document, must not rely on, copy, or manually transfer evidence from it, and must
+close its browser tab before continuing review. This is a separate human action. It does not imply a server-to-browser
+signal, automatic document mutation, remote erasure, or any new liveness mechanism.
+
+Polling, heartbeat requests, `fetch`/XHR, WebSocket, Server-Sent Events, beacon, service workers, browser storage,
+cookies, server sessions, and any new client/server liveness mechanism remain unapproved. All exact file, worktree,
+branch, TDD, validation, QA, pass-budget, stop, expiration, and non-approval boundaries remain unchanged.
+
+CLO-84 Pass 1 remains consumed and two implementation/validation passes remain. CLO-84 remains blocked until this
+clarification receives its required docs validation and reviewed main-push evidence with Deploy skipped. This amendment
+does not resume CLO-84 or alter merge, release, deployment, production-readiness, operational, external-action,
+autonomous-action, or authority-to-act boundaries. Before any CLO-84 resumption, its preserved code, tests, reviewer
+copy, and architecture text must be aligned with this controlling interpretation in the preserved CLO-84 Pass 2, only
+after separate human authorization to resume that pass.
+
 ## TDD And Pass Budget
 
 Sequence:
