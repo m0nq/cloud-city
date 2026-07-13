@@ -1,0 +1,18 @@
+{
+  "fixture_id": "SFR-RESET-RELOAD",
+  "planning_reference": "Synthetic planning note Mu",
+  "workflow_title": "Invented lifecycle verification question",
+  "context_category": "synthetic",
+  "planning_purpose": "Exercise reset, reload, leave, and return behavior using invented planning context.",
+  "reviewer_role": "human reviewer",
+  "allowed_references": ["Synthetic lifecycle label"],
+  "forbidden_uses": ["Retained reviewer state", "Operational use", "External action"],
+  "permitted_decisions": [
+    "later bounded L2 candidate",
+    "first implicated CLO-52 lane dependency card",
+    "hold / clarify"
+  ],
+  "evidence_guidance": "repo-first human placement",
+  "stop_condition": "Stop if prior reviewer state is restored after reset or navigation.",
+  "non_approval_reminder": "Planning classification only; no implementation, release, operational approval, external action, or authority to act."
+}

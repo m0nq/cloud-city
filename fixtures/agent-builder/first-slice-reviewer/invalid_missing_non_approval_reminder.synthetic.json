@@ -1,0 +1,17 @@
+{
+  "fixture_id": "SFR-INVALID-REMINDER",
+  "planning_reference": "Synthetic planning note Kappa",
+  "workflow_title": "Invented missing boundary reminder",
+  "context_category": "synthetic",
+  "planning_purpose": "Classify an invented planning question.",
+  "reviewer_role": "human reviewer",
+  "allowed_references": ["Synthetic planning label"],
+  "forbidden_uses": ["Operational use"],
+  "permitted_decisions": [
+    "later bounded L2 candidate",
+    "first implicated CLO-52 lane dependency card",
+    "hold / clarify"
+  ],
+  "evidence_guidance": "repo-first human placement",
+  "stop_condition": "Stop at the planning boundary."
+}

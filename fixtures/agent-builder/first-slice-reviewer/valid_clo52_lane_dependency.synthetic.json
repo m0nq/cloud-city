@@ -1,0 +1,18 @@
+{
+  "fixture_id": "SFR-CLO52-LANE",
+  "planning_reference": "Synthetic planning note Beta",
+  "workflow_title": "Invented prerequisite lane question",
+  "context_category": "synthetic",
+  "planning_purpose": "Classify an invented planning dependency that may belong in the first implicated prerequisite lane.",
+  "reviewer_role": "human reviewer",
+  "allowed_references": ["Synthetic lane map", "Invented dependency label"],
+  "forbidden_uses": ["Implementation direction", "Release decisions", "Operational use"],
+  "permitted_decisions": [
+    "later bounded L2 candidate",
+    "first implicated CLO-52 lane dependency card",
+    "hold / clarify"
+  ],
+  "evidence_guidance": "repo-first human placement",
+  "stop_condition": "Stop if the implicated planning lane is not clear from the invented labels.",
+  "non_approval_reminder": "Planning classification only; no implementation, release, operational approval, external action, or authority to act."
+}

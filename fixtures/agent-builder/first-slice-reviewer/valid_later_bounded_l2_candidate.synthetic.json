@@ -1,0 +1,18 @@
+{
+  "fixture_id": "SFR-LATER-L2",
+  "planning_reference": "Synthetic planning note Alpha",
+  "workflow_title": "Invented bounded planning candidate",
+  "context_category": "synthetic",
+  "planning_purpose": "Classify an invented planning question about a later bounded capability.",
+  "reviewer_role": "human reviewer",
+  "allowed_references": ["Invented prerequisite map", "Synthetic boundary note"],
+  "forbidden_uses": ["Operational decisions", "External communication", "Autonomous action"],
+  "permitted_decisions": [
+    "later bounded L2 candidate",
+    "first implicated CLO-52 lane dependency card",
+    "hold / clarify"
+  ],
+  "evidence_guidance": "repo-first human placement",
+  "stop_condition": "Stop when the planning classification cannot be made from this synthetic context.",
+  "non_approval_reminder": "Planning classification only; no implementation, release, operational approval, external action, or authority to act."
+}

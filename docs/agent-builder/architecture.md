@@ -70,6 +70,37 @@ authority, operational correctness, or whether a human should act. `PASS` remain
 `PARTIAL` remains human-review-needed, `FAIL` blocks promotion to usable human-review draft status, and
 `approvedForOperationalUse` remains false unless separately approved.
 
+## First-Slice Local Reviewer Surface
+
+The Stage 1 first-slice reviewer is a native HTML document served only from the Agent Builder CLI with:
+
+```sh
+pnpm agent-builder reviewer local \
+  --fixture fixtures/agent-builder/first-slice-reviewer/valid_later_bounded_l2_candidate.synthetic.json \
+  --port 4317
+```
+
+This surface binds only to `127.0.0.1`, accepts only exact loopback Host values for its bound port, and serves one
+self-contained document. It is not a Next.js route, React component, public or shared URL, deployed surface, production
+UI architecture, authentication surface, source integration, or model-backed runtime.
+
+The selected approved fixture is invented and synthetic, read once at startup from the confined reviewer-fixture
+directory, and never watched or reloaded automatically. Reviewer classification, rationale or hold reason, boundary
+acknowledgement, and evidence preview exist only in the loaded document's JavaScript memory. They are not sent to the
+server, retained, logged, analyzed, written, copied through the Clipboard API, or transferred automatically. Reset,
+reload, navigation lifecycle clearing, and tab close clear that temporary state.
+
+CLI process termination stops the loopback server and makes future loads and requests unavailable. It does not notify,
+clear, or remotely disable an already-loaded document's browser memory. After a human terminates the CLI or confirms
+loopback unavailability, that already-loaded document is stale: the human must stop using it, must not rely on, copy,
+or manually transfer evidence from it, and must close the tab before continuing review. No polling, heartbeat, or other
+client/server liveness mechanism is used.
+
+The plain-text evidence preview remains for manual human transfer only. A planning classification does not grant
+implementation, release, production readiness, operational approval, external-action authority, autonomous-action
+authority, or authority to act. The surface remains local-only, non-shared, non-persistent, synthetic-only,
+human-reviewed, and non-operational.
+
 The completed SDK spike found:
 
 - Vercel AI SDK passed Warehouse416, Oakstop, and dry-bar vendor comparisons and is the first structured-output runtime.

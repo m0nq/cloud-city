@@ -8,6 +8,13 @@ import {
 } from '@agent-builder/eval-suite';
 import { formatDeterministicEvalReport, runDeterministicFixtureEval } from '@agent-builder/evals';
 import { formatFixtureValidationReport, validateFixtureFile } from '@agent-builder/fixtures';
+import {
+    FIRST_SLICE_DEFAULT_PORT,
+    FIRST_SLICE_MAXIMUM_PORT,
+    FIRST_SLICE_MINIMUM_PORT,
+    startFirstSliceReviewerServer
+} from '@agent-builder/first-slice-reviewer/server';
+import { FIRST_SLICE_NON_APPROVAL_REMINDER } from '@agent-builder/first-slice-reviewer/schema';
 import { formatRegistryValidationReport, validateAgentRegistryFile } from '@agent-builder/registry';
 import { loadAgentBuilderRuntimeEnv } from '@agent-builder/runtime/env';
 import {
@@ -26,6 +33,7 @@ export const AGENT_BUILDER_USAGE = [
     '  pnpm agent-builder fixture validate <fixture-path>',
     '  pnpm agent-builder eval validate <eval-suite-path>',
     '  pnpm agent-builder eval run <eval-suite-path>',
+    '  pnpm agent-builder reviewer local --fixture <fixture-path> [--port <1024-65535>]',
     '  pnpm agent-builder runtime vercel review --fixture <fixture-path> [--spec <spec-path>]',
     '  pnpm agent-builder runtime validate-output --fixture <fixture-path> [--output <output-json-path>]'
 ].join('\n');
@@ -57,6 +65,11 @@ type AgentBuilderCommand =
           suitePath: string;
       }
     | {
+          action: 'reviewer-local';
+          fixturePath: string;
+          port: number;
+      }
+    | {
           action: 'runtime-vercel-review';
           fixturePath: string;
           specPath?: string;
@@ -80,6 +93,48 @@ const argsOnlyContainFlags = (args: string[], allowedFlags: string[]) =>
 
         return allowedFlags.includes(args[index - 1]);
     });
+
+const parseReviewerLocalArgs = (args: string[]) => {
+    if (args.length === 0 || args.length % 2 !== 0) {
+        return undefined;
+    }
+
+    const values = new Map<string, string>();
+
+    for (let index = 0; index < args.length; index += 2) {
+        const flag = args[index];
+        const value = args[index + 1];
+
+        if (!flag || !['--fixture', '--port'].includes(flag) || !value || values.has(flag)) {
+            return undefined;
+        }
+
+        values.set(flag, value);
+    }
+
+    const fixturePath = values.get('--fixture');
+    const portValue = values.get('--port');
+
+    if (!fixturePath) {
+        return undefined;
+    }
+
+    if (portValue === undefined) {
+        return { fixturePath, port: FIRST_SLICE_DEFAULT_PORT };
+    }
+
+    if (!/^\d+$/.test(portValue)) {
+        return undefined;
+    }
+
+    const port = Number(portValue);
+
+    if (port < FIRST_SLICE_MINIMUM_PORT || port > FIRST_SLICE_MAXIMUM_PORT) {
+        return undefined;
+    }
+
+    return { fixturePath, port };
+};
 
 const readStream = (stream: NodeJS.ReadableStream) =>
     new Promise<string>((resolve, reject) => {
@@ -119,6 +174,14 @@ export const resolveAgentBuilderCliArgs = (argv: string[] = process.argv): Agent
         return { action: 'eval-run', suitePath: rest[0] };
     }
 
+    if (action === 'reviewer' && primaryArg === 'local') {
+        const reviewerArgs = parseReviewerLocalArgs(rest);
+
+        if (reviewerArgs) {
+            return { action: 'reviewer-local', ...reviewerArgs };
+        }
+    }
+
     if (action === 'runtime' && primaryArg === 'vercel' && rest[0] === 'review') {
         const runtimeArgs = rest.slice(1);
         const fixturePath = valueAfterFlag(runtimeArgs, '--fixture');
@@ -145,13 +208,20 @@ export const resolveAgentBuilderCliArgs = (argv: string[] = process.argv): Agent
 
 const commandRequiresRuntimeEnv = (command: AgentBuilderCommand) => command.action === 'runtime-vercel-review';
 
+type FirstSliceReviewerServerStarter = (options: {
+    fixturePath: string;
+    port: number;
+    repositoryRoot: string;
+}) => Promise<{ url: string }>;
+
 export const runAgentBuilderCli = async ({
     argv = process.argv,
     logger = console,
     exit = process.exit,
     stdin = process.stdin,
     progress = console.error,
-    generateReview = generateVercelVenueVendorReview
+    generateReview = generateVercelVenueVendorReview,
+    startReviewerServer = startFirstSliceReviewerServer
 }: {
     argv?: string[];
     logger?: Pick<Console, 'log' | 'error'>;
@@ -159,12 +229,24 @@ export const runAgentBuilderCli = async ({
     stdin?: NodeJS.ReadableStream;
     progress?: (message: string) => void;
     generateReview?: typeof generateVercelVenueVendorReview;
+    startReviewerServer?: FirstSliceReviewerServerStarter;
 } = {}) => {
     try {
         const command = resolveAgentBuilderCliArgs(argv);
 
         if (commandRequiresRuntimeEnv(command)) {
             loadAgentBuilderRuntimeEnv();
+        }
+
+        if (command.action === 'reviewer-local') {
+            const runningServer = await startReviewerServer({
+                fixturePath: command.fixturePath,
+                port: command.port,
+                repositoryRoot: process.cwd()
+            });
+            logger.log(`Local reviewer: ${runningServer.url}`);
+            logger.log(FIRST_SLICE_NON_APPROVAL_REMINDER);
+            return;
         }
 
         if (command.action === 'validate') {

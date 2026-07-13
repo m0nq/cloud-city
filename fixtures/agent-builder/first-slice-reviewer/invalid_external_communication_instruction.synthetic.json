@@ -1,0 +1,18 @@
+{
+  "fixture_id": "SFR-INVALID-COMMUNICATION",
+  "planning_reference": "Synthetic planning note Eta",
+  "workflow_title": "Invented communication instruction",
+  "context_category": "synthetic",
+  "planning_purpose": "Email the planning classification to an external participant after review.",
+  "reviewer_role": "human reviewer",
+  "allowed_references": ["Synthetic planning label"],
+  "forbidden_uses": ["Operational use"],
+  "permitted_decisions": [
+    "later bounded L2 candidate",
+    "first implicated CLO-52 lane dependency card",
+    "hold / clarify"
+  ],
+  "evidence_guidance": "repo-first human placement",
+  "stop_condition": "Stop at the planning boundary.",
+  "non_approval_reminder": "Planning classification only; no implementation, release, operational approval, external action, or authority to act."
+}

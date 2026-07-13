@@ -1,0 +1,18 @@
+{
+  "fixture_id": "SFR-HOLD-CLARIFY",
+  "planning_reference": "Synthetic planning note Gamma",
+  "workflow_title": "Invented ambiguous planning question",
+  "context_category": "synthetic",
+  "planning_purpose": "Review an intentionally ambiguous invented planning question and identify whether clarification is required.",
+  "reviewer_role": "human reviewer",
+  "allowed_references": ["Synthetic ambiguity note"],
+  "forbidden_uses": ["Assuming missing facts", "Operational decisions", "External action"],
+  "permitted_decisions": [
+    "later bounded L2 candidate",
+    "first implicated CLO-52 lane dependency card",
+    "hold / clarify"
+  ],
+  "evidence_guidance": "repo-first human placement",
+  "stop_condition": "Stop and clarify when the invented context supports more than one planning classification.",
+  "non_approval_reminder": "Planning classification only; no implementation, release, operational approval, external action, or authority to act."
+}
