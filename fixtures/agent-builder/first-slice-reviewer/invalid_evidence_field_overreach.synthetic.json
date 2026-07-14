@@ -1,0 +1,19 @@
+{
+  "fixture_id": "SFR-INVALID-EVIDENCE",
+  "planning_reference": "Synthetic planning note Lambda",
+  "workflow_title": "Invented evidence field overreach",
+  "context_category": "synthetic",
+  "planning_purpose": "Classify an invented planning question.",
+  "reviewer_role": "human reviewer",
+  "allowed_references": ["Synthetic planning label"],
+  "forbidden_uses": ["Operational use"],
+  "permitted_decisions": [
+    "later bounded L2 candidate",
+    "first implicated CLO-52 lane dependency card",
+    "hold / clarify"
+  ],
+  "evidence_guidance": "repo-first human placement",
+  "stop_condition": "Stop at the planning boundary.",
+  "non_approval_reminder": "Planning classification only; no implementation, release, operational approval, external action, or authority to act.",
+  "evidence_destination": "Invented automatic destination"
+}

@@ -1,0 +1,18 @@
+{
+  "fixture_id": "SFR-INVALID-PERSISTENCE",
+  "planning_reference": "Synthetic planning note Zeta",
+  "workflow_title": "Invented persistence claim",
+  "context_category": "synthetic",
+  "planning_purpose": "Persist reviewer history after the invented planning classification is complete.",
+  "reviewer_role": "human reviewer",
+  "allowed_references": ["Synthetic planning label"],
+  "forbidden_uses": ["Operational use"],
+  "permitted_decisions": [
+    "later bounded L2 candidate",
+    "first implicated CLO-52 lane dependency card",
+    "hold / clarify"
+  ],
+  "evidence_guidance": "repo-first human placement",
+  "stop_condition": "Stop at the planning boundary.",
+  "non_approval_reminder": "Planning classification only; no implementation, release, operational approval, external action, or authority to act."
+}
