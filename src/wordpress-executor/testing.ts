@@ -16,10 +16,9 @@ import type {
     UpdateDraftTransportInput,
     WordPressTransport
 } from './transport';
+import { createCredentialHandle, invalidateCredentialHandle } from './transport';
 
 export { MemoryAuditSink, MemoryOperationLedger } from './ledger';
-
-const credentialHandle = Symbol('synthetic-credential-handle');
 
 const syntheticSecrets = new WeakMap<SyntheticCredentialProvider, string>();
 
@@ -33,9 +32,14 @@ export class SyntheticCredentialProvider implements CredentialProvider {
 
     async withCredential<T>(operation: (credential: CredentialHandle) => Promise<T>): Promise<T> {
         this.calls += 1;
-        void syntheticSecrets.get(this);
-        const handle = Object.freeze({ [credentialHandle]: true }) as unknown as CredentialHandle;
-        return operation(handle);
+        const secret = syntheticSecrets.get(this);
+        if (!secret) throw new Error('Synthetic credential is unavailable.');
+        const handle = createCredentialHandle(secret);
+        try {
+            return await operation(handle);
+        } finally {
+            invalidateCredentialHandle(handle);
+        }
     }
 }
 
@@ -177,6 +181,18 @@ export class InMemoryWordPressTransport implements WordPressTransport {
                 .filter(post => post.authorId === input.authorId && post.status === 'draft')
                 .map(clonePost)
         };
+    }
+
+    async getPublishedPostEditAccess(
+        input: { postId: number },
+        _credential: CredentialHandle
+    ): Promise<TransportResult<'allowed' | 'forbidden'>> {
+        this.calls.push(`getPublishedPostEditAccess:${input.postId}`);
+        const post = this.posts.get(input.postId);
+        if (!post || post.status !== 'publish') {
+            return { kind: 'error', error: { kind: 'http', status: 404, mutationState: 'not_started' } };
+        }
+        return { kind: 'success', value: 'forbidden' };
     }
 
     async findDraftForOperation(

@@ -1,5 +1,7 @@
 export { WordPressDraftCrudExecutor } from './executor';
 export { WordPressReadExecutor } from './read-executor';
+export type { WordPressReadExecutorDependencies } from './read-executor';
+export { KNOWN_GOOD_POST, runAuthenticatedReadOnlyProof, type AuthenticatedReadOnlyProofResult } from './read-workflow';
 export { REQUIRED_IDENTITY_CAPABILITIES } from './types';
 export type { WordPressExecutorDependencies } from './executor';
 export type {
@@ -18,4 +20,4 @@ export type {
     TrashMarketingDraftInput,
     UpdateMarketingDraftInput
 } from './types';
-export type { CredentialProvider, WordPressTransport } from './transport';
+export type { CredentialProvider, WordPressReadTransport, WordPressTransport } from './transport';

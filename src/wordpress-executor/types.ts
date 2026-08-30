@@ -107,6 +107,8 @@ export interface TransportError {
     kind: TransportErrorKind;
     mutationState: 'not_started' | 'may_have_started' | 'unknown';
     status?: number;
+    /** Sanitized machine-readable REST error code; response bodies never cross this boundary. */
+    code?: string;
 }
 
 export type TransportResult<T> = { kind: 'success'; value: T } | { kind: 'error'; error: TransportError };
@@ -128,6 +130,8 @@ export type OperationKind =
     | 'readMarketingPost'
     | 'readIdentity'
     | 'readPostSchema'
+    | 'readEditableDrafts'
+    | 'readPublishedPostEditBoundary'
     | 'createMarketingDraft'
     | 'updateMarketingDraft'
     | 'trashMarketingDraft';
