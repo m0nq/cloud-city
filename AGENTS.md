@@ -32,10 +32,10 @@ This guide gives Codex and other coding agents durable project-specific context 
   git branch --show-current
   git status --short --branch
   ```
-- The current solo workflow may use clean `main` for small, low-risk, explicitly approved work.
-- Use a branch or separate worktree when isolation materially improves reversibility, including risky, experimental, implementation-facing, destructive, uncertain, or substantial multi-step changes.
-- Do not create branches, worktrees, commits, tags, merges, pushes, PRs, or destructive git operations unless explicitly approved.
-- Do not infer that `main` is safe to mutate merely because the user is in the repo. Confirm scope and approval first.
+- This is a sole-maintainer repository. Clean `main` is the default working branch for explicitly authorized ordinary Cloud City software work, including work beyond small or low-risk changes.
+- Branches or separate worktrees are optional isolation tools when they materially improve safety, reversibility, experimentation, uncertainty management, or clarity; using one does not by itself require PR ceremony. If work is performed outside `main`, a PR is optional unless remote collaboration, review/CI evidence, or a specifically approved workflow makes one useful.
+- Do not create branches or worktrees, commits, merges, pushes, tags, releases, deployments, or perform production actions or destructive Git operations without the applicable explicit human approval. Using `main`, a branch, or a worktree does not supply that approval.
+- Do not infer that `main` is safe to mutate merely because it is the default. Confirm scope and applicable human approval first.
 - Review the targeted diff before recommending any commit.
 - After a local commit, run an appropriate post-commit verification gate before recommending a push.
 - Pause for human approval before any push.
