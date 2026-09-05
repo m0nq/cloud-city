@@ -26,16 +26,19 @@ Use this checklist for Codex reviews, human reviews, and self-review before comm
 - For components and UI state: add or update Testing Library/Jest coverage where behavior changed.
 - For parsing, fixture, event readiness, or agent-builder logic: add focused fixtures or schema assertions.
 - For shared utilities and API adapters: cover success, failure, and boundary cases.
-- For framework config, dependency, routing, or build behavior: run `pnpm lint`, `pnpm test:runInBand`, and `pnpm build` when feasible.
+- For framework config, dependency, routing, or build behavior: run `corepack pnpm lint`, `corepack pnpm test:runInBand`, and `corepack pnpm build` when feasible.
 - For browser-visible changes: use a local dev server and browser checks when practical.
 
 ## Review Output Format
 
 Lead with findings, ordered by severity.
 
+Severity describes the impact of an identified risk or defect; disposition/action describes what should happen next. Keep the two axes independent.
+
 For each finding include:
 
-- Severity: `critical`, `high`, `medium`, or `low`.
+- Severity (when applicable): `critical`, `high`, `medium`, or `low`.
+- Disposition/action: `Blocker`, `Should Fix`, `Non-blocking`, `Follow-up Ticket`, or `Verified`.
 - Location: file and line when possible.
 - Evidence: the observed code, test, command, or behavior.
 - Risk: the concrete failure mode.

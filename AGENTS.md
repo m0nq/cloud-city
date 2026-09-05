@@ -18,9 +18,9 @@ This guide gives Codex and other coding agents durable project-specific context 
 - Distinguish evidence from assumptions. Ask one focused question when missing context would materially change the implementation.
 - For analysis, review, planning, or architecture requests, stop at recommendations unless the user explicitly approves implementation.
 - Use `branch-and-select`/`tot` for complex coding, architecture, debugging, review, or decision work with multiple plausible approaches.
-- Do not treat assistant, Codex, connector, or test output as approval. Humans approve. Humans execute.
+- Do not treat assistant, Codex, connector, test, or deterministic-check output as approval. Humans retain the applicable approval authority for external mutations/outbound actions, production, release, rollback, and operational City Center / Agent Builder decisions. Explicitly authorized local Cloud City software implementation may be performed by Codex within the approved sandbox. City Center / Agent Builder remains synthetic-only, human-reviewed, approval-gated, and non-operational unless separately approved.
 - Use the OpenAI developer documentation MCP server for OpenAI API, Codex, Agents SDK, ChatGPT Apps SDK, model, prompt-upgrade, or related documentation questions without requiring the user to ask for docs lookup explicitly.
-- If the active Codex profile appears mismatched to the task, recommend switching before substantial work: `fast` for small low-risk work, `review` for read-only review/planning, `builder` for normal implementation, `research` for current facts/docs, and `agent-dev` for Codex workflow configuration. For dependency installs, package lookups, or shell commands that need external network access, recommend restarting with `builder` plus `-c sandbox_workspace_write.network_access=true`.
+- Codex profiles, sandbox, approval, network, hooks, and rules belong in user/machine configuration; repository guidance should describe durable task behavior and governance rather than profile names or launch-time overrides.
 
 ## Worktree And Git Safety
 
@@ -100,7 +100,7 @@ This guide gives Codex and other coding agents durable project-specific context 
 - Follow [code_review.md](./code_review.md) for reviews, pre-merge checks, and self-review before committing or pushing changes.
 - Small, low-risk docs-only governance edits may proceed directly on clean `main` when `HEAD` matches the human-confirmed expected milestone and the edit scope is explicitly approved. Review the targeted diff before committing, run an appropriate post-commit verification gate after committing, and pause for human approval before any push.
 - Findings should prioritize correctness, regressions, security/privacy, data integrity, missing tests, maintainability, and framework conventions.
-- For PR/code review, classify findings as Blocker, Should Fix, Non-blocking, Follow-up Ticket, or Verified.
+- For PR/code review, use two independent axes: severity (when applicable) = impact (`critical`, `high`, `medium`, `low`); disposition/action = what happens next (`Blocker`, `Should Fix`, `Non-blocking`, `Follow-up Ticket`, `Verified`).
 - Do not post external PR comments, approve/request changes, merge, push, or perform destructive git actions without explicit human approval.
 
 ## Deployment And Operations

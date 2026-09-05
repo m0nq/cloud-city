@@ -77,7 +77,7 @@ jobs:
                     
                     for file in "${changed_files[@]}"; do
                       case "${file}" in
-                        docs/**|AGENTS.md|AGENTS.md.template|README.md|code_review.md|src/agent-builder/**|scripts/agent-builder/**|__tests__/agent-builder/**|agent_specs/**|evals/**|fixtures/**|registry/**)
+                        docs/**|AGENTS.md|README.md|code_review.md|src/agent-builder/**|scripts/agent-builder/**|__tests__/agent-builder/**|agent_specs/**|evals/**|fixtures/**|registry/**)
                           ;;
                         *)
                           deploy_required=true
