@@ -112,6 +112,13 @@ class ThrowingReadTransport implements WordPressReadTransport {
         throw new Error(`transport failed with ${SYNTHETIC_SECRET}`);
     }
 
+    async getPostSchemaForPost(
+        _input: { postId: number; context: 'view' | 'edit' },
+        _credential: CredentialHandle
+    ): Promise<TransportResult<RemotePostSchema>> {
+        throw new Error(`transport failed with ${SYNTHETIC_SECRET}`);
+    }
+
     async getEditableDrafts(
         _input: { authorId: number; context: 'edit' },
         _credential: CredentialHandle
@@ -231,7 +238,7 @@ describe('CLO-135 semantic REST transport and provider boundary', () => {
         expect(headers.get('X-Caller-Control')).toBeNull();
     });
 
-    it('maps the bounded OPTIONS schema and expected published edit denial without exposing response headers', async () => {
+    it('keeps collection schema diagnostics separate from the item-specific Events schema', async () => {
         const requests: Array<{ url: string; init?: RequestInit }> = [];
         const transport = new WordPressRestReadTransport({
             baseUrl: 'https://cirquitree.com',
@@ -239,16 +246,30 @@ describe('CLO-135 semantic REST transport and provider boundary', () => {
             fetchImplementation: async (input, init) => {
                 requests.push({ url: String(input), init });
                 if (init?.method === 'OPTIONS') {
+                    const requestedUrl = new URL(String(input));
+                    // ACF 6.8.8's production Events Group is conditional on
+                    // post_category == category:events. The collection schema
+                    // therefore does not prove these fields, while the
+                    // known-good Events item schema does.
+                    if (requestedUrl.pathname.endsWith('/2217')) {
+                        return response({
+                            schema: {
+                                properties: {
+                                    acf: {
+                                        properties: {
+                                            event_datetime: {},
+                                            address: {},
+                                            ticket_link: {}
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
                     return response({
                         schema: {
                             properties: {
-                                acf: {
-                                    properties: {
-                                        event_datetime: {},
-                                        address: {},
-                                        ticket_link: {}
-                                    }
-                                }
+                                title: {}
                             }
                         }
                     });
@@ -268,16 +289,26 @@ describe('CLO-135 semantic REST transport and provider boundary', () => {
         const schema = await credentials.withCredential(credential =>
             transport.getPostSchema({ context: 'view' }, credential)
         );
+        const itemSchema = await credentials.withCredential(credential =>
+            transport.getPostSchemaForPost({ postId: 2217, context: 'view' }, credential)
+        );
         const boundary = await credentials.withCredential(credential =>
             transport.getPublishedPostEditAccess({ postId: 2217 }, credential)
         );
 
-        expect(schema).toEqual({ kind: 'success', value: { acfFields: ['event_datetime', 'address', 'ticket_link'] } });
+        expect(schema).toEqual({ kind: 'success', value: { acfFields: [] } });
+        expect(itemSchema).toEqual({
+            kind: 'success',
+            value: { acfFields: ['event_datetime', 'address', 'ticket_link'] }
+        });
         expect(boundary).toEqual({ kind: 'success', value: 'forbidden' });
         expect(requests[0].init?.method).toBe('OPTIONS');
         expect(requests[0].url).toBe('https://cirquitree.com/wp-json/wp/v2/posts?context=view');
-        expect(requests[1].init?.method).toBe('GET');
-        expect(requests[1].url).toBe(
+        expect(requests[1].init?.method).toBe('OPTIONS');
+        expect(requests[1].init?.redirect).toBe('error');
+        expect(requests[1].url).toBe('https://cirquitree.com/wp-json/wp/v2/posts/2217?context=view');
+        expect(requests[2].init?.method).toBe('GET');
+        expect(requests[2].url).toBe(
             'https://cirquitree.com/wp-json/wp/v2/posts/2217?context=edit&_fields=id%2Cstatus'
         );
     });
@@ -368,6 +399,47 @@ describe('CLO-135 semantic REST transport and provider boundary', () => {
 
         expect(result.kind).toBe('error');
         expect(JSON.stringify(result)).not.toContain(SYNTHETIC_SECRET);
+    });
+
+    it('fails closed when an item schema field definition is malformed', async () => {
+        const transport = new WordPressRestReadTransport({
+            baseUrl: 'https://cirquitree.com',
+            username: 'machine-user',
+            fetchImplementation: async () =>
+                response({
+                    schema: {
+                        properties: {
+                            acf: {
+                                properties: {
+                                    event_datetime: null,
+                                    address: {},
+                                    ticket_link: {}
+                                }
+                            }
+                        }
+                    }
+                })
+        });
+
+        const result = await new SyntheticCredentialProvider(SYNTHETIC_SECRET).withCredential(credential =>
+            transport.getPostSchemaForPost({ postId: 2217, context: 'view' }, credential)
+        );
+
+        expect(result).toMatchObject({ kind: 'error', error: { kind: 'malformed', status: 200 } });
+    });
+
+    it('fails closed when an item schema has no applicable ACF container', async () => {
+        const transport = new WordPressRestReadTransport({
+            baseUrl: 'https://cirquitree.com',
+            username: 'machine-user',
+            fetchImplementation: async () => response({ schema: { properties: { title: {} } } })
+        });
+
+        const result = await new SyntheticCredentialProvider(SYNTHETIC_SECRET).withCredential(credential =>
+            transport.getPostSchemaForPost({ postId: 2217, context: 'view' }, credential)
+        );
+
+        expect(result).toMatchObject({ kind: 'error', error: { kind: 'malformed', status: 200 } });
     });
 
     it('keeps the secret inside the provider/transport seam and sanitizes provider failures', async () => {
@@ -516,6 +588,50 @@ describe('CLO-135 semantic REST transport and provider boundary', () => {
             }
         });
         expect(result.publishedPostEditBoundary).toMatchObject({ status: 'verified_success', value: 'forbidden' });
+        expect(harness.transport.mutationCounts).toEqual({ create: 0, update: 0, trash: 0 });
+    });
+
+    it('proves a category-conditioned Events schema from the item-specific path', async () => {
+        const harness = createReadHarness();
+        harness.transport.setCollectionSchemaFields([]);
+        harness.transport.setPostSchemaFields(['event_datetime', 'address', 'ticket_link']);
+        harness.transport.setPostSchemaConditionedOnEvents(true);
+
+        const result = await runAuthenticatedReadOnlyProof(harness.executor, 'proof-conditional-events');
+
+        expect(result.status).toBe('verified_success');
+        expect(result.schema?.status).toBe('verified_success');
+        expect(harness.transport.calls).not.toContain('getPostSchema');
+        expect(harness.transport.calls).toContain('getPostSchemaForPost:2217');
+        expect(harness.transport.mutationCounts).toEqual({ create: 0, update: 0, trash: 0 });
+    });
+
+    it('keeps collection schema reads diagnostic when no ACF container applies', async () => {
+        const harness = createReadHarness();
+        harness.transport.setCollectionSchemaFields([]);
+
+        const result = await harness.executor.readPostSchema({ operationId: 'collection-schema-diagnostic' });
+
+        expect(result).toEqual({
+            status: 'verified_success',
+            operationId: 'collection-schema-diagnostic',
+            value: { acfFields: [] }
+        });
+        expect(harness.transport.mutationCounts).toEqual({ create: 0, update: 0, trash: 0 });
+    });
+
+    it('fails closed when the known-good Events item schema is incomplete', async () => {
+        const harness = createReadHarness();
+        harness.transport.setCollectionSchemaFields([]);
+        harness.transport.setPostSchemaFields(['event_datetime', 'address']);
+        harness.transport.setPostSchemaConditionedOnEvents(true);
+
+        const result = await runAuthenticatedReadOnlyProof(harness.executor, 'proof-incomplete-item-schema');
+
+        expect(result.status).toBe('readback_failed');
+        expect(result.schema?.status).toBe('readback_failed');
+        expect(result.post).toBeUndefined();
+        expect(harness.transport.calls).not.toContain('getPost:2217:normal');
         expect(harness.transport.mutationCounts).toEqual({ create: 0, update: 0, trash: 0 });
     });
 

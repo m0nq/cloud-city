@@ -15,7 +15,7 @@ function printUsage(): void {
             'Commands:',
             '  identity                       Read and validate the current machine identity',
             '  post                           Read the fixed known-good post 2217',
-            '  schema                         Read the bounded post schema',
+            '  schema                         Read generic collection schema diagnostics (not Events proof)',
             '  editable-drafts                Read the machine-author edit-context collection',
             '  published-post-edit-boundary  Characterize edit access for post 2217',
             '  proof                          Run the complete authenticated read-only proof'

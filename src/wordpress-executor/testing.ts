@@ -1,4 +1,5 @@
 import { MemoryAuditSink, MemoryOperationLedger } from './ledger';
+import { FIXED_TAXONOMY } from './types';
 import type {
     CanonicalPost,
     FreshnessEvidence,
@@ -78,7 +79,6 @@ export class InMemoryWordPressTransport implements WordPressTransport {
     private readonly operationPosts = new Map<string, number>();
     private nextPostId = 9000;
     private versionCounter = 1;
-    private schemaFields: readonly string[] = ['event_datetime', 'address', 'ticket_link'];
     private freshnessDisagreementPostId?: number;
     private sharedCacheEvidence = false;
     private nextCreateFailure?: FailureMode;
@@ -90,6 +90,9 @@ export class InMemoryWordPressTransport implements WordPressTransport {
     private nextUpdateReadbackDisagreement = false;
     private nextTrashReadbackDisagreement = false;
     private currentUser: RemoteUser;
+    private collectionSchemaFields: readonly string[] = ['event_datetime', 'address', 'ticket_link'];
+    private postSchemaFields: readonly string[] = ['event_datetime', 'address', 'ticket_link'];
+    private postSchemaConditionedOnEvents = false;
 
     readonly mutationCounts = { create: 0, update: 0, trash: 0 };
     readonly calls: string[] = [];
@@ -167,7 +170,20 @@ export class InMemoryWordPressTransport implements WordPressTransport {
         _credential: CredentialHandle
     ): Promise<TransportResult<RemotePostSchema>> {
         this.calls.push('getPostSchema');
-        return { kind: 'success', value: { acfFields: [...this.schemaFields] } };
+        return { kind: 'success', value: { acfFields: [...this.collectionSchemaFields] } };
+    }
+
+    async getPostSchemaForPost(
+        input: { postId: number; context: 'view' | 'edit' },
+        _credential: CredentialHandle
+    ): Promise<TransportResult<RemotePostSchema>> {
+        this.calls.push(`getPostSchemaForPost:${input.postId}`);
+        const post = this.posts.get(input.postId);
+        const fields =
+            this.postSchemaConditionedOnEvents && !post?.categories.includes(FIXED_TAXONOMY.categoryId)
+                ? []
+                : this.postSchemaFields;
+        return { kind: 'success', value: { acfFields: [...fields] } };
     }
 
     async getEditableDrafts(
@@ -498,6 +514,19 @@ export class InMemoryWordPressTransport implements WordPressTransport {
     }
 
     setSchemaFields(fields: readonly string[]): void {
-        this.schemaFields = [...fields];
+        this.collectionSchemaFields = [...fields];
+        this.postSchemaFields = [...fields];
+    }
+
+    setCollectionSchemaFields(fields: readonly string[]): void {
+        this.collectionSchemaFields = [...fields];
+    }
+
+    setPostSchemaFields(fields: readonly string[]): void {
+        this.postSchemaFields = [...fields];
+    }
+
+    setPostSchemaConditionedOnEvents(value: boolean): void {
+        this.postSchemaConditionedOnEvents = value;
     }
 }

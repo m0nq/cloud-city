@@ -70,7 +70,11 @@ export async function runAuthenticatedReadOnlyProof(
         };
     }
 
-    const schema = await executor.readPostSchema({ operationId: `${operationIdPrefix}-schema`, context: 'view' });
+    const schema = await executor.readPostSchemaForPost({
+        operationId: `${operationIdPrefix}-schema`,
+        postId: KNOWN_GOOD_POST.id,
+        context: 'view'
+    });
     if (schema.status !== 'verified_success') {
         return {
             status: resultStatus(schema),

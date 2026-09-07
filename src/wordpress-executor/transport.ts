@@ -80,6 +80,16 @@ export interface WordPressReadTransport {
         credential: CredentialHandle
     ): Promise<TransportResult<RemotePostSchema>>;
 
+    /**
+     * Read the schema for one concrete post. This is distinct from the
+     * collection schema because conditional ACF groups may only be resolved
+     * when WordPress receives an object ID.
+     */
+    getPostSchemaForPost(
+        input: { postId: number; context: ReadContext },
+        credential: CredentialHandle
+    ): Promise<TransportResult<RemotePostSchema>>;
+
     getEditableDrafts(
         input: { authorId: number; context: 'edit' },
         credential: CredentialHandle

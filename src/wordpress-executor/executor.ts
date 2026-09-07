@@ -967,7 +967,7 @@ export class WordPressDraftCrudExecutor {
     private async readCanonicalPair(postId: number, context: 'view' | 'edit'): Promise<CanonicalRead> {
         try {
             return await this.#credentials.withCredential(async credential => {
-                const schema = await this.#transport.getPostSchema({ context }, credential);
+                const schema = await this.#transport.getPostSchemaForPost({ postId, context }, credential);
                 if (schema.kind === 'error') {
                     return {
                         kind: 'failure',

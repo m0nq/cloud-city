@@ -54,6 +54,14 @@ function materialStateEqual(a: CanonicalPost, b: CanonicalPost): boolean {
     return JSON.stringify(a) === JSON.stringify(b);
 }
 
+function hasCompleteRequiredAcfSchema(value: unknown): value is RemotePostSchema {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
+    const fields = (value as { acfFields?: unknown }).acfFields;
+    if (!Array.isArray(fields) || fields.some(field => typeof field !== 'string')) return false;
+    if (new Set(fields).size !== fields.length) return false;
+    return REQUIRED_ACF_FIELDS.every(field => fields.includes(field));
+}
+
 function nowIso(): string {
     return new Date().toISOString();
 }
@@ -115,6 +123,24 @@ function parseSchemaInput(input: unknown): { operationId: string; context: ReadC
     }
     return {
         operationId: requireOperationId(value.operationId),
+        context: (context as ReadContext | undefined) ?? 'view'
+    };
+}
+
+function parsePostSchemaForPostInput(input: unknown): {
+    operationId: string;
+    postId: number;
+    context: ReadContext;
+} {
+    const value = requirePlainObject(input);
+    requireAllowedKeys(value, ['operationId', 'postId', 'context']);
+    const context = value.context;
+    if (context !== undefined && context !== 'view' && context !== 'edit') {
+        throw new PolicyViolation();
+    }
+    return {
+        operationId: requireOperationId(value.operationId),
+        postId: requirePostId(value.postId),
         context: (context as ReadContext | undefined) ?? 'view'
     };
 }
@@ -227,52 +253,23 @@ export class WordPressReadExecutor {
             return failure<RemotePostSchema>('unavailable', 'policy_rejected', 'Invalid schema-read request.');
         }
 
+        return this.readSchema(operationId, context);
+    }
+
+    async readPostSchemaForPost(input: unknown): Promise<ExecutorResult<RemotePostSchema>> {
+        let operationId: string;
+        let postId: number;
+        let context: ReadContext;
         try {
-            const response = await this.#credentials.withCredential(credential =>
-                this.#transport.getPostSchema({ context }, credential)
-            );
-            if (response.kind === 'error') {
-                const result = failure<RemotePostSchema>(
-                    operationId,
-                    'readback_failed',
-                    'WordPress post schema read failed.'
-                );
-                this.writeAudit(operationId, 'readPostSchema', result, {
-                    changedFields: [],
-                    verification: 'failed'
-                });
-                return result;
-            }
-            if (!REQUIRED_ACF_FIELDS.every(field => response.value.acfFields.includes(field))) {
-                const result = failure<RemotePostSchema>(
-                    operationId,
-                    'readback_failed',
-                    'Required ACF fields are not registered in the read schema.'
-                );
-                this.writeAudit(operationId, 'readPostSchema', result, {
-                    changedFields: [],
-                    verification: 'failed'
-                });
-                return result;
-            }
-            const result = success(operationId, response.value);
-            this.writeAudit(operationId, 'readPostSchema', result, {
-                changedFields: [],
-                verification: 'passed'
-            });
-            return result;
+            const parsed = parsePostSchemaForPostInput(input);
+            operationId = parsed.operationId;
+            postId = parsed.postId;
+            context = parsed.context;
         } catch {
-            const result = failure<RemotePostSchema>(
-                operationId,
-                'readback_failed',
-                'WordPress post schema read failed.'
-            );
-            this.writeAudit(operationId, 'readPostSchema', result, {
-                changedFields: [],
-                verification: 'failed'
-            });
-            return result;
+            return failure<RemotePostSchema>('unavailable', 'policy_rejected', 'Invalid item schema-read request.');
         }
+
+        return this.readSchema(operationId, context, postId);
     }
 
     async readEditableDrafts(input: unknown): Promise<ExecutorResult<readonly CanonicalPost[]>> {
@@ -388,7 +385,7 @@ export class WordPressReadExecutor {
     private async readCanonicalPair(postId: number, context: ReadContext): Promise<CanonicalRead> {
         try {
             return await this.#credentials.withCredential(async credential => {
-                const schema = await this.#transport.getPostSchema({ context }, credential);
+                const schema = await this.#transport.getPostSchemaForPost({ postId, context }, credential);
                 if (schema.kind === 'error') {
                     return {
                         kind: 'failure',
@@ -396,7 +393,7 @@ export class WordPressReadExecutor {
                         reason: 'Required WordPress schema could not be read.'
                     } satisfies CanonicalReadFailure;
                 }
-                if (!REQUIRED_ACF_FIELDS.every(field => schema.value.acfFields.includes(field))) {
+                if (!hasCompleteRequiredAcfSchema(schema.value)) {
                     return {
                         kind: 'failure',
                         status: 'readback_failed',
@@ -455,6 +452,65 @@ export class WordPressReadExecutor {
 
     private freshnessIsSafe(freshness: FreshnessEvidence): boolean {
         return freshness.supportedSafeRead && !freshness.sharedCacheHit && freshness.age === undefined;
+    }
+
+    private async readSchema(
+        operationId: string,
+        context: ReadContext,
+        postId?: number
+    ): Promise<ExecutorResult<RemotePostSchema>> {
+        try {
+            const response = await this.#credentials.withCredential(credential =>
+                postId === undefined
+                    ? this.#transport.getPostSchema({ context }, credential)
+                    : this.#transport.getPostSchemaForPost({ postId, context }, credential)
+            );
+            if (response.kind === 'error') {
+                const result = failure<RemotePostSchema>(
+                    operationId,
+                    'readback_failed',
+                    'WordPress post schema read failed.'
+                );
+                this.writeAudit(operationId, 'readPostSchema', result, {
+                    ...(postId === undefined ? {} : { targetPostId: postId }),
+                    changedFields: [],
+                    verification: 'failed'
+                });
+                return result;
+            }
+            if (postId !== undefined && !hasCompleteRequiredAcfSchema(response.value)) {
+                const result = failure<RemotePostSchema>(
+                    operationId,
+                    'readback_failed',
+                    'Required ACF fields are not registered in the read schema.'
+                );
+                this.writeAudit(operationId, 'readPostSchema', result, {
+                    ...(postId === undefined ? {} : { targetPostId: postId }),
+                    changedFields: [],
+                    verification: 'failed'
+                });
+                return result;
+            }
+            const result = success(operationId, response.value);
+            this.writeAudit(operationId, 'readPostSchema', result, {
+                ...(postId === undefined ? {} : { targetPostId: postId }),
+                changedFields: [],
+                verification: 'passed'
+            });
+            return result;
+        } catch {
+            const result = failure<RemotePostSchema>(
+                operationId,
+                'readback_failed',
+                'WordPress post schema read failed.'
+            );
+            this.writeAudit(operationId, 'readPostSchema', result, {
+                ...(postId === undefined ? {} : { targetPostId: postId }),
+                changedFields: [],
+                verification: 'failed'
+            });
+            return result;
+        }
     }
 
     private writeAudit(

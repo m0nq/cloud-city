@@ -127,13 +127,28 @@ function mapUser(value: unknown): RemoteUser {
     };
 }
 
-function mapSchema(value: unknown): RemotePostSchema {
+type SchemaScope = 'collection' | 'item';
+
+function mapSchema(value: unknown, scope: SchemaScope): RemotePostSchema | undefined {
     const root = asRecord(value);
-    const schema = asRecord(root.schema);
-    const properties = asRecord(schema.properties);
-    const acf = asRecord(properties.acf);
-    const acfProperties = asRecord(acf.properties);
+    if (!isRecord(root.schema)) return undefined;
+    const schema = root.schema;
+    if (!isRecord(schema.properties)) return undefined;
+    const properties = schema.properties;
+    if (properties.acf === undefined && scope === 'collection') return { acfFields: [] };
+    if (!isRecord(properties.acf)) return undefined;
+    const acf = properties.acf;
+    if (!isRecord(acf.properties)) return undefined;
+    const acfProperties = acf.properties;
+    if (Object.values(acfProperties).some(fieldSchema => !isRecord(fieldSchema))) return undefined;
     return { acfFields: Object.keys(acfProperties) };
+}
+
+function mapSchemaResponse(response: JsonResponse, scope: SchemaScope): TransportResult<RemotePostSchema> {
+    const schema = mapSchema(response.body, scope);
+    return schema === undefined
+        ? transportError('malformed', response.status)
+        : { kind: 'success', value: schema };
 }
 
 /**
@@ -205,7 +220,21 @@ export class WordPressRestReadTransport implements WordPressReadTransport {
     ): Promise<TransportResult<RemotePostSchema>> {
         const response = await this.optionsJson('wp-json/wp/v2/posts', { context: input.context }, credential);
         if (response.kind === 'error') return response;
-        return { kind: 'success', value: mapSchema(response.value.body) };
+        return mapSchemaResponse(response.value, 'collection');
+    }
+
+    async getPostSchemaForPost(
+        input: { postId: number; context: 'view' | 'edit' },
+        credential: CredentialHandle
+    ): Promise<TransportResult<RemotePostSchema>> {
+        if (!Number.isInteger(input.postId) || input.postId <= 0) return transportError('unknown');
+        const response = await this.optionsJson(
+            `wp-json/wp/v2/posts/${input.postId}`,
+            { context: input.context },
+            credential
+        );
+        if (response.kind === 'error') return response;
+        return mapSchemaResponse(response.value, 'item');
     }
 
     async getEditableDrafts(
