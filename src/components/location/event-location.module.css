@@ -15,4 +15,8 @@
       @apply underline;
     }
   }
+
+  &:focus-visible {
+    @apply outline outline-2 outline-offset-[3px] outline-pale-pink;
+  }
 }
