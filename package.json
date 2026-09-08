@@ -16,6 +16,7 @@
         "format": "prettier . --write",
         "agent-builder": "tsx scripts/agent-builder/index.ts",
         "wordpress:read": "tsx scripts/wordpress-read.ts",
+        "wordpress:write": "tsx scripts/wordpress-write.ts",
         "compare:outputs": "tsx spikes/agent-builder-sdk/compare-outputs.ts",
         "campaign:draft": "ts-node ./scripts/draft-campaign.ts",
         "test": "jest --passWithNoTests",

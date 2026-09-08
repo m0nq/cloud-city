@@ -8,8 +8,18 @@ import type {
     TransportError,
     TransportResult
 } from './types';
+import { FIXED_TAXONOMY, REQUIRED_ACF_FIELDS } from './types';
 import { assertCompleteCanonicalPost } from './policy';
-import { type CredentialHandle, readCredentialSecret, type WordPressReadTransport } from './transport';
+import type {
+    CreateDraftTransportInput,
+    CredentialHandle,
+    TrashDraftTransportInput,
+    UpdateDraftTransportInput,
+    WordPressReadTransport,
+    WordPressTransport
+} from './transport';
+import { readCredentialSecret } from './transport';
+import { createHash } from 'node:crypto';
 
 const POST_FIELDS = 'id,slug,status,author,modified,modified_gmt,title,content,categories,tags,acf';
 
@@ -33,12 +43,17 @@ function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function transportError(kind: TransportError['kind'], status?: number, code?: string): TransportResult<never> {
+function transportError(
+    kind: TransportError['kind'],
+    status?: number,
+    code?: string,
+    mutationState: TransportError['mutationState'] = 'not_started'
+): TransportResult<never> {
     return {
         kind: 'error',
         error: {
             kind,
-            mutationState: 'not_started',
+            mutationState,
             ...(status === undefined ? {} : { status }),
             ...(code === undefined ? {} : { code })
         }
@@ -99,10 +114,11 @@ function mapAcf(value: unknown): AcfValues {
     };
 }
 
-function mapPost(value: unknown): CanonicalPost {
+function mapPost(value: unknown, preferRawContent = false): CanonicalPost {
     const post = asRecord(value);
     const title = asRecord(post.title);
     const content = asRecord(post.content);
+    const canonicalContent = preferRawContent && typeof content.raw === 'string' ? content.raw : content.rendered;
     return {
         id: post.id as number,
         slug: post.slug as string,
@@ -110,7 +126,7 @@ function mapPost(value: unknown): CanonicalPost {
         authorId: post.author as number,
         modifiedGmt: post.modified_gmt as string,
         title: title.rendered as string,
-        content: content.rendered as string,
+        content: canonicalContent as string,
         categories: post.categories as readonly number[],
         tags: post.tags as readonly number[],
         acf: mapAcf(post.acf)
@@ -208,7 +224,7 @@ export class WordPressRestReadTransport implements WordPressReadTransport {
         return {
             kind: 'success',
             value: {
-                post: mapPost(response.value.body),
+                post: mapPost(response.value.body, input.context === 'edit'),
                 freshness: freshnessFromHeaders(response.value.headers)
             }
         };
@@ -256,7 +272,7 @@ export class WordPressRestReadTransport implements WordPressReadTransport {
         if (response.kind === 'error') return response;
         if (!Array.isArray(response.value.body)) return transportError('malformed', response.value.status);
         try {
-            const posts = response.value.body.map(mapPost);
+            const posts = response.value.body.map(post => mapPost(post, true));
             posts.forEach(post => {
                 assertCompleteCanonicalPost(post);
                 if (post.authorId !== input.authorId || post.status !== 'draft') {
@@ -290,7 +306,7 @@ export class WordPressRestReadTransport implements WordPressReadTransport {
         return { kind: 'success', value: 'allowed' };
     }
 
-    private async optionsJson(
+    protected async optionsJson(
         path: string,
         query: Record<string, string>,
         credential: CredentialHandle
@@ -298,7 +314,7 @@ export class WordPressRestReadTransport implements WordPressReadTransport {
         return this.requestJson('OPTIONS', path, query, credential);
     }
 
-    private async getJson(
+    protected async getJson(
         path: string,
         query: Record<string, string | number>,
         credential: CredentialHandle,
@@ -353,4 +369,226 @@ export class WordPressRestReadTransport implements WordPressReadTransport {
             clearTimeout(timeout);
         }
     }
+}
+
+export interface WordPressRestWriteTransportOptions extends WordPressRestReadTransportOptions {}
+
+function postIdFromResponse(response: JsonResponse): number | undefined {
+    const id = asRecord(response.body).id;
+    return typeof id === 'number' && Number.isInteger(id) && id > 0 ? id : undefined;
+}
+
+function postSlugForOperation(operationId: string): string {
+    const digest = createHash('sha256').update(operationId, 'utf8').digest('hex').slice(0, 20);
+    return `clo149-disposable-${digest}`;
+}
+
+export function deterministicOperationSlug(operationId: string): string {
+    if (operationId.trim() === '') throw new Error('Operation ID is required.');
+    return postSlugForOperation(operationId);
+}
+
+/**
+ * Production mutation transport. The read-only transport remains a distinct
+ * public type; this class is intentionally not exported from the package
+ * barrel and exposes only the bounded WordPressTransport methods.
+ */
+export class WordPressRestWriteTransport extends WordPressRestReadTransport implements WordPressTransport {
+    #baseUrl: URL;
+    #username: string;
+    #fetch: FetchImplementation;
+    #timeoutMs: number;
+    readonly mutationTrace: string[] = [];
+
+    constructor(options: WordPressRestWriteTransportOptions) {
+        super(options);
+        const baseUrl = new URL(options.baseUrl);
+        baseUrl.pathname = baseUrl.pathname.replace(/\/$/, '') + '/';
+        this.#baseUrl = baseUrl;
+        this.#username = options.username;
+        this.#fetch = options.fetchImplementation ?? fetch;
+        this.#timeoutMs = options.timeoutMs ?? 10_000;
+    }
+
+    async #requestMutationJson(
+        method: 'POST' | 'DELETE',
+        path: string,
+        query: Record<string, string | number>,
+        credential: CredentialHandle,
+        requestBody?: unknown
+    ): Promise<TransportResult<JsonResponse>> {
+        let secret: string;
+        try {
+            secret = readCredentialSecret(credential);
+        } catch {
+            return transportError('unknown');
+        }
+
+        const url = new URL(path, this.#baseUrl);
+        for (const [key, value] of Object.entries(query)) url.searchParams.set(key, String(value));
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), this.#timeoutMs);
+        try {
+            const authorization = `Basic ${Buffer.from(`${this.#username}:${secret}`, 'utf8').toString('base64')}`;
+            const response = await this.#fetch(url, {
+                method,
+                redirect: 'error',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: authorization,
+                    ...(requestBody === undefined ? {} : { 'Content-Type': 'application/json' })
+                },
+                ...(requestBody === undefined ? {} : { body: JSON.stringify(requestBody) }),
+                signal: controller.signal
+            });
+            if (hasUnexpectedRedirect(response, url)) return transportError('network', undefined, undefined, 'may_have_started');
+            const bodyText = await response.text();
+            let body: unknown;
+            try {
+                body = JSON.parse(bodyText);
+            } catch {
+                return transportError('malformed', response.status, undefined, 'may_have_started');
+            }
+            if (!response.ok) {
+                return transportError('http', response.status, responseErrorCode(body), 'may_have_started');
+            }
+            return { kind: 'success', value: { body, headers: response.headers, status: response.status } };
+        } catch {
+            return transportError('network', undefined, undefined, 'may_have_started');
+        } finally {
+            clearTimeout(timeout);
+        }
+    }
+
+    async findDraftForOperation(
+        input: { operationId: string; authorId: number },
+        credential: CredentialHandle
+    ): Promise<TransportResult<CanonicalPost | null>> {
+        const slug = deterministicOperationSlug(input.operationId);
+        const response = await this.getJson(
+            'wp-json/wp/v2/posts',
+            { context: 'edit', status: 'any', slug, per_page: 10, _fields: POST_FIELDS },
+            credential
+        );
+        if (response.kind === 'error') return response;
+        if (!Array.isArray(response.value.body)) return transportError('malformed', response.value.status);
+        if (response.value.body.length === 0) return { kind: 'success', value: null };
+        if (response.value.body.length !== 1) return transportError('malformed', response.value.status);
+        const post = mapPost(response.value.body[0], true);
+        if (
+            post.slug !== slug ||
+            post.authorId !== input.authorId ||
+            (post.status !== 'draft' && post.status !== 'trash')
+        ) {
+            return transportError('unknown', response.value.status);
+        }
+        return { kind: 'success', value: post };
+    }
+
+    async createDraft(
+        input: CreateDraftTransportInput,
+        credential: CredentialHandle
+    ): Promise<TransportResult<{ postId: number }>> {
+        const slug = deterministicOperationSlug(input.operationId);
+        this.mutationTrace.push('create:base');
+        const created = await this.#requestMutationJson(
+            'POST',
+            'wp-json/wp/v2/posts',
+            { context: 'edit' },
+            credential,
+            {
+                status: 'draft',
+                slug,
+                title: input.title,
+                content: input.content,
+                categories: [...input.categories],
+                tags: [...input.tags]
+            }
+        );
+        if (created.kind === 'error') return created;
+        const postId = postIdFromResponse(created.value);
+        if (postId === undefined) return transportError('malformed', created.value.status, undefined, 'may_have_started');
+        const createdSlug = asRecord(created.value.body).slug;
+        if (createdSlug !== slug) {
+            return transportError('malformed', created.value.status, 'deterministic_slug_mismatch', 'may_have_started');
+        }
+
+        this.mutationTrace.push(`create:schema:${postId}`);
+        const schema = await this.getPostSchemaForPost({ postId, context: 'edit' }, credential);
+        if (schema.kind === 'error') {
+            return schema;
+        }
+        if (!REQUIRED_ACF_FIELDS.every(field => schema.value.acfFields.includes(field))) {
+            return transportError('malformed', undefined, 'acf_fields_unavailable_after_category_assignment', 'may_have_started');
+        }
+
+        this.mutationTrace.push(`create:acf:${postId}`);
+        const acfUpdate = await this.#requestMutationJson(
+            'POST',
+            `wp-json/wp/v2/posts/${postId}`,
+            { context: 'edit' },
+            credential,
+            {
+                acf: {
+                    event_datetime: input.event_datetime,
+                    address: input.address,
+                    ticket_link: input.ticket_link
+                }
+            }
+        );
+        if (acfUpdate.kind === 'error') return acfUpdate;
+        const updatedPostId = postIdFromResponse(acfUpdate.value);
+        if (updatedPostId !== postId) {
+            return transportError('malformed', acfUpdate.value.status, undefined, 'may_have_started');
+        }
+        return { kind: 'success', value: { postId } };
+    }
+
+    async updateDraft(
+        input: UpdateDraftTransportInput,
+        credential: CredentialHandle
+    ): Promise<TransportResult<{ postId: number }>> {
+        const body: Record<string, unknown> = {};
+        if (input.patch.title !== undefined) body.title = input.patch.title;
+        if (input.patch.content !== undefined) body.content = input.patch.content;
+        const acf: Record<string, string> = {};
+        for (const field of REQUIRED_ACF_FIELDS) {
+            const value = input.patch[field];
+            if (value !== undefined) acf[field] = value;
+        }
+        if (Object.keys(acf).length > 0) body.acf = acf;
+        this.mutationTrace.push(`update:${input.postId}`);
+        const response = await this.#requestMutationJson(
+            'POST',
+            `wp-json/wp/v2/posts/${input.postId}`,
+            { context: 'edit' },
+            credential,
+            body
+        );
+        if (response.kind === 'error') return response;
+        const postId = postIdFromResponse(response.value);
+        return postId === input.postId
+            ? { kind: 'success', value: { postId } }
+            : transportError('malformed', response.value.status, undefined, 'may_have_started');
+    }
+
+    async trashDraft(
+        input: TrashDraftTransportInput,
+        credential: CredentialHandle
+    ): Promise<TransportResult<{ postId: number }>> {
+        this.mutationTrace.push(`trash:${input.postId}`);
+        const response = await this.#requestMutationJson(
+            'DELETE',
+            `wp-json/wp/v2/posts/${input.postId}`,
+            { context: 'edit' },
+            credential,
+            undefined
+        );
+        if (response.kind === 'error') return response;
+        const postId = postIdFromResponse(response.value);
+        return postId === input.postId
+            ? { kind: 'success', value: { postId } }
+            : transportError('malformed', response.value.status, undefined, 'may_have_started');
+    }
+
 }
