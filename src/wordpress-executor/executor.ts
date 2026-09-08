@@ -295,7 +295,7 @@ export class WordPressDraftCrudExecutor {
             const canonical = await this.readCanonicalPair(preflight.value.id, 'edit');
             const result =
                 canonical.kind === 'success'
-                    ? this.verifyCreatedPost(parsed, canonical.post)
+                    ? this.verifyCreatedPost(parsed, canonical.post, preflight.value.slug)
                     : failure<CanonicalPost>(
                           parsed.operationId,
                           'partial_mutation',
@@ -362,7 +362,7 @@ export class WordPressDraftCrudExecutor {
                       'Create completed but canonical verification did not complete.',
                       read.reconciliation
                   )
-                : this.verifyCreatedPost(parsed, read.post);
+                : this.verifyCreatedPost(parsed, read.post, created.value.slug);
         this.finishLedger(parsed.operationId, result, read.kind === 'success' ? read.post : undefined);
         this.writeAudit(parsed.operationId, 'createMarketingDraft', result, {
             targetPostId: read.kind === 'success' ? read.post.id : created.value.postId,
@@ -734,7 +734,7 @@ export class WordPressDraftCrudExecutor {
     ): Promise<ExecutorResult<CanonicalPost>> {
         if (record.phase === 'completed' && record.status === 'verified_success' && record.targetPostId) {
             const read = await this.readCanonicalPair(record.targetPostId, 'edit');
-            if (read.kind === 'success') return this.verifyCreatedPost(input, read.post);
+            if (read.kind === 'success') return this.verifyCreatedPost(input, read.post, record.expectedSlug);
         }
         return this.reconcileCreateAfterError(input);
     }
@@ -781,15 +781,20 @@ export class WordPressDraftCrudExecutor {
                 'partial'
             );
         }
-        return this.verifyCreatedPost(input, canonical.post);
+        return this.verifyCreatedPost(input, canonical.post, found.value.slug);
     }
 
-    private verifyCreatedPost(input: CreateMarketingDraftInput, post: CanonicalPost): ExecutorResult<CanonicalPost> {
+    private verifyCreatedPost(
+        input: CreateMarketingDraftInput,
+        post: CanonicalPost,
+        expectedSlug?: string
+    ): ExecutorResult<CanonicalPost> {
         try {
             assertCompleteCanonicalPost(post, post.id);
             if (
                 post.status !== 'draft' ||
                 post.authorId !== this.#machineUserId ||
+                (expectedSlug !== undefined && post.slug !== expectedSlug) ||
                 JSON.stringify(post.categories) !== JSON.stringify([FIXED_TAXONOMY.categoryId]) ||
                 JSON.stringify(post.tags) !== JSON.stringify([FIXED_TAXONOMY.tagId]) ||
                 JSON.stringify(post.acf) !== JSON.stringify(acfValuesFromCreateInput(input)) ||
@@ -1062,6 +1067,7 @@ export class WordPressDraftCrudExecutor {
             phase: 'completed',
             status: result.status,
             targetPostId,
+            expectedSlug: post?.slug ?? prior.expectedSlug,
             postStateVersion: post?.modifiedGmt,
             reconciliation: result.reconciliation,
             managedLifecycle: lifecycle ?? prior.managedLifecycle

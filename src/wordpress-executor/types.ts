@@ -188,6 +188,7 @@ export interface OperationLedgerRecord {
     mutationAttempted?: boolean;
     status?: ExecutorStatus;
     targetPostId?: number;
+    expectedSlug?: string;
     preStateVersion?: string;
     postStateVersion?: string;
     changedFields: readonly string[];

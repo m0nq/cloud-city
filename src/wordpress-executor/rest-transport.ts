@@ -371,21 +371,28 @@ export class WordPressRestReadTransport implements WordPressReadTransport {
     }
 }
 
-export interface WordPressRestWriteTransportOptions extends WordPressRestReadTransportOptions {}
+export type OperationSlugNamespace = 'clo149-disposable' | 'clo117-music-block';
+
+export interface WordPressRestWriteTransportOptions extends WordPressRestReadTransportOptions {
+    operationSlugNamespace?: OperationSlugNamespace;
+}
 
 function postIdFromResponse(response: JsonResponse): number | undefined {
     const id = asRecord(response.body).id;
     return typeof id === 'number' && Number.isInteger(id) && id > 0 ? id : undefined;
 }
 
-function postSlugForOperation(operationId: string): string {
+function postSlugForOperation(operationId: string, namespace: OperationSlugNamespace): string {
     const digest = createHash('sha256').update(operationId, 'utf8').digest('hex').slice(0, 20);
-    return `clo149-disposable-${digest}`;
+    return `${namespace}-${digest}`;
 }
 
-export function deterministicOperationSlug(operationId: string): string {
+export function deterministicOperationSlug(
+    operationId: string,
+    namespace: OperationSlugNamespace = 'clo149-disposable'
+): string {
     if (operationId.trim() === '') throw new Error('Operation ID is required.');
-    return postSlugForOperation(operationId);
+    return postSlugForOperation(operationId, namespace);
 }
 
 /**
@@ -398,6 +405,7 @@ export class WordPressRestWriteTransport extends WordPressRestReadTransport impl
     #username: string;
     #fetch: FetchImplementation;
     #timeoutMs: number;
+    #operationSlugNamespace: OperationSlugNamespace;
     readonly mutationTrace: string[] = [];
 
     constructor(options: WordPressRestWriteTransportOptions) {
@@ -408,6 +416,7 @@ export class WordPressRestWriteTransport extends WordPressRestReadTransport impl
         this.#username = options.username;
         this.#fetch = options.fetchImplementation ?? fetch;
         this.#timeoutMs = options.timeoutMs ?? 10_000;
+        this.#operationSlugNamespace = options.operationSlugNamespace ?? 'clo149-disposable';
     }
 
     async #requestMutationJson(
@@ -464,7 +473,7 @@ export class WordPressRestWriteTransport extends WordPressRestReadTransport impl
         input: { operationId: string; authorId: number },
         credential: CredentialHandle
     ): Promise<TransportResult<CanonicalPost | null>> {
-        const slug = deterministicOperationSlug(input.operationId);
+        const slug = deterministicOperationSlug(input.operationId, this.#operationSlugNamespace);
         const response = await this.getJson(
             'wp-json/wp/v2/posts',
             { context: 'edit', status: 'any', slug, per_page: 10, _fields: POST_FIELDS },
@@ -488,8 +497,8 @@ export class WordPressRestWriteTransport extends WordPressRestReadTransport impl
     async createDraft(
         input: CreateDraftTransportInput,
         credential: CredentialHandle
-    ): Promise<TransportResult<{ postId: number }>> {
-        const slug = deterministicOperationSlug(input.operationId);
+    ): Promise<TransportResult<{ postId: number; slug: string }>> {
+        const slug = deterministicOperationSlug(input.operationId, this.#operationSlugNamespace);
         this.mutationTrace.push('create:base');
         const created = await this.#requestMutationJson(
             'POST',
@@ -541,7 +550,7 @@ export class WordPressRestWriteTransport extends WordPressRestReadTransport impl
         if (updatedPostId !== postId) {
             return transportError('malformed', acfUpdate.value.status, undefined, 'may_have_started');
         }
-        return { kind: 'success', value: { postId } };
+        return { kind: 'success', value: { postId, slug } };
     }
 
     async updateDraft(

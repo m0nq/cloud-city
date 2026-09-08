@@ -58,6 +58,11 @@ export interface UpdateDraftTransportInput {
     patch: UpdateMarketingDraftInput['patch'];
 }
 
+export interface CreateDraftTransportResult {
+    postId: number;
+    slug: string;
+}
+
 export interface TrashDraftTransportInput {
     postId: number;
     expectedModifiedGmt: string;
@@ -110,7 +115,7 @@ export interface WordPressTransport extends WordPressReadTransport {
     createDraft(
         input: CreateDraftTransportInput,
         credential: CredentialHandle
-    ): Promise<TransportResult<{ postId: number }>>;
+    ): Promise<TransportResult<CreateDraftTransportResult>>;
 
     updateDraft(
         input: UpdateDraftTransportInput,

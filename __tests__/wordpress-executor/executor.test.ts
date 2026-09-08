@@ -3,7 +3,6 @@
 import {
     CREATE_CHANGED_FIELDS,
     FIXED_TAXONOMY,
-    REQUIRED_ACF_FIELDS,
     type ExecutorResult,
     type RemoteUser
 } from '@/wordpress-executor/types';
@@ -135,6 +134,17 @@ describe('WordPress marketing executor contract', () => {
             result: 'verified_success',
             changedFields: [...CREATE_CHANGED_FIELDS]
         });
+    });
+
+    it('fails closed when canonical readback does not match the created deterministic slug', async () => {
+        const harness = createHarness();
+        harness.transport.setNextCreateResultSlug('expected-deterministic-slug');
+
+        const result = await harness.executor.createMarketingDraft(createInput());
+
+        expect(result.status).toBe('partial_mutation');
+        expect(result.reason).toBe('Draft readback did not match the approved create contract.');
+        expect(harness.transport.mutationCounts.create).toBe(1);
     });
 
     it.each([

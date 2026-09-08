@@ -4,11 +4,17 @@ import { MemoryAuditSink, MemoryOperationLedger } from '@/wordpress-executor/led
 import {
     CLOUD_CITY_WORDPRESS_KEYCHAIN_ACCOUNT,
     CLOUD_CITY_WORDPRESS_KEYCHAIN_SERVICE,
-    CLOUD_CITY_WORDPRESS_ORIGIN
+    CLOUD_CITY_WORDPRESS_ORIGIN,
+    sanitizeReadOnlyProofResult
 } from '@/wordpress-executor/read-only-cli';
 import { WordPressReadExecutor } from '@/wordpress-executor/read-executor';
 import { WordPressRestWriteTransport } from '@/wordpress-executor/rest-transport';
 import { runAuthenticatedReadOnlyProof } from '@/wordpress-executor/read-workflow';
+import {
+    isMusicBlockDraftCommand,
+    MUSIC_BLOCK_DRAFT,
+    MUSIC_BLOCK_DRAFT_COMMAND
+} from '@/wordpress-executor/music-block-draft';
 import type { CanonicalPost, ExecutorResult } from '@/wordpress-executor/types';
 
 const WORDPRESS_USERNAME_ENV = 'CLOUD_CITY_WORDPRESS_USERNAME';
@@ -55,6 +61,7 @@ function sanitizePost(post: CanonicalPost): Record<string, unknown> {
         authorId: post.authorId,
         modifiedGmt: post.modifiedGmt,
         title: post.title,
+        content: post.content,
         categories: post.categories,
         tags: post.tags,
         acf: post.acf
@@ -176,9 +183,14 @@ function printStoppedEvidence(
 }
 
 async function run(): Promise<void> {
-    if (process.argv.length !== 3 || process.argv[2] !== 'clo149-proof') {
-        throw new Error('Only the bounded command "clo149-proof" is available.');
+    const command = process.argv.length === 3 ? process.argv[2] : undefined;
+    if (command !== 'clo149-proof' && !isMusicBlockDraftCommand(command)) {
+        throw new Error(`Only the bounded commands "clo149-proof" and "${MUSIC_BLOCK_DRAFT_COMMAND}" are available.`);
     }
+
+    const isMusicBlockDraft = isMusicBlockDraftCommand(command);
+    const operation = isMusicBlockDraft ? MUSIC_BLOCK_DRAFT : FIXTURE;
+    const operationSlugNamespace = isMusicBlockDraft ? 'clo117-music-block' : 'clo149-disposable';
 
     const { username, machineUserId } = requireConfiguration();
     const credentials = new KeychainCredentialProvider({
@@ -187,7 +199,8 @@ async function run(): Promise<void> {
     });
     const transport = new WordPressRestWriteTransport({
         baseUrl: CLOUD_CITY_WORDPRESS_ORIGIN,
-        username
+        username,
+        operationSlugNamespace
     });
     const preflightAudit = new MemoryAuditSink();
     const readExecutor = new WordPressReadExecutor({
@@ -195,11 +208,22 @@ async function run(): Promise<void> {
         credentials,
         audit: preflightAudit,
         machineUserId,
-        invokingClient: 'clo-149-write-proof-preflight-read'
+        invokingClient: isMusicBlockDraft
+            ? 'clo-117-music-block-draft-preflight-read'
+            : 'clo-149-write-proof-preflight-read'
     });
-    const preflight = await runAuthenticatedReadOnlyProof(readExecutor, `${PROOF_OPERATION_PREFIX}-preflight-read`);
+    const preflight = await runAuthenticatedReadOnlyProof(
+        readExecutor,
+        isMusicBlockDraft ? `${MUSIC_BLOCK_DRAFT.operationId}-preflight-read` : `${PROOF_OPERATION_PREFIX}-preflight-read`
+    );
     if (preflight.status !== 'verified_success') {
-        console.log(JSON.stringify({ status: 'stopped_before_production_write', preflight }, null, 2));
+        console.log(
+            JSON.stringify(
+                { status: 'stopped_before_production_write', preflight: sanitizeReadOnlyProofResult(preflight) },
+                null,
+                2
+            )
+        );
         process.exitCode = 2;
         return;
     }
@@ -212,8 +236,48 @@ async function run(): Promise<void> {
         ledger,
         audit,
         machineUserId,
-        invokingClient: 'clo-149-bounded-write-proof'
+        invokingClient: isMusicBlockDraft ? 'clo-117-music-block-draft-create' : 'clo-149-bounded-write-proof'
     });
+
+    if (isMusicBlockDraft) {
+        const create = await executor.createMarketingDraft(operation);
+        const visibility = create.value ? await readPublicVisibility(create.value.slug) : { status: 'not_checked' };
+        const evidence = {
+            status:
+                create.status === 'verified_success' && create.value && visibility.status === 'not_publicly_visible'
+                    ? 'clo117_music_block_draft_verified'
+                    : 'create_requires_reconciliation',
+            endpoint: {
+                restOrigin: CLOUD_CITY_WORDPRESS_ORIGIN,
+                graphql: GRAPHQL_ENDPOINT
+            },
+            preflight: {
+                status: preflight.status,
+                operationId: preflight.operationId,
+                readOnlyAuditRecords: preflightAudit.records.length
+            },
+            draft: {
+                operationId: MUSIC_BLOCK_DRAFT.operationId,
+                command: MUSIC_BLOCK_DRAFT_COMMAND,
+                expectedLifecycle: 'CREATE → canonical READ/reconcile → stop before publication',
+                intendedFields: {
+                    title: MUSIC_BLOCK_DRAFT.title,
+                    status: 'draft',
+                    event_datetime: MUSIC_BLOCK_DRAFT.event_datetime,
+                    address: MUSIC_BLOCK_DRAFT.address,
+                    ticket_link: MUSIC_BLOCK_DRAFT.ticket_link,
+                    taxonomy: { categoryId: 210, tagId: 203 }
+                }
+            },
+            transportMutationTrace: transport.mutationTrace,
+            create: sanitizeResult(create),
+            publicVisibility: visibility,
+            audit: auditEvidence(audit)
+        };
+        console.log(JSON.stringify(evidence, null, 2));
+        if (evidence.status !== 'clo117_music_block_draft_verified') process.exitCode = 2;
+        return;
+    }
 
     const create = await executor.createMarketingDraft(FIXTURE);
     if (create.status !== 'verified_success' || !create.value) {

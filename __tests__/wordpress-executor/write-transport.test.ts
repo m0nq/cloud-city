@@ -69,6 +69,57 @@ function createInput() {
 }
 
 describe('CLO-149 bounded production REST write transport', () => {
+    it('supports the separately bounded Music Block slug namespace without changing the disposable default', () => {
+        const operationId = 'clo117-music-block-20261017-draft';
+
+        expect(deterministicOperationSlug(operationId)).toMatch(/^clo149-disposable-[a-f0-9]{20}$/);
+        expect(deterministicOperationSlug(operationId, 'clo117-music-block')).toMatch(
+            /^clo117-music-block-[a-f0-9]{20}$/
+        );
+    });
+
+    it('uses the bounded Music Block namespace for the real-event create preflight and base request', async () => {
+        const requests: Array<{ method: string; url: string; init?: RequestInit }> = [];
+        const operationId = 'clo117-music-block-20261017-draft';
+        const transport = new WordPressRestWriteTransport({
+            baseUrl: 'https://cirquitree.com',
+            username: 'machine-user',
+            operationSlugNamespace: 'clo117-music-block',
+            fetchImplementation: async (input, init) => {
+                requests.push({ method: init?.method ?? 'GET', url: String(input), init });
+                if (init?.method === 'OPTIONS') return schemaResponse();
+                if (init?.method === 'GET') return response([]);
+                return response({ id: 9030, slug: deterministicOperationSlug(operationId, 'clo117-music-block') });
+            }
+        });
+
+        const result = await new SyntheticCredentialProvider(SYNTHETIC_SECRET).withCredential(credential =>
+            transport.createDraft(
+                {
+                    ...createInput(),
+                    operationId,
+                    title: 'Music Block',
+                    content: '<p>Approved draft copy.</p>',
+                    event_datetime: '2026-10-17 13:00:00',
+                    address: 'TBA',
+                    ticket_link: 'https://partiful.com/e/TGox2BL4WnU9a9MMFQ7D'
+                },
+                credential
+            )
+        );
+
+        expect(result).toEqual({
+            kind: 'success',
+            value: { postId: 9030, slug: deterministicOperationSlug(operationId, 'clo117-music-block') }
+        });
+        expect(requestBody(requests[0].init)).toMatchObject({
+            status: 'draft',
+            slug: expect.stringMatching(/^clo117-music-block-[a-f0-9]{20}$/)
+        });
+        expect(requestBody(requests[0].init)).not.toHaveProperty('status', 'publish');
+        expect(transport.mutationTrace).toEqual(['create:base', 'create:schema:9030', 'create:acf:9030']);
+    });
+
     it('uses edit-context raw content for canonical write readback while retaining rendered fallback', async () => {
         const transport = new WordPressRestWriteTransport({
             baseUrl: 'https://cirquitree.com',
@@ -112,7 +163,10 @@ describe('CLO-149 bounded production REST write transport', () => {
 
         const result = await credentials.withCredential(credential => transport.createDraft(createInput(), credential));
 
-        expect(result).toEqual({ kind: 'success', value: { postId: 9021 } });
+        expect(result).toEqual({
+            kind: 'success',
+            value: { postId: 9021, slug: deterministicOperationSlug(createInput().operationId) }
+        });
         expect(transport.mutationTrace).toEqual(['create:base', 'create:schema:9021', 'create:acf:9021']);
         expect(requests.map(request => request.method)).toEqual(['POST', 'OPTIONS', 'POST']);
         expect(requestBody(requests[0].init)).toEqual({

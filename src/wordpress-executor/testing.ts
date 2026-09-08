@@ -83,6 +83,7 @@ export class InMemoryWordPressTransport implements WordPressTransport {
     private sharedCacheEvidence = false;
     private nextCreateFailure?: FailureMode;
     private nextCreateThrow?: ThrowMutationMode;
+    private nextCreateResultSlug?: string;
     private nextUpdateFailure?: FailureMode;
     private nextUpdateThrow?: ThrowMutationMode;
     private nextTrashFailure?: FailureMode;
@@ -227,7 +228,7 @@ export class InMemoryWordPressTransport implements WordPressTransport {
     async createDraft(
         input: CreateDraftTransportInput,
         _credential: CredentialHandle
-    ): Promise<TransportResult<{ postId: number }>> {
+    ): Promise<TransportResult<{ postId: number; slug: string }>> {
         this.calls.push('createDraft');
         this.mutationCounts.create += 1;
         this.lastCreateRequest = { ...input };
@@ -274,7 +275,9 @@ export class InMemoryWordPressTransport implements WordPressTransport {
             });
         }
         if (failure) return errorFor(failure);
-        return { kind: 'success', value: { postId } };
+        const resultSlug = this.nextCreateResultSlug ?? post.slug;
+        this.nextCreateResultSlug = undefined;
+        return { kind: 'success', value: { postId, slug: resultSlug } };
     }
 
     async updateDraft(
@@ -404,6 +407,10 @@ export class InMemoryWordPressTransport implements WordPressTransport {
 
     failNextCreateWithoutApplying(): void {
         this.nextCreateFailure = { kind: 'timeout', apply: 'none' };
+    }
+
+    setNextCreateResultSlug(slug: string): void {
+        this.nextCreateResultSlug = slug;
     }
 
     throwNextCreateAfterCompleteMutation(): void {
