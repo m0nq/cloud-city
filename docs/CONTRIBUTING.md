@@ -17,6 +17,28 @@ Please note we have a code of conduct, please follow it in all your interactions
   pnpm build
   ```
 
+## Formatting and pre-push checks
+
+Prettier is the shared formatting contract for JavaScript, JSX, TypeScript, TSX,
+and Markdown. Its settings follow the shared WebStorm project style where the
+tools have an equivalent option; Markdown prose wrapping is preserved to avoid
+rewriting paragraphs unexpectedly.
+
+Install the repository's tracked pre-push hook once per checkout:
+
+```sh
+corepack pnpm hooks:install
+```
+
+The hook runs the existing full ESLint command before a push. A whole-repository
+Prettier check remains a separate explicit command while existing formatting
+drift is migrated intentionally rather than mixed into unrelated changes:
+
+```sh
+corepack pnpm format
+corepack pnpm exec prettier . --check
+```
+
 ## Pull Request Process
 
 1. Keep documentation in sync with runtime, package-manager, CI, and deployment changes.

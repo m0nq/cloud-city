@@ -1,5 +1,6 @@
 {
     "printWidth": 120,
+    "tabWidth": 4,
     "singleQuote": true,
     "semi": true,
     "trailingComma": "none",
@@ -10,14 +11,14 @@
     "quoteProps": "as-needed",
     "jsxSingleQuote": false,
     "htmlWhitespaceSensitivity": "css",
-    "proseWrap": "always",
+    "proseWrap": "preserve",
     "overrides": [
         {
             "files": ["*.css"],
             "options": {
-                "tabWidth": 2,
+                "tabWidth": 4,
                 "singleQuote": true,
-                "printWidth": 9999
+                "printWidth": 120
             }
         },
         {
@@ -27,19 +28,15 @@
             }
         },
         {
-            "files": [
-                "*.js",
-                "*.jsx",
-                "*.ts",
-                "*.tsx"
-            ],
+            "files": ["*.md", "*.mdx"],
             "options": {
-                "tabWidth": 4,
-                "singleQuote": true,
-                "jsxBracketSameLine": false,
-                "jsxSingleQuote": false,
-                "arrowParens": "avoid",
-                "functionParentheses": true
+                "proseWrap": "preserve"
+            }
+        },
+        {
+            "files": ["*.json"],
+            "options": {
+                "tabWidth": 4
             }
         }
     ]

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -eu
+
+echo 'Running Cloud City pre-push lint...'
+exec corepack pnpm lint
