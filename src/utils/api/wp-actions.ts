@@ -138,6 +138,10 @@ export const getPost = async (uri: string): Promise<Post> => {
                   node {
                     altText
                     sourceUrl
+                    mediaDetails {
+                      width
+                      height
+                    }
                   }
                 }
                 title

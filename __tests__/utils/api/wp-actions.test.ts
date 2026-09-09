@@ -141,6 +141,9 @@ describe("wp-actions", () => {
         expect(body.variables).toEqual({ uri: "/unit-tests" });
         expect(body.query).toContain("post(id: \"/unit-tests\", idType: SLUG)");
         expect(body.query).toContain("heroBackgroundTone");
+        expect(body.query).toContain("mediaDetails {");
+        expect(body.query).toContain("width");
+        expect(body.query).toContain("height");
     });
 
     it("getPost falls back to empty object when payload has no post", async () => {

@@ -51,12 +51,16 @@ export type Post = {
     databaseId: number;
     featuredImage?: {
         node: {
-            altText: string;
+            altText: string | null;
             link: string;
             slug: string;
             srcSet: string;
             sourceUrl: string;
             sizes: string;
+            mediaDetails?: {
+                width?: number | null;
+                height?: number | null;
+            } | null;
         };
     };
     uri: string;

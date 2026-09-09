@@ -22,9 +22,37 @@ describe('EventLocation', () => {
         expect(locationLink).toHaveFocus();
     });
 
-    it('renders fallback text when address is missing', () => {
-        render(<EventLocation address="" />);
+    it.each(['TBA', 'tba', 'TBD', 'Location TBD', '', '   '])(
+        'renders %j as non-interactive unresolved location context', address => {
+            render(<EventLocation address={address} />);
 
-        expect(screen.getByText('Location TBA')).toBeInTheDocument();
+            const displayedAddress = address.trim() || 'Location TBA';
+            const locationText = screen.getByText(displayedAddress);
+            const locationContainer = locationText.parentElement;
+
+            expect(locationText).toBeInTheDocument();
+            expect(screen.queryByRole('link')).not.toBeInTheDocument();
+            expect(locationContainer).not.toHaveClass('cursor-pointer');
+            expect(locationContainer).not.toHaveAttribute('href');
+            expect(locationContainer).not.toHaveAttribute('target');
+            expect(locationContainer).not.toHaveAttribute('rel');
+        }
+    );
+
+    it('keeps a similar-letter address as a real Maps link', () => {
+        render(<EventLocation address="TBAA Arts Center" />);
+
+        const locationLink = screen.getByRole('link', { name: 'TBAA Arts Center' });
+
+        expect(locationLink).toHaveAttribute(
+            'href',
+            'https://www.google.com/maps/search/?api=1&query=TBAA%20Arts%20Center'
+        );
+    });
+
+    it('preserves the displayed placeholder text', () => {
+        render(<EventLocation address="Venue TBA" />);
+
+        expect(screen.getByText('Venue TBA')).toBeInTheDocument();
     });
 });

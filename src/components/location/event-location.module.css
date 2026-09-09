@@ -2,13 +2,17 @@
   @apply flex items-center justify-center gap-0.5 flex-1;
 
   .mapPin {
-    @apply hidden w-[1.5rem] h-[1.5rem] flex-shrink-0 cursor-pointer
+    @apply hidden w-[1.5rem] h-[1.5rem] flex-shrink-0
     sm:block;
   }
 
   .address {
     @apply h-fit max-w-40 no-underline transition-all duration-1000 ease-in-out;
   }
+}
+
+.locationLink {
+  @apply cursor-pointer;
 
   &:hover {
     .address {

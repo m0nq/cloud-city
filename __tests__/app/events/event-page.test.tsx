@@ -71,7 +71,7 @@ describe('events/[event]/page', () => {
         expect(screen.getByText('Event not found')).toBeInTheDocument();
     });
 
-    it('renders event details, ticket link, and featured images when optional fields are present', async () => {
+    it('renders event details, decorative hero media, CMS alt text, and featured images when optional fields are present', async () => {
         mockGetPost.mockResolvedValueOnce({
             title: 'Sunrise Session',
             content: '<p>Bring water and good vibes.</p>',
@@ -83,13 +83,18 @@ describe('events/[event]/page', () => {
             featuredImage: {
                 node: {
                     sourceUrl: 'https://cdn.example.com/sunrise.jpg',
-                    altText: null
+                    altText: 'Colored lights over the dance floor',
+                    mediaDetails: {
+                        width: 1600,
+                        height: 900
+                    }
                 }
             }
         });
 
         const node = await EventPage({ params: Promise.resolve({ event: 'sunrise-session' }) });
         render(<>{node}</>);
+        const images = document.querySelectorAll('img');
 
         expect(screen.getByText('Sunrise Session')).toBeInTheDocument();
         expect(screen.getByText('Bring water and good vibes.')).toBeInTheDocument();
@@ -97,9 +102,88 @@ describe('events/[event]/page', () => {
             'href',
             'https://tickets.example.com/sunrise'
         );
-        expect(screen.getByAltText('Featured Banner for Sunrise Session')).toBeInTheDocument();
-        expect(screen.getByAltText('Sunrise Session featured image')).toBeInTheDocument();
+        expect(images).toHaveLength(2);
+        expect(images[0]).toHaveAttribute('alt', '');
+        expect(images[1]).toHaveAttribute('alt', 'Colored lights over the dance floor');
+        expect(screen.queryByAltText('Sunrise Session featured image')).not.toBeInTheDocument();
+        expect(images[0]).toHaveAttribute('width', '1600');
+        expect(images[0]).toHaveAttribute('height', '900');
+        expect(images[1]).toHaveAttribute('width', '1600');
+        expect(images[1]).toHaveAttribute('height', '900');
         expect(screen.getByRole('button', { name: '← Back' })).toBeInTheDocument();
+    });
+
+    it('preserves intentionally empty CMS alt text and falls back for unusable dimensions', async () => {
+        mockGetPost.mockResolvedValueOnce({
+            title: 'Empty Alt Event',
+            content: '<p>Content</p>',
+            eventsFields: {
+                address: 'Venue',
+                eventDateTime: '2026-05-10T19:00:00-07:00'
+            },
+            featuredImage: {
+                node: {
+                    sourceUrl: 'https://cdn.example.com/empty-alt.jpg',
+                    altText: '',
+                    mediaDetails: {
+                        width: 0,
+                        height: -1
+                    }
+                }
+            }
+        });
+
+        const node = await EventPage({ params: Promise.resolve({ event: 'empty-alt-event' }) });
+        render(<>{node}</>);
+        const images = document.querySelectorAll('img');
+
+        expect(images).toHaveLength(2);
+        expect(images[0]).toHaveAttribute('alt', '');
+        expect(images[1]).toHaveAttribute('alt', '');
+        expect(images[0]).toHaveAttribute('width', '1920');
+        expect(images[0]).toHaveAttribute('height', '1080');
+        expect(images[1]).toHaveAttribute('width', '1920');
+        expect(images[1]).toHaveAttribute('height', '1080');
+    });
+
+    it.each([
+        ['landscape', 1600, 900, 1600, 900],
+        ['portrait', 270, 480, 270, 480],
+        ['square', 1000, 1000, 1000, 1000],
+        ['missing width', undefined, 900, 1920, 1080],
+        ['missing height', 1600, undefined, 1920, 1080],
+        ['zero width', 0, 900, 1920, 1080],
+        ['zero height', 1600, 0, 1920, 1080],
+        ['negative width', -1, 900, 1920, 1080],
+        ['negative height', 1600, -1, 1920, 1080],
+        ['non-finite dimensions', Number.NaN, Number.NaN, 1920, 1080],
+        ['null media details', null, null, 1920, 1080],
+        ['undefined media details', undefined, undefined, 1920, 1080]
+    ])('uses a safe intrinsic dimension pair for %s media', async (_name, width, height, expectedWidth, expectedHeight) => {
+        mockGetPost.mockResolvedValueOnce({
+            title: 'Dimension Event',
+            content: '<p>Content</p>',
+            eventsFields: {
+                address: 'Venue',
+                eventDateTime: '2026-05-10T19:00:00-07:00'
+            },
+            featuredImage: {
+                node: {
+                    sourceUrl: 'https://cdn.example.com/dimension-test.jpg',
+                    altText: 'Dimension test image',
+                    mediaDetails: width === null || (width === undefined && height === undefined) ? width : { width, height }
+                }
+            }
+        });
+
+        const node = await EventPage({ params: Promise.resolve({ event: 'dimension-event' }) });
+        render(<>{node}</>);
+        const images = document.querySelectorAll('img');
+
+        expect(images[0]).toHaveAttribute('width', String(expectedWidth));
+        expect(images[0]).toHaveAttribute('height', String(expectedHeight));
+        expect(images[1]).toHaveAttribute('width', String(expectedWidth));
+        expect(images[1]).toHaveAttribute('height', String(expectedHeight));
     });
 
     it('renders the detected hero tone for the logistics foreground', async () => {

@@ -15,6 +15,29 @@ import { sanitizeContent } from '@utils/html-sanitizer';
 import { TicketLink } from '@components/events/ticket-link';
 import { resolveHeroTone } from '@utils/hero-tone';
 
+const getSafeImageDimensions = (
+    mediaDetails?: {
+        width?: number | null;
+        height?: number | null;
+    } | null
+): { width: number; height: number } => {
+    const width = mediaDetails?.width;
+    const height = mediaDetails?.height;
+
+    if (
+        typeof width === 'number' &&
+        Number.isFinite(width) &&
+        width > 0 &&
+        typeof height === 'number' &&
+        Number.isFinite(height) &&
+        height > 0
+    ) {
+        return { width, height };
+    }
+
+    return { width: 1920, height: 1080 };
+};
+
 export const generateStaticParams = async (): Promise<{ event: string }[]> => {
     try {
         const { posts: events }: { posts: PostEdges[] } = await getPosts(
@@ -39,6 +62,9 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
         return <div>Event not found</div>;
     }
 
+    const featuredImage = eventData.featuredImage?.node;
+    const { width: imageWidth, height: imageHeight } = getSafeImageDimensions(featuredImage?.mediaDetails);
+
     const heroTone = await resolveHeroTone(
         eventData.eventsFields?.heroBackgroundTone,
         eventData.featuredImage?.node.sourceUrl
@@ -59,14 +85,14 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                         {moment.tz(eventData.eventsFields?.eventDateTime, 'America/Los_Angeles').format('h:mm A')} (PT)
                     </p>
                 </div>
-                {eventData.featuredImage && (
+                {featuredImage && (
                     <div className={styles.featuredImageContainer}>
                         <Image
-                            src={eventData.featuredImage.node.sourceUrl}
-                            alt={eventData.featuredImage.node.altText ?? `Featured Banner for ${eventData.title}`}
+                            src={featuredImage.sourceUrl}
+                            alt=""
                             className={styles.featuredImage}
-                            width={1920}
-                            height={1080}
+                            width={imageWidth}
+                            height={imageHeight}
                             quality={85}
                             priority
                         />
@@ -79,14 +105,14 @@ const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Pr
                     <TicketLink href={eventData.eventsFields?.ticketLink} />
                 </div>
                 <div className={`${styles.eventContentSection}`}>
-                    {eventData.featuredImage && (
+                    {featuredImage && (
                         <div className={styles.contentImageContainer}>
                             <Image
-                                src={eventData.featuredImage.node.sourceUrl}
-                                alt={`${eventData.title} featured image`}
+                                src={featuredImage.sourceUrl}
+                                alt={featuredImage.altText ?? ''}
                                 className={styles.contentImage}
-                                width={1920}
-                                height={1080}
+                                width={imageWidth}
+                                height={imageHeight}
                                 quality={85}
                                 priority
                             />
