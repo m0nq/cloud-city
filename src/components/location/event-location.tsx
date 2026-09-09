@@ -13,9 +13,8 @@ export const EventLocation = ({ address }: { address: string }) => {
             className={`${styles.locationDetailsContainer} cursor-pointer`}
             href={mapsHref}
             target="_blank"
-            rel="noopener noreferrer"
-        >
-            <PiMapPinLight color="#de78ed" className={styles.mapPin} />
+            rel="noopener noreferrer">
+            <PiMapPinLight color="currentColor" className={styles.mapPin} />
             <p className={styles.address}>{address || 'Location TBA'}</p>
         </a>
     );

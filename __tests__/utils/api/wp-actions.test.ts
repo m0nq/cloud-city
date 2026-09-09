@@ -118,6 +118,9 @@ describe("wp-actions", () => {
             title: "Unit Tests",
             date: "2026-02-25T10:00:00",
             content: "<p>hello</p>",
+            eventsFields: {
+                heroBackgroundTone: ["auto"],
+            },
         };
 
         (global.fetch as jest.Mock).mockResolvedValueOnce(
@@ -137,6 +140,7 @@ describe("wp-actions", () => {
         const body = JSON.parse(String(init.body));
         expect(body.variables).toEqual({ uri: "/unit-tests" });
         expect(body.query).toContain("post(id: \"/unit-tests\", idType: SLUG)");
+        expect(body.query).toContain("heroBackgroundTone");
     });
 
     it("getPost falls back to empty object when payload has no post", async () => {

@@ -8,6 +8,8 @@ export type FormValues = {
 
 export type QueryString = string;
 
+export type HeroToneSetting = "auto" | "light" | "dark";
+
 export type CursorInfo = {
     before?: CursorType;
     after?: CursorType;
@@ -68,6 +70,7 @@ export type Post = {
         address?: string;
         eventDateTime?: string | null;
         ticketLink?: string;
+        heroBackgroundTone?: HeroToneSetting | HeroToneSetting[] | null;
     };
 };
 

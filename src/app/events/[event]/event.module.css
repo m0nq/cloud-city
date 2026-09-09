@@ -12,11 +12,17 @@
     }
 
     .eventDetailsContainer {
-        @apply mt-auto flex items-center justify-between w-full h-fit text-pale-pink z-10 text-center font-extralight
-        text-base;
+        @apply mt-auto flex items-center justify-between w-full h-fit text-pale-pink z-10 text-center
+        font-medium text-base md:text-lg;
 
         .paragraph {
             @apply flex-1 text-center;
+        }
+    }
+
+    &[data-hero-tone='dark'] {
+        .eventDetailsContainer {
+            @apply text-white;
         }
     }
 

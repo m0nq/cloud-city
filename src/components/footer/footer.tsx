@@ -10,30 +10,31 @@ export const Footer = () => {
     return (
         <footer className={styles.footer}>
             <div className={styles.logoSection}>
-                <Image src="/cc-logo-blue-gradient-transparent.png"
+                <Image
+                    src="/cc-logo-blue-gradient-transparent.png"
                     alt="Pink and purple clouds at sunset"
                     sizes="100vw"
                     className="background-clouds"
                     width={84}
                     height={84}
-                    priority />
+                    priority
+                />
             </div>
-            <div className={styles.dividerSection}>
-                <p>Explore</p>
-            </div>
-            <div className={styles.linksSection}>
-                {/* TODO: About section */}
-                {/*<a className={styles.footerLink}*/}
-                {/*    href="/about">*/}
-                {/*    <p>About</p>*/}
-                {/*</a>*/}
-                <a className={styles.footerLink}
-                    href="https://docs.google.com/forms/d/e/1FAIpQLSegOvDswW0Xeg0wxrhaL_5BoAiOne9hDRCqwM58G-AXMAGKcQ/viewform"
-                    target="_blank"
-                    rel="noopener">
-                    <p>Volunteer</p>
-                </a>
-            </div>
+            {/*<div className={styles.dividerSection}>*/}
+            {/*    <p>Explore</p>*/}
+            {/*</div>*/}
+            {/*<div className={styles.linksSection}>*/}
+            {/* TODO: About section */}
+            {/*<a className={styles.footerLink} href="/about">*/}
+            {/*    <p>About</p>*/}
+            {/*</a>*/}
+            {/*<a className={styles.footerLink}*/}
+            {/*    href="https://docs.google.com/forms/d/e/1FAIpQLSegOvDswW0Xeg0wxrhaL_5BoAiOne9hDRCqwM58G-AXMAGKcQ/viewform"*/}
+            {/*    target="_blank"*/}
+            {/*    rel="noopener">*/}
+            {/*    <p>Volunteer</p>*/}
+            {/*</a>*/}
+            {/*</div>*/}
             <div className={styles.legalSection}>
                 <div className={styles.locationContainer}>
                     <p>Oakland, CA</p>
@@ -62,13 +63,15 @@ export const Footer = () => {
                     {/*    className="flex justify-center items-center">*/}
                     {/*    <SoundCloudIcon size={23} />*/}
                     {/*</a>*/}
-                    <a href="https://www.instagram.com/cloudcityfestival"
+                    <a
+                        href="https://www.instagram.com/cloudcityfestival"
                         target="_blank"
                         rel="noopener"
                         className="flex items-center justify-center">
                         <FaInstagram size={23} color="#8888DD" />
                     </a>
-                    <a href="https://www.facebook.com/cloudcityfestival/"
+                    <a
+                        href="https://www.facebook.com/cloudcityfestival/"
                         target="_blank"
                         rel="noopener"
                         className="flex items-center justify-center">

@@ -1,7 +1,7 @@
-import clsx from "clsx";
-import { IoTicketOutline } from "react-icons/io5";
+import clsx from 'clsx';
+import { IoTicketOutline } from 'react-icons/io5';
 
-import styles from "./ticket-link.module.css";
+import styles from './ticket-link.module.css';
 
 type TicketLinkProps = {
     href?: string;
@@ -23,13 +23,13 @@ const getSafeExternalHref = (href?: string): string | null => {
     try {
         const url = new URL(trimmedHref);
 
-        return url.protocol === "http:" || url.protocol === "https:" ? trimmedHref : null;
+        return url.protocol === 'http:' || url.protocol === 'https:' ? trimmedHref : null;
     } catch {
         return null;
     }
 };
 
-export const TicketLink = ({ href, label = "Tickets", className }: TicketLinkProps) => {
+export const TicketLink = ({ href, label = 'Tickets', className }: TicketLinkProps) => {
     const safeHref = getSafeExternalHref(href);
 
     if (!safeHref) {
@@ -37,14 +37,9 @@ export const TicketLink = ({ href, label = "Tickets", className }: TicketLinkPro
     }
 
     return (
-        <a
-            className={clsx(styles.ticketLink, className)}
-            href={safeHref}
-            target="_blank"
-            rel="noopener noreferrer"
-        >
+        <a className={clsx(styles.ticketLink, className)} href={safeHref} target="_blank" rel="noopener noreferrer">
             <IoTicketOutline aria-hidden="true" focusable="false" className={styles.ticketIcon} />
-            <span>{label}</span>
+            <span className="text-pale-pink">{label}</span>
         </a>
     );
 };

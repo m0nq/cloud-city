@@ -145,6 +145,7 @@ export const getPost = async (uri: string): Promise<Post> => {
                   address
                   eventDateTime
                   ticketLink
+                  heroBackgroundTone
                 }
               }
             }`;
