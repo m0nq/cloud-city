@@ -29,6 +29,7 @@ describe("app/layout", () => {
             title: "Cloud City",
             description: "The Bay Area no-alcohol music festival",
         });
+        expect(metadata.description).toContain('no-alcohol');
         expect(viewport).toEqual({ themeColor: "#1f1b21" });
     });
 

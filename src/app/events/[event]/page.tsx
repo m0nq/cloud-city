@@ -1,5 +1,6 @@
 // src/app/events/[event]/page.tsx
-import { ReactNode } from 'react';
+import { cache, ReactNode } from 'react';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import moment from 'moment-timezone';
 
@@ -14,6 +15,9 @@ import { EventLocation } from '@components/location/event-location';
 import { sanitizeContent } from '@utils/html-sanitizer';
 import { TicketLink } from '@components/events/ticket-link';
 import { resolveHeroTone } from '@utils/hero-tone';
+import { buildEventMetadata } from '@utils/event-metadata';
+
+const getEvent = cache((uri: string) => getPost(uri));
 
 const getSafeImageDimensions = (
     mediaDetails?: {
@@ -54,9 +58,24 @@ export const generateStaticParams = async (): Promise<{ event: string }[]> => {
     }
 };
 
+export const generateMetadata = async ({
+    params
+}: {
+    params: Promise<{ event: string }>;
+}): Promise<Metadata> => {
+    const { event } = await params;
+
+    try {
+        return buildEventMetadata(await getEvent(event));
+    } catch (error) {
+        console.error('[events/[event]] Failed to generate metadata:', error);
+        return buildEventMetadata({});
+    }
+};
+
 const EventPage = async ({ params }: { params: Promise<{ event: string }> }): Promise<ReactNode> => {
     const { event } = await params;
-    const eventData: Post = await getPost(event);
+    const eventData: Post = await getEvent(event);
 
     if (!eventData?.title) {
         return <div>Event not found</div>;

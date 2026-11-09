@@ -140,6 +140,7 @@ describe("wp-actions", () => {
         const body = JSON.parse(String(init.body));
         expect(body.variables).toEqual({ uri: "/unit-tests" });
         expect(body.query).toContain("post(id: \"/unit-tests\", idType: SLUG)");
+        expect(body.query).not.toContain("excerpt(format: RENDERED)");
         expect(body.query).toContain("heroBackgroundTone");
         expect(body.query).toContain("mediaDetails {");
         expect(body.query).toContain("width");
