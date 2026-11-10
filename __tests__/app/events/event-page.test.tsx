@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import EventPage, { generateStaticParams } from '@/app/events/[event]/page';
+import EventPage, { generateMetadata, generateStaticParams } from '@/app/events/[event]/page';
+import { EVENT_METADATA_FALLBACK_DESCRIPTION } from '@/utils/event-metadata';
 import { getPost, getPosts } from '@/utils/api/wp-actions';
 import { resolveHeroTone } from '@/utils/hero-tone';
 
@@ -54,6 +55,98 @@ describe('events/[event]/page', () => {
             expect(params).toEqual([]);
             expect(consoleErrorSpy).toHaveBeenCalledWith(
                 '[events/[event]] Failed to generate static params:',
+                expect.any(Error)
+            );
+        } finally {
+            consoleErrorSpy.mockRestore();
+        }
+    });
+
+    it('generates event metadata without inheriting the root zero-proof description', async () => {
+        mockGetPost.mockResolvedValueOnce({
+            title: 'Music Block',
+            excerpt: '<p>This endorsed partner event is a no-alcohol activation.</p>',
+            featuredImage: {
+                node: {
+                    sourceUrl: 'https://cirquitree.com/wp-content/uploads/music-block.jpg',
+                    altText: 'DJs performing under blue lights'
+                }
+            }
+        });
+
+        const metadata = await generateMetadata({ params: Promise.resolve({ event: 'music-block' }) });
+
+        expect(metadata).toMatchObject({
+            title: 'Music Block',
+            description: EVENT_METADATA_FALLBACK_DESCRIPTION,
+            openGraph: {
+                title: 'Music Block',
+                description: EVENT_METADATA_FALLBACK_DESCRIPTION,
+                type: 'website',
+                images: [
+                    {
+                        url: 'https://cirquitree.com/wp-content/uploads/music-block.jpg',
+                        alt: 'DJs performing under blue lights'
+                    }
+                ]
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: 'Music Block',
+                description: EVENT_METADATA_FALLBACK_DESCRIPTION,
+                images: ['https://cirquitree.com/wp-content/uploads/music-block.jpg']
+            }
+        });
+        expect(metadata.description).not.toContain('no-alcohol');
+        expect(metadata.openGraph?.description).not.toContain('no-alcohol');
+        expect(metadata.twitter?.description).not.toContain('no-alcohol');
+    });
+
+    it('uses neutral metadata when event facts are missing or incomplete', async () => {
+        mockGetPost.mockResolvedValueOnce({});
+
+        const metadata = await generateMetadata({ params: Promise.resolve({ event: 'incomplete-event' }) });
+
+        expect(metadata).toMatchObject({
+            title: 'Event details',
+            description: EVENT_METADATA_FALLBACK_DESCRIPTION,
+            openGraph: {
+                title: 'Event details',
+                description: EVENT_METADATA_FALLBACK_DESCRIPTION,
+                type: 'website'
+            },
+            twitter: {
+                card: 'summary',
+                title: 'Event details',
+                description: EVENT_METADATA_FALLBACK_DESCRIPTION
+            }
+        });
+        expect(metadata.description).not.toContain('no-alcohol');
+    });
+
+    it('uses neutral metadata when the event lookup fails', async () => {
+        const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+        mockGetPost.mockRejectedValueOnce(new Error('wp-timeout'));
+
+        try {
+            const metadata = await generateMetadata({ params: Promise.resolve({ event: 'unavailable-event' }) });
+
+            expect(metadata).toMatchObject({
+                title: 'Event details',
+                description: EVENT_METADATA_FALLBACK_DESCRIPTION,
+                openGraph: {
+                    title: 'Event details',
+                    description: EVENT_METADATA_FALLBACK_DESCRIPTION,
+                    type: 'website'
+                },
+                twitter: {
+                    card: 'summary',
+                    title: 'Event details',
+                    description: EVENT_METADATA_FALLBACK_DESCRIPTION
+                }
+            });
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                '[events/[event]] Failed to generate metadata:',
                 expect.any(Error)
             );
         } finally {
